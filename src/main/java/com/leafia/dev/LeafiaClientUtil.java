@@ -253,11 +253,13 @@ public class LeafiaClientUtil {
 				if (!mixture.isEmpty()) {
 					texts.add(prefix+TextFormatting.LIGHT_PURPLE+I18nUtil.resolveKey("tile.msr.mixture"));
 					for (Entry<String,Double> entry : mixture.entrySet()) {
-						texts.add(prefix+" "+TextFormatting.LIGHT_PURPLE+I18nUtil.resolveKey("tile.msr.fuel."+entry.getKey())+" "+String.format("%01.1f",entry.getValue())+"/B ");
+						texts.add(prefix+" "+TextFormatting.LIGHT_PURPLE+I18nUtil.resolveKey("tile.msr.fuel."+entry.getKey())+" "+String.format("%01.3f",entry.getValue())+"/B ");
 						try {
 							MSRFuel fuel = MSRFuel.valueOf(entry.getKey());
 							if (!fuel.funcString.equals("0"))
 								texts.add(prefix+TextFormatting.LIGHT_PURPLE+"  Heat Function: "+fuel.funcString);
+							if (fuel.decayRate > 0)
+								texts.add(prefix+TextFormatting.DARK_PURPLE+"  Decay Function: ΔT×"+fuel.decayRate);
 						} catch (IllegalArgumentException ignored) {}
 					}
 				}

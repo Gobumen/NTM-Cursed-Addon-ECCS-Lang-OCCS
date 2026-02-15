@@ -213,7 +213,7 @@ public abstract class MSRTEBase extends TileEntity implements ITickable, LeafiaP
 			if (tank.getFluid() != null) {
 				FluidStack stack = tank.getFluid();
 				NBTTagCompound nbt = nbtProtocol(stack.tag);
-				nbt.setDouble("heat",Math.max(0,nbt.getDouble("heat")-1));
+				nbt.setDouble("heat",Math.max(0,nbt.getDouble("heat")*0.99)); // passive cooling
 				stack.tag = nbt;
 				if (nbt.getDouble("heat") >= 6000-getBaseTemperature(AddonFluids.fromFF(stack.getFluid()))) {
 					if (world.rand.nextInt(350) == 0) {

@@ -14,8 +14,10 @@ import com.leafia.contents.fluids.traits.FT_LFTRCoolant;
 import com.leafia.contents.machines.reactors.lftr.components.MSRTEBase;
 import com.leafia.contents.network.ff_duct.utility.FFDuctUtilityTEBase;
 import com.leafia.dev.machine.MachineTooltip;
+import com.leafia.transformer.LeafiaGls;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -100,6 +102,11 @@ public class MSRPlugBlock extends BlockMachineBase implements ILookOverlay, IRad
 				texts.add(TextFormatting.DARK_RED+I18nUtil.resolveKey("tile.msr_plug.molten"));
 		}
 		MSRTEBase.appendPrintHook(texts,world,x,y,z);
+		LeafiaGls.pushMatrix();
+		LeafiaGls.scale(0.5);
+		ScaledResolution resolution = event.getResolution();
+		LeafiaGls.translate(resolution.getScaledHeight_double(),resolution.getScaledHeight_double()/2,0);
 		ILookOverlay.printGeneric(event, I18nUtil.resolveKey(getTranslationKey() + ".name"), 0xFF55FF, 0x3F153F, texts);
+		LeafiaGls.popMatrix();
 	}
 }
