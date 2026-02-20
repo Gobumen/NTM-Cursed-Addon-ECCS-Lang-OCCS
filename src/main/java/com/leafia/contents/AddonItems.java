@@ -21,6 +21,7 @@ import com.leafia.contents.machines.powercores.dfc.CrucifixItem;
 import com.leafia.contents.machines.powercores.dfc.LCEItemLens;
 import com.leafia.contents.machines.reactors.pwr.debris.PWRDebrisEntity.DebrisType;
 import com.leafia.contents.machines.reactors.pwr.debris.PWRDebrisItem;
+import com.leafia.dev.blocks.ICustomItemBlockProvider;
 import com.leafia.dev.items.itembase.AddonItemHazardBaked;
 import com.leafia.init.hazards.ItemRads;
 import com.leafia.dev.items.itembase.AddonItemBaked;
@@ -523,7 +524,12 @@ public class AddonItems {
 				ForgeRegistries.ITEMS.register(new ItemBlockHazard(block).setRegistryName(block.getRegistryName()));
 			} else if(block == ModBlocks.block_scrap){
 				ForgeRegistries.ITEMS.register(new ItemBlockScrap(block).setRegistryName(block.getRegistryName()));
-			} else */if(block instanceof BlockModDoor) {
+			} else */
+			if(block instanceof BlockModDoor) {
+			} else if (block instanceof ICustomItemBlockProvider custom) {
+				ItemBlock item = custom.provideItem();
+				if (item != null)
+					ForgeRegistries.ITEMS.register(item.setRegistryName(block.getRegistryName()));
 			} else if (block instanceof SignBlock) {
 				Item item = new ItemBlock(block) {
 					@Override

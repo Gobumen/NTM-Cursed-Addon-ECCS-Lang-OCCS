@@ -60,6 +60,7 @@ import com.leafia.contents.network.computers.cable.ComputerCableBlock;
 import com.leafia.contents.network.ff_duct.FFDuctRadShielded;
 import com.leafia.contents.network.ff_duct.FFDuctStandard;
 import com.leafia.contents.network.ff_duct.utility.converter.FFConverterBlock;
+import com.leafia.contents.network.ff_duct.utility.filter.FFFilterBlock;
 import com.leafia.contents.network.ff_duct.utility.pump.FFPumpBlock;
 import com.leafia.contents.network.fluid.gauges.FluidDuctGauge;
 import com.leafia.contents.network.fluid.valves.FluidDuctValve;
@@ -209,6 +210,7 @@ public class AddonBlocks {
 	public static final Block ff_duct = new FFDuctStandard(Material.IRON, "ff_duct").setHardness(5.0F).setResistance(10.0F).setCreativeTab(MainRegistry.templateTab);
 	public static final Block ff_pump = new FFPumpBlock(Material.IRON,"ff_pump").setHardness(5.0F).setResistance(10.0F).setCreativeTab(MainRegistry.templateTab);
 	public static final Block ff_converter = new FFConverterBlock(Material.IRON,"ff_converter").setHardness(5.0F).setResistance(10.0F).setCreativeTab(MainRegistry.templateTab);
+	public static final Block ff_filter = new FFFilterBlock(Material.IRON,"ff_filter").setHardness(5.0F).setResistance(10.0F).setCreativeTab(MainRegistry.templateTab);
 
 	public static final Block ff_duct_solid_shielded = new FFDuctRadShielded(Material.IRON,"ff_duct_solid_shielded").setHardness(15.0F).setResistance(COMPOUND_MESH.v).setCreativeTab(MainRegistry.templateTab);
 

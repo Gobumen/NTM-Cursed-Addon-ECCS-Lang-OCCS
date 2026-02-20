@@ -36,6 +36,7 @@ import com.leafia.contents.network.computers.audiocable.AudioCableTE;
 import com.leafia.contents.network.computers.cable.ComputerCableTE;
 import com.leafia.contents.network.ff_duct.FFDuctTE;
 import com.leafia.contents.network.ff_duct.utility.converter.FFConverterTE;
+import com.leafia.contents.network.ff_duct.utility.filter.FFFilterTE;
 import com.leafia.contents.network.ff_duct.utility.pump.FFPumpTE;
 import com.leafia.contents.network.fluid.gauges.FluidDuctGaugeTE;
 import com.leafia.contents.network.fluid.valves.FluidDuctValveTE;
@@ -61,6 +62,7 @@ public class TEInit {
 		register(FFDuctTE.class,"ff_duct_te");
 		register(FFPumpTE.class,"ff_pump_te");
 		register(FFConverterTE.class,"ff_converter_te");
+		register(FFFilterTE.class,"ff_filter_te");
 		register(SaltSeparatorTE.class,"salt_separator_te");
 		register(MSRArbitraryTE.class,"lftr_arbitrary_te");
 		register(MSRControlTE.class,"lftr_control_te");
