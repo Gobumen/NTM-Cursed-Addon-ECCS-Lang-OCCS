@@ -47,7 +47,7 @@ public abstract class MixinTileEntityMachineArcWelder extends TileEntityMachineB
 		if (!world.isRemote) {
 			if (world.getTotalWorldTime()%50 == 0) {
 				leafia$isWet = false;
-				if (world.isRainingAt(pos.up()))
+				if (world.isRainingAt(pos.up(2)))
 					leafia$isWet = true;
 				for (int xo = -2; xo <= 2; xo++) {
 					for (int yo = 0; yo <= 2; yo++) {
