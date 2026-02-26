@@ -1,7 +1,12 @@
 package com.leafia.settings;
 
 import com.hbm.config.GeneralConfig;
+import com.leafia.contents.control.fuel.nuclearfuel.LeafiaRodItem;
 import com.leafia.dev.LeafiaDebug;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
 
 public class AddonConfig {
 	public static boolean useLeafiaTorex = true;
@@ -17,9 +22,7 @@ public class AddonConfig {
 		}
 	}
 	public static void loadFromConfig(){
-		_ConfigBuilder builder = new _ConfigBuilder();
-		builder.createEmptyFile();
-		builder.loadConfig();
+		_ConfigBuilder builder = new _ConfigBuilder("leafia");
 		builder._separator();
 		builder._category("ASM");
 		{
@@ -48,6 +51,30 @@ public class AddonConfig {
 		}
 		builder._separator();
 		builder.saveConfig();
+	}
+	public static class FuelLives {
+		public static class RodInfo {
+			public final double life;
+			public RodInfo(double life) {
+				this.life = life;
+			}
+		}
+		public static Map<String,RodInfo> map = new HashMap<>();
+		public static void loadFromConfig() {
+			_ConfigBuilder builder = new _ConfigBuilder("generic_fuels");
+			builder._separator();
+			for (Entry<String,LeafiaRodItem> entry : LeafiaRodItem.fromResourceMap.entrySet()) {
+				String s = entry.getKey().substring("leafia_rod_".length());
+				LeafiaRodItem item = entry.getValue();
+				if (item.life > 0) {
+					item.life = builder._double(s+"-life",item.life);
+					item.emission = builder._double(s+"-emission",item.emission);
+					item.reactivity = builder._double(s+"-reactivity",item.reactivity);
+					builder._separator();
+				}
+			}
+			builder.saveConfig();
+		}
 	}
 	static {
 		loadFromConfig();

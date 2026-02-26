@@ -509,7 +509,7 @@ public class PWRData implements ITickable, LeafiaPacketReceiver {
 				}
 			}
 			if (tanks[3].getMaxFill() > 0) {
-				int conversionRate = 8;
+				int conversionRate = 16;
 				int consumption = (int) Math.round(Math.pow(tanks[1].getFill() / (double) Math.max(tanks[3].getMaxFill(), 1) * 4, 0.4) * 80 * conversionRate);
 				FluidStack stack = tanks[1].drain(consumption / conversionRate, false);
 				FluidStack stack2 = tanks[3].drain(consumption, false);

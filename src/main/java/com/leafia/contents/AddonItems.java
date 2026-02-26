@@ -25,6 +25,7 @@ import com.leafia.dev.blocks.ICustomItemBlockProvider;
 import com.leafia.dev.items.itembase.AddonItemHazardBaked;
 import com.leafia.init.hazards.ItemRads;
 import com.leafia.dev.items.itembase.AddonItemBaked;
+import com.leafia.settings.AddonConfig;
 import net.minecraft.block.Block;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.Item;
@@ -458,6 +459,7 @@ public class AddonItems {
 				.setCreativeTab(null);
 		static {
 			LeafiaRodItem.confirmDecayProducts();
+			AddonConfig.FuelLives.loadFromConfig();
 		}
 	}
 

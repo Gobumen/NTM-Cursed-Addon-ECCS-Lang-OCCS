@@ -13,8 +13,15 @@ import java.util.Map;
 import java.util.List;
 
 public class _ConfigBuilder {
-	private static final String path = "config/hbm/leafia.lcfg";
-	private static final File file = new File(path);
+	private final String path;
+	private final File file;
+	public _ConfigBuilder(String name) {
+		name = "config/hbm/" + name + ".lcfg";
+		this.path = name;
+		file = new File(name);
+		createEmptyFile();
+		loadConfig();
+	}
 	private Map<String,String> values = new HashMap<>();
 	private Map<String,Integer> lineIndices = new HashMap<>();
 	private List<String> lines = new ArrayList<>();

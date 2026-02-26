@@ -48,6 +48,7 @@ dependencies {
     runtimeOnlyNonPublishable rfg.deobf(files("libs/worldedit-forge-mc1.12.2-6.1.10-dist (1).jar"))
 	runtimeOnlyNonPublishable rfg.deobf(files("libs/extrautils2-1.12-1.9.9.jar"))
     runtimeOnlyNonPublishable rfg.deobf(files("libs/CTM-MC1.12.2-1.0.2.31.jar"))
+    runtimeOnlyNonPublishable rfg.deobf(files("libs/TickrateChanger-1.0.14.jar"))
 	//runtimeOnlyNonPublishable rfg.deobf(files("libs/NBTTooltipViewer-1.0.jar"))
     /*
     runtimeOnlyNonPublishable rfg.deobf(files("../RedstoneFlux-1.12-2.1.1.1-universal.jar"))
