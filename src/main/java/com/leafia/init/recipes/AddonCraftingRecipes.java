@@ -32,6 +32,7 @@ import java.util.Objects;
 import static com.hbm.inventory.OreDictManager.*;
 import static com.hbm.inventory.OreDictManager.ZR;
 import static com.hbm.main.CraftingManager.*;
+import static com.leafia.init.AddonOreDict.*;
 
 public class AddonCraftingRecipes {
 	public static void craftingRegister() {
@@ -39,7 +40,7 @@ public class AddonCraftingRecipes {
 
 		addRecipeAuto(new ItemStack(AddonBlocks.spk_cable, 16), " W ", "RRR", " W ", 'W', ModItems.plate_dineutronium, 'R',OreDictManager.MAGTUNG.wireFine());
 		addShapelessAuto(new ItemStack(ModBlocks.dfc_receiver, 1), AddonItems.dfcsh_beam, AddonItems.dfcsh_cable, AddonItems.dfcsh_corner, AddonItems.dfcsh_core, OreDictManager.STEEL.heavyBarrel(), AddonItems.dfcsh_front, AddonItems.dfcsh_corner, AddonItems.dfcsh_beam, AddonItems.dfcsh_beam);
-		addRecipeAuto(new ItemStack(AddonBlocks.dfc_reinforced, 1), "SDS", "TXL", "SDS", 'S', AddonBlocks.block_welded_osmiridium, 'D', ModItems.plate_dineutronium, 'T', AddonItems.supercooler, 'L', ModBlocks.dfc_receiver, 'X', ModBlocks.block_dineutronium);
+		addRecipeAuto(new ItemStack(AddonBlocks.dfc_reinforced, 1), "SDS", "TXL", "SDS", 'S', XN.plateWelded(), 'D', ModItems.plate_dineutronium, 'T', AddonItems.supercooler, 'L', ModBlocks.dfc_receiver, 'X', ModBlocks.block_dineutronium);
 		addRecipeAuto(new ItemStack(AddonBlocks.dfc_exchanger, 1), "SCS", "HMP", "SCS", 'S', OSMIRIDIUM.plateWelded(), 'C', ModItems.plate_combine_steel, 'H', ModBlocks.heater_heatex, 'M', ModItems.motor, 'P', ModItems.pipes_steel);
 
 		addRecipeAuto(new ItemStack(AddonItems.fuzzy_identifier, 1), "=  ", "@CS", "@MP", '@', OreDictManager.GOLD.wireFine(), 'P', ANY_PLASTIC.ingot(), '=', DictFrame.fromOne(ModItems.circuit, EnumCircuitType.BASIC), 'M', ModItems.motor_desh, 'C', ModItems.coil_gold, 'S', ModItems.screwdriver_desh);

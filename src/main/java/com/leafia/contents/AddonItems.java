@@ -498,7 +498,10 @@ public class AddonItems {
 	public static final Item ingot_rubidium = new AddonItemBaked("ingot_rubidium","leafia/ingots/ingot_rubidium").setCreativeTab(MainRegistry.partsTab);
 	public static final Item ingot_francium = new AddonItemBaked("ingot_francium","leafia/ingots/ingot_francium").setCreativeTab(MainRegistry.partsTab);
 
-	public static final Item nugget_schraranium = new AddonItemHazardBaked("nugget_schraranium","resources/nuggets/schraranium").addRad(ItemRads.schraranium.copy().multiply(0.1));
+	public static final Item nugget_schraranium = new AddonItemHazardBaked("nugget_schraranium","resources/nuggets/schraranium")/*.addRad(ItemRads.schraranium.copy().multiply(0.1))*/.setCreativeTab(MainRegistry.partsTab);
+
+	public static final Item ingot_xanaxium = new AddonItemBaked("ingot_xanaxium","resources/ingots/xanaxium").setCreativeTab(MainRegistry.partsTab);
+	public static final Item powder_xanaxium = new AddonItemBaked("powder_xanaxium","resources/powders/xanaxium").setCreativeTab(MainRegistry.partsTab);
 
 	public static final Item billet_kys = new AddonItemHazardBaked("billet_kys","leafia/billets/billet_kys") {
 		@Override

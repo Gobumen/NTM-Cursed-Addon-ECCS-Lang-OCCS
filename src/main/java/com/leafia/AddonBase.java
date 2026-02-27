@@ -166,6 +166,9 @@ public class AddonBase {
 		AddonAnvilRecipes.registerConstructionRecipes();
 		AddonPUREXRecipes.register();
 		AddonWasteDrumRecipes.register();
+		AddonCentrifugeRecipes.register();
+		AddonArcWelderRecipes.register();
+		AddonDFCRecipes.register();
 	}
 
 	@EventHandler
