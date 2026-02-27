@@ -74,7 +74,7 @@ public class HeaterRTGTE extends TileEntityMachineBase implements IHeatSource, I
                     }
                     //}
                 }
-                heatGen += (int)Math.floor(Math.pow(fuelHeat/250,0.54)*15)*10 * 20;
+                heatGen += (int)Math.floor(Math.pow(fuelHeat/250,0.54)*15)*10 * 5;
                 rod.HeatFunction(stack,true,rod.getFlux(stack)*2,0,0,0);
                 rod.decay(stack,inventory,15);
             }
