@@ -162,6 +162,10 @@ public class AddonBase {
 		AddonGasCentRecipes.register();
 		AddonElectrolyzerRecipes.register();
 		AddonPyroOvenRecipes.register();
+		AddonAnvilRecipes.registerSmithingRecipes();
+		AddonAnvilRecipes.registerConstructionRecipes();
+		AddonPUREXRecipes.register();
+		AddonWasteDrumRecipes.register();
 	}
 
 	@EventHandler

@@ -47,6 +47,7 @@ public class _ConfigBuilder {
 			super("\uD83C\uDF3F"+s);
 		}
 	}
+	public boolean _autoLineBreak = true;
 	public void _lineBreak() {
 		lines.add("");
 	}
@@ -65,7 +66,8 @@ public class _ConfigBuilder {
 		String value = values.getOrDefault(key,def);
 		readingLine = lineIndices.getOrDefault(key,-1);
 		lines.add(" "+key+": "+value);
-		_lineBreak();
+		if (_autoLineBreak)
+			_lineBreak();
 		return value;
 	}
 	public boolean _boolean(String key,boolean def) {

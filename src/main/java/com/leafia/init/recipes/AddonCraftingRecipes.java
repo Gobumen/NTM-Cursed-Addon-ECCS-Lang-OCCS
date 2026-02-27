@@ -110,6 +110,8 @@ public class AddonCraftingRecipes {
 
 		addRecipeAuto(new ItemStack(AddonItems.fix_survival, 1), " O ", "OTO", " O ", 'O', ModItems.ingot_osmiridium, 'T', ModItems.crystal_trixite);
 
+		add1To9Pair(ModItems.ingot_schraranium,AddonItems.nugget_schraranium);
+
 		hack.getRegistry().register(new PWRDebrisCrafting().setRegistryName(new ResourceLocation("leafia", "lwr_debris_crafting_handler")));
 	}
 	static void removeRecipesForItem(ForgeRegistry<IRecipe> reg,Item item) {

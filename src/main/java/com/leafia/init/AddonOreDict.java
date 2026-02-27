@@ -14,6 +14,7 @@ public class AddonOreDict {
 		K.ingot(AddonItems.ingot_potassium);
 		RB.ingot(AddonItems.ingot_rubidium);
 		FR.ingot(AddonItems.ingot_francium);
+		SRN.nugget(AddonItems.nugget_schraranium);
 		//OSMIRIDIUM.block(AddonBlocks.block_welded_osmiridium); no you cannot cast it with 9 ingots
 	}
 }

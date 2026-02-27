@@ -327,6 +327,7 @@ public class LeafiaRodItem extends AddonItemHazardBase implements IHasCustomMode
 		switch(functionId) {
 			// DEPLETED
 			case "depleteduranium": case "depletedmox":
+			case "depletednaturaluranium": case "depleteduranium233": case "depleteduranium235": case "depleteduranium238":
 				y = 80-20;
 				n = "80-20";
 				disableDecay = true;

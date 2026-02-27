@@ -63,6 +63,7 @@ public class AddonConfig {
 		public static void loadFromConfig() {
 			_ConfigBuilder builder = new _ConfigBuilder("generic_fuels");
 			builder._separator();
+			builder._autoLineBreak = false;
 			for (Entry<String,LeafiaRodItem> entry : LeafiaRodItem.fromResourceMap.entrySet()) {
 				String s = entry.getKey().substring("leafia_rod_".length());
 				LeafiaRodItem item = entry.getValue();
