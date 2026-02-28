@@ -169,6 +169,7 @@ public class AddonBase {
 		AddonCentrifugeRecipes.register();
 		AddonArcWelderRecipes.register();
 		AddonDFCRecipes.register();
+		AddonSmeltingRecipes.register();
 	}
 
 	@EventHandler

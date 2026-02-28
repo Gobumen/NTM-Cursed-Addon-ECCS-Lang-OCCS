@@ -53,7 +53,7 @@ public class AddonDFCRecipes {
 
 		DFCRecipes.setRecipe(3000000000L, ModItems.particle_amat, new ItemStack(ModItems.particle_aschrab));
 
-		DFCRecipes.setRecipe(5000000000L,AddonBlocks.block_welded_osmiridium, new ItemStack(AddonBlocks.block_xanaxium));
+		DFCRecipes.setRecipe(20000000000L,AddonBlocks.block_welded_osmiridium, new ItemStack(AddonBlocks.block_xanaxium));
 
 		DFCRecipes.setRecipe(20000000000L, SBD.dust(), new ItemStack(ModItems.powder_dineutronium));
 		DFCRecipes.setRecipe(20000000000L, SBD.ingot(), new ItemStack(ModItems.ingot_dineutronium));
