@@ -77,9 +77,9 @@ public class AddonItems {
 		// rbmk based
 		public static final Item
 				leafRodU38
-				= new LeafiaRodItem("U-238",4000000, 2865)
+				= new LeafiaRodItem("U-238",4000000, 0)
 				.setAppearance(ModItems.billet_u238, BILLET, ISOTOPE)
-				.setReactivity(0.3)
+				//.setReactivity(0.3)
 				.setDecayProduct("depleteduranium238")
 				.addRad(ItemRads.uranium238)
 				.setCreativeTab(MainRegistry.controlTab);
@@ -360,6 +360,7 @@ public class AddonItems {
 		public static final Item
 				leafRodWasteUranium238
 				= new LeafiaRodItem("Depleted Uranium-238",0, 0)
+				.overrideLabel("Bred Uranium-238")
 				.setAppearance(DepletedFuels.waste_u238, 1, DEPLETED, RAW)
 				.addRad(ItemRads.wasteUranium)
 				.setCreativeTab(MainRegistry.controlTab);

@@ -25,9 +25,9 @@ public class AddonPUREXRecipes {
 				.inputFluids(new FluidStack(Fluids.KEROSENE,500),new FluidStack(Fluids.NITRIC_ACID,250))
 				.outputItems(
 						new ItemStack(ModItems.nugget_u238,1),
-						new ItemStack(ModItems.nugget_pu239,2),
+						new ItemStack(ModItems.nugget_pu239,4),
 						new ItemStack(AddonItems.nugget_schraranium,1),
-						new ItemStack(ModItems.nuclear_waste_tiny,2)
+						new ItemStack(ModItems.nuclear_waste_tiny,1)
 				).setIconToFirstIngredient());
 	}
 }
