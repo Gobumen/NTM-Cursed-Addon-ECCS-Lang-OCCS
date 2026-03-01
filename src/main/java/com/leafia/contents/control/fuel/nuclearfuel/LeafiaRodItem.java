@@ -363,10 +363,10 @@ public class LeafiaRodItem extends AddonItemHazardBase implements IHasCustomMode
 				break;
 
 			// THORIUM
-			case "th232":
+			/*case "th232":
 				y = Math.pow(x*4,0.35)*3;
 				n = "("+flux+"×4)^0.35×3 "+TextFormatting.DARK_AQUA+"(LIKE, REALLY POOR)";
-				break;
+				break;*/
 			case "thmeu":
 				y = Math.pow(x*65,0.35)*3;
 				n = "("+flux+"×64)^0.35×3 "+TextFormatting.DARK_AQUA+"(POOR)";
