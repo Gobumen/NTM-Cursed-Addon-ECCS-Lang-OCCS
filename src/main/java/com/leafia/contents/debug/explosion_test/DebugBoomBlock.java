@@ -82,7 +82,7 @@ public class DebugBoomBlock extends AddonBlockBase implements IBomb {
 						if (y <= 0) break;
 						if (world.rand.nextInt(5) == 0) {
 							IBlockState state = world.getBlockState(p);
-							if (state.getRenderType() != EnumBlockRenderType.INVISIBLE) {
+							if (state.getRenderType() != EnumBlockRenderType.INVISIBLE && !state.getMaterial().isLiquid()) {
 								double moveRatio = 1-Math.sqrt(p.distanceSq(pos))/radius*0.5;
 								if (moveRatio > 0) {
 									double moveAmt = Math.pow(moveRatio,2)*radius*(0.95*world.rand.nextDouble()*0.5)+radius/2d;

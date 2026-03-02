@@ -52,6 +52,8 @@ import com.leafia.contents.machines.reactors.pwr.blocks.components.channel.PWREx
 import com.leafia.contents.machines.reactors.pwr.blocks.components.computer.PWRComputerBlock;
 import com.leafia.contents.machines.reactors.pwr.blocks.components.control.PWRControlBlock;
 import com.leafia.contents.machines.reactors.pwr.blocks.components.element.PWRElementBlock;
+import com.leafia.contents.machines.reactors.pwr.blocks.components.occs.inlet.PWROCCSInBlock;
+import com.leafia.contents.machines.reactors.pwr.blocks.components.occs.outlet.PWROCCSOutBlock;
 import com.leafia.contents.machines.reactors.pwr.blocks.components.port.PWRPortBlock;
 import com.leafia.contents.machines.reactors.pwr.blocks.components.terminal.PWRTerminalBlock;
 import com.leafia.contents.machines.reactors.pwr.blocks.wreckage.PWRMeshedWreck;
@@ -267,6 +269,9 @@ public class AddonBlocks {
 		public static final Block hatch_alt = new PWRTerminalBlock("reactor_hatch_alt").setCreativeTab(MainRegistry.machineTab).setHardness(5.0F).setResistance(CONCRETE_BRICKS.v);
 		public static final Block port = new PWRPortBlock().setCreativeTab(MainRegistry.machineTab).setHardness(PWR_CASING.v).setResistance(PWR_CASING.v);
 		public static final Block computer = new PWRComputerBlock().setCreativeTab(MainRegistry.machineTab).setHardness(PWR_CASING.v).setResistance(PWR_CASING.v);
+
+		public static final Block occs_in = new PWROCCSInBlock().setCreativeTab(MainRegistry.machineTab).setHardness(PWR_CASING.v).setResistance(PWR_CASING.v);
+		public static final Block occs_out = new PWROCCSOutBlock().setCreativeTab(MainRegistry.machineTab).setHardness(PWR_CASING.v).setResistance(PWR_CASING.v);
 
 		/*public static final Block ventElement = new PWRVentElementBlock().setCreativeTab(MainRegistry.machineTab).setHardness(generalHardness).setResistance(PWR_CASING.v);
 		public static final Block ventOutlet = new PWRVentOutletBlock().setCreativeTab(MainRegistry.machineTab).setHardness(generalHardness).setResistance(PWR_CASING.v);

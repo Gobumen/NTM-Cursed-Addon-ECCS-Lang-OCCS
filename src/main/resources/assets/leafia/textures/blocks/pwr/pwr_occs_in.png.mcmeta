@@ -3,7 +3,7 @@
         "ctm_version": 1,
         "type":"CTM",
         "textures":[
-            "leafia:blocks/pwr/pwr_control_port_ct"
+            "leafia:blocks/pwr/pwr_occs_in_ct"
         ],
         "extra": {
             "connect_to": [
