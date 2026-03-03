@@ -1010,6 +1010,8 @@ public class ElevatorEntity extends Entity implements IEntityMultiPart, IEntityC
 				readEntityFromNBT(loadData);
 			loadData = null;
 		}
+		if (pulley != null && pulley.isInvalid())
+			pulley = null;
 		//this.rotationYaw+=45/20f;
 		try { // fuck you, i surround the whole shit with try/catch
 			if (world.isRemote) {
@@ -1080,14 +1082,14 @@ public class ElevatorEntity extends Entity implements IEntityMultiPart, IEntityC
 					else
 						entity.fallDistance = 0;
 				}
-				if (pulley != null && pulley.isInvalid())
-					pulley = null;
 				if (pulley == null) {
 					findPulley();
 					if (pulley == null)
 						setMotion(motionX/2,motionY-9.8/400,motionZ/2);
 				}
 				if (pulley != null) {
+					if (pulley.setupDistCabin < 0)
+						pulley.setupDistCabin = pulley.getPos().getY()-posY;
 					for (int i = 0; i < 3; i++) {
 						EnumFacing face = EnumFacing.byHorizontalIndex(i);
 						if (world.getBlockState(new BlockPos(posX,posY+0.5,posZ).add(face.getDirectionVec())).getBlock() instanceof EvShaftNeo) {

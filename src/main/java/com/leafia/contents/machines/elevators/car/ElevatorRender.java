@@ -40,7 +40,7 @@ public class ElevatorRender extends Render<ElevatorEntity> {
 		return map;
 	}
 	public static ResourceLocation support = resource("support");
-	static ResourceLocation cable = resource("rope");
+	public static ResourceLocation cable = resource("rope");
 	public static class S6 {
 		public static final WaveFrontObjectVAO mdl = model("otis_s6");
 		public static final ResourceLocation floor = resource("s6/floor");
@@ -73,7 +73,7 @@ public class ElevatorRender extends Render<ElevatorEntity> {
 		public static final LeafiaMap<String,ResourceLocation> ind = indicator("skylift/indicator/");
 	}
 
-	public void renderCable(Vec3d startPos,Vec3d endPos,double thickness) {
+	public static void renderCable(Vec3d startPos,Vec3d endPos,double thickness) {
 		thickness/=2;
 		LeafiaBrush brush = LeafiaBrush.instance;
 		brush.addVertexWithUV(startPos.x-thickness,startPos.y,startPos.z+thickness,0,1);
