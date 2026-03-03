@@ -50,6 +50,7 @@ public abstract class EvChipBase {
 	}
 
 	public abstract void onButtonServer(String id,EntityPlayer player,EnumHand hand);
+	public abstract void passiveTick();
 	public abstract void onUpdate();
 
 	public void readEntityFromNBT(NBTTagCompound compound) {}

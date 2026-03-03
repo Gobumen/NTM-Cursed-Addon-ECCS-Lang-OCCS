@@ -1,17 +1,24 @@
 package com.leafia.contents.machines.elevators;
 
 import com.hbm.api.energymk2.IEnergyReceiverMK2;
+import com.hbm.lib.ForgeDirection;
 import com.leafia.contents.machines.elevators.car.ElevatorEntity;
 import com.leafia.contents.machines.elevators.weight.EvWeightEntity;
+import com.leafia.dev.container_utility.LeafiaPacket;
+import com.leafia.dev.container_utility.LeafiaPacketReceiver;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 
-public class EvPulleyTE extends TileEntity implements IEnergyReceiverMK2, ITickable {
+public class EvPulleyTE extends TileEntity implements IEnergyReceiverMK2, ITickable, LeafiaPacketReceiver {
 	public ElevatorEntity elevator;
 	public EvWeightEntity counterweight;
 	public double setupDistCabin = -1;
 	public double setupDistWeight = -1;
+	public static long consumption = 10;
+	long power = 0;
 
 	@Override
 	public void update() {
@@ -33,22 +40,27 @@ public class EvPulleyTE extends TileEntity implements IEnergyReceiverMK2, ITicka
 				double offset = distEv-setupDistCabin;
 				counterweight.posY = pos.getY()-setupDistWeight+offset;
 			}
+			EnumFacing face = EnumFacing.byIndex(getBlockMetadata()-10);
+			trySubscribe(world,pos.offset(face.rotateY()).down(),ForgeDirection.DOWN);
+			if (power >= consumption)
+				power -= consumption;
+			LeafiaPacket._start(this).__write(0,power).__sendToAffectedClients();
 		}
 	}
 
 	@Override
 	public void setPower(long power) {
-
+		this.power = power;
 	}
 
 	@Override
 	public long getPower() {
-		return 0;
+		return power;
 	}
 
 	@Override
 	public long getMaxPower() {
-		return 0;
+		return consumption*5;
 	}
 
 	boolean loaded = true;
@@ -69,7 +81,8 @@ public class EvPulleyTE extends TileEntity implements IEnergyReceiverMK2, ITicka
 		if (compound.hasKey("setupDistCabin"))
 			setupDistCabin = compound.getDouble("setupDistCabin");
 		if (compound.hasKey("setupDistWeight"))
-			setupDistCabin = compound.getDouble("setupDistWeight");
+			setupDistWeight = compound.getDouble("setupDistWeight");
+		power = compound.getLong("power");
 		super.readFromNBT(compound);
 	}
 
@@ -77,6 +90,29 @@ public class EvPulleyTE extends TileEntity implements IEnergyReceiverMK2, ITicka
 	public NBTTagCompound writeToNBT(NBTTagCompound compound) {
 		compound.setDouble("setupDistCabin",setupDistCabin);
 		compound.setDouble("setupDistWeight",setupDistWeight);
+		compound.setLong("power",power);
 		return super.writeToNBT(compound);
 	}
+
+	@Override
+	public double affectionRange() {
+		return 256;
+	}
+
+	@Override
+	public String getPacketIdentifier() {
+		return "EV_PULLEY";
+	}
+
+	@Override
+	public void onReceivePacketLocal(byte key,Object value) {
+		if (key == 0)
+			power = (long)value;
+	}
+
+	@Override
+	public void onReceivePacketServer(byte key,Object value,EntityPlayer plr) { }
+
+	@Override
+	public void onPlayerValidate(EntityPlayer plr) { }
 }

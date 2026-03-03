@@ -43,6 +43,8 @@ public class EvChipSkylift extends EvChipBase {
 			}
 		}
 	}
+	@Override
+	public void passiveTick() { }
 	int doorOpenTimer = 0;
 	int doorOpenTime = 20;
 	int closeTimer = 0;
@@ -55,7 +57,7 @@ public class EvChipSkylift extends EvChipBase {
 		entity.doorOpen = true;
 		entity.startFloor = null;
 		if (entity.targetFloors.contains(entity.parkFloor)) {
-			entity.targetFloors.removeElement(entity.parkFloor);
+			entity.targetFloors.remove(entity.parkFloor);
 			entity.enabledButtons.remove("floor"+entity.parkFloor);
 			LeafiaCustomPacket.__start(new EvButtonEnablePacket(entity)).__sendToAll();
 		}

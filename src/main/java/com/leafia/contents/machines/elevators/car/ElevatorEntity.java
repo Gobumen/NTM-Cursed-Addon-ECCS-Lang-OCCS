@@ -27,7 +27,6 @@ import com.leafia.dev.custompacket.LeafiaCustomPacketEncoder;
 import com.leafia.dev.math.FiaMatrix;
 import com.leafia.dev.optimization.bitbyte.LeafiaBuf;
 import com.leafia.unsorted.IEntityCustomCollision;
-import com.llib.group.LeafiaMap;
 import com.llib.group.LeafiaSet;
 import com.llib.technical.FifthString;
 import net.minecraft.block.state.IBlockState;
@@ -87,9 +86,9 @@ public class ElevatorEntity extends Entity implements IEntityMultiPart, IEntityC
 	public BlockPos lastLight = new BlockPos(0,0,0);
 	public boolean doorOpen = false;
 	public boolean down = false;
-	public LeafiaSet<Integer> targetFloors = new LeafiaSet<>();
-	public LeafiaSet<Integer> getTargetFloorsFromEnabledButtons() {
-		LeafiaSet<Integer> floors = new LeafiaSet<>();
+	public HashSet<Integer> targetFloors = new HashSet<>();
+	public HashSet<Integer> getTargetFloorsFromEnabledButtons() {
+		HashSet<Integer> floors = new HashSet<>();
 		for (String id : enabledButtons) {
 			if (id.startsWith("floor")) {
 				try {
@@ -273,8 +272,8 @@ public class ElevatorEntity extends Entity implements IEntityMultiPart, IEntityC
 		} catch (IndexOutOfBoundsException ignored) {}
 		return list;
 	}
-	public LeafiaSet<String> enabledButtons = new LeafiaSet<>();
-	public LeafiaMap<String,Integer> clickedButtons = new LeafiaMap<>(); // client only
+	public HashSet<String> enabledButtons = new HashSet<>();
+	public HashMap<String,Integer> clickedButtons = new HashMap<>(); // client only
 
 
 	public static class ElevatorButton {
@@ -777,6 +776,8 @@ public class ElevatorEntity extends Entity implements IEntityMultiPart, IEntityC
 					writeEntityToNBT(entityData);
 					entityData.removeTag("enableds");
 					entityData.removeTag("chipData");
+					entityData.removeTag("startFloor");
+					entityData.removeTag("parkFloor");
 					tag.setTag("configuration",entityData);
 					stacc.setTagCompound(tag);
 					entityDropItem(stacc,0);
@@ -790,7 +791,7 @@ public class ElevatorEntity extends Entity implements IEntityMultiPart, IEntityC
 		return true;
 	}
 	public boolean shouldUpdateItems = true;
-	public LeafiaMap<String,List<HitSrf>> surfaces = new LeafiaMap<>();
+	public HashMap<String,List<HitSrf>> surfaces = new HashMap<>();
 	@Override
 	protected void entityInit() {
 		this.dataManager.register(STYLE_FLOOR,"");
@@ -1085,22 +1086,31 @@ public class ElevatorEntity extends Entity implements IEntityMultiPart, IEntityC
 				if (pulley == null) {
 					findPulley();
 					if (pulley == null)
-						setMotion(motionX/2,motionY-9.8/400,motionZ/2);
+						setMotion(motionX,motionY-9.8/400,motionZ);
 				}
 				if (pulley != null) {
+					boolean guided = false;
 					if (pulley.setupDistCabin < 0)
 						pulley.setupDistCabin = pulley.getPos().getY()-posY;
 					for (int i = 0; i < 3; i++) {
 						EnumFacing face = EnumFacing.byHorizontalIndex(i);
 						if (world.getBlockState(new BlockPos(posX,posY+0.5,posZ).add(face.getDirectionVec())).getBlock() instanceof EvShaftNeo) {
+							guided = true;
 							setMotion(0,motionY,0);
 							setPosition(pulley.getPos().getX()+0.5,posY,pulley.getPos().getZ()+0.5);
 							break;
 						}
 					}
+					if (!guided)
+						setMotion((pulley.getPos().getX()+0.5-posX)/20,motionY,(pulley.getPos().getZ()+0.5-posZ)/20);
 				}
 				if (controller != null)
-					controller.onUpdate();
+					controller.passiveTick();
+				if (pulley != null && pulley.elevator != null && pulley.counterweight != null && pulley.getPower() >= EvPulleyTE.consumption) {
+					if (controller != null)
+						controller.onUpdate();
+				} else if (pulley != null)
+					motionY = 0;
 				int floor = getDataInteger(FLOOR);
 				if (specialDisplayFloors.containsKey(floor))
 					dataManager.set(FLOOR_DISPLAY,specialDisplayFloors.get(floor));

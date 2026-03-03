@@ -57,11 +57,15 @@ public class WeightSpawnItem extends AddonItemBase {
 				if (!world.isRemote) {
 					player.getHeldItem(hand).shrink(1);
 					EvWeightEntity entity = new EvWeightEntity(world);
-					entity.posX = pos.getX() + 0.5;
-					entity.posY = pos.getY();
-					entity.posZ = pos.getZ() + 0.5;
-					entity.rotationYaw = face.getHorizontalAngle() - 90;
+					entity.setPositionAndRotation(
+							pos.getX() + 0.5 - face.getXOffset()*0.4,
+							pos.getY(),
+							pos.getZ() + 0.5 - face.getZOffset()*0.4,
+							face.getHorizontalAngle() - 90,
+							0
+					);
 					world.spawnEntity(entity);
+					player.inventoryContainer.detectAndSendChanges();
 				}
 			} else {
 				if (world.isRemote)

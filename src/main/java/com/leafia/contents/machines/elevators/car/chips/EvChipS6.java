@@ -23,6 +23,7 @@ public class EvChipS6 extends EvChipBase {
 	}
 	@Override
 	public String getType() { return "s6"; }
+	int bellTimer = 0;
 	@Override
 	public void onButtonServer(String id,EntityPlayer player,EnumHand hand) {
 		if (id.startsWith("floor") && !entity.enabledButtons.contains(id)) {
@@ -42,7 +43,15 @@ public class EvChipS6 extends EvChipBase {
 			closing = false;
 			closeTimer = 0;
 			cooldown = 20;
+		} else if (id.equals("bell") && bellTimer <= 0) {
+			bellTimer = 65;
+			entity.world.playSound(null,entity.posX,entity.posY,entity.posZ,LeafiaSoundEvents.s6bell,SoundCategory.BLOCKS,5,1);
 		}
+	}
+	@Override
+	public void passiveTick() {
+		if (bellTimer > 0)
+			bellTimer--;
 	}
 	int doorOpenTimer = 0;
 	final int doorOpenTime = 10;
@@ -61,7 +70,7 @@ public class EvChipS6 extends EvChipBase {
 		entity.doorOpen = true;
 		entity.startFloor = null;
 		if (entity.targetFloors.contains(entity.parkFloor)) {
-			entity.targetFloors.removeElement(entity.parkFloor);
+			entity.targetFloors.remove(entity.parkFloor);
 			entity.enabledButtons.remove("floor"+entity.parkFloor);
 			LeafiaCustomPacket.__start(new EvButtonEnablePacket(entity)).__sendToAll();
 		}

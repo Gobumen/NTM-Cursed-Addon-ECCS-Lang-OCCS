@@ -1,6 +1,7 @@
 package com.leafia.contents.machines.elevators.car;
 
 import com.hbm.render.loader.WaveFrontObjectVAO;
+import com.leafia.contents.machines.elevators.EvPulleyTE;
 import com.leafia.contents.machines.elevators.car.ElevatorEntity.*;
 import com.leafia.contents.machines.elevators.car.styles.panels.ElevatorPanelBase;
 import com.leafia.dev.LeafiaBrush;
@@ -99,6 +100,11 @@ public class ElevatorRender extends Render<ElevatorEntity> {
 
 	@Override
 	public void doRender(ElevatorEntity entity,double x,double y,double z,float entityYaw,float partialTicks) {
+		boolean hasPower = false;
+		if (entity.pulley != null) {
+			if (entity.pulley.getPower() >= EvPulleyTE.consumption)
+				hasPower = true;
+		}
 		LeafiaGls.pushMatrix();
 		LeafiaGls.translate(x,y,z);
 		LeafiaGls.rotate(entityYaw,0,-1,0);
@@ -187,12 +193,12 @@ public class ElevatorRender extends Render<ElevatorEntity> {
 					S6.mdl.renderPart("Logo");
 
 					int dir = entity.getDataInteger(ElevatorEntity.ARROW);
-					bindTexture(dir == 1 ? S6.arrowOn : S6.arrowOff);
-					if (dir == 1) LeafiaGls.disableLighting();
+					bindTexture((dir == 1 && hasPower) ? S6.arrowOn : S6.arrowOff);
+					if (dir == 1 && hasPower) LeafiaGls.disableLighting();
 					S6.mdl.renderPart("ArrowUp");
 					LeafiaGls.enableLighting();
-					bindTexture(dir == -1 ? S6.arrowOn : S6.arrowOff);
-					if (dir == -1) LeafiaGls.disableLighting();
+					bindTexture((dir == -1 && hasPower) ? S6.arrowOn : S6.arrowOff);
+					if (dir == -1 && hasPower) LeafiaGls.disableLighting();
 					S6.mdl.renderPart("ArrowDn");
 					LeafiaGls.enableLighting();
 
@@ -200,6 +206,8 @@ public class ElevatorRender extends Render<ElevatorEntity> {
 					String display = entity.getDataString(ElevatorEntity.FLOOR_DISPLAY);
 					if (display.length() < 2) display = " "+display;
 					if (display.length() < 2) display = " "+display;
+					if (!hasPower)
+						display = "  ";
 					bindTexture(S6.ind.getOrDefault(display.substring(1,2),S6.ind.get(" ")));
 					S6.mdl.renderPart("Digit0");
 					bindTexture(S6.ind.getOrDefault(display.substring(0,1),S6.ind.get(" ")));
@@ -300,12 +308,12 @@ public class ElevatorRender extends Render<ElevatorEntity> {
 					Skylift.mdl.renderPart("Skylift");
 
 					int dir = entity.getDataInteger(ElevatorEntity.ARROW);
-					bindTexture(dir == 1 ? Skylift.arrowOn : Skylift.arrowOff);
-					if (dir == 1) LeafiaGls.disableLighting();
+					bindTexture((dir == 1 && hasPower) ? Skylift.arrowOn : Skylift.arrowOff);
+					if (dir == 1 && hasPower) LeafiaGls.disableLighting();
 					Skylift.mdl.renderPart("ArrowUp");
 					LeafiaGls.enableLighting();
-					bindTexture(dir == -1 ? Skylift.arrowOn : Skylift.arrowOff);
-					if (dir == -1) LeafiaGls.disableLighting();
+					bindTexture((dir == -1 && hasPower) ? Skylift.arrowOn : Skylift.arrowOff);
+					if (dir == -1 && hasPower) LeafiaGls.disableLighting();
 					Skylift.mdl.renderPart("ArrowDn");
 					LeafiaGls.enableLighting();
 
@@ -313,6 +321,8 @@ public class ElevatorRender extends Render<ElevatorEntity> {
 					String display = entity.getDataString(ElevatorEntity.FLOOR_DISPLAY);
 					if (display.length() < 2) display = " "+display;
 					if (display.length() < 2) display = " "+display;
+					if (!hasPower)
+						display = "  ";
 					bindTexture(Skylift.ind.getOrDefault(display.substring(1,2),S6.ind.get(" ")));
 					Skylift.mdl.renderPart("Digit0");
 					bindTexture(Skylift.ind.getOrDefault(display.substring(0,1),S6.ind.get(" ")));

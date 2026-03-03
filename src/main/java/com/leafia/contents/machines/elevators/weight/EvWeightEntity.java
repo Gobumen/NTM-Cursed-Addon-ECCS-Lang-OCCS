@@ -2,6 +2,7 @@ package com.leafia.contents.machines.elevators.weight;
 
 import com.leafia.contents.AddonItems;
 import com.leafia.contents.machines.elevators.EvPulleyTE;
+import com.leafia.contents.machines.elevators.EvShaftNeo;
 import com.leafia.contents.machines.elevators.car.ElevatorEntity;
 import com.leafia.dev.LeafiaDebug;
 import com.leafia.dev.math.FiaMatrix;
@@ -41,14 +42,12 @@ public class EvWeightEntity extends Entity {
 		}
 	}
 	public void setPos(Vec3d pos) {
-		posX = pos.x;
-		posY = pos.y;
-		posZ = pos.z;
+		setPosition(pos.x,pos.y,pos.z);
 	}
 	public void kms() {
 		if (!isEntityAlive()) return;
-		if (!world.isRemote)
-			entityDropItem(new ItemStack(AddonItems.weight_spawn),0);
+		if (world.isRemote) return;
+		entityDropItem(new ItemStack(AddonItems.weight_spawn),0);
 		setDead();
 	}
 	@Override
@@ -61,32 +60,36 @@ public class EvWeightEntity extends Entity {
 		}
 		return new AxisAlignedBB(new Vec3d(posX-0.75,posY,posZ-0.75),new Vec3d(posX+0.75,renderMaxHeight,posZ+0.75));
 	}
+
 	@Override
 	public void onEntityUpdate() {
 		super.onEntityUpdate();
+		if (!(world.getBlockState(new BlockPos(posX,posY,posZ)).getBlock() instanceof EvShaftNeo)) {
+			kms();
+			return;
+		}
 		Vec3d pos = new Vec3d(posX,posY,posZ);
 		FiaMatrix mat = new FiaMatrix(pos).rotateY(-rotationYaw);
 		BlockPos bp = new BlockPos(mat.translate(-1.5,0,0).position);
+		if (pulley != null && pulley.isInvalid()) pulley = null;
 		if (pulley == null) {
 			findPulley(bp);
-			if (pulley == null) {
+			if (pulley == null)
 				motionY -= 9.8/400;
-				if (this.onGround)
-					kms();
-			}
 		}
 		move(MoverType.SELF,motionX,motionY,motionZ);
-		if (pulley != null) {
+		if (pulley == null) {
+			if (this.onGround)
+				kms();
+		} else {
 			EnumFacing dir = EnumFacing.byIndex(pulley.getBlockMetadata()-10).getOpposite();
 			FiaMatrix mat2 = new FiaMatrix(new Vec3d(pulley.getPos().getX()+0.5,posY,pulley.getPos().getZ()+0.5)).rotateY(-dir.getHorizontalAngle());
 			setPos(mat2.translate(1.40625,0,0).position);
 			rotationYaw = dir.getHorizontalAngle();
 			if (pulley.setupDistWeight < 0)
 				pulley.setupDistWeight = pulley.getPos().getY()-posY;
-		}
-		if (pulley != null)
 			pulley.counterweight = this;
-		LeafiaDebug.debugPos(world,bp,1/20f,0xFFFF00,"Hello!");
+		}
 	}
 	@Override
 	protected void entityInit() {
