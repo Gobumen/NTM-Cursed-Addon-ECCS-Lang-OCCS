@@ -71,7 +71,7 @@ public class LeafiaServerListener {
 		@SubscribeEvent
 		public void onEntityDied(LivingDeathEvent evt) {
 			if (evt.getEntity() instanceof EntityPlayer plr) {
-				plr.sendMessage(new TextComponentString("L"));
+				//plr.sendMessage(new TextComponentString("L"));
 				PlayerDeathsSavedData data = PlayerDeathsSavedData.forWorld(plr.world);
 				data.timestamps.put(plr.getName(),plr.world.getTotalWorldTime());
 				data.markDirty();

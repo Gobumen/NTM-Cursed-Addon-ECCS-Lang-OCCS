@@ -118,6 +118,7 @@ hbmfluid.hf=Hydrogen Fluoride
 hbmfluid.hot_air=Hot Air
 hbmfluid.hot_water=Hot Water
 hbmfluid.n2o=Nitrous Oxide
+hbmfluid.pyrogel=Pyrogel
 hbmfluid.radspice_slop=Neoveline Slop
 hbmfluid.uf6_233=Uranium-233 Hexafluoride
 hbmfluid.uf6_235=Uranium-235 Hexafluoride

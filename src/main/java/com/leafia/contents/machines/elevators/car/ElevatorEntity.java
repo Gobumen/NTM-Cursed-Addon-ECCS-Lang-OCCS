@@ -778,6 +778,7 @@ public class ElevatorEntity extends Entity implements IEntityMultiPart, IEntityC
 					entityData.removeTag("chipData");
 					entityData.removeTag("startFloor");
 					entityData.removeTag("parkFloor");
+					entityData.removeTag("floor");
 					tag.setTag("configuration",entityData);
 					stacc.setTagCompound(tag);
 					entityDropItem(stacc,0);
@@ -996,14 +997,17 @@ public class ElevatorEntity extends Entity implements IEntityMultiPart, IEntityC
 	EntityPlayer getPlayer() {
 		return Minecraft.getMinecraft().player;
 	}
+	Boolean lightState = null;
 	@Override
 	public void onUpdate() {
 		BlockPos newLight = new BlockPos(posX,posY+1.5,posZ);
-		if (!lastLight.equals(newLight)) {
+		boolean newLightState = pulley != null && pulley.getPower() >= EvPulleyTE.consumption;
+		if (!lastLight.equals(newLight) || lightState == null || !lightState.equals(newLightState)) {
 			if (world.getBlockState(lastLight).getBlock() instanceof ElevatorLight)
 				world.setBlockToAir(lastLight);
 			lastLight = newLight;
-			world.setBlockState(lastLight,Elevators.light.getDefaultState());
+			if (pulley != null && newLightState)
+				world.setBlockState(lastLight,Elevators.light.getDefaultState());
 		}
 		super.onUpdate();
 		if (!world.isRemote) {

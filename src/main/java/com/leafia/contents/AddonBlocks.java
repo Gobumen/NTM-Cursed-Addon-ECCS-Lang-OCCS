@@ -341,6 +341,7 @@ public class AddonBlocks {
 		public static final Block shaft = new EvShaftNeo(Material.IRON,"elevator_shaft").setHardness(15);
 		public static final Block buffer = new EvBuffer(Material.IRON,"elevator_buffer").setHardness(15);
 		public static final Block s6_floor = new EvFloor(Material.IRON,"elevator_s6floor").setHardness(15);
+		public static final Block skylift_floor = new EvFloor(Material.IRON,"elevator_skyliftfloor").setHardness(15);
 
 		public static final Block light = new ElevatorLight(Material.AIR,"elevator_light").setCreativeTab(null);
 	}

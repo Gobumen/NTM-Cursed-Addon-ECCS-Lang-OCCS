@@ -137,7 +137,7 @@ public class EvFloor extends AddonBlockDummyable implements IDynamicModels {
 				double y = rel.position.y;
 				float staticX = 0.125f * 5;
 				float staticY = 0.125f * 8;
-				if (x >= staticX && x <= staticX + 1 / 16d && y >= staticY && y <= staticY + 1 / 16d) {
+				if (x >= staticX-0.5 && x <= staticX + 1.5 / 16d && y >= staticY-0.5 && y <= staticY + 1.5 / 16d) {
 					if (!world.isRemote) {
 						// when button is pressed
 						BlockPos centerPos = new BlockPos(core[0], core[1], core[2]).offset(EnumFacing.byIndex(coreState.getValue(META) - 10).getOpposite());
