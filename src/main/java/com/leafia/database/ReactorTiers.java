@@ -4,6 +4,7 @@ import com.hbm.blocks.ModBlocks;
 import com.leafia.contents.AddonBlocks;
 import com.leafia.contents.AddonBlocks.PWR;
 import net.minecraft.block.Block;
+import net.minecraft.item.Item;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -11,9 +12,9 @@ import java.util.List;
 import java.util.Map;
 
 public class ReactorTiers {
-	public static final List<String> tiers = new ArrayList<>();
+	public static final List<String> names = new ArrayList<>();
 	public static final List<String> classes = new ArrayList<>();
-	public static final Map<Block,Integer> redirection = new HashMap<>();
+	public static final Map<Item,Integer> redirection = new HashMap<>();
 	static int tier = 0;
 	public static void register() {
 		addTier("pwr","fission",
@@ -64,10 +65,10 @@ public class ReactorTiers {
 		);
 	}
 	static void addTier(String translationKey,String reactorClass,Block... blocks) {
-		tiers.add(translationKey);
+		names.add(translationKey);
 		classes.add(reactorClass);
 		for (Block block : blocks)
-			redirection.put(block,tier);
+			redirection.put(Item.getItemFromBlock(block),tier);
 		tier++;
 	}
 }

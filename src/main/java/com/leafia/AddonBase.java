@@ -12,6 +12,7 @@ import com.leafia.contents.control.battery.AddonEnumBatteryPack;
 import com.leafia.contents.machines.controlpanel.AddonNodesRegister;
 import com.leafia.contents.potion.LeafiaPotion;
 import com.leafia.database.AirDetonationMissiles;
+import com.leafia.database.ReactorTiers;
 import com.leafia.init.*;
 import com.leafia.eventbuses.LeafiaServerListener;
 import com.leafia.init.proxy.LeafiaServerProxy;
@@ -142,6 +143,7 @@ public class AddonBase {
 		AddonHazards.register();
 		AddonNodesRegister.register();
 		AirDetonationMissiles.init();
+		ReactorTiers.register();
 		if (TransformerCoreLeafia.loadFailed != null)
 			TransformerCoreLeafia.loadFailed.run();
 	}

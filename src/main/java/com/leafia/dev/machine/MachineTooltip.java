@@ -1,15 +1,40 @@
 package com.leafia.dev.machine;
 
 import com.hbm.util.I18nUtil;
+import com.leafia.database.ReactorTiers;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
+import org.lwjgl.input.Keyboard;
 
 import java.util.List;
 
 public class MachineTooltip {
 	/// Gets called before addInformation().
+	@SideOnly(Side.CLIENT)
 	public static void addInfoASM(Item item,List<String> tooltip) {
+		if (ReactorTiers.redirection.containsKey(item)) {
+			int tier = ReactorTiers.redirection.get(item);
+			String preformat = I18nUtil.resolveKey("desc.leafia._reactortier.desc.title");
+			String format = preformat.replace("{tier}",Integer.toString(tier+1))
+					.replace("{name}",
+							I18nUtil.resolveKey("desc.leafia._reactortier.name."+ReactorTiers.names.get(tier)))
+					.replace("{class}",
+							I18nUtil.resolveKey("desc.leafia._reactortier.class."+ReactorTiers.classes.get(tier)));
+			String prefix = TextFormatting.DARK_GRAY+""+TextFormatting.ITALIC;
+			tooltip.add(prefix+format);
+			prefix += "  ";
+			if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)) {
+				if (tier < ReactorTiers.names.size()-1)
+					tooltip.add(prefix+I18nUtil.resolveKey("desc.leafia._reactortier.desc.next",
+							I18nUtil.resolveKey("desc.leafia._reactortier.name."+ReactorTiers.names.get(tier+1))));
+				if (tier > 0)
+					tooltip.add(prefix+I18nUtil.resolveKey("desc.leafia._reactortier.desc.previous",
+							I18nUtil.resolveKey("desc.leafia._reactortier.name."+ReactorTiers.names.get(tier-1))));
+			} else
+				tooltip.add(prefix+I18nUtil.resolveKey("desc.leafia._reactortier.desc.shift"));
+		}
 		if (item.getRegistryName() != null) {
 			switch(item.getRegistryName().getPath()) {
 				// CONDENSERS
