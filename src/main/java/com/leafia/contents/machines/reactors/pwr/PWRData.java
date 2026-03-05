@@ -572,7 +572,7 @@ public class PWRData implements ITickable, LeafiaPacketReceiver {
 	}
 
 	int boilingAccum = 0;
-	public static final double transferMultiplier = 16;
+	public static final double transferMultiplier = 12;
 	public static final int boilingDivision = 96;
 
 	public void spendCoolant(double cooled, @Nullable ItemStack stack) {
