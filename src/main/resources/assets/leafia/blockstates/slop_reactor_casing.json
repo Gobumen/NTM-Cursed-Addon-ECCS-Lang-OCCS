@@ -1,0 +1,5 @@
+{
+	"variants": {
+		"normal": { "model": "leafia:slop_reactor_casing" }
+	}
+}

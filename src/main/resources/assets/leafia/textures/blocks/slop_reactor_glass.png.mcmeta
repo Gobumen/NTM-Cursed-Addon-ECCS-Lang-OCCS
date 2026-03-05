@@ -1,0 +1,9 @@
+{
+    "ctm":{
+        "ctm_version": 1,
+        "type":"CTM",
+        "textures":[
+            "leafia:blocks/slop_reactor_glass_ctm"
+        ]
+    }
+}

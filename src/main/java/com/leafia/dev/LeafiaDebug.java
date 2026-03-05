@@ -499,7 +499,7 @@ public class LeafiaDebug {
 			};
 			PacketThreading.createSendToAllThreadedPacket(packet);
 		}
-		enum Action {
+		public enum Action {
 			NONE,
 			SELECTION((buf)->{
 				if (buf.isReadable()) {
@@ -565,7 +565,7 @@ public class LeafiaDebug {
 			Action(Function<LeafiaBuf,Runnable> builder) { this.builder = builder; }
 		}
 		public static class LeafiaTrackerPacket extends RecordablePacket {
-			Action mode = Action.NONE;
+			public Action mode = Action.NONE;
 			public Runnable callback;
 			public Consumer<LeafiaBuf> writer;
 			@Override

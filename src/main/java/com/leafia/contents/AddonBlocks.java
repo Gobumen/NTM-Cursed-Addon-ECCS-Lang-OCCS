@@ -4,6 +4,7 @@ import com.custom_hbm.contents.oilycoal.BlockCoalBurning;
 import com.custom_hbm.contents.oilycoal.BlockCoalOil;
 import com.hbm.blocks.ModBlocks;
 import com.hbm.blocks.ModSoundType;
+import com.hbm.blocks.generic.BlockNTMGlass;
 import com.hbm.lib.HBMSoundHandler;
 import com.hbm.main.MainRegistry;
 import com.hbm.render.block.BlockBakeFrame;
@@ -61,6 +62,8 @@ import com.leafia.contents.machines.reactors.pwr.blocks.wreckage.PWRMeshedWreck;
 import com.leafia.contents.machines.reactors.pwr.blocks.wreckage.PWRWreckMetal;
 import com.leafia.contents.machines.reactors.pwr.blocks.wreckage.PWRWreckStone;
 import com.leafia.contents.miscellanous.diverter.DiverterBlock;
+import com.leafia.contents.miscellanous.slop.SlopBlock;
+import com.leafia.contents.miscellanous.slop.SlopGlass;
 import com.leafia.contents.network.computers.audiocable.AudioCableBlock;
 import com.leafia.contents.network.computers.cable.ComputerCableBlock;
 import com.leafia.contents.network.ff_duct.FFDuctRadShielded;
@@ -75,6 +78,7 @@ import com.leafia.contents.network.pipe_amat.AmatDuctStandard;
 import com.leafia.contents.network.pipe_amat.charger.AmatDuctChargerBlock;
 import com.leafia.contents.network.spk_cable.SPKCableBlock;
 import com.leafia.contents.nonmachines.fftank.FFTankBlock;
+import com.leafia.dev.blocks.blockbase.AddonBlockBase;
 import com.leafia.dev.blocks.blockbase.AddonBlockPowder;
 import com.leafia.dev.blocks.legacy.LegacyBlockHazardMeta;
 import com.leafia.dev.blocks.legacy.LegacyWasteEarth;
@@ -84,6 +88,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.item.EnumDyeColor;
+import net.minecraft.util.BlockRenderLayer;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
 
@@ -352,6 +357,10 @@ public class AddonBlocks {
 
 	public static final Block diverter = new DiverterBlock("meteor_diverter",true).setCreativeTab(null).setLightLevel(0.5F);
 	public static final Block diverter_unlit = new DiverterBlock("meteor_diverter_unlit",false);
+
+	public static final Block slop_reactor = new SlopBlock(Material.IRON,"slop_reactor");
+	public static final Block slop_reactor_casing = new AddonBlockBase(Material.IRON,"slop_reactor_casing");
+	public static final Block slop_reactor_glass = new SlopGlass(Material.IRON,BlockRenderLayer.CUTOUT,"slop_reactor_glass");
 
 	static {
 		if (Loader.isModLoaded("opencomputers")) {

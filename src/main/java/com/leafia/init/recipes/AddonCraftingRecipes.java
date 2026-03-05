@@ -119,6 +119,10 @@ public class AddonCraftingRecipes {
 		addShapelessAuto(new ItemStack(PWR.occs_out),new ItemStack(PWR.occs_in));
 		addShapelessAuto(new ItemStack(PWR.port),new ItemStack(PWR.occs_out));
 
+		addShapelessAuto(new ItemStack(AddonBlocks.slop_reactor),new ItemStack(AddonBlocks.slop_reactor_casing),new ItemStack(ModItems.circuit,1,EnumCircuitType.ANALOG.ordinal()));
+		addRecipeAuto(new ItemStack(AddonBlocks.slop_reactor_casing),"#I#","ICI","#I#",'#',new ItemStack(ModBlocks.deco_steel),'I',STEEL.ingot(),'C',new ItemStack(ModItems.circuit,1,EnumCircuitType.ANALOG.ordinal()));
+		addRecipeAuto(new ItemStack(AddonBlocks.slop_reactor_glass),"IGI","GCG","IGI",'G',new ItemStack(ModBlocks.reinforced_glass),'I',STEEL.ingot(),'C',new ItemStack(ModItems.circuit,1,EnumCircuitType.ANALOG.ordinal()));
+
 		hack.getRegistry().register(new PWRDebrisCrafting().setRegistryName(new ResourceLocation("leafia", "lwr_debris_crafting_handler")));
 	}
 	static void removeRecipesForItem(ForgeRegistry<IRecipe> reg,Item item) {
