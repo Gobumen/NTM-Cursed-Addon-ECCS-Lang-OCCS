@@ -35,7 +35,8 @@ public class ReactorTiers {
 				ModBlocks.rbmk_console,ModBlocks.rbmk_crane_console,
 				ModBlocks.rbmk_cooler,ModBlocks.rbmk_heater,ModBlocks.rbmk_storage,
 				ModBlocks.rbmk_rod,ModBlocks.rbmk_rod_mod,
-				ModBlocks.rbmk_rod_reasim,ModBlocks.rbmk_rod_reasim_mod
+				ModBlocks.rbmk_rod_reasim,ModBlocks.rbmk_rod_reasim_mod,
+				AddonBlocks.rbmk_rod_realersim,AddonBlocks.rbmk_rod_realersim_mod
 		);
 		addTier("watz","fission",
 				ModBlocks.watz,ModBlocks.struct_watz_core,

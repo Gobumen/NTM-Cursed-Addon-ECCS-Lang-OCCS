@@ -5,6 +5,7 @@ import com.custom_hbm.contents.oilycoal.BlockCoalOil;
 import com.hbm.blocks.ModBlocks;
 import com.hbm.blocks.ModSoundType;
 import com.hbm.blocks.generic.BlockNTMGlass;
+import com.hbm.blocks.machine.rbmk.RBMKRodReaSim;
 import com.hbm.lib.HBMSoundHandler;
 import com.hbm.main.MainRegistry;
 import com.hbm.render.block.BlockBakeFrame;
@@ -61,6 +62,7 @@ import com.leafia.contents.machines.reactors.pwr.blocks.components.terminal.PWRT
 import com.leafia.contents.machines.reactors.pwr.blocks.wreckage.PWRMeshedWreck;
 import com.leafia.contents.machines.reactors.pwr.blocks.wreckage.PWRWreckMetal;
 import com.leafia.contents.machines.reactors.pwr.blocks.wreckage.PWRWreckStone;
+import com.leafia.contents.machines.reactors.rbmk.realersim.RBMKRealerSimBlock;
 import com.leafia.contents.miscellanous.diverter.DiverterBlock;
 import com.leafia.contents.miscellanous.slop.SlopBlock;
 import com.leafia.contents.miscellanous.slop.SlopGlass;
@@ -361,6 +363,9 @@ public class AddonBlocks {
 	public static final Block slop_reactor = new SlopBlock(Material.IRON,"slop_reactor");
 	public static final Block slop_reactor_casing = new AddonBlockBase(Material.IRON,"slop_reactor_casing");
 	public static final Block slop_reactor_glass = new SlopGlass(Material.IRON,BlockRenderLayer.CUTOUT,"slop_reactor_glass");
+
+	public static final Block rbmk_rod_realersim = new RBMKRealerSimBlock(false, "rbmk_rod_realersim", "rbmk_element_realersim").setHardness(15.0F).setResistance(100.0F).setCreativeTab(MainRegistry.machineTab);
+	public static final Block rbmk_rod_realersim_mod = new RBMKRealerSimBlock(true, "rbmk_rod_realersim_mod", "rbmk_element_realersim_mod").setHardness(5.0F).setResistance(100.0F).setCreativeTab(MainRegistry.machineTab);
 
 	static {
 		if (Loader.isModLoaded("opencomputers")) {

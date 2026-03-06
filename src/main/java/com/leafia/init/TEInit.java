@@ -35,6 +35,7 @@ import com.leafia.contents.machines.reactors.pwr.blocks.components.occs.outlet.P
 import com.leafia.contents.machines.reactors.pwr.blocks.components.port.PWRPortTE;
 import com.leafia.contents.machines.reactors.pwr.blocks.components.terminal.PWRTerminalTE;
 import com.leafia.contents.machines.reactors.pwr.blocks.wreckage.PWRMeshedWreckEntity;
+import com.leafia.contents.machines.reactors.rbmk.realersim.RBMKRealerSimTE;
 import com.leafia.contents.miscellanous.diverter.DiverterTE;
 import com.leafia.contents.miscellanous.slop.SlopTE;
 import com.leafia.contents.network.computers.audiocable.AudioCableTE;
@@ -106,6 +107,7 @@ public class TEInit {
 		register(HeaterRTGTE.class,"heater_rt_te");
 		register(DiverterTE.class,"diverter_te");
 		register(SlopTE.class,"slop_te");
+		register(RBMKRealerSimTE.class,"rbmk_realer_sim_te");
 	}
 	private static void register(Class<? extends TileEntity> clazz,String res) {
 		GameRegistry.registerTileEntity(clazz,new ResourceLocation(AddonBase.MODID,res));

@@ -123,6 +123,9 @@ public class AddonCraftingRecipes {
 		addRecipeAuto(new ItemStack(AddonBlocks.slop_reactor_casing),"#I#","ICI","#I#",'#',new ItemStack(ModBlocks.deco_steel),'I',STEEL.ingot(),'C',new ItemStack(ModItems.circuit,1,EnumCircuitType.ANALOG.ordinal()));
 		addRecipeAuto(new ItemStack(AddonBlocks.slop_reactor_glass),"IGI","GCG","IGI",'G',new ItemStack(ModBlocks.reinforced_glass),'I',STEEL.ingot(),'C',new ItemStack(ModItems.circuit,1,EnumCircuitType.ANALOG.ordinal()));
 
+		addRecipeAuto(new ItemStack(AddonBlocks.rbmk_rod_realersim, 1), "ZCZ", "ZRZ", "ZCZ", 'C', STEEL.shell(), 'R', ModBlocks.rbmk_blank, 'Z', ZR.nugget() );
+		addRecipeAuto(new ItemStack(AddonBlocks.rbmk_rod_realersim_mod, 1), "BGB", "GRG", "BGB", 'G', GRAPHITE.block(), 'R', AddonBlocks.rbmk_rod_realersim, 'B', GRAPHITE.ingot() );
+
 		hack.getRegistry().register(new PWRDebrisCrafting().setRegistryName(new ResourceLocation("leafia", "lwr_debris_crafting_handler")));
 	}
 	static void removeRecipesForItem(ForgeRegistry<IRecipe> reg,Item item) {

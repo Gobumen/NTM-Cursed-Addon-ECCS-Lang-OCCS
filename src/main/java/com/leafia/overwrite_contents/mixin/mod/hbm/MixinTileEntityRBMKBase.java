@@ -28,6 +28,7 @@ public abstract class MixinTileEntityRBMKBase extends TileEntityLoadedBase imple
 	@Shadow(remap = false) @Final public static byte gravity;
 	@Shadow(remap = false) public abstract void meltdown();
 	@Unique public int leafia$damage = 0;
+	@Unique public double leafia$lastHeat = 20;
 
 	@Override
 	public int leafia$getDamage() {
@@ -56,12 +57,14 @@ public abstract class MixinTileEntityRBMKBase extends TileEntityLoadedBase imple
 	@Inject(method = "update",at = @At(value = "HEAD"),require = 1)
 	void leafia$onUpdate(CallbackInfo ci) {
 		if (!world.isRemote) {
-			if (heat > maxHeat() && !world.getGameRules().getBoolean(RBMKKeys.KEY_DISABLE_MELTDOWNS.keyString))
-				leafia$damage += IMixinTileEntityRBMKBase.dmgIncrement;
-			else
+			if (heat > maxHeat() && !world.getGameRules().getBoolean(RBMKKeys.KEY_DISABLE_MELTDOWNS.keyString)) {
+				if (heat >= leafia$lastHeat)
+					leafia$damage += IMixinTileEntityRBMKBase.dmgIncrement;
+			} else
 				leafia$damage = Math.max(leafia$damage-1,0);
 			if (leafia$damage > IMixinTileEntityRBMKBase.maxDamage)
 				meltdown();
+			leafia$lastHeat = heat;
 		}
 	}
 
@@ -108,7 +111,7 @@ public abstract class MixinTileEntityRBMKBase extends TileEntityLoadedBase imple
 		} else{ // gravity fall
 			if(this.jumpheight > 0){
 				this.downwardSpeed = this.downwardSpeed + gravity * 0.05F;
-				this.jumpheight = this.jumpheight - this.downwardSpeed;
+				this.jumpheight = Math.max(this.jumpheight-this.downwardSpeed,0);
 			} else {
 				this.jumpheight = 0;
 				this.downwardSpeed = 0;

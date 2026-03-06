@@ -2,6 +2,7 @@ package com.leafia.init;
 
 import com.hbm.blocks.ModBlocks;
 import com.hbm.items.ModItems;
+import com.hbm.items.RBMKItemRenderers;
 import com.hbm.render.item.ItemRenderBase;
 import com.hbm.render.item.ItemRenderBatteryPack;
 import com.hbm.render.item.TEISRBase;
@@ -111,6 +112,9 @@ public class ItemRendererInit {
 		register(AddonItems.weight_spawn,new WeightSpawnItemRender());
 
 		register(AddonBlocks.heater_rt,new HeaterRTGRender());
+
+		register(AddonBlocks.rbmk_rod_realersim,RBMKItemRenderers.RBMK_ROD);
+		register(AddonBlocks.rbmk_rod_realersim_mod,RBMKItemRenderers.RBMK_ROD);
 
 		/*fix(AddonItems.ams_focus_blank);
 		fix(AddonItems.ams_focus_booster);
