@@ -4,8 +4,6 @@ import com.custom_hbm.contents.oilycoal.BlockCoalBurning;
 import com.custom_hbm.contents.oilycoal.BlockCoalOil;
 import com.hbm.blocks.ModBlocks;
 import com.hbm.blocks.ModSoundType;
-import com.hbm.blocks.generic.BlockNTMGlass;
-import com.hbm.blocks.machine.rbmk.RBMKRodReaSim;
 import com.hbm.lib.HBMSoundHandler;
 import com.hbm.main.MainRegistry;
 import com.hbm.render.block.BlockBakeFrame;
@@ -27,11 +25,11 @@ import com.leafia.contents.debug.rbmk_jet.DebugRBMKJetEmitter;
 import com.leafia.contents.fluids.FluorideFluid.FluorideFluidBlock;
 import com.leafia.contents.machines.elevators.EvBuffer;
 import com.leafia.contents.machines.elevators.EvPulley;
-import com.leafia.contents.machines.elevators.EvShaft;
 import com.leafia.contents.machines.elevators.EvShaftNeo;
 import com.leafia.contents.machines.elevators.car.ElevatorLight;
 import com.leafia.contents.machines.elevators.floors.EvFloor;
-import com.leafia.contents.machines.heat.HeaterRTGBlock;
+import com.leafia.contents.machines.heat.hpboiler.HPBoilerBlock;
+import com.leafia.contents.machines.heat.rtheater.HeaterRTGBlock;
 import com.leafia.contents.machines.misc.heatex.CoolantHeatexBlock;
 import com.leafia.contents.machines.panel.controltorch.ControlTorchBlock;
 import com.leafia.contents.machines.powercores.ams.base.AMSBaseBlock;
@@ -366,6 +364,8 @@ public class AddonBlocks {
 
 	public static final Block rbmk_rod_realersim = new RBMKRealerSimBlock(false, "rbmk_rod_realersim", "rbmk_element_realersim").setHardness(15.0F).setResistance(100.0F).setCreativeTab(MainRegistry.machineTab);
 	public static final Block rbmk_rod_realersim_mod = new RBMKRealerSimBlock(true, "rbmk_rod_realersim_mod", "rbmk_element_realersim_mod").setHardness(5.0F).setResistance(100.0F).setCreativeTab(MainRegistry.machineTab);
+
+	public static final Block hp_boiler = new HPBoilerBlock(Material.IRON,"hp_boiler").setHardness(5.0F).setResistance(10.0F).setCreativeTab(MainRegistry.machineTab);
 
 	static {
 		if (Loader.isModLoaded("opencomputers")) {

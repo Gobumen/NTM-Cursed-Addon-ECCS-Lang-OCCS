@@ -1,7 +1,7 @@
-package com.leafia.contents.machines.heat.container;
+package com.leafia.contents.machines.heat.rtheater.container;
 
 import com.hbm.inventory.gui.GuiInfoContainer;
-import com.leafia.contents.machines.heat.HeaterRTGTE;
+import com.leafia.contents.machines.heat.rtheater.HeaterRTGTE;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;

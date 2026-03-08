@@ -1,6 +1,5 @@
-package com.leafia.contents.machines.heat;
+package com.leafia.contents.machines.heat.rtheater;
 
-import com.hbm.blocks.BlockDummyable;
 import com.hbm.blocks.ILookOverlay;
 import com.hbm.blocks.ITooltipProvider;
 import com.hbm.lib.ForgeDirection;

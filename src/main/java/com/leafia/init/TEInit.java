@@ -10,7 +10,8 @@ import com.leafia.contents.machines.elevators.EvBufferTE;
 import com.leafia.contents.machines.elevators.EvPulleyTE;
 import com.leafia.contents.machines.elevators.EvShaftTE;
 import com.leafia.contents.machines.elevators.floors.EvFloorTE;
-import com.leafia.contents.machines.heat.HeaterRTGTE;
+import com.leafia.contents.machines.heat.hpboiler.HPBoilerTE;
+import com.leafia.contents.machines.heat.rtheater.HeaterRTGTE;
 import com.leafia.contents.machines.misc.heatex.CoolantHeatexTE;
 import com.leafia.contents.machines.panel.controltorch.ControlTorchTE;
 import com.leafia.contents.machines.powercores.ams.base.AMSBaseTE;
@@ -108,6 +109,7 @@ public class TEInit {
 		register(DiverterTE.class,"diverter_te");
 		register(SlopTE.class,"slop_te");
 		register(RBMKRealerSimTE.class,"rbmk_realer_sim_te");
+		register(HPBoilerTE.class,"hp_boiler_te");
 	}
 	private static void register(Class<? extends TileEntity> clazz,String res) {
 		GameRegistry.registerTileEntity(clazz,new ResourceLocation(AddonBase.MODID,res));

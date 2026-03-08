@@ -1,12 +1,12 @@
-package com.leafia.contents.machines.heat;
+package com.leafia.contents.machines.heat.rtheater;
 
 import com.hbm.api.tile.IHeatSource;
 import com.hbm.tileentity.IGUIProvider;
 import com.hbm.tileentity.TileEntityMachineBase;
 import com.hbm.util.RTGUtil;
 import com.leafia.contents.control.fuel.nuclearfuel.LeafiaRodItem;
-import com.leafia.contents.machines.heat.container.HeaterRTGContainer;
-import com.leafia.contents.machines.heat.container.HeaterRTGUI;
+import com.leafia.contents.machines.heat.rtheater.container.HeaterRTGContainer;
+import com.leafia.contents.machines.heat.rtheater.container.HeaterRTGUI;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;

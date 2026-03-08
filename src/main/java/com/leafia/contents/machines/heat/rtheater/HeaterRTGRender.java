@@ -1,6 +1,5 @@
-package com.leafia.contents.machines.heat;
+package com.leafia.contents.machines.heat.rtheater;
 
-import com.hbm.blocks.ModBlocks;
 import com.hbm.main.ResourceManager;
 import com.hbm.render.NTMRenderHelper;
 import com.hbm.render.item.ItemRenderBase;

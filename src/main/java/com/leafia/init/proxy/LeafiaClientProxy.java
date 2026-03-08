@@ -34,8 +34,10 @@ import com.leafia.contents.machines.elevators.floors.EvFloorRender;
 import com.leafia.contents.machines.elevators.floors.EvFloorTE;
 import com.leafia.contents.machines.elevators.weight.EvWeightEntity;
 import com.leafia.contents.machines.elevators.weight.EvWeightRender;
-import com.leafia.contents.machines.heat.HeaterRTGRender;
-import com.leafia.contents.machines.heat.HeaterRTGTE;
+import com.leafia.contents.machines.heat.hpboiler.HPBoilerRender;
+import com.leafia.contents.machines.heat.hpboiler.HPBoilerTE;
+import com.leafia.contents.machines.heat.rtheater.HeaterRTGRender;
+import com.leafia.contents.machines.heat.rtheater.HeaterRTGTE;
 import com.leafia.contents.machines.misc.heatex.CoolantHeatexRender;
 import com.leafia.contents.machines.misc.heatex.CoolantHeatexTE;
 import com.leafia.contents.machines.powercores.ams.base.AMSBaseRender;
@@ -50,12 +52,10 @@ import com.leafia.contents.machines.powercores.dfc.render.DFCComponentRender;
 import com.leafia.contents.machines.powercores.dfc.debris.AbsorberShrapnelEntity;
 import com.leafia.contents.machines.powercores.dfc.debris.AbsorberShrapnelRender;
 import com.leafia.contents.machines.powercores.dfc.render.DFCCoreRender;
-import com.leafia.contents.machines.processing.mixingvat.MixingVatRender;
 import com.leafia.contents.machines.processing.mixingvat.MixingVatRenderNeo;
 import com.leafia.contents.machines.processing.mixingvat.MixingVatTE;
 import com.leafia.contents.machines.reactors.lftr.components.arbitrary.MSRArbitraryRender;
 import com.leafia.contents.machines.reactors.lftr.components.arbitrary.MSRArbitraryTE;
-import com.leafia.contents.machines.reactors.lftr.components.control.MSRControlTE;
 import com.leafia.contents.machines.reactors.lftr.processing.separator.SaltSeparatorRender;
 import com.leafia.contents.machines.reactors.lftr.processing.separator.SaltSeparatorTE;
 import com.leafia.contents.machines.reactors.pwr.blocks.components.control.PWRControlRender;
@@ -64,7 +64,6 @@ import com.leafia.contents.machines.reactors.pwr.blocks.components.element.PWREl
 import com.leafia.contents.machines.reactors.pwr.blocks.wreckage.PWRMeshedWreckEntity;
 import com.leafia.contents.machines.reactors.pwr.blocks.wreckage.RenderPWRMeshedWreck;
 import com.leafia.contents.machines.reactors.pwr.debris.PWRDebrisEntity;
-import com.leafia.contents.machines.reactors.pwr.debris.PWRDebrisItemRender;
 import com.leafia.contents.machines.reactors.pwr.debris.RenderPWRDebris;
 import com.leafia.contents.network.ff_duct.utility.FFDuctUtilityRender;
 import com.leafia.contents.network.ff_duct.utility.converter.FFConverterTE;
@@ -78,12 +77,10 @@ import com.leafia.contents.network.spk_cable.SPKCableTE;
 import com.leafia.contents.nonmachines.fftank.FFTankRender;
 import com.leafia.contents.nonmachines.fftank.FFTankTE;
 import com.leafia.eventbuses.LeafiaClientListener;
-import com.leafia.init.AddonAdvancements;
 import com.leafia.init.ItemRendererInit;
 import com.llib.exceptions.LeafiaDevFlaw;
 import net.minecraft.block.BlockDoor;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.block.statemap.StateMap;
 import net.minecraft.item.Item;
 import net.minecraft.util.SoundCategory;
@@ -171,12 +168,14 @@ public class LeafiaClientProxy extends LeafiaServerProxy {
 			ClientRegistry.bindTileEntitySpecialRenderer(BroofTE.class,new BroofRender());
 			ClientRegistry.bindTileEntitySpecialRenderer(FFTankTE.class,new FFTankRender());
 
-			ClientRegistry.bindTileEntitySpecialRenderer(EvFloorTE.class, new EvFloorRender());
-			ClientRegistry.bindTileEntitySpecialRenderer(EvPulleyTE.class, new EvPulleyRender());
-			ClientRegistry.bindTileEntitySpecialRenderer(EvShaftTE.class, new EvShaftRender());
-			ClientRegistry.bindTileEntitySpecialRenderer(EvBufferTE.class, new EvBufferRender());
+			ClientRegistry.bindTileEntitySpecialRenderer(EvFloorTE.class,new EvFloorRender());
+			ClientRegistry.bindTileEntitySpecialRenderer(EvPulleyTE.class,new EvPulleyRender());
+			ClientRegistry.bindTileEntitySpecialRenderer(EvShaftTE.class,new EvShaftRender());
+			ClientRegistry.bindTileEntitySpecialRenderer(EvBufferTE.class,new EvBufferRender());
 
-			ClientRegistry.bindTileEntitySpecialRenderer(HeaterRTGTE.class, new HeaterRTGRender());
+			ClientRegistry.bindTileEntitySpecialRenderer(HeaterRTGTE.class,new HeaterRTGRender());
+
+			ClientRegistry.bindTileEntitySpecialRenderer(HPBoilerTE.class,new HPBoilerRender());
 		}
 		AddonJars.initJars();
 	}

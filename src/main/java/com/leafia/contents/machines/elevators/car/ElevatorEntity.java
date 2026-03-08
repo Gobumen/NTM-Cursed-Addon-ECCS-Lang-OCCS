@@ -53,6 +53,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
@@ -1087,9 +1088,27 @@ public class ElevatorEntity extends Entity implements IEntityMultiPart, IEntityC
 					else
 						entity.fallDistance = 0;
 				}
+				int bufferHeight = -1;
+				boolean foundBuffer = false;
+				for (int i = -1; i <= 1; i++) {
+					for (int j = -1; j <= 1; j++) {
+						BlockPos bp = new BlockPos(posX+i,posY-0.5,posZ+j);
+						if (world.getBlockState(bp).getBlock() instanceof EvBuffer buf) {
+							foundBuffer = true;
+							bufferHeight = buf.findCore(world,bp.getX(),bp.getY(),bp.getZ())[1]+3;
+							break;
+						}
+					}
+				}
+				if (foundBuffer) {
+					double dist = posY-bufferHeight;
+					double mul = Math.pow(MathHelper.clamp(dist/3,0,1),0.5);
+					if (motionY < 0)
+						motionY *= mul;
+				}
 				if (pulley == null) {
 					findPulley();
-					if (pulley == null)
+					if (pulley == null && !foundBuffer)
 						setMotion(motionX,motionY-9.8/400,motionZ);
 				}
 				if (pulley != null) {
@@ -1124,15 +1143,6 @@ public class ElevatorEntity extends Entity implements IEntityMultiPart, IEntityC
 				move(MoverType.SELF,motionX,motionY,motionZ);
 				//this.pushOutOfBlocks(this.posX, (this.getEntityBoundingBox().minY + this.getEntityBoundingBox().maxY) / (double)2.0F, this.posZ);
 				if (collided && prevMotion.length() > 15/20d) {
-					boolean foundBuffer = false;
-					for (int i = -1; i <= 1; i++) {
-						for (int j = -1; j <= 1; j++) {
-							if (world.getBlockState(new BlockPos(posX+i,posY-0.5,posZ+j)).getBlock() instanceof EvBuffer) {
-								foundBuffer = true;
-								break;
-							}
-						}
-					}
 					if (!foundBuffer) {
 						world.createExplosion(null,posX,posY,posZ,3,true);
 						int slots = inventory.getSlots();

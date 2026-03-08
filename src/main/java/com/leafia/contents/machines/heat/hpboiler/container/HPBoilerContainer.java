@@ -1,5 +1,6 @@
-package com.leafia.contents.miscellanous.slop.container;
+package com.leafia.contents.machines.heat.hpboiler.container;
 
+import com.leafia.contents.machines.heat.hpboiler.HPBoilerTE;
 import com.leafia.contents.miscellanous.slop.SlopTE;
 import com.leafia.dev.container_utility.LeafiaItemTransferable;
 import net.minecraft.entity.player.EntityPlayer;
@@ -8,14 +9,13 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.SlotItemHandler;
 
-public class SlopContainer extends LeafiaItemTransferable {
+public class HPBoilerContainer extends LeafiaItemTransferable {
 
-	private SlopTE entity;
+	private HPBoilerTE entity;
 
 
-	public SlopContainer(InventoryPlayer invPlayer,SlopTE entity) {
+	public HPBoilerContainer(InventoryPlayer invPlayer,HPBoilerTE entity) {
 		this.entity = entity;
-		entity.listeners.add(invPlayer.player);
 		this.addSlotToContainer(new SlotItemHandler(entity.inventory, 0, 8, 35-18));
 		this.addSlotToContainer(new SlotItemHandler(entity.inventory, 1, 80, 53));
 
@@ -40,7 +40,7 @@ public class SlopContainer extends LeafiaItemTransferable {
 		// apparently this is what they use for when you Shift+click item in inventory to transfer it.
 		// ACTUALLY i don't know much about what's going on here. Scram!
 		// UPDATE: Here, I fixed this godforsaken code.
-		LeafiaItemTransfer transfer = new LeafiaItemTransfer(2)._selected(clickIndex);
+		LeafiaItemTransfer transfer = new LeafiaItemTransfer(5)._selected(clickIndex);
 		return transfer.__forSlots(0,9999)
 				.__tryMoveToInventory(true)
 
@@ -85,12 +85,6 @@ public class SlopContainer extends LeafiaItemTransferable {
 		
 		return _signalStack;*/
     }
-
-	@Override
-	public void onContainerClosed(EntityPlayer playerIn) {
-		entity.listeners.remove(playerIn);
-		super.onContainerClosed(playerIn);
-	}
 
 	@Override
 	public boolean canInteractWith(EntityPlayer player) {
