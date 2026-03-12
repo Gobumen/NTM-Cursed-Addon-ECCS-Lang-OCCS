@@ -13,10 +13,8 @@ import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumBlockRenderType;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.Mirror;
-import net.minecraft.util.Rotation;
+import net.minecraft.util.*;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
@@ -59,12 +57,12 @@ public class RegexFilterBlock extends BlockContainer {
 		return state.withRotation(mirrorIn.toRotation((EnumFacing)state.getValue(FACING)));
 	}
 	@Override
-	public void onBlockPlacedBy(World worldIn,BlockPos pos,IBlockState state,EntityLivingBase placer,ItemStack stack) {
-		worldIn.setBlockState(pos, state.withProperty(FACING, EnumFacing.getDirectionFromEntityLiving(pos, placer).getOpposite()));
+	public IBlockState getStateForPlacement(World world, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer, EnumHand hand) {
+		return getDefaultState().withProperty(FACING,facing.getOpposite());
 	}
 	@Override
 	public @Nullable TileEntity createNewTileEntity(World worldIn,int meta) {
-		return null;
+		return new RegexFilterTE();
 	}
 	@Override
 	public EnumBlockRenderType getRenderType(IBlockState state) {
@@ -93,5 +91,18 @@ public class RegexFilterBlock extends BlockContainer {
 	@Override
 	public boolean isFullBlock(IBlockState state) {
 		return false;
+	}
+	@Override
+	public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos) {
+		if (state.getBlock() instanceof RegexFilterBlock) {
+			EnumFacing.Axis axis = state.getValue(FACING).getAxis();
+			if (axis == EnumFacing.Axis.X)
+				return new AxisAlignedBB(0,4d/16,4d/16,1,1-4d/16,1-4d/16);
+			if (axis == EnumFacing.Axis.Y)
+				return new AxisAlignedBB(4d/16,0,4d/16,1-4d/16,1,1-4d/16);
+			if (axis == EnumFacing.Axis.Z)
+				return new AxisAlignedBB(4d/16,4d/16,0,1-4d/16,1-4d/16,1);
+		}
+		return super.getBoundingBox(state, source, pos);
 	}
 }
