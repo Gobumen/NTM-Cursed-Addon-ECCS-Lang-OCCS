@@ -1,5 +1,6 @@
 package com.custom_hbm.sound;
 
+import com.leafia.AddonBase;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.MovingSound;
 import net.minecraft.client.entity.EntityPlayerSP;
@@ -73,8 +74,14 @@ public class LCEAudioDynamic extends MovingSound {
 	public void start() {
 		try {
 			Minecraft.getMinecraft().getSoundHandler().playSound(this);
-		} catch (IllegalArgumentException ignored) {} // seriously fuck you
+        } catch (IllegalArgumentException ex) {
+            AddonBase.LOGGER.warn(ex);
+        }
 	}
+
+    public boolean isPlaying() {
+        return Minecraft.getMinecraft().getSoundHandler().isSoundPlaying(this);
+    }
 	
 	public void stop() {
 		Minecraft.getMinecraft().getSoundHandler().stopSound(this);

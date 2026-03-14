@@ -16,10 +16,8 @@ public class LCEAudioWrapperClientStartStop extends LCEAudioWrapperClient {
 	
 	public LCEAudioWrapperClientStartStop(World world,SoundEvent source,SoundEvent start,SoundEvent stop,float vol,SoundCategory cat){
 		super(source, cat);
-		if(sound != null){
-			sound.setVolume(vol);
-			sound.setAttenuation(ISound.AttenuationType.LINEAR);
-		}
+        updateVolume(vol);
+        setAttenuation(ISound.AttenuationType.LINEAR);
 		this.ssVol = vol;
 		this.world = world;
 		this.start = start;
