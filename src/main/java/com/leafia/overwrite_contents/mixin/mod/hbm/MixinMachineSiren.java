@@ -26,7 +26,7 @@ public abstract class MixinMachineSiren extends BlockContainer {
 	public void onOnBlockActivated(World world,BlockPos pos,IBlockState state,EntityPlayer player,EnumHand hand,EnumFacing facing,float hitX,float hitY,float hitZ,CallbackInfoReturnable<Boolean> cir) {
 		TileEntity te = world.getTileEntity(pos);
 		if (te instanceof IMixinTileEntitySiren siren) {
-			if (siren.speakerMode()) {
+			if (siren.leafia$speakerMode()) {
 				cir.setReturnValue(false);
 				cir.cancel();
 			}
