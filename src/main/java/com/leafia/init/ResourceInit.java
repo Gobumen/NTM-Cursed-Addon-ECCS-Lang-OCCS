@@ -27,6 +27,7 @@ import com.leafia.contents.network.ff_duct.utility.FFDuctUtilityRender;
 import com.leafia.contents.network.fluid.FluidDuctEquipmentRender;
 import com.leafia.contents.network.spk_cable.SPKCableRender;
 import com.leafia.contents.nonmachines.fftank.FFTankRender;
+import com.leafia.unsorted.BlackholeRenderer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -88,6 +89,7 @@ public class ResourceInit {
 		_initClass(EvPulleyRender.class);
 		_initClass(EvFloorRender.class);
 		_initClass(HPBoilerRender.class);
+		_initClass(BlackholeRenderer.class);
 		/*{
 			setWreckModel("intact");
 			setWreckModel("metal_rubble_0");

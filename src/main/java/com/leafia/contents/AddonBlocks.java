@@ -19,6 +19,7 @@ import com.leafia.contents.building.light.LightEmitter;
 import com.leafia.contents.building.mixed.BlockMixedConcrete;
 import com.leafia.contents.building.pinkdoor.BlockPinkDoor;
 import com.leafia.contents.building.sign.SignBlock;
+import com.leafia.contents.debug.blackhole_test.DebugBHBlock;
 import com.leafia.contents.debug.explosion_test.DebugBoomBlock;
 import com.leafia.contents.debug.ff_test.source.DebugSourceBlock;
 import com.leafia.contents.debug.ff_test.tank.DebugTankBlock;
@@ -237,6 +238,7 @@ public class AddonBlocks {
 		public static final Block fftank = new DebugTankBlock(Material.ANVIL,"test_ff_tank");
 		public static final Block boom = new DebugBoomBlock(Material.ANVIL,"test_boom");
 		public static final Block rbmkjet = new DebugRBMKJetEmitter(Material.ANVIL,"test_rbmk_jet");
+		public static final Block blackhole = new DebugBHBlock(Material.ANVIL,"test_blackhole_render");
 	}
 
 	public static final Block salt_separator = new SaltSeparatorBlock(Material.IRON,"salt_separator").setHardness(5.0F).setResistance(20.0F).setCreativeTab(MainRegistry.machineTab);

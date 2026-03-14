@@ -476,6 +476,11 @@ public class LeafiaRodItem extends AddonItemHazardBase implements IHasCustomMode
 				y = Math.tan(x);
 				n = "tan("+flux+") "+TextFormatting.LIGHT_PURPLE+"(KYS)";
 				break;
+
+			case "shitfuckium":
+				y = (double)ShitfuckiumData.evalute(x/3200*0.6)*3200/ShitfuckiumData.height*1.25;
+				n = TextFormatting.DARK_RED+"Indescribable";
+				break;
 		}
 		lastY = y;
 		if (updateHeat) {

@@ -488,6 +488,10 @@ public class AddonItems {
 				.setEmission(114)
 				.setReactivity(514)
 				.setCreativeTab(null);
+		public static final Item
+				leafRodShitfuckium
+				= new LeafiaRodItem("Shitfuckium",Double.MAX_VALUE,3200)
+				.setAppearance(ModItems.rbmk_pellet_drx,BILLET,RAW);
 		static {
 			LeafiaRodItem.confirmDecayProducts();
 			AddonConfig.FuelLives.loadFromConfig();

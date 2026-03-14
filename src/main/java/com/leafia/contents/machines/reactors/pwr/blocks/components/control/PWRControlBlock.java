@@ -40,7 +40,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class PWRControlBlock extends AddonBlockBase implements ITooltipProvider, ITileEntityProvider, ILookOverlay, PWRComponentBlock {
+public class PWRControlBlock extends AddonBlockBase implements ITooltipProvider, ITileEntityProvider, ILookOverlay, PWRComponentBlock, IToolable {
 	public static final PropertyBool stacked = PropertyBool.create("stacked");
 	public PWRControlBlock(String s) {
 		super(Material.IRON,s);
@@ -90,20 +90,7 @@ public class PWRControlBlock extends AddonBlockBase implements ITooltipProvider,
 		PWRControlTE control = (PWRControlTE)entity;
 		control.updateHeight();
 		if (playerIn.getHeldItem(hand).getItem() instanceof ItemTooling) {
-			ItemTooling tool = (ItemTooling)(playerIn.getHeldItem(hand).getItem());
-			if (tool.getType().equals(IToolable.ToolType.SCREWDRIVER)) {
-				if (!worldIn.isRemote) {
-					double ogPos = control.targetPosition;
-					if (hand.equals(EnumHand.OFF_HAND))
-						control.targetPosition = Math.max(control.targetPosition-0.25/control.height,0);
-					else
-						control.targetPosition = Math.min(control.targetPosition+0.25/control.height,1);
-					if (control.targetPosition == ogPos)
-						return false;
-					worldIn.playSound(null,pos,HBMSoundHandler.lockOpen,SoundCategory.BLOCKS,0.5f,1);
-				}
-				return true;
-			}
+			// moved
 		} else if (playerIn.getHeldItem(hand).getItem() instanceof ItemNameTag) {
 			if (!worldIn.isRemote) {
 				ItemStack stack = playerIn.getHeldItem(hand);
@@ -210,5 +197,34 @@ public class PWRControlBlock extends AddonBlockBase implements ITooltipProvider,
 		super.neighborChanged(state,worldIn,pos,blockIn,fromPos);
 		updateState(state,worldIn,pos);
 		beginDiagnosis(worldIn,pos,fromPos);
+	}
+
+	@Override
+	public boolean onScrew(World world, EntityPlayer player, int x, int y, int z, EnumFacing side, float fX, float fY, float fZ, EnumHand hand, ToolType tool) {
+		return onScrew(world, player, new BlockPos(x, y, z), side, fX, fY, fZ, hand, tool);
+	}
+
+	@Override
+	public boolean onScrew(World world,EntityPlayer player,BlockPos pos,EnumFacing side,float fX,float fY,float fZ,EnumHand hand,ToolType tool) {
+		pos = getTopControl(world,pos);
+		TileEntity entity = world.getTileEntity(pos);
+		if (!(entity instanceof PWRControlTE))
+			return true;
+		PWRControlTE control = (PWRControlTE)entity;
+		control.updateHeight();
+		if (tool.equals(IToolable.ToolType.SCREWDRIVER)) {
+			if (!world.isRemote) {
+				double ogPos = control.targetPosition;
+				if (player.isSneaking())
+					control.targetPosition = Math.max(control.targetPosition-0.25/control.height,0);
+				else
+					control.targetPosition = Math.min(control.targetPosition+0.25/control.height,1);
+				if (control.targetPosition == ogPos)
+					return false;
+				world.playSound(null,pos,HBMSoundHandler.lockOpen,SoundCategory.BLOCKS,0.5f,1);
+			}
+			return true;
+		}
+		return false;
 	}
 }

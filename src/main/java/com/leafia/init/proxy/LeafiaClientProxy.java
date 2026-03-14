@@ -24,6 +24,8 @@ import com.leafia.contents.building.sign.SignTE;
 import com.leafia.contents.cannery.AddonJars;
 import com.leafia.contents.control.fuel.nuclearfuel.LeafiaRodItem;
 import com.leafia.contents.control.fuel.nuclearfuel.LeafiaRodRender;
+import com.leafia.contents.debug.blackhole_test.DebugBHRender;
+import com.leafia.contents.debug.blackhole_test.DebugBHTE;
 import com.leafia.contents.effects.folkvangr.visual.LCERenderCloudFleija;
 import com.leafia.contents.effects.folkvangr.visual.LCERenderCloudRainbow;
 import com.leafia.contents.gear.utility.FuzzyIdentifierRender;
@@ -176,6 +178,8 @@ public class LeafiaClientProxy extends LeafiaServerProxy {
 			ClientRegistry.bindTileEntitySpecialRenderer(HeaterRTGTE.class,new HeaterRTGRender());
 
 			ClientRegistry.bindTileEntitySpecialRenderer(HPBoilerTE.class,new HPBoilerRender());
+
+			ClientRegistry.bindTileEntitySpecialRenderer(DebugBHTE.class,new DebugBHRender());
 		}
 		AddonJars.initJars();
 	}

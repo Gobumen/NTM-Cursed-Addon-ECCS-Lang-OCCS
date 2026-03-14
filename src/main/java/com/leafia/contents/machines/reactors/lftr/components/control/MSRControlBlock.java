@@ -31,7 +31,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MSRControlBlock extends BlockContainer implements ILookOverlay, IRadResistantBlock, ITooltipProvider {
+public class MSRControlBlock extends BlockContainer implements ILookOverlay, IRadResistantBlock, ITooltipProvider, IToolable {
 
 	public static final PropertyDirection FACING = BlockDirectional.FACING;
 
@@ -98,30 +98,6 @@ public class MSRControlBlock extends BlockContainer implements ILookOverlay, IRa
 	}
 
 	@Override
-	public boolean onBlockActivated(World worldIn,BlockPos pos,IBlockState state,EntityPlayer playerIn,EnumHand hand,EnumFacing facing,float hitX,float hitY,float hitZ) {
-		TileEntity entity = worldIn.getTileEntity(pos);
-		if (!(entity instanceof MSRControlTE control))
-			return true;
-		if (playerIn.getHeldItem(hand).getItem() instanceof ItemTooling) {
-			ItemTooling tool = (ItemTooling)(playerIn.getHeldItem(hand).getItem());
-			if (tool.getType().equals(IToolable.ToolType.SCREWDRIVER)) {
-				if (!worldIn.isRemote) {
-					double ogPos = control.targetInsertion;
-					if (hand.equals(EnumHand.OFF_HAND))
-						control.targetInsertion = Math.min(control.targetInsertion+0.25,control.length);
-					else
-						control.targetInsertion = Math.max(control.targetInsertion-0.25,0);
-					if (control.targetInsertion == ogPos)
-						return false;
-					worldIn.playSound(null,pos,HBMSoundHandler.lockOpen,SoundCategory.BLOCKS,0.5f,1);
-				}
-				return true;
-			}
-		}
-		return false;
-	}
-
-	@Override
 	public EnumBlockRenderType getRenderType(IBlockState state) {
 		return EnumBlockRenderType.MODEL;
 	}
@@ -134,5 +110,31 @@ public class MSRControlBlock extends BlockContainer implements ILookOverlay, IRa
 			texts.add(I18nUtil.resolveKey("tile.msr_control.insertion",String.format("%01.2f",control.insertion)));
 			ILookOverlay.printGeneric(event, I18nUtil.resolveKey(getTranslationKey() + ".name"), 0xFF55FF, 0x3F153F, texts);
 		}
+	}
+
+	@Override
+	public boolean onScrew(World world, EntityPlayer player, int x, int y, int z, EnumFacing side, float fX, float fY, float fZ, EnumHand hand, ToolType tool) {
+		return onScrew(world, player, new BlockPos(x, y, z), side, fX, fY, fZ, hand, tool);
+	}
+
+	@Override
+	public boolean onScrew(World world,EntityPlayer player,BlockPos pos,EnumFacing side,float fX,float fY,float fZ,EnumHand hand,ToolType tool) {
+		TileEntity entity = world.getTileEntity(pos);
+		if (!(entity instanceof MSRControlTE control))
+			return true;
+		if (tool.equals(IToolable.ToolType.SCREWDRIVER)) {
+			if (!world.isRemote) {
+				double ogPos = control.targetInsertion;
+				if (player.isSneaking())
+					control.targetInsertion = Math.min(control.targetInsertion+0.25,control.length);
+				else
+					control.targetInsertion = Math.max(control.targetInsertion-0.25,0);
+				if (control.targetInsertion == ogPos)
+					return false;
+				world.playSound(null,pos,HBMSoundHandler.lockOpen,SoundCategory.BLOCKS,0.5f,1);
+			}
+			return true;
+		}
+		return false;
 	}
 }
