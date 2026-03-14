@@ -11,6 +11,7 @@ import com.llib.group.LeafiaSet;
 import net.minecraft.block.BlockDirectional;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
@@ -48,7 +49,7 @@ public class RegexFilterTE extends TileEntity implements LeafiaPacketReceiver, I
 			return super.equals(obj);
 		}
 	}
-	public enum FilterType { RESOURCE_ID, ORE_DICT }
+	public enum FilterType { RESOURCE_ID, ORE_DICT, CREATIVE_TAB }
 	public final LeafiaSet<RegexFilter> filters = new LeafiaSet<>();
 
     public boolean isItemValid(ItemStack stack) {
@@ -70,6 +71,16 @@ public class RegexFilterTE extends TileEntity implements LeafiaPacketReceiver, I
 						if (filter.blacklist)
 							return false;
 						valid = true;
+					}
+				}
+				case CREATIVE_TAB -> {
+					CreativeTabs tab = stack.getItem().getCreativeTab();
+					if (tab != null) {
+						if (LeafiaUtil.matchesRegex(tab.tabLabel,filter.regex)) {
+							if (filter.blacklist)
+								return false;
+							valid = true;
+						}
 					}
 				}
 			}

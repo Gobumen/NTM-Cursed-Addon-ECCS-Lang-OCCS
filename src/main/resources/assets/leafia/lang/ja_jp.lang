@@ -414,6 +414,7 @@ tile.regex_filter.gui.config.delete=フィルターを削除
 tile.regex_filter.gui.config.filter=フィルタータイプ: %s
 tile.regex_filter.gui.config.save=設定を保存
 tile.regex_filter.gui.config.shift=シフト&クリックで削除
+tile.regex_filter.gui.filter.CREATIVE_TAB=クリエイティブタブID
 tile.regex_filter.gui.filter.ORE_DICT=Ore Dictionary
 tile.regex_filter.gui.filter.RESOURCE_ID=リソースID
 tile.regex_filter.gui.main.add=フィルターを追加

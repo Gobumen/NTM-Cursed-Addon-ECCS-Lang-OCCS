@@ -198,6 +198,10 @@ public class LeafiaClientListener {
 					list.add(TextFormatting.GRAY+"-::"+TextFormatting.WHITE+I18nUtil.resolveKey("trait.leafia.component.lftr.desc"));
 				}
 			}
+			if (event.getFlags().isAdvanced() && item.getCreativeTab() != null) {
+				list.add(TextFormatting.GREEN+"Creative Tab ID:");
+				list.add(TextFormatting.DARK_GREEN+" - "+item.getCreativeTab().tabLabel);
+			}
 		}
 		@SubscribeEvent
 		public void modelBaking(ModelBakeEvent evt) {

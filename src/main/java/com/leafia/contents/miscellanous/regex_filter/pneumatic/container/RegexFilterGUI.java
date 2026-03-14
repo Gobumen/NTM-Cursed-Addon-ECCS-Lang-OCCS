@@ -196,8 +196,18 @@ public class RegexFilterGUI extends LCEGuiInfoContainer implements IRegexFilterG
 						}
 					}
 					fontRenderer.drawString(text,guiLeft+37+5,guiTop+16+pos*18+5,0xa6a6a6,true);
-					LeafiaGls.color(1,1,1);
 					Minecraft.getMinecraft().getTextureManager().bindTexture(texture);
+
+					float color = entry.filter.blacklist ? 0 : 1;
+					if (entry.blacklistRect.isMouseIn(mouseX,mouseY+scroll*18))
+						color = entry.filter.blacklist ? 0.1f : 0.9f;
+					LeafiaGls.color(color,color,color);
+					drawTexturedModalRect(
+							entry.blacklistRect.guiLeft+entry.blacklistRect.x,
+							entry.blacklistRect.guiTop+entry.blacklistRect.y-scroll*18,
+							112,185,10,12
+					);
+					LeafiaGls.color(1,1,1);
 				}
 				if (entry.rect.isMouseIn(mouseX,mouseY+scroll*18))
 					LeafiaGls.color(0.9f,0.9f,0.9f);
@@ -206,17 +216,6 @@ public class RegexFilterGUI extends LCEGuiInfoContainer implements IRegexFilterG
 						entry.filter != null ? 225 : 239,171,
 						14,14
 				);
-				if (entry.filter != null) {
-					float color = entry.filter.blacklist ? 0 : 1;
-					if (entry.blacklistRect.isMouseIn(mouseX,mouseY+scroll*18))
-						color = entry.filter.blacklist ? 0.1f : 0.9f;
-					LeafiaGls.color(color,color,color);
-					drawTexturedModalRect(
-							entry.blacklistRect.guiLeft+entry.blacklistRect.x,
-							entry.blacklistRect.guiTop+entry.blacklistRect.y,
-							112,185,10,12
-					);
-				}
 				LeafiaGls.color(1,1,1);
 			} else break;
 			pos++;

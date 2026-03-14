@@ -402,6 +402,7 @@ tile.regex_filter.gui.config.delete=Delete Filter
 tile.regex_filter.gui.config.filter=Filter Type: %s
 tile.regex_filter.gui.config.save=Save Settings
 tile.regex_filter.gui.config.shift=Shift and Click to Delete
+tile.regex_filter.gui.filter.CREATIVE_TAB=Creative Tab ID
 tile.regex_filter.gui.filter.ORE_DICT=Ore Dictionary
 tile.regex_filter.gui.filter.RESOURCE_ID=Resource ID
 tile.regex_filter.gui.main.add=Add Filter

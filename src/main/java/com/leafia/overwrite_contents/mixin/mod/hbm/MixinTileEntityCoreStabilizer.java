@@ -257,6 +257,7 @@ public abstract class MixinTileEntityCoreStabilizer extends TileEntityMachineBas
 			map.put("lens_health",new DataValueFloat(100-ItemLens.getLensDamage(stack)*100/(float)lens.maxDamage));
 		}
 		map.put("core_temp",new DataValueFloat(0));
+		map.put("core_stabilization",new DataValueFloat(0));
 		map.put("core_energy",new DataValueFloat(0));
 		map.put("core_expel",new DataValueFloat(0));
 		map.put("core_potent",new DataValueFloat(0));
@@ -265,6 +266,7 @@ public abstract class MixinTileEntityCoreStabilizer extends TileEntityMachineBas
 		if (isOn && core != null) {
 			IMixinTileEntityCore mixinTileEntityCore = (IMixinTileEntityCore) core;
 			map.put("core_temp",new DataValueFloat((float)mixinTileEntityCore.getDFCTemperature()));
+			map.put("core_stabilization",new DataValueFloat((float)mixinTileEntityCore.getDFCStabilization()));
 			map.put("core_energy",new DataValueFloat((float)mixinTileEntityCore.getDFCContainedEnergy()*1000_000));
 			map.put("core_expel",new DataValueFloat((float)mixinTileEntityCore.getDFCExpellingEnergy()*1000_000));
 			map.put("core_potent",new DataValueFloat((float)mixinTileEntityCore.getDFCPotentialGain()*100));
