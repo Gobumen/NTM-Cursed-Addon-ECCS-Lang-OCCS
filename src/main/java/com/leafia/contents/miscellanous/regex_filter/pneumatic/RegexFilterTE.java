@@ -40,6 +40,7 @@ public class RegexFilterTE extends TileEntity implements LeafiaPacketReceiver, I
 	public static class RegexFilter {
 		public String regex = "";
 		public FilterType type = FilterType.RESOURCE_ID;
+		public boolean blacklist = false;
 		@Override
 		public boolean equals(Object obj) {
 			if (obj instanceof RegexFilter filter)
@@ -51,22 +52,29 @@ public class RegexFilterTE extends TileEntity implements LeafiaPacketReceiver, I
 	public final LeafiaSet<RegexFilter> filters = new LeafiaSet<>();
 
     public boolean isItemValid(ItemStack stack) {
+		boolean valid = false;
 		for (RegexFilter filter : filters) {
 			switch(filter.type) {
 				case ORE_DICT -> {
 					for (int oreID : OreDictionary.getOreIDs(stack)) {
 						String dict = OreDictionary.getOreName(oreID);
-						if (LeafiaUtil.matchesRegex(dict,filter.regex))
-							return true;
+						if (LeafiaUtil.matchesRegex(dict,filter.regex)) {
+							if (filter.blacklist)
+								return false;
+							valid = true;
+						}
 					}
 				}
 				case RESOURCE_ID -> {
-					if (stack.getItem().getRegistryName() != null && LeafiaUtil.matchesRegex(stack.getItem().getRegistryName().toString(),filter.regex))
-						return true;
+					if (stack.getItem().getRegistryName() != null && LeafiaUtil.matchesRegex(stack.getItem().getRegistryName().toString(),filter.regex)) {
+						if (filter.blacklist)
+							return false;
+						valid = true;
+					}
 				}
 			}
 		}
-		return false;
+		return valid;
 	}
 	/// stolen code goes brr
 	private int findMaxInsertable(IItemHandler target, int slot, ItemStack stack, int upperBound) {
@@ -172,6 +180,7 @@ public class RegexFilterTE extends TileEntity implements LeafiaPacketReceiver, I
 					RegexFilter instance = new RegexFilter();
 					instance.type = filter;
 					instance.regex = tag.getString("value");
+					instance.blacklist = tag.getBoolean("blacklist");
 					filters.add(instance);
 				} catch (IllegalArgumentException ignored) {}
 			}
@@ -183,6 +192,7 @@ public class RegexFilterTE extends TileEntity implements LeafiaPacketReceiver, I
 			NBTTagCompound tag = new NBTTagCompound();
 			tag.setString("type",filter.type.name());
 			tag.setString("value",filter.regex);
+			tag.setBoolean("blacklist",filter.blacklist);
 			list.appendTag(tag);
 		}
 		return list;

@@ -74,6 +74,10 @@ public class LeafiaSoundEvents {
 
 	public static SoundEvent fuckingfortnite;
 
+	public static SoundEvent geiger7;
+	public static SoundEvent geiger8;
+	public static SoundEvent geiger9;
+
 	public static void init() {
 		mukeExplosion = register("weapon.mukeExplosion");
 
@@ -151,13 +155,19 @@ public class LeafiaSoundEvents {
 		HBMSoundHandler.geiger4 = register("item.geiger4");
 		HBMSoundHandler.geiger5 = register("item.geiger5");
 		HBMSoundHandler.geiger6 = register("item.geiger6");
+		geiger7 = register("item.geiger7");
+		geiger8 = register("item.geiger8");
+		geiger9 = register("item.geiger9");
 		HBMSoundHandler.geigerSounds = new SoundEvent[]{
 				HBMSoundHandler.geiger1,
 				HBMSoundHandler.geiger2,
 				HBMSoundHandler.geiger3,
 				HBMSoundHandler.geiger4,
 				HBMSoundHandler.geiger5,
-				HBMSoundHandler.geiger6
+				HBMSoundHandler.geiger6,
+				geiger7, // unused, sounds like shit
+				geiger8, // unused, sounds like shit
+				geiger9  // unused, sounds like shit
 		};
 	}
 

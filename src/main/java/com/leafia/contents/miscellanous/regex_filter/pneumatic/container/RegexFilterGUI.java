@@ -68,6 +68,7 @@ public class RegexFilterGUI extends LCEGuiInfoContainer implements IRegexFilterG
 	}
 	public static class RegexEntry {
 		FiaUIRect rect;
+		FiaUIRect blacklistRect;
 		RegexFilter filter;
 	}
 	List<RegexEntry> list = new ArrayList<>();
@@ -78,6 +79,7 @@ public class RegexFilterGUI extends LCEGuiInfoContainer implements IRegexFilterG
 			if (i < entity.filters.size()) {
 				entry.filter = entity.filters.get(i);
 				entry.rect = new FiaUIRect(this,133,18+i*18,14,14);
+				entry.blacklistRect = new FiaUIRect(this,122,19+i*18,10,12);
 			} else
 				entry.rect = new FiaUIRect(this,86,18+i*18,14,14);
 			list.add(entry);
@@ -109,6 +111,12 @@ public class RegexFilterGUI extends LCEGuiInfoContainer implements IRegexFilterG
 						drawHoveringText(I18nUtil.resolveKey("tile.regex_filter.gui.main.edit"),mouseX,mouseY);
 					break;
 				}
+				if (entry.filter != null) {
+					if (entry.blacklistRect.isMouseIn(mouseX,mouseY+scroll*18)) {
+						drawHoveringText(I18nUtil.resolveKey("tile.regex_filter.gui.main."+
+								(entry.filter.blacklist ? "blacklist" : "whitelist")),mouseX,mouseY);
+					}
+				}
 			} else break;
 		}
 	}
@@ -123,6 +131,13 @@ public class RegexFilterGUI extends LCEGuiInfoContainer implements IRegexFilterG
 			for (int i = scroll; i <= scroll+2; i++) {
 				if (i < list.size()) {
 					RegexEntry entry = list.get(i);
+					if (entry.filter != null) {
+						if (entry.blacklistRect.isMouseIn(x,y+scroll*18)) {
+							playClick(1);
+							entry.filter.blacklist = !entry.filter.blacklist;
+							entity.generateSyncPacket().__sendToServer();
+						}
+					}
 					if (entry.rect.isMouseIn(x,y+scroll*18)) {
 						playClick(1);
 						screenSwitching = true;
@@ -172,7 +187,7 @@ public class RegexFilterGUI extends LCEGuiInfoContainer implements IRegexFilterG
 					if (fontRenderer.getStringWidth(text) > 88) {
 						text = "";
 						for (char c : entry.filter.regex.toCharArray()) {
-							if (fontRenderer.getStringWidth(text)-truncatorLength <= 88)
+							if (fontRenderer.getStringWidth(text+c)+truncatorLength <= 77)
 								text = text+c;
 							else {
 								text = text+"...";
@@ -191,6 +206,17 @@ public class RegexFilterGUI extends LCEGuiInfoContainer implements IRegexFilterG
 						entry.filter != null ? 225 : 239,171,
 						14,14
 				);
+				if (entry.filter != null) {
+					float color = entry.filter.blacklist ? 0 : 1;
+					if (entry.blacklistRect.isMouseIn(mouseX,mouseY+scroll*18))
+						color = entry.filter.blacklist ? 0.1f : 0.9f;
+					LeafiaGls.color(color,color,color);
+					drawTexturedModalRect(
+							entry.blacklistRect.guiLeft+entry.blacklistRect.x,
+							entry.blacklistRect.guiTop+entry.blacklistRect.y,
+							112,185,10,12
+					);
+				}
 				LeafiaGls.color(1,1,1);
 			} else break;
 			pos++;

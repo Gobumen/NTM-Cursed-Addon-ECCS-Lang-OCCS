@@ -24,7 +24,6 @@
     "hbm.MixinRenderTorex"
   ],
   "mixins": [
-    "hbm.MixinTileEntityRBMKRod",
     "hbm.MixinBalefire",
     "hbm.MixinBlockControlPanel",
     "hbm.MixinBlockGasExplosive",
@@ -73,6 +72,7 @@
     "hbm.MixinItemDesignator",
     "hbm.MixinItemDesignatorRange",
     "hbm.MixinItemDiscord",
+    "hbm.MixinItemGeigerCounter",
     "hbm.MixinItemLaserDetonator",
     "hbm.MixinJEIConfig",
     "hbm.MixinLandmine",
@@ -109,6 +109,7 @@
     "hbm.MixinTileEntityMachineSolderingStation",
     "hbm.MixinTileEntityMachineTurbine",
     "hbm.MixinTileEntityRBMKBase",
+    "hbm.MixinTileEntityRBMKRod",
     "hbm.MixinTileEntityReactorResearch",
     "hbm.MixinTileEntityReactorZIRNOX",
     "hbm.MixinTileEntityTurbineBase",

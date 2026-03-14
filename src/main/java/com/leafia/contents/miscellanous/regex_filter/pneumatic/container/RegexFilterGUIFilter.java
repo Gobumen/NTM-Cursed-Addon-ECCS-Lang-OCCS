@@ -119,12 +119,15 @@ public class RegexFilterGUIFilter extends GuiScreenLeafia implements IRegexFilte
 				playClick(1);
 				filterType = FilterType.values()[(filterType.ordinal()+1)%FilterType.values().length];
 			} else if (saveRect.isMouseIn(x,y)) {
-				playClick(1);
-				if (isDelete())
+				if (isDelete()) {
+					playClick(1);
 					entity.filters.remove(filter);
-				else {
-                    if (!LeafiaUtil.isRegexValid(field.getText()))
-						return;
+				} else {
+                    if (!LeafiaUtil.isRegexValid(field.getText())) {
+						playDenied();
+	                    return;
+                    }
+					playClick(1);
 					RegexFilter f = filter;
 					if (f == null)
 						f = new RegexFilter();
