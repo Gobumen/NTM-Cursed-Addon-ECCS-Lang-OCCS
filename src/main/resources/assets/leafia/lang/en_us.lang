@@ -164,6 +164,7 @@ item.advisor.message.lava=Lava behind you!
 item.advisor.message.pyro=You're holding pyrophoric / hot item!$Craft a tungsten reacher to safely hold them.
 item.advisor.message.skindmg2=You have moderate skin damage.$You should avoid beta radiation until it cures.
 item.advisor.message.skindmg3=You have severe skin damage.$Avoid alpha radiation at all costs!
+item.advisor.message.toxic=You're holding toxic item. This will get very serious depending on class of toxicity.$Craft a hazmat to safely hold them.
 item.ams_focus_blank.name=Blank Stabilizer Lens
 item.ams_focus_booster.name=Boosting Stabilizer Lens
 item.ams_focus_limiter.name=Limiting Stabilizer Lens

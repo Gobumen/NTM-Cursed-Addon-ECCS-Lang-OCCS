@@ -1,5 +1,6 @@
 package com.leafia.contents.machines.powercores.dfc.components.exchanger;
 
+import com.hbm.interfaces.IContainerOpenEventListener;
 import com.leafia.dev.container_utility.LeafiaItemTransferable;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -7,12 +8,11 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.SlotItemHandler;
 
-public class CoreExchangerContainer extends LeafiaItemTransferable {
+public class CoreExchangerContainer extends LeafiaItemTransferable implements IContainerOpenEventListener {
 	public final CoreExchangerTE te;
 	public CoreExchangerContainer(EntityPlayer player,CoreExchangerTE te) {
 		this.te = te;
 		InventoryPlayer invPlayer = player.inventory;
-		te.listeners.add(player);
 		this.addSlotToContainer(new SlotItemHandler(te.inventory, 0, 62, 67));
 
 		for(int i = 0; i < 3; i++) {
@@ -21,6 +21,11 @@ public class CoreExchangerContainer extends LeafiaItemTransferable {
 		}
 		for(int i = 0; i < 9; i++)
 			this.addSlotToContainer(new Slot(invPlayer, i, 8 + i * 18, 160));
+	}
+
+	@Override
+	public void onContainerOpened(EntityPlayer entityPlayer) {
+		te.listeners.add(entityPlayer);
 	}
 
 	@Override

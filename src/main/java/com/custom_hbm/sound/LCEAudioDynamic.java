@@ -15,7 +15,7 @@ import java.util.function.BiFunction;
 public class LCEAudioDynamic extends MovingSound {
 
 	public float intendedVolume;
-	public BiFunction<Float,Double,Double> attentuationFunction = null;
+	public BiFunction<Float,Double,Double> attenuationFunction = null;
 
 	protected LCEAudioDynamic(SoundEvent loc,SoundCategory cat) {
 		super(loc, cat);
@@ -34,8 +34,8 @@ public class LCEAudioDynamic extends MovingSound {
 		this.attenuationType = type;
 		volume = intendedVolume;
 	}
-	public void setCustomAttentuation(BiFunction<Float,Double,Double> attentuationFunction) {
-		this.attentuationFunction = attentuationFunction;
+	public void setCustomAttenuation(BiFunction<Float,Double,Double> attenuationFunction) {
+		this.attenuationFunction = attenuationFunction;
 	}
 
 	public void setLooped(boolean repeat) {
@@ -48,8 +48,8 @@ public class LCEAudioDynamic extends MovingSound {
 		float f = 0;
 		if(player != null) {
 			double distance = Math.sqrt(Math.pow(xPosF - player.posX, 2) + Math.pow(yPosF - player.posY, 2) + Math.pow(zPosF - player.posZ, 2));
-			if (attentuationFunction != null) {
-				double castLiteral = attentuationFunction.apply(intendedVolume,distance);
+			if (attenuationFunction != null) {
+				double castLiteral = attenuationFunction.apply(intendedVolume,distance);
 				volume = (float)castLiteral; // java doesn't allow directly applying the value to here lol
 			} else if(attenuationType == AttenuationType.LINEAR){
 				/*float f3 = intendedVolume;

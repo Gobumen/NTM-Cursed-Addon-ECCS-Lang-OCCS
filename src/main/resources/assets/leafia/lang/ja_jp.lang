@@ -164,6 +164,7 @@ item.advisor.message.lava=溶岩注意!
 item.advisor.message.pyro=自然発火性または高温のアイテムを持っています!$るつぼばさみを作れば安全に運べます。
 item.advisor.message.skindmg2=中度の皮膚の負傷を負っています。$治るまでベータ線を放つ物には気をつけましょう。
 item.advisor.message.skindmg3=重度の皮膚の負傷を負っています。$絶対にアルファ線を放つ物を持たないでください。
+item.advisor.message.toxic=有毒のアイテムを持っています。これは、毒のレベルによっては危険にさらされる可能性があります。$防護服を作れば安全に運べます。
 item.ams_focus_blank.name=空のスタビライザーレンズ
 item.ams_focus_booster.name=ブーストスタビライザーレンズ
 item.ams_focus_limiter.name=リミティングスタビライザーレンズ

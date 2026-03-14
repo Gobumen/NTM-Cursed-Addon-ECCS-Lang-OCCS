@@ -1,5 +1,6 @@
 package com.leafia.contents.miscellanous.regex_filter.pneumatic.container;
 
+import com.hbm.interfaces.IContainerOpenEventListener;
 import com.leafia.contents.miscellanous.regex_filter.pneumatic.RegexFilterTE;
 import com.leafia.contents.miscellanous.slop.SlopTE;
 import com.leafia.dev.container_utility.LeafiaItemTransferable;
@@ -9,14 +10,13 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.SlotItemHandler;
 
-public class RegexFilterContainer extends LeafiaItemTransferable {
+public class RegexFilterContainer extends LeafiaItemTransferable implements IContainerOpenEventListener {
 
 	private RegexFilterTE entity;
 
 
 	public RegexFilterContainer(InventoryPlayer invPlayer,RegexFilterTE entity) {
 		this.entity = entity;
-		entity.listeners.add(invPlayer.player);
 		entity.generateSyncPacket().__sendToClient(invPlayer.player);
 		this.addSlotToContainer(new SlotItemHandler(entity.inventory, 0, 8, 35));
 
@@ -86,6 +86,11 @@ public class RegexFilterContainer extends LeafiaItemTransferable {
 		
 		return _signalStack;*/
     }
+
+	@Override
+	public void onContainerOpened(EntityPlayer entityPlayer) {
+		entity.listeners.add(entityPlayer);
+	}
 
 	@Override
 	public void onContainerClosed(EntityPlayer playerIn) {

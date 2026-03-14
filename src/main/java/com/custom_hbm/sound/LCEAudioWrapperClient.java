@@ -41,7 +41,7 @@ public class LCEAudioWrapperClient extends LCEAudioWrapper {
         sound.setLooped(looped);
         sound.setAttenuation(attenuationType);
         if (attentuationFunction != null)
-            sound.setCustomAttentuation(attentuationFunction);
+            sound.setCustomAttenuation(attentuationFunction);
     }
 
     public void setAttenuation(ISound.AttenuationType attenuationType) {
@@ -110,7 +110,7 @@ public class LCEAudioWrapperClient extends LCEAudioWrapper {
 	@Override
 	public LCEAudioWrapperClient setCustomAttentuation(BiFunction<Float,Double,Double> attentuationFunction) {
         this.attentuationFunction = attentuationFunction;
-		sound.setCustomAttentuation(attentuationFunction);
+		sound.setCustomAttenuation(attentuationFunction);
 		return this;
 	}
 }
