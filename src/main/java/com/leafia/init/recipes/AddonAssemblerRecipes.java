@@ -112,7 +112,7 @@ public class AddonAssemblerRecipes {
 		INSTANCE.register(new GenericRecipe("ass.leafia.msr_reactor").setup(100,100)
 				.outputItems(new ItemStack(AddonBlocks.LFTR.element))
 				.inputItems(
-						new OreDictStack(ZR.plateWelded(), 2),
+						new OreDictStack(ZR.plateWelded(), 1),
 						new OreDictStack(CU.plateCast(), 2),
 						new OreDictStack(STEEL.pipe(),4),
 						new OreDictStack(STEEL.bolt(), 16)
