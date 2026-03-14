@@ -1,5 +1,6 @@
 package com.leafia.contents.miscellanous.regex_filter.pneumatic;
 
+import com.hbm.main.MainRegistry;
 import com.leafia.contents.AddonBlocks;
 import com.leafia.dev.machine.MachineTooltip;
 import net.minecraft.block.BlockContainer;
@@ -11,6 +12,7 @@ import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.*;
@@ -31,9 +33,10 @@ public class RegexFilterBlock extends BlockContainer {
 		AddonBlocks.ALL_BLOCKS.add(this);
 	}
 	@Override
-	public void addInformation(ItemStack stack,@Nullable World worldIn,List<String> tooltip,ITooltipFlag flagIn) {
-		MachineTooltip.addWIP(tooltip);
-		super.addInformation(stack,worldIn,tooltip,flagIn);
+	public boolean onBlockActivated(World worldIn,BlockPos pos,IBlockState state,EntityPlayer playerIn,EnumHand hand,EnumFacing facing,float hitX,float hitY,float hitZ) {
+		if (!worldIn.isRemote)
+			playerIn.openGui(MainRegistry.instance,0,worldIn,pos.getX(),pos.getY(),pos.getZ());
+		return true;
 	}
 	@Override
 	protected BlockStateContainer createBlockState(){

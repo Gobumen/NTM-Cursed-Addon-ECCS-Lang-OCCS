@@ -129,6 +129,8 @@ public class AddonCraftingRecipes {
 		addRecipeAuto(new ItemStack(AddonItems.ev_spawn),"GGG","ICI","GGG",'C',ANY_SMOKELESS.dust(),'G',new ItemStack(ModBlocks.steel_grate),'I',new ItemStack(ModBlocks.steel_beam));
 		addRecipeAuto(new ItemStack(Elevators.shaft),"IBI","IBI","IBI",'B',STEEL.block(),'I',new ItemStack(ModBlocks.steel_beam));
 
+		addShapelessAuto(new ItemStack(AddonBlocks.regex_filter),new ItemStack(ModBlocks.pneumatic_tube),new ItemStack(ModItems.circuit,1,EnumCircuitType.BASIC.ordinal()));
+
 		hack.getRegistry().register(new PWRDebrisCrafting().setRegistryName(new ResourceLocation("leafia", "lwr_debris_crafting_handler")));
 	}
 	static void removeRecipesForItem(ForgeRegistry<IRecipe> reg,Item item) {

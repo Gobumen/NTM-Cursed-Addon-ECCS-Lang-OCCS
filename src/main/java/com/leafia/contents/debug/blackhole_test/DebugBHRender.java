@@ -9,7 +9,7 @@ public class DebugBHRender extends TileEntitySpecialRenderer<DebugBHTE> {
 	public void render(DebugBHTE te,double x,double y,double z,float partialTicks,int destroyStage,float alpha) {
 		LeafiaGls.pushMatrix();
 		LeafiaGls.translate(x+0.5,y+0.5,z+0.5);
-		BlackholeRenderer.draw(false);
+		BlackholeRenderer.draw(true);
 		LeafiaGls.popMatrix();
 	}
 }

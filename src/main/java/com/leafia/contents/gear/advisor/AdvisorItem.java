@@ -186,6 +186,7 @@ public class AdvisorItem extends AddonItemBase {
 	@Override
 	public void addInformation(ItemStack stack,@Nullable World worldIn,List<String> tooltip,ITooltipFlag flagIn) {
 		tooltip.add(TextFormatting.DARK_RED+"W.I.P.");
+		tooltip.add("Keep this in inventory for advices for new players");
 		super.addInformation(stack,worldIn,tooltip,flagIn);
 	}
 }
