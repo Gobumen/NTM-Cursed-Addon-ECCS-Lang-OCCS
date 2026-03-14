@@ -31,6 +31,8 @@ public class ItemRads {
 
 	public static MultiRadContainer flashlead = new MultiRadContainer(0,500+10000+2000,500,500,0).multiply(1/2f);
 
+	public static MultiRadContainer francium = new MultiRadContainer(150000,0,0,1400000,0);
+
 	public static MultiRadContainer gold198 = new MultiRadContainer(0,500,500,500,0).multiply(1/2f);
 
 	public static MultiRadContainer lead209 = new MultiRadContainer(0,10000,0,0,0);

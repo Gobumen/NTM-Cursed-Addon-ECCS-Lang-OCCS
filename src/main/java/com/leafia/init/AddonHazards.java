@@ -54,6 +54,7 @@ public class AddonHazards {
 		ItemRads.americium242.register(OreDictManager.AM242);
 		ItemRads.americiumRG.register(OreDictManager.AMRG);
 		ItemRads.cobalt60.register(OreDictManager.CO60);
+		ItemRads.francium.register(AddonOreDict.FR);
 		ItemRads.gold198.register(OreDictManager.AU198);
 		ItemRads.lead209.register(OreDictManager.PB209);
 		ItemRads.neptunium237.register(OreDictManager.NP237);
@@ -99,6 +100,8 @@ public class AddonHazards {
 
 		registerHazardRegular(OreDictManager.PB,new HazardEntry(TOXIC,1.75));
 		registerHazardRegular(OreDictManager.BE,new HazardEntry(TOXIC,1.75));
+		registerHazardRegular(OreDictManager.CD,new HazardEntry(TOXIC,5));
+		registerHazardRegular(OreDictManager.AS,new HazardEntry(TOXIC,10));
 
 		HazardSystem.register(ModItems.blades_desh,makeData(SHARP,40));
 		HazardSystem.register(ModItems.blades_steel,makeData(SHARP,40));
