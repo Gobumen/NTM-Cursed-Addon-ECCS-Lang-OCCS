@@ -9,6 +9,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.Style;
@@ -41,7 +42,13 @@ public abstract class LeafiaItemRenderer extends ItemRenderBase {
 
 			.get(TransformType.FIXED)
 			.setScale(0.25).setPosition(-2,2,-1.25).setRotation(-90,0,0).getHelper();
-	@Override
+
+    @Override
+    public boolean useFMMPerspective(Item item) {
+        return true;
+    }
+
+    @Override
 	public void renderByItem(ItemStack itemStackIn) {
 		if (debug) {
 			if (Keyboard.isKeyDown(Keyboard.KEY_UP)) {
