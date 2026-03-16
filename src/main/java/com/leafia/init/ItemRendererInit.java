@@ -1,7 +1,6 @@
 package com.leafia.init;
 
 import com.hbm.blocks.ModBlocks;
-import com.hbm.items.RBMKItemRenderers;
 import com.hbm.render.item.TEISRBase;
 import com.hbm.render.tileentity.IItemRendererProvider;
 import com.leafia.contents.AddonBlocks;
@@ -102,8 +101,8 @@ public class ItemRendererInit {
 
 		register(AddonBlocks.heater_rt,new HeaterRTGRender());
 
-		register(AddonBlocks.rbmk_rod_realersim,RBMKItemRenderers.RBMK_ROD);
-		register(AddonBlocks.rbmk_rod_realersim_mod,RBMKItemRenderers.RBMK_ROD);
+		//register(AddonBlocks.rbmk_rod_realersim,RBMKItemRenderers.RBMK_ROD);
+		//register(AddonBlocks.rbmk_rod_realersim_mod,RBMKItemRenderers.RBMK_ROD);
 
 		EvFloorItemRender floorRender = new EvFloorItemRender();
 		register(Elevators.s6_floor,floorRender);

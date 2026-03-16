@@ -87,7 +87,7 @@ public class AMSBaseRender extends TileEntitySpecialRenderer<AMSBaseTE> {
 		GL11.glRotatef(rot, 0F, 1F, 0F);
 		GL11.glScalef(1.1F, 1.1F, 1.1F);
 		GlStateManager.color((byte)(0x20)/255, (byte)(0x20)/255, (byte)(0x40)/255);
-		ResourceManager.sphere_iuv.renderAll();
+		ResourceManager.sphere_ruv.renderAll(); // used to ve sphere_iuv. What even is iuv?
 		GL11.glScalef(1/1.1F, 1/1.1F, 1/1.1F);
 
 		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
