@@ -58,7 +58,7 @@ public class AddonBlockBaked extends AddonBlockBase implements IDynamicModels {
 	public void bakeModel(ModelBakeEvent event) {
 
 		try {
-			IModel baseModel = ModelLoaderRegistry.getModel(new ResourceLocation(blockFrame.getBaseModel()));
+			IModel baseModel = ModelLoaderRegistry.getModel(blockFrame.getBaseModelLocation());
 			ImmutableMap.Builder<String, String> textureMap = ImmutableMap.builder();
 
 			blockFrame.putTextures(textureMap);

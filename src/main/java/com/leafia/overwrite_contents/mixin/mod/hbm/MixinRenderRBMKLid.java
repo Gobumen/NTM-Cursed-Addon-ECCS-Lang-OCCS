@@ -11,8 +11,10 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
 
+/// this whole thing was murdered
 @Mixin(value = RenderRBMKLid.class)
 public abstract class MixinRenderRBMKLid {
+	/*
 	@Shadow(remap = false)
 	protected abstract void renderColumnStack(TileEntityRBMKBase control,int offset);
 
@@ -24,11 +26,8 @@ public abstract class MixinRenderRBMKLid {
 
 	@Shadow(remap = false)
 	protected abstract void renderCherenkovEffect(TileEntityRBMKBase control,float r,float g,float b,float a,int offset);
-
-	/**
-	 * @author ntmleafia
-	 * @reason jumping rods
-	 */
+*/
+	/*
 	@Overwrite(remap = false)
 	public void render(TileEntityRBMKBase control,double x,double y,double z,float partialTicks,int destroyStage,float alpha) {
 		boolean hasRod = false;
@@ -86,5 +85,5 @@ public abstract class MixinRenderRBMKLid {
 			renderCherenkovEffect(control, cherenkovR, cherenkovG, cherenkovB, cherenkovA, offset);
 
 		GlStateManager.popMatrix();
-	}
+	}*/
 }

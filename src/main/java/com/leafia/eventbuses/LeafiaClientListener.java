@@ -90,8 +90,6 @@ import java.lang.reflect.Field;
 import java.util.*;
 import java.util.Map.Entry;
 
-import static com.hbm.main.client.NTMClientRegistry.swapModels;
-
 public class LeafiaClientListener {
 	public static class Digamma {
 		public static float digammaDose = 1;
