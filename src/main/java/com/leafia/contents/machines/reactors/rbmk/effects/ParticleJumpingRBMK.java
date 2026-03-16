@@ -92,7 +92,7 @@ public class ParticleJumpingRBMK extends Particle {
 				pos.getY()-(entityIn.prevPosY+(entityIn.posY-entityIn.prevPosY)*partialTicks)+jump,
 				pos.getZ()-(entityIn.prevPosZ+(entityIn.posZ-entityIn.prevPosZ)*partialTicks)
 		);
-		//LeafiaGls.enableDepth(); well this did nothing
+		LeafiaGls.depthMask(true);
 		LeafiaGls.blendFunc(SourceFactor.SRC_ALPHA,DestFactor.ONE_MINUS_SRC_ALPHA);
 		{
 			BlockRendererDispatcher blocker = Minecraft.getMinecraft().getBlockRendererDispatcher();
