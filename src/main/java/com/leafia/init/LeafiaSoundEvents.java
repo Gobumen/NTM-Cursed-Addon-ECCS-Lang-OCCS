@@ -78,6 +78,10 @@ public class LeafiaSoundEvents {
 	public static SoundEvent geiger8;
 	public static SoundEvent geiger9;
 
+	public static SoundEvent reactor_door_handle;
+	public static SoundEvent reactor_door_open;
+	public static SoundEvent reactor_door_close;
+
 	public static void init() {
 		mukeExplosion = register("weapon.mukeExplosion");
 
@@ -169,6 +173,10 @@ public class LeafiaSoundEvents {
 				geiger8, // unused, sounds like shit
 				geiger9  // unused, sounds like shit
 		};
+
+		reactor_door_handle = register("external.reactor_door_handle");
+		reactor_door_open = register("external.reactor_door_open");
+		reactor_door_close = register("external.reactor_door_close");
 	}
 
 	public static SoundEvent register(String name) {

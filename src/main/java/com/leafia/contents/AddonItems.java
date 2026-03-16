@@ -7,7 +7,7 @@ import com.hbm.main.MainRegistry;
 import com.hbm.util.I18nUtil;
 import com.leafia.AddonBase;
 import com.leafia.contents.bomb.missile.customnuke.CustomNukeMissileItem;
-import com.leafia.contents.building.linedasphalt.LinedAsphaltBlock;
+import com.leafia.contents.building.lined_asphalt.LinedAsphaltBlock;
 import com.leafia.contents.building.pinkdoor.ItemPinkDoor;
 import com.leafia.contents.building.sign.SignBlock;
 import com.leafia.contents.control.fuel.nuclearfuel.LeafiaRodItem;

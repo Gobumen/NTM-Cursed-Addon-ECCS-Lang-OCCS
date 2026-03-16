@@ -15,9 +15,12 @@ import com.leafia.contents.bomb.balefire.AshBalefire;
 import com.leafia.contents.bomb.balefire.BaleoniteBlock;
 import com.leafia.contents.bomb.digamma.DigammititeBlock;
 import com.leafia.contents.building.broof.BroofBlock;
+import com.leafia.contents.building.generic_doors.AddonDoorDecl;
+import com.leafia.contents.building.generic_doors.AddonDoorGeneric;
+import com.leafia.contents.building.generic_doors.special.reactor_door.ReactorDoorBlock;
 import com.leafia.contents.building.light.LightBlock;
 import com.leafia.contents.building.light.LightEmitter;
-import com.leafia.contents.building.linedasphalt.LinedAsphaltBlock;
+import com.leafia.contents.building.lined_asphalt.LinedAsphaltBlock;
 import com.leafia.contents.building.mixed.BlockMixedConcrete;
 import com.leafia.contents.building.pinkdoor.BlockPinkDoor;
 import com.leafia.contents.building.sign.SignBlock;
@@ -417,6 +420,8 @@ public class AddonBlocks {
 	public static final Block hp_boiler = new HPBoilerBlock(Material.IRON,"hp_boiler").setHardness(5.0F).setResistance(10.0F).setCreativeTab(MainRegistry.machineTab);
 
 	public static final Block regex_filter = new RegexFilterBlock(Material.IRON,"regex_filter").setSoundType(ModSoundTypes.pipe).setHardness(0.1F).setResistance(10.0F).setCreativeTab(MainRegistry.machineTab);
+
+	public static final Block reactor_door = new ReactorDoorBlock(Material.IRON,AddonDoorDecl.REACTOR_DOOR,true,"reactor_door").setHardness(150.0F).setResistance(13500.0F).setCreativeTab(MainRegistry.machineTab);
 
 	static {
 		if (Loader.isModLoaded("opencomputers")) {

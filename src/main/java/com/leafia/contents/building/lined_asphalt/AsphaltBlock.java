@@ -1,6 +1,6 @@
-package com.leafia.contents.building.linedasphalt;
+package com.leafia.contents.building.lined_asphalt;
 
-import com.leafia.contents.building.linedasphalt.LinedAsphaltBlock.AsphaltLine;
+import com.leafia.contents.building.lined_asphalt.LinedAsphaltBlock.AsphaltLine;
 import com.leafia.dev.blocks.blockbase.AddonBlockBase;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
