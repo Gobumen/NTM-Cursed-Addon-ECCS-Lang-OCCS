@@ -1,5 +1,6 @@
 package com.leafia.contents.gear.wands;
 
+import com.hbm.blocks.machine.rbmk.RBMKBase;
 import com.hbm.lib.Library;
 import com.hbm.main.MainRegistry;
 import com.hbm.main.ResourceManager;
@@ -12,6 +13,7 @@ import com.leafia.contents.worldgen.lib.SellacityRoadChunk;
 import com.leafia.dev.LeafiaDebug;
 import com.leafia.dev.LeafiaDebug.Tracker;
 import com.leafia.dev.items.itembase.AddonItemBaked;
+import com.leafia.dev.optimization.LeafiaParticlePacket.JumpingRBMKParticle;
 import com.llib.group.LeafiaMap;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockColored;
@@ -53,7 +55,8 @@ public class ItemWandV extends AddonItemBaked {
 		DEFAULT_TRACKER,
 		PWR_SET_CORE,
 		PWR_PRINT_CORE,
-		PRINT_ROAD_NOISE
+		PRINT_ROAD_NOISE,
+		JUMPING_RBMK_TEST,
 	}
 
 	@Override
@@ -62,6 +65,15 @@ public class ItemWandV extends AddonItemBaked {
 		ItemStack stack = player.getHeldItem(hand);
 		if (stack.getItem() instanceof ItemWandV wandV) {
 			switch(getMode(stack)) {
+				case JUMPING_RBMK_TEST -> {
+					if (!world.isRemote) {
+						if (world.getBlockState(pos).getBlock() instanceof RBMKBase rbmk) {
+							BlockPos core = rbmk.findCore(world,pos);
+							if (core != null)
+								new JumpingRBMKParticle(core).emitServer(world);
+						}
+					}
+				}
 				case PRINT_ROAD_NOISE -> {
 					if (!world.isRemote) {
 						SellacityRoadChunk snakeNoise = new SellacityRoadChunk(new Random(0));

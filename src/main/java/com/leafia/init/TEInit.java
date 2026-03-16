@@ -37,7 +37,7 @@ import com.leafia.contents.machines.reactors.pwr.blocks.components.occs.outlet.P
 import com.leafia.contents.machines.reactors.pwr.blocks.components.port.PWRPortTE;
 import com.leafia.contents.machines.reactors.pwr.blocks.components.terminal.PWRTerminalTE;
 import com.leafia.contents.machines.reactors.pwr.blocks.wreckage.PWRMeshedWreckEntity;
-import com.leafia.contents.machines.reactors.rbmk.realersim.RBMKRealerSimTE;
+import com.leafia.contents.machines.reactors.rbmk.columns.realersim.RBMKRealerSimTE;
 import com.leafia.contents.miscellanous.diverter.DiverterTE;
 import com.leafia.contents.miscellanous.regex_filter.pneumatic.RegexFilterTE;
 import com.leafia.contents.miscellanous.slop.SlopTE;

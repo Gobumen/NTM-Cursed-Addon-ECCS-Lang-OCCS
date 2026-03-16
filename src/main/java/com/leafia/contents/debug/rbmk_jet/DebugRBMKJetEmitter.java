@@ -1,7 +1,7 @@
 package com.leafia.contents.debug.rbmk_jet;
 
 import com.leafia.dev.blocks.blockbase.AddonBlockBase;
-import com.leafia.unsorted.ParticleRBMKJet;
+import com.leafia.contents.machines.reactors.rbmk.effects.ParticleRBMKJet;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;

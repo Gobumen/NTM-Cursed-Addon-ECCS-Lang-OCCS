@@ -3,9 +3,10 @@ package com.leafia.dev.optimization;
 import com.custom_hbm.effectNT.EffectNT;
 import com.hbm.handler.threading.PacketThreading;
 import com.hbm.main.MainRegistry;
-import com.hbm.packet.PacketDispatcher;
 import com.hbm.particle.ParticleRBMKMush;
 import com.leafia.contents.machines.powercores.dfc.particles.ParticleDFC;
+import com.leafia.contents.machines.reactors.rbmk.effects.ParticleJumpingRBMK;
+import com.leafia.contents.machines.reactors.rbmk.effects.ParticleRBMKJet;
 import com.leafia.dev.math.FiaMatrix;
 import com.leafia.dev.optimization.bitbyte.LeafiaBuf;
 import com.leafia.dev.optimization.diagnosis.RecordablePacket;
@@ -19,6 +20,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumParticleTypes;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.Style;
@@ -430,6 +432,33 @@ public class LeafiaParticlePacket extends RecordablePacket {
 					maxAge
 			);
 			Minecraft.getMinecraft().effectRenderer.addEffect(particle);
+		}
+	}
+	public static class JumpingRBMKParticle extends LeafiaParticle {
+		BlockPos rbmkPos;
+		public JumpingRBMKParticle() { }
+		public JumpingRBMKParticle(BlockPos rbmkPos) { this.rbmkPos = rbmkPos; }
+		@Override
+		protected LeafiaParticle fromBits(LeafiaBuf buf,NBTTagCompound nbt) {
+			return new JumpingRBMKParticle(buf.readPos());
+		}
+		@Override
+		protected void toBits(LeafiaBuf buf) {
+			buf.writeVec3i(rbmkPos);
+		}
+		public void emitServer(World world) {
+			emit(
+					new Vec3d(rbmkPos.getX()+0.5,rbmkPos.getY(),rbmkPos.getZ()+0.5),
+					new Vec3d(0,1,0),
+					world.provider.getDimension(),
+					128
+			);
+		}
+		@Override
+		@SideOnly(Side.CLIENT)
+		protected void emit(NBTTagCompound nbt) {
+			World world = Minecraft.getMinecraft().world;
+			Minecraft.getMinecraft().effectRenderer.addEffect(new ParticleJumpingRBMK(world,rbmkPos));
 		}
 	}
 
