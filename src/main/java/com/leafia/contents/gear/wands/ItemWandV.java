@@ -41,6 +41,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.List;
+import java.util.Random;
 
 public class ItemWandV extends AddonItemBaked {
 	public static boolean remote = false;
@@ -63,7 +64,7 @@ public class ItemWandV extends AddonItemBaked {
 			switch(getMode(stack)) {
 				case PRINT_ROAD_NOISE -> {
 					if (!world.isRemote) {
-						SellacityRoadChunk snakeNoise = new SellacityRoadChunk(world.rand);
+						SellacityRoadChunk snakeNoise = new SellacityRoadChunk(new Random(0));
 						MutableBlockPos mbp = new MutableBlockPos();
 						for (int i = 0; i < snakeNoise.data.length; i++) {
 							int x = snakeNoise.x(i);

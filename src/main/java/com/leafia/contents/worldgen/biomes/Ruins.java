@@ -50,7 +50,7 @@ public class Ruins extends AddonBiome implements HasAcidicRain {
 		int cz = x & 15;
 		int cx = z & 15;
 		BlockPos.MutableBlockPos blockpos$mutableblockpos = new BlockPos.MutableBlockPos();
-		int targetHeight = 64;
+		int targetHeight = 60;
 
 		// oh my god this sucks balls
 		int smoothingRadius = 5;
@@ -73,7 +73,7 @@ public class Ruins extends AddonBiome implements HasAcidicRain {
 			}
 		}
 
-		height = targetHeight+(int)((height-targetHeight)*(1-ratio*0.9));
+		height = targetHeight+(int)((height-targetHeight)*(1-ratio*0.75));
 
 		for (int y = 255; y >= 0; --y)
 		{

@@ -216,7 +216,7 @@ public class SellacityRoadChunk {
 					int cixp = (cx+1)+cy*cellCount;
 					int cixn = (cx-1)+cy*cellCount;
 					// if cell adjacent to the right isn't in the same direction
-					if (cx+1 >= v4$cellSize || cells[cixp] != cells[ci]) {
+					if (cx+1 >= cellCount || cells[cixp] != cells[ci]) {
 						// draw vertical line on right edge
 						for (int yo = 0; yo < v4$cellSize; yo++) {
 							int x = xs+v4$cellSize;
@@ -228,7 +228,7 @@ public class SellacityRoadChunk {
 						}
 					}
 					// if cell adjacent to the left isn't in the same direction
-					if (cx-1 < v4$cellSize || cells[cixn] != cells[ci]) {
+					if (cx-1 < 0 || cells[cixn] != cells[ci]) {
 						// draw vertical line on left edge
 						for (int yo = 0; yo < v4$cellSize; yo++) {
 							int x = xs;
@@ -252,7 +252,7 @@ public class SellacityRoadChunk {
 					int ciyp = cx+(cy+1)*cellCount;
 					int ciyn = cx+(cy-1)*cellCount;
 					// if cell adjacent to the bottom isn't in the same direction
-					if (cy+1 >= v4$cellSize || cells[ciyp] != cells[ci]) {
+					if (cy+1 >= cellCount || cells[ciyp] != cells[ci]) {
 						// draw horizontal line on bottom edge
 						for (int xo = 0; xo < v4$cellSize; xo++) {
 							int x = xs+xo;
@@ -264,7 +264,7 @@ public class SellacityRoadChunk {
 						}
 					}
 					// if cell adjacent to the top isn't in the same direction
-					if (cy-1 < v4$cellSize || cells[ciyn] != cells[ci]) {
+					if (cy-1 < 0 || cells[ciyn] != cells[ci]) {
 						// draw horizontal line on top edge
 						for (int xo = 0; xo < v4$cellSize; xo++) {
 							int x = xs+xo;
