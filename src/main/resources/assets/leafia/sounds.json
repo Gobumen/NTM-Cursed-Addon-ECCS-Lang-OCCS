@@ -73,5 +73,9 @@
   "item.advisor_activate": { "category": "player", "sounds": ["leafia:tool/advisor_activate"]},
   "item.advisor_warning": { "category": "player", "sounds": ["leafia:tool/advisor_warning"]},
 
-  "external.fuckingfortnite": { "subtitle": "subtitles.block.dfc.ignite", "category": "block", "sounds": ["leafia:external/ecr_startup"]}
+  "external.fuckingfortnite": { "subtitle": "subtitles.block.dfc.ignite", "category": "block", "sounds": ["leafia:external/ecr_startup"]},
+
+  "external.reactor_door_handle": { "subtitle": "subtitles.block.reactor_door_handle", "category": "block", "sounds": ["leafia:external/reactordoor_handle"]},
+  "external.reactor_door_open": { "subtitle": "subtitles.block.reactor_door_open", "category": "block", "sounds": ["leafia:external/reactordoor_open"]},
+  "external.reactor_door_close": { "subtitle": "subtitles.block.reactor_door_close", "category": "block", "sounds": ["leafia:external/reactordoor_close"]}
 }

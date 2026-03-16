@@ -3,7 +3,7 @@ package com.leafia.overwrite_contents.mixin.mod.hbm;
 import com.hbm.blocks.ModBlocks;
 import com.hbm.blocks.generic.BlockBakeBase;
 import com.hbm.blocks.generic.BlockSpeedy;
-import com.leafia.contents.building.linedasphalt.AsphaltBlock;
+import com.leafia.contents.building.lined_asphalt.AsphaltBlock;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.util.ITooltipFlag;

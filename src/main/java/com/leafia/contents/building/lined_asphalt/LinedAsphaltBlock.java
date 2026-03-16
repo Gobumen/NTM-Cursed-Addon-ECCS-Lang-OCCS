@@ -1,4 +1,4 @@
-package com.leafia.contents.building.linedasphalt;
+package com.leafia.contents.building.lined_asphalt;
 
 import com.google.common.collect.ImmutableMap;
 import com.hbm.blocks.ModBlocks;

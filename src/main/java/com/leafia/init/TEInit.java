@@ -2,6 +2,7 @@ package com.leafia.init;
 
 import com.leafia.AddonBase;
 import com.leafia.contents.building.broof.BroofTE;
+import com.leafia.contents.building.generic_doors.special.reactor_door.ReactorDoorTE;
 import com.leafia.contents.building.light.LightTE;
 import com.leafia.contents.building.sign.SignTE;
 import com.leafia.contents.debug.blackhole_test.DebugBHTE;
@@ -114,6 +115,7 @@ public class TEInit {
 		register(HPBoilerTE.class,"hp_boiler_te");
 		register(RegexFilterTE.class,"regex_filter_te");
 		register(DebugBHTE.class,"debug_bh_te");
+		register(ReactorDoorTE.class,"reactor_door_te");
 	}
 	private static void register(Class<? extends TileEntity> clazz,String res) {
 		GameRegistry.registerTileEntity(clazz,new ResourceLocation(AddonBase.MODID,res));
