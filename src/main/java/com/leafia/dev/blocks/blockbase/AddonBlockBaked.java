@@ -2,7 +2,6 @@ package com.leafia.dev.blocks.blockbase;
 
 import com.google.common.collect.ImmutableMap;
 import com.hbm.items.IDynamicModels;
-import com.hbm.render.block.BlockBakeFrame;
 import com.leafia.dev.blocks.AddonBlockBakeFrame;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.block.model.IBakedModel;
@@ -11,13 +10,10 @@ import net.minecraft.client.renderer.block.model.ModelRotation;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.item.Item;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.client.model.IModel;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
-
-import static com.hbm.render.block.BlockBakeFrame.BlockForm.ALL;
 
 public class AddonBlockBaked extends AddonBlockBase implements IDynamicModels {
 	protected AddonBlockBakeFrame blockFrame;
@@ -33,7 +29,7 @@ public class AddonBlockBaked extends AddonBlockBase implements IDynamicModels {
 	public AddonBlockBaked(
 			Material m, String s, String texture) {
 		super(m, s);
-		this.blockFrame = new AddonBlockBakeFrame(ALL, texture);
+		this.blockFrame = AddonBlockBakeFrame.cubeAll(texture);
 		IDynamicModels.INSTANCES.add(this);
 
 	}
@@ -41,7 +37,7 @@ public class AddonBlockBaked extends AddonBlockBase implements IDynamicModels {
 	public AddonBlockBaked(
 			Material m, String s) {
 		super(m, s);
-		this.blockFrame = new AddonBlockBakeFrame(ALL, s);
+		this.blockFrame = AddonBlockBakeFrame.cubeAll(s);
 		IDynamicModels.INSTANCES.add(this);
 
 	}
@@ -49,7 +45,7 @@ public class AddonBlockBaked extends AddonBlockBase implements IDynamicModels {
 	public AddonBlockBaked(
 			Material m, String s, String textureTop, String textureSide) {
 		super(m, s);
-		this.blockFrame = new AddonBlockBakeFrame(textureTop, textureSide);
+		this.blockFrame = AddonBlockBakeFrame.column(textureTop, textureSide);
 		IDynamicModels.INSTANCES.add(this);
 
 	}

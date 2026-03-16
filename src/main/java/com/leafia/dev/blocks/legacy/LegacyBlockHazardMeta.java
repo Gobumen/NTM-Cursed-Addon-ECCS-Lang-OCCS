@@ -37,17 +37,33 @@ public class LegacyBlockHazardMeta extends BlockMeta {
                 .mapToObj(id -> {
                     switch (blockForm) {
                         case ALL -> {
-                            return new BlockBakeFrame(String.format(locTemplate, "_", id));
+                            return BlockBakeFrame.cubeAll(String.format(locTemplate, "_", id));
                         }
-                        case PILLAR_BOTTOM -> {
-                            return new BlockBakeFrame(
+                        case ALL_TINTED -> {
+                            return BlockBakeFrame.tintedCubeAll(String.format(locTemplate, "_", id));
+                        }
+                        case BOTTOM_TOP -> {
+                            return BlockBakeFrame.cubeBottomTop(
                                     String.format(locTemplate, "_top_", id),
                                     String.format(locTemplate, "_side_", id),
                                     String.format(locTemplate, "_bottom_", id)
                             );
                         }
-                        case PILLAR -> {
-                            return new BlockBakeFrame(
+                        case BOTTOM_TOP_TINTED -> {
+                            return BlockBakeFrame.tintedCubeBottomTop(
+                                    String.format(locTemplate, "_top_", id),
+                                    String.format(locTemplate, "_side_", id),
+                                    String.format(locTemplate, "_bottom_", id)
+                            );
+                        }
+                        case COLUMN -> {
+                            return BlockBakeFrame.column(
+                                    String.format(locTemplate, "_top_", id),
+                                    String.format(locTemplate, "_side_", id)
+                            );
+                        }
+                        case COLUMN_TINTED -> {
+                            return BlockBakeFrame.tintedColumn(
                                     String.format(locTemplate, "_top_", id),
                                     String.format(locTemplate, "_side_", id)
                             );

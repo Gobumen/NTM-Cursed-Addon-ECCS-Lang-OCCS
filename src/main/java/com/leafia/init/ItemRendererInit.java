@@ -1,6 +1,7 @@
 package com.leafia.init;
 
 import com.hbm.blocks.ModBlocks;
+import com.hbm.main.client.NTMClientRegistry;
 import com.hbm.render.item.TEISRBase;
 import com.hbm.render.tileentity.IItemRendererProvider;
 import com.leafia.contents.AddonBlocks;
@@ -13,6 +14,7 @@ import com.leafia.contents.building.broof.BroofRender.BroofItemRender;
 import com.leafia.contents.building.light.LightRender.LightItemRender;
 import com.leafia.contents.building.sign.SignRender.SignItemRender;
 import com.leafia.contents.gear.advisor.AdvisorRender;
+import com.leafia.contents.gear.utility.FuzzyIdentifierRender;
 import com.leafia.contents.machines.elevators.EvBufferRender.EvBufferItemRender;
 import com.leafia.contents.machines.elevators.EvPulleyRender.EvPulleyItemRender;
 import com.leafia.contents.machines.elevators.car.styles.EvStyleItem;
@@ -79,6 +81,7 @@ public class ItemRendererInit {
 		register(AddonBlocks.fluid_duct_valve_mdl_rs,equipment);
 
 		register(AddonItems.advisor,new AdvisorRender());
+		register(AddonItems.fuzzy_identifier, FuzzyIdentifierRender.INSTANCE);
 
 		//register(AddonItems.addon_battery_pack,new AddonBatteryPackItemRender());
 
@@ -135,7 +138,7 @@ public class ItemRendererInit {
 	//private static void fix(Block block) { fixFuckingLocations.add(Item.getItemFromBlock(block)); }
 	public static void apply() {
 		for (Entry<Item,TEISRBase> entry : renderers.entrySet()) {
-			entry.getKey().setTileEntityItemStackRenderer(entry.getValue());
+			NTMClientRegistry.bindTeisr(entry.getKey(), entry.getValue());
 		}
 	}
 }

@@ -2,26 +2,28 @@ package com.leafia.contents.gear.utility;
 
 import com.custom_hbm.render.LCERenderHelper;
 import com.hbm.inventory.fluid.FluidType;
+import com.hbm.render.item.TEISRBase;
 import com.hbm.render.misc.EnumSymbol;
+import com.hbm.render.model.BakedModelTransforms;
 import com.leafia.contents.AddonItems;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.block.model.IBakedModel;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
+import net.minecraft.item.Item;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.tileentity.TileEntityItemStackRenderer;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
 
-public class FuzzyIdentifierRender extends TileEntityItemStackRenderer {
+public class FuzzyIdentifierRender extends TEISRBase {
 
 	public static final FuzzyIdentifierRender INSTANCE = new FuzzyIdentifierRender();
-	
-	public TransformType type;
-	public IBakedModel itemModelFuzzy;
+
+	@Override
+	public ModelBinding createModelBinding(Item item) {
+		return ModelBinding.of(FuzzyIdentifierItem.fuzzyModel, BakedModelTransforms.defaultItemTransforms(), false);
+	}
 
 	float getDisplayAlpha(long offset) {
 		return 1-(float)Math.pow(Math.floorMod(System.currentTimeMillis()-offset,100)/200f,2)*2;
@@ -181,6 +183,6 @@ public class FuzzyIdentifierRender extends TileEntityItemStackRenderer {
 			GL11.glPopMatrix();
 		}
 		GL11.glTranslatef(0.5F, 0.5F, 0.5F);
-		Minecraft.getMinecraft().getRenderItem().renderItem(itemStackIn,itemModelFuzzy);
+		Minecraft.getMinecraft().getRenderItem().renderItem(itemStackIn, itemModel);
 	}
 }

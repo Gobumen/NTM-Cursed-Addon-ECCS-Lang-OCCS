@@ -8,6 +8,7 @@ import com.custom_hbm.sound.LCEAudioWrapperClient;
 import com.custom_hbm.sound.LCEAudioWrapperClientStartStop;
 import com.hbm.entity.effect.EntityCloudFleija;
 import com.hbm.entity.effect.EntityCloudFleijaRainbow;
+import com.hbm.main.client.NTMClientRegistry;
 import com.hbm.tileentity.deco.TileEntitySpinnyLight;
 import com.hbm.tileentity.machine.*;
 import com.leafia.contents.AddonBlocks;
@@ -28,7 +29,6 @@ import com.leafia.contents.debug.blackhole_test.DebugBHRender;
 import com.leafia.contents.debug.blackhole_test.DebugBHTE;
 import com.leafia.contents.effects.folkvangr.visual.LCERenderCloudFleija;
 import com.leafia.contents.effects.folkvangr.visual.LCERenderCloudRainbow;
-import com.leafia.contents.gear.utility.FuzzyIdentifierRender;
 import com.leafia.contents.machines.elevators.*;
 import com.leafia.contents.machines.elevators.car.ElevatorEntity;
 import com.leafia.contents.machines.elevators.car.ElevatorRender;
@@ -135,7 +135,9 @@ public class LeafiaClientProxy extends LeafiaServerProxy {
 			RenderingRegistry.registerEntityRenderingHandler(EvWeightEntity.class,EvWeightRender.FACTORY);
 		}
 		{
-			ClientRegistry.bindTileEntitySpecialRenderer(TileEntitySpinnyLight.class,new LCERenderSpinnyLight());
+			LCERenderSpinnyLight spinnyLightRender = new LCERenderSpinnyLight();
+			ClientRegistry.bindTileEntitySpecialRenderer(TileEntitySpinnyLight.class, spinnyLightRender);
+			NTMClientRegistry.bindTeisr(spinnyLightRender.getItemForRenderer(), spinnyLightRender.getRenderer(spinnyLightRender.getItemForRenderer()));
 
 			ClientRegistry.bindTileEntitySpecialRenderer(SPKCableTE.class,new SPKCableRender());
 
@@ -225,7 +227,7 @@ public class LeafiaClientProxy extends LeafiaServerProxy {
 		ItemRendererInit.apply();
 
 		for (LeafiaRodItem rod : LeafiaRodItem.fromResourceMap.values()) {
-			rod.setTileEntityItemStackRenderer(LeafiaRodRender.INSTANCE);
+			NTMClientRegistry.bindTeisr(rod, new LeafiaRodRender());
 			//ItemRendererInit.fixFuckingLocations.add(rod);
 		}
 
@@ -246,6 +248,5 @@ public class LeafiaClientProxy extends LeafiaServerProxy {
 					new ModelResourceLocation(toFix.getRegistryName(), "inventory")
 			);
 		}*/
-		AddonItems.fuzzy_identifier.setTileEntityItemStackRenderer(FuzzyIdentifierRender.INSTANCE);
 	}
 }

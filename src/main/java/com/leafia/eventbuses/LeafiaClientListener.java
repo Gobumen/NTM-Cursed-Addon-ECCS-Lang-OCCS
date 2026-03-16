@@ -12,14 +12,9 @@ import com.hbm.render.item.TEISRBase;
 import com.hbm.util.I18nUtil;
 import com.leafia.contents.AddonBlocks;
 import com.leafia.contents.AddonItems;
-import com.leafia.contents.control.fuel.nuclearfuel.LeafiaRodBakedModel;
 import com.leafia.contents.control.fuel.nuclearfuel.LeafiaRodItem;
-import com.leafia.contents.control.fuel.nuclearfuel.LeafiaRodRender;
 import com.leafia.contents.effects.folkvangr.EntityNukeFolkvangr;
 import com.leafia.contents.gear.IADSWeapon;
-import com.leafia.contents.gear.utility.FuzzyIdentifierBakedModel;
-import com.leafia.contents.gear.utility.FuzzyIdentifierRender;
-import com.leafia.contents.gear.utility.FuzzyIdentifierItem;
 import com.leafia.contents.machines.reactors.lftr.components.arbitrary.MSRArbitraryBlock;
 import com.leafia.contents.machines.reactors.lftr.components.ejector.MSREjectorBlock;
 import com.leafia.contents.machines.reactors.lftr.components.element.MSRElementBlock;
@@ -31,7 +26,6 @@ import com.leafia.contents.worldgen.AddonBiome;
 import com.leafia.dev.LeafiaUtil;
 import com.leafia.dev.container_utility.LeafiaPacket;
 import com.leafia.dev.container_utility.LeafiaPacketReceiver;
-import com.leafia.init.ItemRendererInit;
 import com.leafia.init.ResourceInit;
 import com.leafia.passive.LeafiaPassiveLocal;
 import com.leafia.passive.effects.LeafiaShakecam;
@@ -48,7 +42,6 @@ import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.ActiveRenderInfo;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
-import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
@@ -64,7 +57,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumHandSide;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.*;
-import net.minecraft.util.registry.IRegistry;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
@@ -279,47 +271,15 @@ public class LeafiaClientListener {
 			}
 		}
 		@SubscribeEvent
-		public void modelBaking(ModelBakeEvent evt) {
-			IRegistry<ModelResourceLocation,IBakedModel> reg = evt.getModelRegistry();
-			for(Entry<Item,TEISRBase> entry : ItemRendererInit.renderers.entrySet()){
-				swapModels(entry.getKey(), reg);
-			}
-			{
-				Object object = evt.getModelRegistry().getObject(FuzzyIdentifierItem.fuzzyModel);
-				if (object instanceof IBakedModel) {
-					IBakedModel model = (IBakedModel) object;
-					FuzzyIdentifierRender.INSTANCE.itemModelFuzzy = model;
-					evt.getModelRegistry().putObject(FuzzyIdentifierItem.fuzzyModel,new FuzzyIdentifierBakedModel());
-				}
-			}
-			{
-				for (LeafiaRodItem item : LeafiaRodItem.fromResourceMap.values()) {
-					if (item.specialRodModel != null) {
-						Object object = evt.getModelRegistry().getObject(item.specialRodModel);
-						if(object instanceof IBakedModel) {
-							item.bakedSpecialRod = (IBakedModel)object;
-						}
-						evt.getModelRegistry().putObject(item.specialRodModel, new LeafiaRodBakedModel());
-					}
-				}
-			}
-			{
-				Object object = evt.getModelRegistry().getObject(LeafiaRodItem.rodModel);
-				if(object instanceof IBakedModel) {
-					IBakedModel model = (IBakedModel) object;
-					LeafiaRodRender.INSTANCE.itemModel = model;
-					evt.getModelRegistry().putObject(LeafiaRodItem.rodModel, new LeafiaRodBakedModel());
-				}
-			}
-		}
-
-		@SubscribeEvent
 		public void blockColorsEvent(ColorHandlerEvent.Block evt) {
 			FFDuctStandard.registerColorHandler(evt);
 			AmatDuctStandard.registerColorHandler(evt);
 		}
 
 		private void registerModel(Item item,int meta) {
+			if (item.getTileEntityItemStackRenderer() instanceof TEISRBase) {
+				return;
+			}
 			if (item instanceof LeafiaRodItem.EmptyLeafiaRod) {
 				ModelLoader.setCustomModelResourceLocation(item, 14, new ModelResourceLocation(item.getRegistryName() + "_overlay_bf", "inventory"));
 				ModelLoader.setCustomModelResourceLocation(item, 15, new ModelResourceLocation(item.getRegistryName() + "_overlay", "inventory"));

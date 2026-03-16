@@ -46,7 +46,7 @@ public class FFDuctRadShielded extends FFDuctBase implements IRadResistantBlock,
 		super(materialIn);
 		this.setTranslationKey(s);
 		this.setRegistryName(s);
-		this.blockFrame = new BlockBakeFrame(ALL, "fluid_duct_solid_sealed");
+		this.blockFrame = BlockBakeFrame.cubeAll("fluid_duct_solid_sealed");
 		AddonBlocks.ALL_BLOCKS.add(this);
 		IDynamicModels.INSTANCES.add(this);
 	}
@@ -87,7 +87,7 @@ public class FFDuctRadShielded extends FFDuctBase implements IRadResistantBlock,
 	public void bakeModel(ModelBakeEvent event) {
 
 		try {
-			IModel baseModel = ModelLoaderRegistry.getModel(new ResourceLocation(blockFrame.getBaseModel()));
+			IModel baseModel = ModelLoaderRegistry.getModel(blockFrame.getBaseModelLocation());
 			ImmutableMap.Builder<String, String> textureMap = ImmutableMap.builder();
 
 			blockFrame.putTextures(textureMap);
