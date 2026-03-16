@@ -9,6 +9,7 @@ import com.leafia.dev.items.LeafiaGripOffsetHelper;
 import com.leafia.transformer.LeafiaGls;
 import com.llib.math.LeafiaColor;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
@@ -44,6 +45,11 @@ public class AdvisorRender extends TEISRBase {
 
 			.get(TransformType.FIXED)
 			.setScale(1).setPosition(0.5,0.45,-0.4).setRotation(-5,0,0).getHelper();
+
+	@Override
+	public boolean useFMMPerspective(Item item) {
+		return true;
+	}
 
 	@Override
 	public void renderByItem(ItemStack itemStackIn) {

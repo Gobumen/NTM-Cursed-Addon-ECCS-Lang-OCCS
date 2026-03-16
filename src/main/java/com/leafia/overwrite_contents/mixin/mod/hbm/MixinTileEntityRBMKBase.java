@@ -1,16 +1,24 @@
 package com.leafia.overwrite_contents.mixin.mod.hbm;
 
+import com.hbm.blocks.machine.rbmk.RBMKBase;
 import com.hbm.lib.HBMSoundHandler;
 import com.hbm.tileentity.TileEntityLoadedBase;
 import com.hbm.tileentity.machine.rbmk.RBMKDials;
 import com.hbm.tileentity.machine.rbmk.RBMKDials.RBMKKeys;
 import com.hbm.tileentity.machine.rbmk.TileEntityRBMKBase;
 import com.leafia.contents.machines.reactors.rbmk.RBMKConstants;
+import com.leafia.dev.LeafiaUtil;
+import com.leafia.dev.optimization.LeafiaParticlePacket.JumpingRBMKParticle;
 import com.leafia.dev.optimization.LeafiaParticlePacket.RBMKJetParticle;
 import com.leafia.overwrite_contents.interfaces.IMixinTileEntityRBMKBase;
 import io.netty.buffer.ByteBuf;
+import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.EnumBlockRenderType;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.SoundCategory;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.At;
@@ -64,11 +72,39 @@ public abstract class MixinTileEntityRBMKBase extends TileEntityLoadedBase imple
 			if (leafia$damage > IMixinTileEntityRBMKBase.maxDamage)
 				meltdown();
 			leafia$lastHeat = heat;
+			leafia$jump();
 		}
 	}
+	@Override
+	public double leafia$jumpHeight() {
+		return leafia$jumpHeight;
+	}
+
+	@Unique boolean checkSurrounding(BlockPos p) {
+		for (EnumFacing facing : EnumFacing.HORIZONTALS) {
+			IBlockState state = world.getBlockState(p.offset(facing));
+			if (!LeafiaUtil.isSolidVisibleCube(state) && !(state.getBlock() instanceof RBMKBase))
+				return false;
+		}
+		return true;
+	}
+
+	/// @author Alcater & Leafia
 	@Unique
 	private void leafia$jump(){
 		if(leafia$damage <= 0 && !leafia$falling && leafia$jumpHeight <= 0)
+			return;
+
+		// do not jump if it has exposed sides that would reveal Z-fighting of jumping rods
+		BlockPos topPos = new BlockPos(pos);
+		Block block = world.getBlockState(pos).getBlock();
+		while (true) {
+			if (world.getBlockState(topPos.up()).getBlock() == block)
+				topPos = topPos.up();
+			else
+				break;
+		}
+		if (!checkSurrounding(pos) || !checkSurrounding(pos.up()) || !checkSurrounding(topPos))
 			return;
 
 		if(!leafia$falling){ // linear rise
@@ -87,12 +123,13 @@ public abstract class MixinTileEntityRBMKBase extends TileEntityLoadedBase imple
 								world.provider.getDimension(),
 								1000
 						);
+						new JumpingRBMKParticle(pos).emitServer(world);
 					}
 					int dmg = (int)(Math.pow(leafia$damage/(double)IMixinTileEntityRBMKBase.maxDamage,0.5)*100);
 					double change = dmg*0.0005D;
 					double heightLimit = dmg*0.005D;
 
-					this.leafia$jumpHeight = this.leafia$jumpHeight+ change;
+					this.leafia$jumpHeight = this.leafia$jumpHeight + change;
 
 					if(this.leafia$jumpHeight > heightLimit){
 						this.leafia$jumpHeight = heightLimit;

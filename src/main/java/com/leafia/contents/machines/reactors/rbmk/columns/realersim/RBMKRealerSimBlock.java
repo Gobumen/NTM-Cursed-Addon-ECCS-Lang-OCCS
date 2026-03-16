@@ -1,4 +1,4 @@
-package com.leafia.contents.machines.reactors.rbmk.realersim;
+package com.leafia.contents.machines.reactors.rbmk.columns.realersim;
 
 import com.hbm.blocks.ModBlocks;
 import com.hbm.blocks.machine.rbmk.RBMKRodReaSim;

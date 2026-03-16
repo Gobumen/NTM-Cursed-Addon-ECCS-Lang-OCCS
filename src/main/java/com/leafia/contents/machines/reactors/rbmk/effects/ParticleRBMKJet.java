@@ -1,4 +1,4 @@
-package com.leafia.unsorted;
+package com.leafia.contents.machines.reactors.rbmk.effects;
 
 import com.hbm.render.NTMRenderHelper;
 import net.minecraft.client.Minecraft;

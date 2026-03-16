@@ -1,4 +1,4 @@
-package com.leafia.contents.machines.reactors.rbmk.realersim;
+package com.leafia.contents.machines.reactors.rbmk.columns.realersim;
 
 import com.hbm.handler.neutron.NeutronNodeWorld;
 import com.hbm.handler.neutron.RBMKNeutronHandler;
