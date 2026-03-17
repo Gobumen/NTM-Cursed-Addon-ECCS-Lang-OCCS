@@ -5,6 +5,7 @@ import com.google.gson.JsonParser;
 import com.hbm.blocks.BlockDummyable;
 import com.hbm.lib.ForgeDirection;
 import com.hbm.main.MainRegistry;
+import com.leafia.AddonBase;
 import com.leafia.contents.building.generic.lined_asphalt.LinedAsphaltBlock;
 import com.leafia.contents.building.generic.lined_asphalt.LinedAsphaltBlock.AsphaltLine;
 import com.leafia.contents.gear.wands.ItemWandSaving.SavingProperty;
@@ -29,10 +30,12 @@ import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.World;
 import net.minecraftforge.client.resource.IResourceType;
 import net.minecraftforge.client.resource.ISelectiveResourceReloadListener;
+import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.ModContainer;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.lwjgl.Sys;
 
 import java.io.*;
 import java.lang.invoke.MethodHandle;
@@ -98,9 +101,9 @@ public class NTMStructBuffer {
 	}
 	// this whole shit is taken from Community Edition QMAWLoader
 	// https://github.com/Warfactory-Offical/Hbm-s-Nuclear-Tech-CE/blob/master/src/main/java/com/hbm/qmaw/QMAWLoader.java
-	public static class StructLoader implements ISelectiveResourceReloadListener  {
-		public static final HashSet<FileResourcePack> modResourcePacks = new HashSet<>();
-		public static final HashSet<FolderResourcePack> folderResourcePacks = new HashSet<>();
+	public static class StructLoader { // die //implements ISelectiveResourceReloadListener  {
+		//public static final HashSet<FileResourcePack> modResourcePacks = new HashSet<>();
+		//public static final HashSet<FolderResourcePack> folderResourcePacks = new HashSet<>();
 		public static final Map<String,StructData> structs = new HashMap<>();
 		static void addStructMeta(String name,JsonObject object) {
 			StructData data = structs.getOrDefault(name,new StructData());
@@ -111,6 +114,36 @@ public class NTMStructBuffer {
 			structs.putIfAbsent(name,data);
 			MainRegistry.logger.info("[NTMSTRUCT META] Loaded structure meta "+name);
 		}
+		public static void reloadStructures() {
+			structs.clear();
+			ModContainer mod = null;
+			for (ModContainer container : Loader.instance().getModList()) {
+				if (container.getModId().equals("leafia")) {
+					mod = container;
+					break;
+				}
+			}
+			if (mod == null)
+				throw new LeafiaDevFlaw("????????????");
+			try {
+				for (String readAllLine : Files.readAllLines(Paths.get("/assets/leafia/structs/roads/road_t.ntmstruct"))) {
+					System.out.println(readAllLine);
+				}
+			} catch (IOException ignored) {
+				System.out.println("ERROR");
+				ignored.printStackTrace();
+			}
+			CraftingHelper.findFiles(mod,"assets/leafia/structs",null,(root,file)->{
+				if (!Files.isRegularFile(file))
+					return true;
+				String relative = root.relativize(file).toString().replace("\\","/");
+				if (!relative.endsWith(".ntmstruct"))
+					return true;
+				System.out.println("HELLO "+relative+", "+root+", "+file);
+				return true;
+			},false,true);
+		}
+		/*
 		// thanks community edition
 		@Override
 		public void onResourceManagerReload(IResourceManager resourceManager, Predicate<IResourceType> resourcePredicate) {
@@ -311,7 +344,7 @@ public class NTMStructBuffer {
 					dissectStructFolder(file); // scrape subfolders too lmao
 				}
 			}
-		}
+		}*/
 	}
 	public final LeafiaBuf buf;
 	public final int bitNeedle;
