@@ -154,7 +154,7 @@ public class NixieDisplay extends Control {
 			LeafiaGls.blendFunc(SourceFactor.SRC_ALPHA,DestFactor.ONE_MINUS_SRC_ALPHA);
 			OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit,lX,lY);
 			texmg.bindTexture(AddonBase.solid);
-			LeafiaGls.color(1F,0.462F,0.076F,0.1F);
+			LeafiaGls.color(1F,0.462F,0.076F,0.25F);
 			mdl.renderPart("Tube");
 			LeafiaGls.popMatrix();
 		}
