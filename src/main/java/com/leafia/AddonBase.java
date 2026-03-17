@@ -1,14 +1,12 @@
 package com.leafia;
 
 import com.hbm.handler.GuiHandler;
-import com.hbm.items.machine.ItemBatteryPack;
 import com.hbm.items.machine.ItemBatteryPack.EnumBatteryPack;
 import com.hbm.packet.PacketDispatcher;
 import com.leafia.contents.AddonBlocks;
 import com.leafia.contents.AddonFluids;
 import com.leafia.contents.AddonFluids.AddonFF;
 import com.leafia.contents.AddonItems;
-import com.leafia.contents.control.battery.AddonEnumBatteryPack;
 import com.leafia.contents.machines.controlpanel.AddonNodesRegister;
 import com.leafia.contents.potion.LeafiaPotion;
 import com.leafia.contents.worldgen.AddonBiomes;
@@ -17,11 +15,10 @@ import com.leafia.contents.worldgen.AddonWorldGen;
 import com.leafia.contents.worldgen.NTMStructBuffer.StructLoader;
 import com.leafia.database.AirDetonationMissiles;
 import com.leafia.database.ReactorTiers;
-import com.leafia.init.*;
 import com.leafia.eventbuses.LeafiaServerListener;
+import com.leafia.init.*;
 import com.leafia.init.proxy.LeafiaServerProxy;
 import com.leafia.init.recipes.*;
-import com.leafia.overwrite_contents.asm.TransformerCoreLeafia;
 import com.leafia.overwrite_contents.other.LCEItemCatalyst;
 import com.leafia.settings.AddonConfig;
 import com.leafia.unsorted.AddonGuiHandler;
@@ -32,7 +29,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
@@ -41,11 +37,8 @@ import net.minecraftforge.fml.common.event.*;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
-import net.minecraftforge.registries.ForgeRegistry;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import java.io.File;
 
 @Mod(modid = Tags.MODID, version = "Unknown", name = Tags.MODNAME, acceptedMinecraftVersions = "[1.12.2]",
 		dependencies = "required-after:hbm@[2.1.0.0,);required:mixinbooter;after:ntmspace")
@@ -127,8 +120,6 @@ public class AddonBase {
 		LCEItemCatalyst.registerMeltingPoints();
 
 		AddonFluidTraits.preInit();
-		if (TransformerCoreLeafia.loadFailed != null)
-			TransformerCoreLeafia.loadFailed.run();
 	}
 
 	@SubscribeEvent
@@ -156,8 +147,6 @@ public class AddonBase {
 		AirDetonationMissiles.init();
 		ReactorTiers.register();
 		AddonBiomes.init();
-		if (TransformerCoreLeafia.loadFailed != null)
-			TransformerCoreLeafia.loadFailed.run();
 	}
 
 	@EventHandler
@@ -167,8 +156,6 @@ public class AddonBase {
 		ArmorInit.postInit();
 		LeafiaBlockReplacer.addReplacementMap();
 		StructLoader.init();
-		if (TransformerCoreLeafia.loadFailed != null)
-			TransformerCoreLeafia.loadFailed.run();
 	}
 
 	public static void registerSerializable() {
@@ -191,8 +178,6 @@ public class AddonBase {
 	@EventHandler
 	public void fMLLoadCompleteEvent(FMLLoadCompleteEvent evt){
 		proxy.onLoadComplete(evt);
-		if (TransformerCoreLeafia.loadFailed != null)
-			TransformerCoreLeafia.loadFailed.run();
 		FalloutConfigInit.onInit();
 
         /*
