@@ -1,4 +1,4 @@
-package com.leafia.overwrite_contents.mixin.mod;
+package com.leafia.overwrite_contents;
 
 import zone.rong.mixinbooter.ILateMixinLoader;
 
