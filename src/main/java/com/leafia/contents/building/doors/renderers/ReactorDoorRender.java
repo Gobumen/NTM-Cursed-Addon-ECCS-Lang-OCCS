@@ -22,7 +22,7 @@ import org.lwjgl.opengl.GL11;
 import java.nio.DoubleBuffer;
 import java.util.List;
 
-import static com.leafia.init.ResourceInit.getIntegrated;
+import static com.leafia.AddonBase.getIntegrated;
 import static com.leafia.init.ResourceInit.getVAO;
 
 public class ReactorDoorRender implements IRenderDoors {

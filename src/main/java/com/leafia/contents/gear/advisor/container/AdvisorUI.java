@@ -5,8 +5,6 @@ import com.leafia.contents.AddonItems;
 import com.leafia.contents.gear.advisor.AdvisorItem;
 import com.leafia.contents.gear.advisor.AdvisorItem.AdvisorPacket;
 import com.leafia.contents.gear.advisor.AdvisorItem.AdvisorSignalType;
-import com.leafia.contents.miscellanous.regex_filter.pneumatic.container.RegexFilterGUI.RegexEntry;
-import com.leafia.contents.miscellanous.regex_filter.pneumatic.container.RegexFilterGUIFilter;
 import com.leafia.dev.custompacket.LeafiaCustomPacket;
 import com.leafia.dev.gui.FiaUIRect;
 import com.leafia.dev.gui.GuiScreenLeafia;
@@ -23,7 +21,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.leafia.init.ResourceInit.getIntegrated;
+import static com.leafia.AddonBase.getIntegrated;
 
 public class AdvisorUI extends GuiScreenLeafia implements IAdvisorUI {
 	public static IAdvisorUI instance = null;

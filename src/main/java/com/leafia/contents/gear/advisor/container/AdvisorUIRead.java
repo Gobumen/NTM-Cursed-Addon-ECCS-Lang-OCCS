@@ -7,10 +7,8 @@ import com.leafia.contents.gear.advisor.AdvisorItem.AdvisorSignalType;
 import com.leafia.dev.custompacket.LeafiaCustomPacket;
 import com.leafia.dev.gui.FiaUIRect;
 import com.leafia.dev.gui.GuiScreenLeafia;
-import com.leafia.init.LeafiaSoundEvents;
 import com.leafia.transformer.LeafiaGls;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.util.ResourceLocation;
 
@@ -19,7 +17,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static com.leafia.init.ResourceInit.getIntegrated;
+import static com.leafia.AddonBase.getIntegrated;
 
 public class AdvisorUIRead extends GuiScreenLeafia implements IAdvisorUI {
 	public static ResourceLocation texture = getIntegrated("advisor/ui/message.png");

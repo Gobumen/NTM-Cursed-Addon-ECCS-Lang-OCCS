@@ -1,7 +1,6 @@
 package com.leafia.contents.machines.powercores.ams.emitter;
 
 import com.hbm.inventory.fluid.Fluids;
-import com.hbm.main.ResourceManager;
 import com.hbm.render.NTMRenderHelper;
 import com.hbm.render.loader.WaveFrontObjectVAO;
 import com.leafia.contents.machines.powercores.ams.base.AMSBaseTE;
@@ -14,7 +13,7 @@ import org.lwjgl.opengl.GL11;
 
 import java.util.Random;
 
-import static com.leafia.init.ResourceInit.getIntegrated;
+import static com.leafia.AddonBase.getIntegrated;
 import static com.leafia.init.ResourceInit.getVAO;
 
 public class AMSEmitterRender extends TileEntitySpecialRenderer<AMSEmitterTE> {

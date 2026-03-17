@@ -1,7 +1,6 @@
 package com.leafia.contents.machines.heat.hpboiler.container;
 
 import com.leafia.contents.machines.heat.hpboiler.HPBoilerTE;
-import com.leafia.contents.miscellanous.slop.SlopTE;
 import com.leafia.dev.LeafiaClientUtil;
 import com.leafia.dev.container_utility.LeafiaPacket;
 import com.leafia.dev.gui.FiaUIRect;
@@ -14,7 +13,7 @@ import net.minecraft.util.ResourceLocation;
 
 import java.io.IOException;
 
-import static com.leafia.init.ResourceInit.getIntegrated;
+import static com.leafia.AddonBase.getIntegrated;
 
 public class HPBoilerGUI extends LCEGuiInfoContainer {
 

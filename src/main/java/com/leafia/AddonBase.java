@@ -76,6 +76,10 @@ public class AddonBase {
 		}
 	}
 
+	public static ResourceLocation getIntegrated(String s) {
+		return new ResourceLocation("leafia","textures/_integrated/"+s);
+	}
+
 	@EventHandler
 	// preInit "Run before anything else. Read your config, create blocks, items, etc. (Remove if not needed)
 	public void preInit(FMLPreInitializationEvent event) {
