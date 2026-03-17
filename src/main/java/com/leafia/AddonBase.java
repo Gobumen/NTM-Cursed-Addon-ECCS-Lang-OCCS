@@ -166,8 +166,7 @@ public class AddonBase {
 		AddonFF.setFromRegistry();
 		ArmorInit.postInit();
 		LeafiaBlockReplacer.addReplacementMap();
-		//StructLoader.init();
-		StructLoader.reloadStructures();
+		StructLoader.init();
 		if (TransformerCoreLeafia.loadFailed != null)
 			TransformerCoreLeafia.loadFailed.run();
 	}

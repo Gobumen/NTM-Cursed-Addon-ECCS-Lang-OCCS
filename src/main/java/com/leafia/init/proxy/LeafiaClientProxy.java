@@ -79,14 +79,12 @@ import com.leafia.contents.network.spk_cable.SPKCableTE;
 import com.leafia.contents.nonmachines.storage.fluid.fftank.FFTankRender;
 import com.leafia.contents.nonmachines.storage.fluid.fftank.FFTankTE;
 import com.leafia.contents.nonmachines.storage.items.CrateLabelRender;
-import com.leafia.contents.worldgen.NTMStructBuffer.StructLoader;
 import com.leafia.eventbuses.LeafiaClientListener;
 import com.leafia.init.ItemRendererInit;
 import com.llib.exceptions.LeafiaDevFlaw;
 import net.minecraft.block.BlockDoor;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.statemap.StateMap;
-import net.minecraft.client.resources.IReloadableResourceManager;
 import net.minecraft.item.Item;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
@@ -114,7 +112,6 @@ public class LeafiaClientProxy extends LeafiaServerProxy {
 				throw flaw;
 			}
 		}
-		//((IReloadableResourceManager) Minecraft.getMinecraft().getResourceManager()).registerReloadListener(new StructLoader());
 		{
 			ModelLoader.setCustomStateMapper(AddonBlocks.door_fuckoff,new StateMap.Builder().ignore(BlockDoor.POWERED).build());
 			ModelLoader.setCustomStateMapper(AddonBlocks.fluid_fluoride,new StateMap.Builder().ignore(BlockFluidClassic.LEVEL).build());
