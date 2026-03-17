@@ -11,6 +11,8 @@ import com.leafia.contents.AddonItems;
 import com.leafia.contents.AddonItems.ElevatorStyles;
 import com.leafia.contents.bomb.missile.customnuke.CustomNukeMissileItemRender;
 import com.leafia.contents.building.broof.BroofRender.BroofItemRender;
+import com.leafia.contents.building.doors.renderers.ReactorDoorRender;
+import com.leafia.contents.building.doors.renderers.ReactorDoorRender.ReactorDoorItemRender;
 import com.leafia.contents.building.light.LightRender.LightItemRender;
 import com.leafia.contents.building.sign.SignRender.SignItemRender;
 import com.leafia.contents.gear.advisor.AdvisorRender;
@@ -114,6 +116,8 @@ public class ItemRendererInit {
 		register(Elevators.pulley,new EvPulleyItemRender());
 
 		register(AddonBlocks.hp_boiler,new HPBoilerItemRender());
+
+		register(AddonBlocks.reactor_door,new ReactorDoorItemRender());
 
 		/*fix(AddonItems.ams_focus_blank);
 		fix(AddonItems.ams_focus_booster);

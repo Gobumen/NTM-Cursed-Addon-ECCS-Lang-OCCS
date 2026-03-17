@@ -1,4 +1,4 @@
-package com.leafia.contents.building.mixed;
+package com.leafia.contents.building.generic.mixed;
 
 import com.google.common.collect.Lists;
 import com.llib.exceptions.LeafiaDevFlaw;

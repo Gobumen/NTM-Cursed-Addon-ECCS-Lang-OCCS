@@ -7,7 +7,7 @@ import com.hbm.main.MainRegistry;
 import com.hbm.util.I18nUtil;
 import com.leafia.AddonBase;
 import com.leafia.contents.bomb.missile.customnuke.CustomNukeMissileItem;
-import com.leafia.contents.building.lined_asphalt.LinedAsphaltBlock;
+import com.leafia.contents.building.generic.lined_asphalt.LinedAsphaltBlock;
 import com.leafia.contents.building.pinkdoor.ItemPinkDoor;
 import com.leafia.contents.building.sign.SignBlock;
 import com.leafia.contents.control.fuel.nuclearfuel.LeafiaRodItem;
@@ -28,6 +28,8 @@ import com.leafia.contents.machines.reactors.pwr.debris.PWRDebrisEntity.DebrisTy
 import com.leafia.contents.machines.reactors.pwr.debris.PWRDebrisItem;
 import com.leafia.contents.parts.depleteds.AddonDepletedFuelItem;
 import com.leafia.dev.blocks.ICustomItemBlockProvider;
+import com.leafia.dev.blocks.blockbase.meta.IMetaPlacable;
+import com.leafia.dev.blocks.blockbase.meta.MetaPlacableItemBlock;
 import com.leafia.dev.items.itembase.AddonItemHazardBaked;
 import com.leafia.init.hazards.ItemRads;
 import com.leafia.dev.items.itembase.AddonItemBaked;
@@ -607,6 +609,8 @@ public class AddonItems {
 			} else if (block instanceof LinedAsphaltBlock) {
 			} else if (block instanceof ICustomBlockItem) {
 				((ICustomBlockItem) block).registerItem();
+			} else if (block instanceof IMetaPlacable) {
+				ForgeRegistries.ITEMS.register(new MetaPlacableItemBlock(block).setRegistryName(block.getRegistryName()));
 			} else {
 				ForgeRegistries.ITEMS.register(new ItemBlock(block).setRegistryName(block.getRegistryName()));
 			}

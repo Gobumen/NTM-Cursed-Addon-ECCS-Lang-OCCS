@@ -1,4 +1,4 @@
-package com.leafia.contents.building.generic_doors;
+package com.leafia.contents.building.doors;
 
 import com.hbm.blocks.ModBlocks;
 import com.hbm.blocks.generic.BlockDoorGeneric;

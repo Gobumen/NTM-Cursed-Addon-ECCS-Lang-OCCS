@@ -1,8 +1,6 @@
 package com.leafia.contents.gear.ntmfbottle;
 
 import com.google.common.collect.Lists;
-import com.leafia.contents.building.mixed.TextureAtlasSpriteHalf.HalfDirection;
-import com.llib.exceptions.LeafiaDevFlaw;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.PngSizeInfo;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
