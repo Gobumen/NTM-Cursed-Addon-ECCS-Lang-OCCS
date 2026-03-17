@@ -7,12 +7,24 @@ import com.hbm.render.anim.sedna.BusAnimationSequenceSedna;
 import com.hbm.render.tileentity.door.IRenderDoors;
 import com.hbm.tileentity.DoorDecl;
 import com.leafia.contents.building.doors.renderers.ReactorDoorRender;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import static com.leafia.init.ResourceInit.getIntegrated;
+
 public class AddonDoorDecl {
+	public static class AddonDefaultSkins {
+		public static final ResourceLocation reactordoor_normal = getIntegrated("doors/reactordoor/reactordoor.png");
+		public static final ResourceLocation reactordoor_plain = getIntegrated("doors/reactordoor/reactordoor_trefoilless.png");
+		public static final ResourceLocation reactordoor_yellow = getIntegrated("doors/reactordoor/reactordoor_yellow.png");
+		public static final ResourceLocation reactordoor_gray = getIntegrated("doors/reactordoor/reactordoor_gray.png");
+		public static final ResourceLocation reactordoor_gray_plain = getIntegrated("doors/reactordoor/reactordoor_gray_trefoilless.png");
+		public static final ResourceLocation reactordoor_dark_gray = getIntegrated("doors/reactordoor/reactordoor_but_grayer.png");
+		public static final ResourceLocation reactordoor_green_plain = getIntegrated("doors/reactordoor/reactordoor_geen_trefoilless.png");
+	}
 	public static final DoorDecl REACTOR_DOOR = new DoorDecl() {
 		@Override
 		@SideOnly(Side.CLIENT)
@@ -22,6 +34,24 @@ public class AddonDoorDecl {
 
 		public static final int handleLockDuration = 3;
 		public static final double handleLockAmount = 0.25;
+
+		@Override
+		protected ResourceLocation[] getDefaultSkins() {
+			return new ResourceLocation[]{
+					AddonDefaultSkins.reactordoor_normal,
+					AddonDefaultSkins.reactordoor_plain,
+					AddonDefaultSkins.reactordoor_yellow,
+					AddonDefaultSkins.reactordoor_gray,
+					AddonDefaultSkins.reactordoor_gray_plain,
+					AddonDefaultSkins.reactordoor_dark_gray,
+					AddonDefaultSkins.reactordoor_green_plain
+			};
+		}
+
+		@Override
+		public boolean hasSkins() {
+			return true;
+		}
 
 		@Override
 		public BusAnimationSedna getBusAnimation(DoorState state,byte skinIndex) {

@@ -4,6 +4,7 @@ import com.hbm.interfaces.IDoor.DoorState;
 import com.hbm.render.loader.WaveFrontObjectVAO;
 import com.hbm.render.tileentity.door.IRenderDoors;
 import com.hbm.tileentity.TileEntityDoorGeneric;
+import com.leafia.contents.building.doors.AddonDoorDecl;
 import com.leafia.contents.building.doors.special.reactor_door.ReactorDoorTE;
 import com.leafia.dev.LeafiaItemRenderer;
 import com.leafia.transformer.LeafiaGls;
@@ -42,7 +43,6 @@ public class ReactorDoorRender implements IRenderDoors {
 	}
 	public static final ReactorDoorRender INSTANCE = new ReactorDoorRender();
 	public static final WaveFrontObjectVAO mdl = getVAO(getIntegrated("doors/reactordoor/reactordoorfinal.obj"));
-	public static final ResourceLocation tex = getIntegrated("doors/reactordoor/reactordoor.png");
 	public static final ResourceLocation test = new ResourceLocation("hbm","textures/blocks/brick_concrete.png");
 	public static class ReactorDoorItemRender extends LeafiaItemRenderer {
 		@Override
@@ -68,7 +68,7 @@ public class ReactorDoorRender implements IRenderDoors {
 			bindTexture(test);
 			mdl.renderPart("FrameA");
 			mdl.renderPart("FrameB");
-			bindTexture(tex);
+			bindTexture(AddonDoorDecl.REACTOR_DOOR.getCyclingSkins());
 			mdl.renderAllExcept("FrameA","FrameB");
 			GlStateManager.shadeModel(GL11.GL_FLAT);;
 		}
@@ -91,7 +91,7 @@ public class ReactorDoorRender implements IRenderDoors {
 		OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit,lxB,lyB);
 		Minecraft.getMinecraft().getTextureManager().bindTexture(getRsc(reac.skinB,reac.metaB));
 		mdl.renderPart("FrameB");
-		Minecraft.getMinecraft().getTextureManager().bindTexture(tex);
+		Minecraft.getMinecraft().getTextureManager().bindTexture(AddonDoorDecl.REACTOR_DOOR.getSkinFromIndex(te.getSkinIndex()));
 		mdl.renderPart("Wall");
 
 		double handleRatio = 0;
