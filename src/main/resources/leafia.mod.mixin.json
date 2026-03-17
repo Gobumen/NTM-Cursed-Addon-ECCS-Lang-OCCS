@@ -22,7 +22,8 @@
     "hbm.MixinRenderControlPanel",
     "hbm.MixinRenderRBMKControlRod",
     "hbm.MixinRenderRBMKLid",
-    "hbm.MixinRenderTorex"
+    "hbm.MixinRenderTorex",
+    "hbm.MixinRrenderControlPanel"
   ],
   "mixins": [
     "hbm.MixinBalefire",
