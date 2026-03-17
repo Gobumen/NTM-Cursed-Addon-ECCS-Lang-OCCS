@@ -10,7 +10,7 @@ import com.leafia.dev.optimization.LeafiaParticlePacket.FiaSpark;
 import com.leafia.dev.optimization.LeafiaParticlePacket.VanillaExt;
 import com.leafia.init.AddonAdvancements;
 import com.leafia.init.LeafiaSoundEvents;
-import com.llib.exceptions.LeafiaDevFlaw;
+import com.leafia.overwrite_contents.interfaces.IMixinEntityItem;
 import com.llib.group.LeafiaSet;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockOre;
@@ -90,39 +90,18 @@ public class WorldServerLeafia {
 				//((BlockCoalOil) block).onBreakBlockProgress(world,pos,doxxed);
 		}
 	}
-	static Field droppedBy;
-	//static Field health;
-	static Field wasPickedUp;
-	static {
-		try {
-			droppedBy = EntityItem.class.getDeclaredField("addon_droppedBy");
-			//health = EntityItem.class.getDeclaredField("health");
-			//health.setAccessible(true);
-			wasPickedUp = EntityItem.class.getDeclaredField("addon_wasPickedUp");
-		} catch (NoSuchFieldException e) {
-			throw new LeafiaDevFlaw(e);
-		}
-	}
 	public static void onItemDroppedByPlayer(EntityPlayer player,EntityItem item) {
-		try {
-			droppedBy.set(item,player);
-		} catch (IllegalAccessException e) {
-			throw new LeafiaDevFlaw(e);
-		}
+        ((IMixinEntityItem) item).leafia$setDroppedBy(player);
 	}
 	public static void onEntityRemoved(World world,Entity entity) {
 		if (!world.isRemote && entity instanceof EntityItem item) {
-			try {
-				if (!wasPickedUp.getBoolean(item)) {
-					Object obj = droppedBy.get(item);
-					if (obj != null) {
-						EntityPlayer player = (EntityPlayer)obj;
-						if (item.getItem().getItem() instanceof AdvisorItem)
-							AdvancementManager.grantAchievement(player,AddonAdvancements.loseadvisor);
-					}
-				}
-			} catch (IllegalAccessException e) {
-				throw new LeafiaDevFlaw(e);
+            IMixinEntityItem mixin = (IMixinEntityItem) item;
+            if (!mixin.leafia$getWasPickedUp()) {
+                EntityPlayer player = mixin.leafia$getDroppedBy();
+                if (player != null) {
+                    if (item.getItem().getItem() instanceof AdvisorItem)
+                        AdvancementManager.grantAchievement(player, AddonAdvancements.loseadvisor);
+                }
 			}
 		}
 	}

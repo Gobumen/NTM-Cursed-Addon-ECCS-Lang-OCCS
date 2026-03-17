@@ -8,9 +8,11 @@ import com.leafia.contents.gear.utility.FuzzyIdentifierItem;
 import com.leafia.contents.gear.utility.FuzzyIdentifierItem.FuzzyIdentifierPacket;
 import com.leafia.dev.custompacket.LeafiaCustomPacket;
 import com.leafia.overwrite_contents.interfaces.IMixin;
+import com.leafia.overwrite_contents.interfaces.IMixinFluidTankNTM;
 import com.leafia.unsorted.fluids.FluidLoaderBottle;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
@@ -26,13 +28,25 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import java.util.*;
+import java.util.List;
 
 @Mixin(value = FluidTankNTM.class)
-public class MixinFluidTankNTM implements IMixin {
+public class MixinFluidTankNTM implements IMixin, IMixinFluidTankNTM {
 	@Shadow(remap = false) private @NotNull FluidType type;
 	@Shadow(remap = false) @Final public static List<IFluidLoadingHandler> loadingHandlers;
+    @Unique
+    private NBTTagCompound leafia$addonNbt;
 	@Unique boolean lastClicked = false;
+
+    @Override
+    public NBTTagCompound leafia$getAddonNbt() {
+        return leafia$addonNbt;
+    }
+
+    @Override
+    public void leafia$setAddonNbt(NBTTagCompound nbt) {
+        leafia$addonNbt = nbt;
+    }
 
 	@Inject(method = "<clinit>",at = @At(value = "TAIL"),require = 1,remap = false)
 	private static void onClInit(CallbackInfo ci) {

@@ -15,7 +15,7 @@ public class CoreModContainer extends DummyModContainer {
         meta.modId = "leafiacore";
         meta.name = "LeafiaCore";
         meta.description = "Binary class transformers to push the boundaries of the mod\n\nNow with the help of movblock.";
-        meta.version = "1.12.2-1.0";
+        meta.version = "1.12.2-2.0";
         meta.authorList = Arrays.asList("Leafia","movblock");
 	}
 	
