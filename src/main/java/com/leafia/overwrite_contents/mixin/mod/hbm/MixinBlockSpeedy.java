@@ -13,6 +13,8 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -36,6 +38,7 @@ public abstract class MixinBlockSpeedy extends BlockBakeBase {
 		if (this.equals(ModBlocks.asphalt))
 			ci.cancel();
 	}
+	@SideOnly(Side.CLIENT)
 	@Inject(method = "addInformation",at = @At(value = "HEAD"),require = 1,cancellable = true,remap = false)
 	public void leafia$onAddInformation(ItemStack stack,World player,List<String> tooltip,ITooltipFlag advanced,CallbackInfo ci) {
 		if (this.equals(ModBlocks.asphalt))
