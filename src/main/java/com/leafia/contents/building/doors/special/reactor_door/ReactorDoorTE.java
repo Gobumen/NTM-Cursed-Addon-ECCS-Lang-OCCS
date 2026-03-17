@@ -54,7 +54,7 @@ public class ReactorDoorTE extends TileEntityDoorGeneric implements LeafiaPacket
 										"speed=2",
 										"blurDulling=50",
 										"bloomDulling=50",
-										"range=5",
+										"range=12",
 										"curve=0.5"
 								}).setPos(pos),
 						new NetworkRegistry.TargetPoint(
@@ -79,7 +79,7 @@ public class ReactorDoorTE extends TileEntityDoorGeneric implements LeafiaPacket
 										"speed=8",
 										"blurDulling=50",
 										"bloomDulling=50",
-										"range=5",
+										"range=12",
 										"curve=0.5"
 								}).setPos(pos),
 						new NetworkRegistry.TargetPoint(
