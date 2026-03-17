@@ -6,7 +6,7 @@ import com.hbm.render.loader.HFRWavefrontObject;
 import com.hbm.render.loader.WaveFrontObjectVAO;
 import com.leafia.contents.bomb.missile.AddonMissileItemRender;
 import com.leafia.contents.building.broof.BroofRender;
-import com.leafia.contents.building.generic_doors.renderers.ReactorDoorRender;
+import com.leafia.contents.building.doors.renderers.ReactorDoorRender;
 import com.leafia.contents.building.light.LightRender;
 import com.leafia.contents.effects.folkvangr.visual.LCERenderCloudFleija;
 import com.leafia.contents.gear.advisor.AdvisorRender;

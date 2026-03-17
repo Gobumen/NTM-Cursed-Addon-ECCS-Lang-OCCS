@@ -2,7 +2,7 @@ package com.leafia.init;
 
 import com.leafia.AddonBase;
 import com.leafia.contents.building.broof.BroofTE;
-import com.leafia.contents.building.generic_doors.special.reactor_door.ReactorDoorTE;
+import com.leafia.contents.building.doors.special.reactor_door.ReactorDoorTE;
 import com.leafia.contents.building.light.LightTE;
 import com.leafia.contents.building.sign.SignTE;
 import com.leafia.contents.debug.blackhole_test.DebugBHTE;

@@ -1,4 +1,4 @@
-package com.leafia.contents.building.generic_doors;
+package com.leafia.contents.building.doors;
 
 import com.hbm.interfaces.IDoor.DoorState;
 import com.hbm.render.anim.sedna.BusAnimationKeyframeSedna.IType;
@@ -6,7 +6,7 @@ import com.hbm.render.anim.sedna.BusAnimationSedna;
 import com.hbm.render.anim.sedna.BusAnimationSequenceSedna;
 import com.hbm.render.tileentity.door.IRenderDoors;
 import com.hbm.tileentity.DoorDecl;
-import com.leafia.contents.building.generic_doors.renderers.ReactorDoorRender;
+import com.leafia.contents.building.doors.renderers.ReactorDoorRender;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.relauncher.Side;

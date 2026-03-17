@@ -1,4 +1,4 @@
-package com.leafia.contents.building.mixed;
+package com.leafia.contents.building.generic.mixed;
 
 import com.google.common.collect.ImmutableMap;
 import com.hbm.blocks.BlockBase;
@@ -7,7 +7,7 @@ import com.hbm.items.IDynamicModels;
 
 import com.hbm.main.MainRegistry;
 import com.leafia.contents.AddonBlocks;
-import com.leafia.contents.building.mixed.TextureAtlasSpriteHalf.HalfDirection;
+import com.leafia.contents.building.generic.mixed.TextureAtlasSpriteHalf.HalfDirection;
 import net.minecraft.block.BlockDirectional;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
