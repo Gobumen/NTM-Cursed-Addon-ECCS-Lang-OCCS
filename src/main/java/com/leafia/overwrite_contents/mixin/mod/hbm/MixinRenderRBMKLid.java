@@ -1,19 +1,51 @@
 package com.leafia.overwrite_contents.mixin.mod.hbm;
 
 import com.hbm.blocks.machine.rbmk.RBMKBase;
+import com.hbm.items.ModItems;
 import com.hbm.render.tileentity.RenderRBMKLid;
 import com.hbm.tileentity.machine.rbmk.TileEntityRBMKBase;
 import com.hbm.tileentity.machine.rbmk.TileEntityRBMKRod;
 import com.leafia.transformer.LeafiaGls;
+import com.llamalad7.mixinextras.sugar.Local;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.item.Item;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Redirect;
 
 /// this whole thing was murdered
 @Mixin(value = RenderRBMKLid.class)
 public abstract class MixinRenderRBMKLid {
+	@Shadow(remap = false)
+	protected abstract void renderCherenkovEffect(float r,float g,float b,float a,int height);
+
+	@Redirect(method = "render(Lcom/hbm/tileentity/machine/rbmk/TileEntityRBMKBase;DDDFIF)V",at = @At(value = "INVOKE", target = "Lcom/hbm/render/tileentity/RenderRBMKLid;renderCherenkovEffect(FFFFI)V"),require = 1,remap = false)
+	private void leaifa$onRender(RenderRBMKLid instance,float r,float g,float b,float a,int h,@Local(type = TileEntityRBMKBase.class) TileEntityRBMKBase te) {
+		if (te instanceof TileEntityRBMKRod rod) {
+			Item item = rod.inventory.getStackInSlot(0).getItem();
+			if (item == ModItems.rbmk_fuel_leaus || item == ModItems.rbmk_fuel_heaus) {
+				r = 1F;
+				g = 0.9F;
+				b = 0F;
+			} else if (item == ModItems.rbmk_fuel_balefire_gold || item == ModItems.rbmk_fuel_flashlead) {
+				r = 0.6F;
+				g = 0F;
+				b = 1F;
+			} else if (item == ModItems.rbmk_fuel_balefire) {
+				r = 0.25F;
+				g = 1F;
+				b = 0F;
+			} else if (item == ModItems.rbmk_fuel_drx) {
+				r = 1F;
+				g = 0.25F;
+				b = 0F;
+			}
+		}
+		renderCherenkovEffect(r,g,b,a,h);
+	}
 	/*
 	@Shadow(remap = false)
 	protected abstract void renderColumnStack(TileEntityRBMKBase control,int offset);

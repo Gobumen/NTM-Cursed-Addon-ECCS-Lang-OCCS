@@ -69,9 +69,9 @@ public class LightTE extends TileEntity implements ITickable, IEnergyReceiverMK2
 					chosenBlock.fillSpace(world,pos.getX(),pos.getY(),pos.getZ(),ForgeDirection.getOrientation(meta-BlockDummyable.offset),chosenBlock.getOffset());
 					this.validate();
 					world.setTileEntity(pos,this);
-					updateLightEmitters(pos,isLit);
-					updateLightEmitters(pos1,isLit);
-					updateLightEmitters(pos2,isLit);
+					updateLightEmitters(pos,shouldBeLit);
+					updateLightEmitters(pos1,shouldBeLit);
+					updateLightEmitters(pos2,shouldBeLit);
 				}
 			}
 		}
