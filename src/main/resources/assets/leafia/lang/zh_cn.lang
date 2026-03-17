@@ -5,7 +5,34 @@ achievement.watz=Watz发电站
 
 # 进度
 advancement.leafia.arcwelder=还不够大
-advancement.leafia.arcwelder.desc=然后把它焊接起来
+
+# 电梯按钮
+gui.evcab.add=添加按钮
+gui.evcab.floor=楼层
+gui.evcab.floordisplay=指示器
+gui.evcab.label=按钮标签
+gui.evcab.rm=删除按钮
+gui.evfloor=楼层 %s
+gui.label_crate=标签
+
+# 反应堆等级
+desc.leafia._reactortier.class.core=能量核心
+desc.leafia._reactortier.class.fission=裂变反应堆
+desc.leafia._reactortier.class.fusion=聚变反应堆
+desc.leafia._reactortier.desc.title={name} (等级 {tier} / {class})
+desc.leafia._reactortier.desc.next=下一个: %s
+desc.leafia._reactortier.desc.previous=上一个: %s
+desc.leafia._reactortier.desc.shift=按 Shift 键查看上/下一个等级
+desc.leafia._reactortier.name.ams=AMS
+desc.leafia._reactortier.name.dfc=DFC
+desc.leafia._reactortier.name.fusion=聚变反应堆
+desc.leafia._reactortier.name.icf=ICF
+desc.leafia._reactortier.name.rbmk=RBMK
+desc.leafia._reactortier.name.pwr=PWR
+desc.leafia._reactortier.name.watz=Watz
+desc.leafia._reactortier.name.zirnox=ZIRNOX
+desc.leafia.crate_labelling=潜行并使用螺丝刀添加标签！
+
 advancement.leafia.crucible=金属熔合
 advancement.leafia.crucible.desc=锻造一个熔炉
 advancement.leafia.genericfuel=强大清洁能源
@@ -163,12 +190,87 @@ info.leafiarod.jei.message=无法拆解$消耗 > 5%%
 
 # 物品名称
 item.advisor.name=高科技顾问
-item.advisor.message.asbestos=也许，大概这$用石棉建造不是什么好主意..
-item.advisor.message.coal=你在吸入煤尘！创造一些保护。$从粗糙防护面具开始。
-item.advisor.message.lava=岩浆在你身后！
-item.advisor.message.pyro=你拿着自燃/热物品！$制作一个钨取物器来安全地拿取它们。
-item.advisor.message.skindmg2=你有中度皮肤损伤。$在治愈前你应该避免贝塔辐射。
-item.advisor.message.skindmg3=你有严重皮肤损伤。$不惜一切代价避免阿尔法辐射！
+item.advisor.gui.main.dismiss=关闭
+item.advisor.gui.main.read=阅读
+item.advisor.gui.message.close=返回
+item.advisor.desc=将此物品放在背包中以为新玩家提供建议
+item.advisor.message.asbestos.name=石棉颗粒警告
+item.advisor.message.asbestos.message=也许，大概这$用石棉建造不是什么好主意..
+item.advisor.message.coal.name=煤尘警告
+item.advisor.message.coal.message=你在吸入煤尘！创造一些保护。$从粗糙防护面具开始。
+item.advisor.message.lava.name=岩浆警告
+item.advisor.message.lava.message=岩浆在你身后！
+item.advisor.message.pyro.name=自燃/热物品警告
+item.advisor.message.pyro.message=你拿着自燃/热物品！$制作一个钨取物器来安全地拿取它们。
+item.advisor.message.radon.name=氡气警告
+item.advisor.message.radon.message=你在吸入氡气！创造一些保护。$最早可用的是催化防毒面具过滤器。
+item.advisor.message.skindmg2.name=皮肤损伤 II 警告
+item.advisor.message.skindmg2.message=你有中度皮肤损伤。$在治愈前你应该避免贝塔辐射。
+item.advisor.message.skindmg3.name=皮肤损伤 III 警告
+item.advisor.message.skindmg3.message=你有严重皮肤损伤。$不惜一切代价避免阿尔法辐射！
+item.advisor.message.toxic1.name=有毒物品警告
+item.advisor.message.toxic1.message=你拿着有毒物品。$根据毒性等级的不同，情况会变得非常严重。$制作一个钨取物器来安全地拿取它们。
+item.advisor.message.toxic2.name=剧毒物品警告
+item.advisor.message.toxic2.message=你拿着剧毒物品。$制作一个防护服来安全地拿取它们。
+
+item.ev_chip_s6.desc=标准电梯芯片$用于舒适乘坐
+item.ev_chip_s6.name=S6系列芯片
+item.ev_chip_skylift.desc=闪电般的速度用于疯狂的摩天大楼$可能会坠毁并爆炸
+item.ev_chip_skylift.name=天梯芯片
+item.ev_s6ceiling.name=S6系列天花板
+item.ev_s6door.name=S6系列门
+item.ev_s6floor.name=S6系列地板
+item.ev_s6wall.name=S6系列墙壁
+item.ev_s6window.name=S6系列窗户
+item.ev_skyliftdoor.name=天梯门
+item.weight_spawn.name=电梯配重
+
+# 焊接台聊天消息
+chat.loadingwand.set=已设置结构: %s
+
+# 加载和保存魔杖
+item.wand_leaf.name=保存魔杖
+item.wand_l.name=加载魔杖
+
+# 电梯相关方块
+tile.elevator_buffer.name=电梯缓冲器
+tile.elevator_s6floor.name=S6系列地板
+tile.elevator_shaft.name=电梯井
+tile.elevator_skyliftfloor.name=天梯地板
+tile.elevator_pulley.name=电梯滑轮
+
+# 高压锅炉
+tile.hp_boiler.desc=大型锅炉，可以沸腾水或加热油。$可以直接将水转化为超浓密蒸汽。$热加成取决于压缩程度$需要外部热源。$热传递速率: ΔT*0.1 TU/t$不会爆炸
+tile.hp_boiler.name=高压锅炉
+
+# RBMK燃料棒
+tile.rbmk_rod_realersim.desc=§a与RBMK ReaSim燃料棒相同，但有以下区别:$§a- 通量被"拉"到吸收器或控制棒$§a- 如果未减速则忽略棒$§a- 75%%概率忽略减速剂$§a- 通量传播距离是最大距离的两倍$§a- 由于技术原因，与快中子裂变燃料配合效果不佳$§c- 可能对性能影响很大
+tile.rbmk_rod_realersim.name=RBMK燃料棒 (RealerSim)
+tile.rbmk_rod_realersim_mod.desc=§a与RBMK燃料棒(RealerSim)相同，但进入的快中子通量会被转换为慢中子通量。
+tile.rbmk_rod_realersim_mod.name=RBMK减速燃料棒 (RealerSim)
+
+# 正则过滤器
+tile.regex_filter.gui.config.delete=删除过滤器
+tile.regex_filter.gui.config.filter=过滤器类型: %s
+tile.regex_filter.gui.config.save=保存设置
+tile.regex_filter.gui.config.shift=Shift键并点击以删除
+tile.regex_filter.gui.filter.CREATIVE_TAB=创造标签页ID
+tile.regex_filter.gui.filter.ORE_DICT=矿物词典
+tile.regex_filter.gui.filter.RESOURCE_ID=资源ID
+tile.regex_filter.gui.main.add=添加过滤器
+tile.regex_filter.gui.main.blacklist=黑名单
+tile.regex_filter.gui.main.edit=编辑
+tile.regex_filter.gui.main.whitelist=白名单
+tile.regex_filter.name=气动管道正则过滤器
+
+# 简易反应堆
+tile.slop_reactor.desc=创建一个5x5x5的反应堆玻璃立方体$外框由反应堆外壳组成$$使用天然铀作为燃料,$用雪球冷却$(雪球想法由bob本人提供)$$4小时内完成
+tile.slop_reactor.name=现代模组中的"平均核反应堆"
+tile.slop_reactor_casing.name=现代模组中的"平均核反应堆"外壳
+tile.slop_reactor_glass.name=现代模组中的"平均核反应堆"玻璃
+
+# 流体相关
+hbmfluid.pyrogel=热凝胶
 
 item.ams_focus_blank.name=空白稳定器焦点
 item.ams_focus_booster.name=增压稳定器焦点
