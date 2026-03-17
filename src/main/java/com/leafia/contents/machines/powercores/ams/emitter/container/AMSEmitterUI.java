@@ -1,8 +1,8 @@
 package com.leafia.contents.machines.powercores.ams.emitter.container;
 
 import com.hbm.inventory.gui.GuiInfoContainer;
+import com.leafia.AddonBase;
 import com.leafia.contents.machines.powercores.ams.emitter.AMSEmitterTE;
-import com.leafia.init.ResourceInit;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -11,7 +11,7 @@ import org.lwjgl.opengl.GL11;
 
 public class AMSEmitterUI extends GuiInfoContainer {
 
-	private static ResourceLocation texture = ResourceInit.getIntegrated("ams/gui_emitter.png");
+	private static ResourceLocation texture = AddonBase.getIntegrated("ams/gui_emitter.png");
 	private AMSEmitterTE emitter;
 
 	public AMSEmitterUI(InventoryPlayer invPlayer,AMSEmitterTE tedf) {

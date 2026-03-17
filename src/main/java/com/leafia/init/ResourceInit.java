@@ -132,8 +132,4 @@ public class ResourceInit {
 		allVAOs.add(vao);
 		return vao;
 	}
-
-	public static ResourceLocation getIntegrated(String s) {
-		return new ResourceLocation("leafia","textures/_integrated/"+s);
-	}
 }
