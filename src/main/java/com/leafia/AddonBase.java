@@ -8,6 +8,7 @@ import com.leafia.contents.AddonFluids;
 import com.leafia.contents.AddonFluids.AddonFF;
 import com.leafia.contents.AddonItems;
 import com.leafia.contents.machines.controlpanel.AddonNodesRegister;
+import com.leafia.contents.machines.controlpanel.instruments.AddonInstrumentRegister;
 import com.leafia.contents.potion.LeafiaPotion;
 import com.leafia.contents.worldgen.AddonBiomes;
 import com.leafia.contents.worldgen.AddonBiomesGenerator;
@@ -54,6 +55,7 @@ public class AddonBase {
 
 	public static final ResourceLocation solid = new ResourceLocation("leafia", "textures/solid.png");
 	public static final ResourceLocation solid_e = new ResourceLocation("leafia", "textures/solid_emissive.png");
+	public static final ResourceLocation invisible = new ResourceLocation("leafia", "textures/invisible.png");
 
 	static {
 		LeafiaSoundEvents.init();
@@ -120,6 +122,8 @@ public class AddonBase {
 		LCEItemCatalyst.registerMeltingPoints();
 
 		AddonFluidTraits.preInit();
+
+		AddonInstrumentRegister.register();
 	}
 
 	@SubscribeEvent
