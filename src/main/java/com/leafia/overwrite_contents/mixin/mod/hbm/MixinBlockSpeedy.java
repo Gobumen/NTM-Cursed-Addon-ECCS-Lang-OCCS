@@ -38,17 +38,8 @@ public abstract class MixinBlockSpeedy extends BlockBakeBase {
 		if (this.equals(ModBlocks.asphalt))
 			ci.cancel();
 	}
-    @SideOnly(Side.CLIENT)
-	@Inject(
-			method = {
-					"addInformation(Lnet/minecraft/item/ItemStack;Lnet/minecraft/world/World;Ljava/util/List;Lnet/minecraft/client/util/ITooltipFlag;)V",
-					"func_190948_a(Lnet/minecraft/item/ItemStack;Lnet/minecraft/world/World;Ljava/util/List;Lnet/minecraft/client/util/ITooltipFlag;)V"
-			},
-			at = @At(value = "HEAD"),
-			require = 1,
-			cancellable = true,
-			remap = false
-	)
+	@SideOnly(Side.CLIENT)
+	@Inject(method = "addInformation",at = @At(value = "HEAD"),require = 1,cancellable = true,remap = false)
 	public void leafia$onAddInformation(ItemStack stack,World player,List<String> tooltip,ITooltipFlag advanced,CallbackInfo ci) {
 		if (this.equals(ModBlocks.asphalt))
 			ci.cancel();
