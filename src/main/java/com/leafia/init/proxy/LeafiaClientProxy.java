@@ -114,7 +114,7 @@ public class LeafiaClientProxy extends LeafiaServerProxy {
 				throw flaw;
 			}
 		}
-		((IReloadableResourceManager) Minecraft.getMinecraft().getResourceManager()).registerReloadListener(new StructLoader());
+		//((IReloadableResourceManager) Minecraft.getMinecraft().getResourceManager()).registerReloadListener(new StructLoader());
 		{
 			ModelLoader.setCustomStateMapper(AddonBlocks.door_fuckoff,new StateMap.Builder().ignore(BlockDoor.POWERED).build());
 			ModelLoader.setCustomStateMapper(AddonBlocks.fluid_fluoride,new StateMap.Builder().ignore(BlockFluidClassic.LEVEL).build());
