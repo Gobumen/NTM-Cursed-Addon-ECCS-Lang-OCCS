@@ -2,6 +2,7 @@ package com.leafia.dev.blocks.blockbase;
 
 import com.hbm.main.MainRegistry;
 import com.hbm.util.I18nUtil;
+import com.leafia.AddonBase;
 import com.leafia.contents.AddonBlocks;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
@@ -17,7 +18,7 @@ public class AddonBlockBase extends Block {
 	public AddonBlockBase(Material m,String s) {
 		super(m);
 		this.setTranslationKey(s);
-		this.setRegistryName(s);
+		this.setRegistryName(AddonBase.MODID, s);
 		this.setHarvestLevel("pickaxe", 0);
 		this.setCreativeTab(MainRegistry.controlTab);
 		AddonBlocks.ALL_BLOCKS.add(this);
@@ -36,7 +37,7 @@ public class AddonBlockBase extends Block {
 	public AddonBlockBase(Material m,SoundType sound,String s) {
 		super(m);
 		this.setTranslationKey(s);
-		this.setRegistryName(s);
+		this.setRegistryName(AddonBase.MODID, s);
 		this.setSoundType(sound);
 		this.setHarvestLevel("pickaxe", 0);
 		this.setCreativeTab(MainRegistry.controlTab);
