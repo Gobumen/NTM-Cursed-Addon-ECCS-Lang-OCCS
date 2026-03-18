@@ -7,6 +7,7 @@ import com.leafia.dev.math.FiaMatrix;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.InventoryHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
@@ -16,6 +17,7 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.internal.FMLNetworkHandler;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class RackBlock extends AddonBlockDummyable {
@@ -67,11 +69,35 @@ public class RackBlock extends AddonBlockDummyable {
 				boolean isLeft = rel.getX() <= 0;
 				boolean isUpper = rel.getY() >= 1.5;
 				int index = (isLeft ? 0 : 1) + (isUpper ? 2 : 0);
-				if (rack.crates[index] != null)
-					FMLNetworkHandler.openGui(player,MainRegistry.instance,index,world,core[0],core[1],core[2]);
+				if (rack.crates[index] != null) {
+					if (player.isSneaking() && stack.getCount() == 0) {
+						ItemStack box = rack.removeCrate(index,true);
+						if (box != ItemStack.EMPTY)
+							player.inventory.add(player.inventory.currentItem,box);
+					} else
+						FMLNetworkHandler.openGui(player,MainRegistry.instance,index,world,core[0],core[1],core[2]);
+				} else if (!stack.equals(ItemStack.EMPTY)) {
+					if (rack.storeCrate(stack,index,true))
+						stack.shrink(1);
+				}
 			}
 		}
 		return true;
+	}
+
+	@Override
+	public void breakBlock(@NotNull World world,@NotNull BlockPos pos,IBlockState state) {
+		if (!world.isRemote) {
+			TileEntity te = world.getTileEntity(pos);
+			if (te instanceof RackTE rack) {
+				for (int i = 0; i < 4; i++) {
+					ItemStack stack = rack.removeCrate(i,false);
+					if (stack != ItemStack.EMPTY)
+						InventoryHelper.spawnItemStack(world,pos.getX(),pos.getY(),pos.getZ(),stack);
+				}
+			}
+		}
+		super.breakBlock(world,pos,state);
 	}
 
 	@Override

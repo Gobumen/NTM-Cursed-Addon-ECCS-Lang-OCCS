@@ -6,7 +6,7 @@ import com.hbm.tileentity.machine.storage.TileEntityCrateBase;
 import com.leafia.contents.nonmachines.storage.items.CrateLabelContainer;
 import com.leafia.contents.nonmachines.storage.items.CrateLabelGUI;
 import com.leafia.dev.container_utility.LeafiaPacket;
-import com.leafia.overwrite_contents.interfaces.IMixinTileEntityCrateBase;
+import com.leafia.overwrite_contents.interfaces.IMixinTileEntityCrate;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
@@ -26,7 +26,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(value = TileEntityCrateSteel.class)
-public abstract class MixinTileEntityCrateSteel extends TileEntityCrateBase implements IMixinTileEntityCrateBase {
+public abstract class MixinTileEntityCrateSteel extends TileEntityCrateBase implements IMixinTileEntityCrate {
 	public MixinTileEntityCrateSteel(int scount) {
 		super(scount);
 	}
