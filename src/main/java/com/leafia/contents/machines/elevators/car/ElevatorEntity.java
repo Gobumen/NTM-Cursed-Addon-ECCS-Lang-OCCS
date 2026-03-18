@@ -113,7 +113,6 @@ public class ElevatorEntity extends Entity implements IEntityMultiPart, IEntityC
 		int floor = getDataInteger(FLOOR);
 		Integer nextFloor = null;
 		for (Integer targetFloor : targetFloors) {
-			if (targetFloor.equals(startFloor)) continue;
 			if (targetFloor == floor && !braking) continue;
 			if (!down) {
 				if (targetFloor >= floor) {
@@ -180,7 +179,6 @@ public class ElevatorEntity extends Entity implements IEntityMultiPart, IEntityC
 	public int timeSinceStart = 0;
 	public double targetHeight = -1;
 	public boolean braking = false;
-	public Integer startFloor = null;
 	public int parkFloor = 1;
 	public boolean parking = false;
 	public static final DataParameter<Integer> FLOOR = EntityDataManager.createKey(ElevatorEntity.class,DataSerializers.VARINT);
@@ -779,7 +777,6 @@ public class ElevatorEntity extends Entity implements IEntityMultiPart, IEntityC
 					writeEntityToNBT(entityData);
 					entityData.removeTag("enableds");
 					entityData.removeTag("chipData");
-					entityData.removeTag("startFloor");
 					entityData.removeTag("parkFloor");
 					entityData.removeTag("floor");
 					tag.setTag("configuration",entityData);
@@ -1028,6 +1025,7 @@ public class ElevatorEntity extends Entity implements IEntityMultiPart, IEntityC
 			if (pulley != null && newLightState)
 				world.setBlockState(lastLight,Elevators.light.getDefaultState());
 		}
+		lightState = newLightState;
 		super.onUpdate();
 		if (!world.isRemote) {
 			if (loadData != null)
@@ -1275,8 +1273,6 @@ public class ElevatorEntity extends Entity implements IEntityMultiPart, IEntityC
 		}
 		dataManager.set(FLOOR,(int)compound.getByte("floor"));
 		parkFloor = compound.getByte("parkFloor");
-		if (compound.hasKey("startFloor"))
-			startFloor = (int)compound.getByte("startFloor");
 		if (compound.hasKey("inventory")) {
 			NBTTagCompound inv = compound.getCompoundTag("inventory");
 			inventory.deserializeNBT(inv);
@@ -1315,8 +1311,6 @@ public class ElevatorEntity extends Entity implements IEntityMultiPart, IEntityC
 		compound.setTag("enableds",enableds);
 		compound.setByte("floor",getDataInteger(FLOOR).byteValue());
 		compound.setByte("parkFloor",(byte)parkFloor);
-		if (startFloor != null)
-			compound.setByte("startFloor",(byte)(int)startFloor);
 		compound.setTag("inventory",inventory.serializeNBT());
 		if (controller != null) {
 			NBTTagCompound chipData = new NBTTagCompound();

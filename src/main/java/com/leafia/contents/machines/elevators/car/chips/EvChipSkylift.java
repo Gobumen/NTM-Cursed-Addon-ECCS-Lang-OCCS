@@ -55,7 +55,6 @@ public class EvChipSkylift extends EvChipBase {
 	boolean shouldOpen = false;
 	void openingDoor() {
 		entity.doorOpen = true;
-		entity.startFloor = null;
 		if (entity.targetFloors.contains(entity.parkFloor)) {
 			entity.targetFloors.remove(entity.parkFloor);
 			entity.enabledButtons.remove("floor"+entity.parkFloor);
@@ -89,7 +88,7 @@ public class EvChipSkylift extends EvChipBase {
 			closing = false;
 			doorOpenTimer = 0;
 			dinged = false;
-			entity.startFloor = entity.getDataInteger(ElevatorEntity.FLOOR);
+			entity.targetHeight = -1;
 		}
 	}
 	@Override
@@ -103,7 +102,7 @@ public class EvChipSkylift extends EvChipBase {
 		//if (entity.targetFloors.size() > 0 && entity.getNextFloor() == null) entity.down = !entity.down;
 		if (nextFloor != null && !entity.doorOpen) {
 			if (nextFloor.equals(floor)) {}
-			else entity.parkFloor = nextFloor;
+			else if (entity.targetHeight < -0.5) entity.parkFloor = nextFloor;
 		}
 
 		double ratio = getSpeedRatio();

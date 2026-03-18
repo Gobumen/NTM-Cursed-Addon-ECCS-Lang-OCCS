@@ -68,7 +68,6 @@ public class EvChipS6 extends EvChipBase {
 		if (entity.isEnd(entity.down))
 			entity.down = !entity.down;
 		entity.doorOpen = true;
-		entity.startFloor = null;
 		if (entity.targetFloors.contains(entity.parkFloor)) {
 			entity.targetFloors.remove(entity.parkFloor);
 			entity.enabledButtons.remove("floor"+entity.parkFloor);
@@ -114,7 +113,7 @@ public class EvChipS6 extends EvChipBase {
 			closing = false;
 			doorOpenTimer = 0;
 			pingpongTimer = 0;
-			entity.startFloor = entity.getDataInteger(ElevatorEntity.FLOOR);
+			entity.targetHeight = -1;
 		}
 	}
 	@Override
@@ -128,7 +127,7 @@ public class EvChipS6 extends EvChipBase {
 		//if (entity.targetFloors.size() > 0 && entity.getNextFloor() == null) entity.down = !entity.down;
 		if (nextFloor != null && !entity.doorOpen) {
 			if (nextFloor.equals(floor)) {}
-			else entity.parkFloor = nextFloor;
+			else if (entity.targetHeight < -0.5) entity.parkFloor = nextFloor;
 		}
 		if (cooldown > 0) cooldown--;
 

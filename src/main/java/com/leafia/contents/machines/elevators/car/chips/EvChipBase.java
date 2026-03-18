@@ -21,7 +21,7 @@ public abstract class EvChipBase {
 	double getSpeedRatio() {
 		Integer nextFloor = entity.getNextFloor();
 		if (nextFloor == null) return 0;
-		if (entity.getDataInteger(ElevatorEntity.FLOOR) != entity.parkFloor) { //entity.targetHeight < 0) {
+		if (entity.getDataInteger(ElevatorEntity.FLOOR) != entity.parkFloor && entity.targetHeight <= -0.5) { //entity.targetHeight < 0) {
 			Map<Integer,Integer> map = entity.getFloorsInRange(brakeDistance*(entity.down ? -1 : 1));
 			if (map.containsKey(nextFloor))
 				entity.targetHeight = map.get(nextFloor);
