@@ -14,8 +14,8 @@ import static com.leafia.AddonBase.getIntegrated;
 import static com.leafia.init.ResourceInit.getVAO;
 
 public class FFTankRender extends TileEntitySpecialRenderer<FFTankTE> {
-	public static WaveFrontObjectVAO mdl = getVAO(getIntegrated("ngf_fftank/fftank.obj"));
-	public static ResourceLocation tex = getIntegrated("ngf_fftank/fftank.png");
+	public static WaveFrontObjectVAO mdl = getVAO(getIntegrated("fluids/ff/ngf_fftank/fftank.obj"));
+	public static ResourceLocation tex = getIntegrated("fluids/ff/ngf_fftank/fftank.png");
 	public static class FFTankItemRender extends LeafiaItemRenderer {
 		@Override
 		protected double _sizeReference() {

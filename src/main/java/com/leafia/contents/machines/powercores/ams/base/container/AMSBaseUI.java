@@ -11,7 +11,7 @@ import org.lwjgl.opengl.GL11;
 
 public class AMSBaseUI extends GuiInfoContainer {
 
-	private static ResourceLocation texture = AddonBase.getIntegrated("ams/gui_base.png");
+	private static ResourceLocation texture = AddonBase.getIntegrated("machines/ams/gui_base.png");
 	private AMSBaseTE base;
 
 	public AMSBaseUI(InventoryPlayer invPlayer,AMSBaseTE tedf) {

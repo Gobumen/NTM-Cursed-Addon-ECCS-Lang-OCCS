@@ -1,4 +1,4 @@
-package com.leafia.contents.building.broof;
+package com.leafia.contents.building.storage.broof;
 
 import com.hbm.render.loader.WaveFrontObjectVAO;
 import com.leafia.dev.LeafiaItemRenderer;
@@ -13,8 +13,8 @@ import static com.leafia.AddonBase.getIntegrated;
 import static com.leafia.init.ResourceInit.getVAO;
 
 public class BroofRender extends TileEntitySpecialRenderer<BroofTE> {
-	public static final WaveFrontObjectVAO mdl = getVAO(getIntegrated("broof/broof.obj"));
-	public static final ResourceLocation tex = getIntegrated("broof/broof.png");
+	public static final WaveFrontObjectVAO mdl = getVAO(getIntegrated("decoration/broof/broof.obj"));
+	public static final ResourceLocation tex = getIntegrated("decoration/broof/broof.png");
 	public static class BroofItemRender extends LeafiaItemRenderer {
 		@Override
 		protected double _sizeReference() {

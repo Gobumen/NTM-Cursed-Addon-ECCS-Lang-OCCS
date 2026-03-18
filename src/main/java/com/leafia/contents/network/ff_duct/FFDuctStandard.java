@@ -245,8 +245,8 @@ public class FFDuctStandard extends FFDuctBase implements IDynamicModels, ILookO
 	}
 
 	@Override
-	public AxisAlignedBB getCollisionBoundingBoxForPlacement(World worldIn, BlockPos pos, ItemStack stack) {
-		return getCollisionAABB(worldIn, pos, Fluids.NONE);
+	public AxisAlignedBB getCollisionBoundingBoxForPlacement(World world,BlockPos blockPos,IBlockState iBlockState,ItemStack itemStack) {
+		return getCollisionAABB(world, blockPos, Fluids.NONE);
 	}
 
 	@NotNull

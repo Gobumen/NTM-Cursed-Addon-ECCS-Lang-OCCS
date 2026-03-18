@@ -42,7 +42,7 @@ public class ReactorDoorRender implements IRenderDoors {
 		return test;
 	}
 	public static final ReactorDoorRender INSTANCE = new ReactorDoorRender();
-	public static final WaveFrontObjectVAO mdl = getVAO(getIntegrated("doors/reactordoor/reactordoorfinal.obj"));
+	public static final WaveFrontObjectVAO mdl = getVAO(getIntegrated("decoration/doors/reactordoor/reactordoorfinal.obj"));
 	public static final ResourceLocation test = new ResourceLocation("hbm","textures/blocks/brick_concrete.png");
 	public static class ReactorDoorItemRender extends LeafiaItemRenderer {
 		@Override

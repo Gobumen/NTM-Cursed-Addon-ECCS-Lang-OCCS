@@ -25,7 +25,7 @@ import static com.leafia.AddonBase.getIntegrated;
 
 public class AdvisorUI extends GuiScreenLeafia implements IAdvisorUI {
 	public static IAdvisorUI instance = null;
-	public static ResourceLocation texture = getIntegrated("advisor/ui/main.png");
+	public static ResourceLocation texture = getIntegrated("items/advisor/ui/main.png");
 	public boolean loading = true;
 	public AdvisorUI() {
 		Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(LeafiaSoundEvents.advisor_activate,1));

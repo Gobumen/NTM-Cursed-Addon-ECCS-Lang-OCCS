@@ -11,7 +11,7 @@ import org.lwjgl.opengl.GL11;
 
 public class AMSStabilizerUI extends GuiInfoContainer {
 
-	private static ResourceLocation texture = AddonBase.getIntegrated("ams/gui_stabilizer.png");
+	private static ResourceLocation texture = AddonBase.getIntegrated("machines/ams/gui_stabilizer.png");
 	private AMSStabilizerTE limiter;
 
 	public AMSStabilizerUI(InventoryPlayer invPlayer,AMSStabilizerTE tedf) {

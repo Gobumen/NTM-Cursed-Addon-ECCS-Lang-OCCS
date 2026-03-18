@@ -1,6 +1,5 @@
-package com.leafia.contents.building.broof;
+package com.leafia.contents.building.storage.broof;
 
-import com.hbm.lib.InventoryHelper;
 import com.leafia.dev.blocks.blockbase.AddonBlockDummyable;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;

@@ -17,13 +17,13 @@ import static com.leafia.AddonBase.getIntegrated;
 
 public class AddonDoorDecl {
 	public static class AddonDefaultSkins {
-		public static final ResourceLocation reactordoor_normal = getIntegrated("doors/reactordoor/reactordoor.png");
-		public static final ResourceLocation reactordoor_plain = getIntegrated("doors/reactordoor/reactordoor_trefoilless.png");
-		public static final ResourceLocation reactordoor_yellow = getIntegrated("doors/reactordoor/reactordoor_yellow.png");
-		public static final ResourceLocation reactordoor_gray = getIntegrated("doors/reactordoor/reactordoor_gray.png");
-		public static final ResourceLocation reactordoor_gray_plain = getIntegrated("doors/reactordoor/reactordoor_gray_trefoilless.png");
-		public static final ResourceLocation reactordoor_dark_gray = getIntegrated("doors/reactordoor/reactordoor_but_grayer.png");
-		public static final ResourceLocation reactordoor_green_plain = getIntegrated("doors/reactordoor/reactordoor_geen_trefoilless.png");
+		public static final ResourceLocation reactordoor_normal = getIntegrated("decoration/doors/reactordoor/reactordoor.png");
+		public static final ResourceLocation reactordoor_plain = getIntegrated("decoration/doors/reactordoor/reactordoor_trefoilless.png");
+		public static final ResourceLocation reactordoor_yellow = getIntegrated("decoration/doors/reactordoor/reactordoor_yellow.png");
+		public static final ResourceLocation reactordoor_gray = getIntegrated("decoration/doors/reactordoor/reactordoor_gray.png");
+		public static final ResourceLocation reactordoor_gray_plain = getIntegrated("decoration/doors/reactordoor/reactordoor_gray_trefoilless.png");
+		public static final ResourceLocation reactordoor_dark_gray = getIntegrated("decoration/doors/reactordoor/reactordoor_but_grayer.png");
+		public static final ResourceLocation reactordoor_green_plain = getIntegrated("decoration/doors/reactordoor/reactordoor_geen_trefoilless.png");
 	}
 	public static final DoorDecl REACTOR_DOOR = new DoorDecl() {
 		@Override

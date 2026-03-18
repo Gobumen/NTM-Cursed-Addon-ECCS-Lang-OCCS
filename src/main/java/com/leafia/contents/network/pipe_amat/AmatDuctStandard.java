@@ -79,7 +79,7 @@ public class AmatDuctStandard extends AmatDuctBase implements IDynamicModels, IL
 	@SideOnly(Side.CLIENT)
 	public static TextureAtlasSprite overlaySprite; // overlay
 
-	private final ResourceLocation objModelLocation = new ResourceLocation("leafia", "textures/_integrated/pipe_amat/pipe_amat.obj");
+	private final ResourceLocation objModelLocation = new ResourceLocation("leafia", "textures/_integrated/fluids/ntmf/pipe_amat/pipe_amat.obj");
 
 	public AmatDuctStandard(Material materialIn,String reg) {
 		super(materialIn);
@@ -209,8 +209,8 @@ public class AmatDuctStandard extends AmatDuctBase implements IDynamicModels, IL
 	}
 
 	@Override
-	public AxisAlignedBB getCollisionBoundingBoxForPlacement(World worldIn, BlockPos pos, ItemStack stack) {
-		return getCollisionAABB(worldIn, pos, Fluids.NONE);
+	public AxisAlignedBB getCollisionBoundingBoxForPlacement(World world,BlockPos blockPos,IBlockState iBlockState,ItemStack itemStack) {
+		return getCollisionAABB(world, blockPos, Fluids.NONE);
 	}
 
 	@NotNull
@@ -373,8 +373,8 @@ public class AmatDuctStandard extends AmatDuctBase implements IDynamicModels, IL
 	@SideOnly(Side.CLIENT)
 	@Override
 	public void registerSprite(TextureMap map) {
-		baseSprite = map.registerSprite(new ResourceLocation("leafia", "_integrated/pipe_amat/pipe_amat"));
-		overlaySprite = map.registerSprite(new ResourceLocation("leafia", "_integrated/pipe_amat/pipe_amat_overlay"));
+		baseSprite = map.registerSprite(new ResourceLocation("leafia", "_integrated/fluids/ntmf/pipe_amat/pipe_amat"));
+		overlaySprite = map.registerSprite(new ResourceLocation("leafia", "_integrated/fluids/ntmf/pipe_amat/pipe_amat_overlay"));
 	}
 
 	// do we need to separate inv meta models from block meta models? maybe not.

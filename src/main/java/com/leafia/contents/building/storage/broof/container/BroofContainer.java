@@ -1,7 +1,7 @@
-package com.leafia.contents.building.broof.container;
+package com.leafia.contents.building.storage.broof.container;
 
 import com.hbm.util.InventoryUtil;
-import com.leafia.contents.building.broof.BroofTE;
+import com.leafia.contents.building.storage.broof.BroofTE;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;

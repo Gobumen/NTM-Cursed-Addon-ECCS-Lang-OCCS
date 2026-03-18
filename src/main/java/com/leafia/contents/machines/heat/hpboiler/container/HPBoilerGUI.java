@@ -17,7 +17,7 @@ import static com.leafia.AddonBase.getIntegrated;
 
 public class HPBoilerGUI extends LCEGuiInfoContainer {
 
-	private static ResourceLocation texture = getIntegrated("ngf_hpboiler/gui.png");
+	private static ResourceLocation texture = getIntegrated("fluids/ntmf/ngf_hpboiler/gui.png");
 
 	private HPBoilerTE entity;
 	GuiTextField field;
