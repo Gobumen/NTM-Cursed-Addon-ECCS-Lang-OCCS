@@ -22,8 +22,8 @@ public abstract class MixinRenderRBMKLid {
 	@Shadow(remap = false)
 	protected abstract void renderCherenkovEffect(float r,float g,float b,float a,int height);
 
-	@Redirect(method = "render(Lcom/hbm/tileentity/machine/rbmk/TileEntityRBMKBase;DDDFIF)V",at = @At(value = "INVOKE", target = "Lcom/hbm/render/tileentity/RenderRBMKLid;renderCherenkovEffect(FFFFI)V"),require = 1,remap = false)
-	private void leaifa$onRender(RenderRBMKLid instance,float r,float g,float b,float a,int h,@Local(type = TileEntityRBMKBase.class) TileEntityRBMKBase te) {
+	@Redirect(method = "render(Lcom/hbm/tileentity/machine/rbmk/TileEntityRBMKRod;DDDFIF)V",at = @At(value = "INVOKE", target = "Lcom/hbm/render/tileentity/RenderRBMKLid;renderCherenkovEffect(FFFFI)V"),require = 1,remap = false)
+	private void leaifa$onRender(RenderRBMKLid instance,float r,float g,float b,float a,int h,@Local(type = TileEntityRBMKRod.class) TileEntityRBMKRod te) {
 		if (te instanceof TileEntityRBMKRod rod) {
 			Item item = rod.inventory.getStackInSlot(0).getItem();
 			if (item == ModItems.rbmk_fuel_leaus || item == ModItems.rbmk_fuel_heaus) {
