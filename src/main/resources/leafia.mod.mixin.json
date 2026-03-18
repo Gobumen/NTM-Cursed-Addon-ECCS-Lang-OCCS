@@ -98,6 +98,7 @@
     "hbm.MixinTileEntityCoreInjector",
     "hbm.MixinTileEntityCoreReceiver",
     "hbm.MixinTileEntityCoreStabilizer",
+    "hbm.MixinTileEntityCrateBase",
     "hbm.MixinTileEntityCrateDesh",
     "hbm.MixinTileEntityCrateIron",
     "hbm.MixinTileEntityCrateSteel",

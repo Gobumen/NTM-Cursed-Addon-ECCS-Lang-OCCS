@@ -2,12 +2,11 @@ package com.leafia.overwrite_contents.mixin.mod.hbm;
 
 import com.custom_hbm.util.LCETuple.Pair;
 import com.hbm.tileentity.machine.TileEntityCrateDesh;
-import com.hbm.tileentity.machine.TileEntityCrateSteel;
 import com.hbm.tileentity.machine.storage.TileEntityCrateBase;
 import com.leafia.contents.nonmachines.storage.items.CrateLabelContainer;
 import com.leafia.contents.nonmachines.storage.items.CrateLabelGUI;
 import com.leafia.dev.container_utility.LeafiaPacket;
-import com.leafia.overwrite_contents.interfaces.IMixinTileEntityCrateBase;
+import com.leafia.overwrite_contents.interfaces.IMixinTileEntityCrate;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
@@ -27,7 +26,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(value = TileEntityCrateDesh.class)
-public abstract class MixinTileEntityCrateDesh extends TileEntityCrateBase implements IMixinTileEntityCrateBase {
+public abstract class MixinTileEntityCrateDesh extends TileEntityCrateBase implements IMixinTileEntityCrate {
 	public MixinTileEntityCrateDesh(int scount) {
 		super(scount);
 	}

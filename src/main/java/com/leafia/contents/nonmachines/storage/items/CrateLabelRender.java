@@ -1,9 +1,8 @@
 package com.leafia.contents.nonmachines.storage.items;
 
 import com.hbm.interfaces.Spaghetti;
-import com.hbm.items.ModItems;
 import com.hbm.tileentity.machine.TileEntityCrate;
-import com.leafia.overwrite_contents.interfaces.IMixinTileEntityCrateBase;
+import com.leafia.overwrite_contents.interfaces.IMixinTileEntityCrate;
 import com.leafia.transformer.LeafiaGls;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
@@ -67,7 +66,7 @@ public class CrateLabelRender extends TileEntitySpecialRenderer<TileEntityCrate>
 	@Override
 	public void render(TileEntityCrate te,double x,double y,double z,float partialTicks,int destroyStage,float alpha) {
 		super.render(te, x, y, z, partialTicks, destroyStage, alpha);
-		if (te instanceof IMixinTileEntityCrateBase mixin) {
+		if (te instanceof IMixinTileEntityCrate mixin) {
 			String labelUpper = mixin.leafia$upperLabel();
 			String labelMiddle = mixin.leafia$middleLabel();
 			Item labelIcon = mixin.leafia$icon().getA();
