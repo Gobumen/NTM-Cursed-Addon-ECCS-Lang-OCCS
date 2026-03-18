@@ -11,8 +11,8 @@ import static com.leafia.AddonBase.getIntegrated;
 import static com.leafia.init.ResourceInit.getVAO;
 
 public class HPBoilerRender extends TileEntitySpecialRenderer<HPBoilerTE> {
-	static WaveFrontObjectVAO mdl = getVAO(getIntegrated("ngf_hpboiler/boiler.obj"));
-	static ResourceLocation tex = getIntegrated("ngf_hpboiler/boiler.png");
+	static WaveFrontObjectVAO mdl = getVAO(getIntegrated("fluids/ntmf/ngf_hpboiler/boiler.obj"));
+	static ResourceLocation tex = getIntegrated("fluids/ntmf/ngf_hpboiler/boiler.png");
 	public static class HPBoilerItemRender extends LeafiaItemRenderer {
 		@Override
 		protected double _sizeReference() {

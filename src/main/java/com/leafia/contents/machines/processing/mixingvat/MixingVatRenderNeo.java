@@ -20,9 +20,9 @@ import static com.leafia.AddonBase.getIntegrated;
 import static com.leafia.init.ResourceInit.getVAO;
 
 public class MixingVatRenderNeo extends TileEntitySpecialRenderer<MixingVatTE> {
-	public static final WaveFrontObjectVAO mdl = getVAO(getIntegrated("ngf_vat/vat.obj"));
-	public static final ResourceLocation tex = getIntegrated("ngf_vat/vat.png");
-	public static final ResourceLocation blade = getIntegrated("ngf_vat/blade.png");
+	public static final WaveFrontObjectVAO mdl = getVAO(getIntegrated("fluids/ff/ngf_vat/vat.obj"));
+	public static final ResourceLocation tex = getIntegrated("fluids/ff/ngf_vat/vat.png");
+	public static final ResourceLocation blade = getIntegrated("fluids/ff/ngf_vat/blade.png");
 	public static class MixingVatItemRenderNeo extends LeafiaItemRenderer {
 		@Override
 		public double _sizeReference() {
@@ -52,7 +52,7 @@ public class MixingVatRenderNeo extends TileEntitySpecialRenderer<MixingVatTE> {
 			GlStateManager.shadeModel(GL11.GL_FLAT);
 		}
 	}
-	public static final ResourceLocation rsc = getIntegrated("ngf_vat/fluid.png");
+	public static final ResourceLocation rsc = getIntegrated("fluids/ff/ngf_vat/fluid.png");
 	@Override
 	public void render(MixingVatTE te,double x,double y,double z,float partialTicks,int destroyStage,float alpha) {
 		LeafiaGls.pushMatrix();

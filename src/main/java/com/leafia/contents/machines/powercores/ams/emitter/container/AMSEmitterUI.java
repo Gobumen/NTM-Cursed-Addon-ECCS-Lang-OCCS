@@ -11,7 +11,7 @@ import org.lwjgl.opengl.GL11;
 
 public class AMSEmitterUI extends GuiInfoContainer {
 
-	private static ResourceLocation texture = AddonBase.getIntegrated("ams/gui_emitter.png");
+	private static ResourceLocation texture = AddonBase.getIntegrated("machines/ams/gui_emitter.png");
 	private AMSEmitterTE emitter;
 
 	public AMSEmitterUI(InventoryPlayer invPlayer,AMSEmitterTE tedf) {

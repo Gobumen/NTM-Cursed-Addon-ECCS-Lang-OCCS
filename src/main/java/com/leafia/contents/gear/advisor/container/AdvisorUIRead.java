@@ -20,7 +20,7 @@ import java.util.List;
 import static com.leafia.AddonBase.getIntegrated;
 
 public class AdvisorUIRead extends GuiScreenLeafia implements IAdvisorUI {
-	public static ResourceLocation texture = getIntegrated("advisor/ui/message.png");
+	public static ResourceLocation texture = getIntegrated("items/advisor/ui/message.png");
 	final String str;
 	final int scr;
 	public AdvisorUIRead(String message,int scroll) {

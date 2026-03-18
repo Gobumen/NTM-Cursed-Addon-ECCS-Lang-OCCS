@@ -16,9 +16,9 @@ import static com.leafia.AddonBase.getIntegrated;
 import static com.leafia.init.ResourceInit.getVAO;
 
 public class AMSBaseRender extends TileEntitySpecialRenderer<AMSBaseTE> {
-	public static final WaveFrontObjectVAO mdl0 = getVAO(getIntegrated("ams/ams_base.obj"));
-	public static final ResourceLocation tex0 = getIntegrated("ams/ams_base.png");
-	public static final ResourceLocation tex1 = getIntegrated("ams/balefire/ams_base.png");
+	public static final WaveFrontObjectVAO mdl0 = getVAO(getIntegrated("machines/ams/ams_base.obj"));
+	public static final ResourceLocation tex0 = getIntegrated("machines/ams/ams_base.png");
+	public static final ResourceLocation tex1 = getIntegrated("machines/ams/balefire/ams_base.png");
 
 	public static class AMSBaseItemRender extends LeafiaItemRenderer {
 		@Override

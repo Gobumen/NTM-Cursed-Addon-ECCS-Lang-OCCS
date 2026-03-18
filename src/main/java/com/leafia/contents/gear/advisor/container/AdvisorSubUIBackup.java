@@ -15,7 +15,7 @@ import java.io.IOException;
 import static com.leafia.AddonBase.getIntegrated;
 
 public class AdvisorSubUIBackup extends GuiScreenLeafia implements IAdvisorUI {
-	public static ResourceLocation texture = getIntegrated("advisor/ui/main.png");
+	public static ResourceLocation texture = getIntegrated("items/advisor/ui/main.png");
 	final int scr;
 	public AdvisorSubUIBackup(int scroll) {
 		AdvisorUI.instance = this;

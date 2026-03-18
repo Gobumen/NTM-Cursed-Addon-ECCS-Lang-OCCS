@@ -14,7 +14,7 @@ import com.leafia.contents.AddonFluids.AddonFF;
 import com.leafia.contents.bomb.balefire.AshBalefire;
 import com.leafia.contents.bomb.balefire.BaleoniteBlock;
 import com.leafia.contents.bomb.digamma.DigammititeBlock;
-import com.leafia.contents.building.broof.BroofBlock;
+import com.leafia.contents.building.storage.broof.BroofBlock;
 import com.leafia.contents.building.doors.AddonDoorDecl;
 import com.leafia.contents.building.doors.special.reactor_door.ReactorDoorBlock;
 import com.leafia.contents.building.generic.ConcreteBricks;
@@ -24,6 +24,7 @@ import com.leafia.contents.building.generic.lined_asphalt.LinedAsphaltBlock;
 import com.leafia.contents.building.generic.mixed.BlockMixedConcrete;
 import com.leafia.contents.building.pinkdoor.BlockPinkDoor;
 import com.leafia.contents.building.sign.SignBlock;
+import com.leafia.contents.building.storage.rack.RackBlock;
 import com.leafia.contents.debug.blackhole_test.DebugBHBlock;
 import com.leafia.contents.debug.explosion_test.DebugBoomBlock;
 import com.leafia.contents.debug.ff_test.source.DebugSourceBlock;
@@ -424,6 +425,8 @@ public class AddonBlocks {
 	public static final Block reactor_door = new ReactorDoorBlock(Material.IRON,AddonDoorDecl.REACTOR_DOOR,true,"reactor_door").setHardness(150.0F).setResistance(13500.0F).setCreativeTab(MainRegistry.machineTab);
 
 	public static final Block brick_concrete_dark = new ConcreteBricks(Material.ROCK,"brick_concrete_dark","brick_dark_concrete"); // :leafeon_facepalm:
+
+	public static final Block sellacity_rack = new RackBlock(Material.IRON,"sellacity_rack").setHardness(5.0F).setResistance(10.0F).setCreativeTab(MainRegistry.blockTab);
 
 	static {
 		if (Loader.isModLoaded("opencomputers")) {

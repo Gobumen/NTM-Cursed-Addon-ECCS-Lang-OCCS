@@ -22,9 +22,9 @@ import static com.leafia.init.ResourceInit.getVAO;
 
 @SideOnly(Side.CLIENT)
 public class BlackholeRenderer {
-	static WaveFrontObjectVAO mdl = getVAO(getIntegrated("blackhole/blackhole.obj"));
-	static ResourceLocation disk01 = getIntegrated("blackhole/disk_01.png");
-	static ResourceLocation disk02 = getIntegrated("blackhole/disk_02.png");
+	static WaveFrontObjectVAO mdl = getVAO(getIntegrated("miscellaneous/blackhole/blackhole.obj"));
+	static ResourceLocation disk01 = getIntegrated("miscellaneous/blackhole/disk_01.png");
+	static ResourceLocation disk02 = getIntegrated("miscellaneous/blackhole/disk_02.png");
 	static float getRotation(float speed) {
 		return (float)MathHelper.positiveModulo(System.currentTimeMillis()/1000d*360,360/speed)*speed;
 	}

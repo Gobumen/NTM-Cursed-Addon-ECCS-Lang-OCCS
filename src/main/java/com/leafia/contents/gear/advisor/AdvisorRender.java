@@ -16,7 +16,7 @@ import net.minecraft.util.ResourceLocation;
 import static com.leafia.init.ResourceInit.getVAO;
 
 public class AdvisorRender extends TEISRBase {
-	static final String basePath = "textures/_integrated/advisor/";
+	static final String basePath = "textures/_integrated/items/advisor/";
 	public static final WaveFrontObjectVAO mdl = getVAO(new ResourceLocation("leafia",basePath+"ugly af.obj"));
 	public static final ResourceLocation base = ResourceManager.control_panel_custom_tex;
 	public static final ResourceLocation solid = AddonBase.solid;

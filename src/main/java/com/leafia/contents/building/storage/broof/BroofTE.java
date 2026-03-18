@@ -1,13 +1,12 @@
-package com.leafia.contents.building.broof;
+package com.leafia.contents.building.storage.broof;
 
 import com.hbm.lib.ItemStackHandlerWrapper;
 import com.hbm.tileentity.IGUIProvider;
-import com.leafia.contents.building.broof.container.BroofContainer;
-import com.leafia.contents.building.broof.container.BroofGUI;
+import com.leafia.contents.building.storage.broof.container.BroofContainer;
+import com.leafia.contents.building.storage.broof.container.BroofGUI;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;

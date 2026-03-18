@@ -1,6 +1,6 @@
-package com.leafia.contents.building.broof.container;
+package com.leafia.contents.building.storage.broof.container;
 
-import com.leafia.contents.building.broof.BroofTE;
+import com.leafia.contents.building.storage.broof.BroofTE;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.resources.I18n;

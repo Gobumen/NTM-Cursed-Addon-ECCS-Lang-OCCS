@@ -16,12 +16,14 @@ import com.leafia.contents.AddonBlocks.PWR;
 import com.leafia.contents.AddonItems;
 import com.leafia.contents.bomb.missile.customnuke.entity.CustomNukeMissileEntity;
 import com.leafia.contents.bomb.missile.customnuke.entity.CustomNukeMissileEntityRender;
-import com.leafia.contents.building.broof.BroofRender;
-import com.leafia.contents.building.broof.BroofTE;
+import com.leafia.contents.building.storage.broof.BroofRender;
+import com.leafia.contents.building.storage.broof.BroofTE;
 import com.leafia.contents.building.light.LightRender;
 import com.leafia.contents.building.light.LightTE;
 import com.leafia.contents.building.sign.SignRender;
 import com.leafia.contents.building.sign.SignTE;
+import com.leafia.contents.building.storage.rack.RackRender;
+import com.leafia.contents.building.storage.rack.RackTE;
 import com.leafia.contents.cannery.AddonJars;
 import com.leafia.contents.control.fuel.nuclearfuel.LeafiaRodItem;
 import com.leafia.contents.control.fuel.nuclearfuel.LeafiaRodRender;
@@ -189,6 +191,8 @@ public class LeafiaClientProxy extends LeafiaServerProxy {
 			ClientRegistry.bindTileEntitySpecialRenderer(TileEntityCrateSteel.class,crateLabel);
 			ClientRegistry.bindTileEntitySpecialRenderer(TileEntityCrateTungsten.class,crateLabel);
 			ClientRegistry.bindTileEntitySpecialRenderer(TileEntityCrateDesh.class,crateLabel);
+
+			ClientRegistry.bindTileEntitySpecialRenderer(RackTE.class,new RackRender());
 		}
 		AddonJars.initJars();
 	}
