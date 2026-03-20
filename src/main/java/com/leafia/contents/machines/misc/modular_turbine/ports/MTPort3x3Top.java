@@ -1,0 +1,41 @@
+package com.leafia.contents.machines.misc.modular_turbine.ports;
+
+import com.hbm.lib.DirPos;
+import com.hbm.lib.ForgeDirection;
+import com.hbm.tileentity.TileEntityProxyCombo;
+import com.leafia.contents.machines.misc.modular_turbine.ModularTurbineComponentTE;
+import com.leafia.contents.machines.misc.modular_turbine.separator.MTSeparator3x3;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
+import org.jetbrains.annotations.Nullable;
+
+public class MTPort3x3Top extends MTSeparator3x3 implements IMTPortBlock {
+	public MTPort3x3Top(String s) {
+		super(s);
+	}
+	@Override
+	public DirPos[] getConPos(BlockPos pos,EnumFacing facing) {
+		return new DirPos[]{
+				new DirPos(pos.up(3),ForgeDirection.UP)
+		};
+	}
+	@Override
+	public TurbineComponentType componentType() {
+		return TurbineComponentType.PORT;
+	}
+	@Override
+	public @Nullable TileEntity createNewTileEntity(World worldIn,int meta) {
+		if (meta >= 12) return new MTComponentPortTE();
+		if (meta >= extra) return new TileEntityProxyCombo(false,false,true);
+		return null;
+	}
+	@Override
+	protected void fillSpace(World world,int x,int y,int z,ForgeDirection dir,int o) {
+		super.fillSpace(world,x,y,z,dir,o);
+		EnumFacing face = dir.toEnumFacing();
+		EnumFacing rot = face.rotateY();
+		makeExtra(world,x,y+2,z);
+	}
+}

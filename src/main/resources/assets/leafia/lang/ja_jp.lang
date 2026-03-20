@@ -312,6 +312,7 @@ tile.broof.name=Broof
 tile.control_torch.name=Control Panel Torch
 tile.coolant_heatex.name=冷媒熱交換機
 tile.crate_tungsten.desc=DFCボックスレシピに使用するものであり、スロットが増えるわけではありません。
+tile.deco_turbine.name=モジューラータービンデコブロック
 tile.dfc_cemitter.name=Creative DFC Booster
 tile.dfc_emitter.name=DFC ブースター
 tile.dfc_exchanger.name=DFC 熱交換機
