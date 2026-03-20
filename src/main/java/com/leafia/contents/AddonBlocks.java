@@ -29,6 +29,7 @@ import com.leafia.contents.debug.blackhole_test.DebugBHBlock;
 import com.leafia.contents.debug.explosion_test.DebugBoomBlock;
 import com.leafia.contents.debug.ff_test.source.DebugSourceBlock;
 import com.leafia.contents.debug.ff_test.tank.DebugTankBlock;
+import com.leafia.contents.debug.fluid_voider.VoiderBlock;
 import com.leafia.contents.debug.rbmk_jet.DebugRBMKJetEmitter;
 import com.leafia.contents.fluids.FluorideFluid.FluorideFluidBlock;
 import com.leafia.contents.machines.elevators.EvBuffer;
@@ -39,6 +40,17 @@ import com.leafia.contents.machines.elevators.floors.EvFloor;
 import com.leafia.contents.machines.heat.hpboiler.HPBoilerBlock;
 import com.leafia.contents.machines.heat.rtheater.HeaterRTGBlock;
 import com.leafia.contents.machines.misc.heatex.CoolantHeatexBlock;
+import com.leafia.contents.machines.misc.modular_turbine.blades.*;
+import com.leafia.contents.machines.misc.modular_turbine.core.MTCoreBlock;
+import com.leafia.contents.machines.misc.modular_turbine.flywheel.MTFlywheel3x3;
+import com.leafia.contents.machines.misc.modular_turbine.flywheel.MTFlywheel5x5;
+import com.leafia.contents.machines.misc.modular_turbine.flywheel.MTFlywheel7x7;
+import com.leafia.contents.machines.misc.modular_turbine.flywheel.MTFlywheel9x9;
+import com.leafia.contents.machines.misc.modular_turbine.ports.*;
+import com.leafia.contents.machines.misc.modular_turbine.separator.MTSeparator3x3;
+import com.leafia.contents.machines.misc.modular_turbine.separator.MTSeparator5x5;
+import com.leafia.contents.machines.misc.modular_turbine.separator.MTSeparator7x7;
+import com.leafia.contents.machines.misc.modular_turbine.separator.MTSeparator9x9;
 import com.leafia.contents.machines.panel.controltorch.ControlTorchBlock;
 import com.leafia.contents.machines.powercores.ams.base.AMSBaseBlock;
 import com.leafia.contents.machines.powercores.ams.emitter.AMSEmitterBlock;
@@ -288,6 +300,7 @@ public class AddonBlocks {
 		public static final Block boom = new DebugBoomBlock(Material.ANVIL,"test_boom");
 		public static final Block rbmkjet = new DebugRBMKJetEmitter(Material.ANVIL,"test_rbmk_jet");
 		public static final Block blackhole = new DebugBHBlock(Material.ANVIL,"test_blackhole_render");
+		public static final Block voider = new VoiderBlock(Material.ANVIL,"test_fluid_voider");
 	}
 
 	public static final Block salt_separator = new SaltSeparatorBlock(Material.IRON,"salt_separator").setHardness(5.0F).setResistance(20.0F).setCreativeTab(MainRegistry.machineTab);
@@ -427,6 +440,46 @@ public class AddonBlocks {
 	public static final Block brick_concrete_dark = new ConcreteBricks(Material.ROCK,"brick_concrete_dark","brick_dark_concrete"); // :leafeon_facepalm:
 
 	public static final Block sellacity_rack = new RackBlock(Material.IRON,"sellacity_rack").setHardness(5.0F).setResistance(10.0F).setCreativeTab(MainRegistry.blockTab);
+
+	static boolean mt_dummy = ModularTurbines.dummy;
+	public static class ModularTurbines {
+		static boolean dummy = false;
+
+		public static final Block deco_turbine = new AddonBlockBase(Material.IRON,"deco_turbine").setCreativeTab(MainRegistry.blockTab).setHardness(5.0F).setResistance(10.0F);
+
+		public static final Block core = new MTCoreBlock("modular_turbine_core");
+
+		public static final Block blades2x2 = new MTBlades2x2("modular_turbine_2x2_blades");
+		public static final Block blades3x3 = new MTBlades3x3("modular_turbine_3x3_blades");
+		public static final Block blades5x5 = new MTBlades5x5("modular_turbine_5x5_blades");
+		public static final Block blades7x7 = new MTBlades7x7("modular_turbine_7x7_blades");
+		public static final Block blades9x9 = new MTBlades9x9("modular_turbine_9x9_blades");
+
+		public static final Block separator3x3 = new MTSeparator3x3("modular_turbine_3x3_separator");
+		public static final Block separator5x5 = new MTSeparator5x5("modular_turbine_5x5_separator");
+		public static final Block separator7x7 = new MTSeparator7x7("modular_turbine_7x7_separator");
+		public static final Block separator9x9 = new MTSeparator9x9("modular_turbine_9x9_separator");
+
+		public static final Block port3x3_top = new MTPort3x3Top("modular_turbine_3x3_port_top");
+		public static final Block port5x5_top = new MTPort5x5Top("modular_turbine_5x5_port_top");
+		public static final Block port7x7_top = new MTPort7x7Top("modular_turbine_7x7_port_top");
+		public static final Block port9x9_top = new MTPort9x9Top("modular_turbine_9x9_port_top");
+
+		public static final Block port3x3_side = new MTPort3x3Side("modular_turbine_3x3_port_side");
+		public static final Block port5x5_side = new MTPort5x5Side("modular_turbine_5x5_port_side");
+		public static final Block port7x7_side = new MTPort7x7Side("modular_turbine_7x7_port_side");
+		public static final Block port9x9_side = new MTPort9x9Side("modular_turbine_9x9_port_side");
+
+		public static final Block port3x3_inline = new MTPort3x3Inline("modular_turbine_3x3_port_inline");
+		public static final Block port5x5_inline = new MTPort5x5Inline("modular_turbine_5x5_port_inline");
+		public static final Block port7x7_inline = new MTPort7x7Inline("modular_turbine_7x7_port_inline");
+		public static final Block port9x9_inline = new MTPort9x9Inline("modular_turbine_9x9_port_inline");
+
+		public static final Block flywheel3x3 = new MTFlywheel3x3("modular_turbine_3x3_flywheel");
+		public static final Block flywheel5x5 = new MTFlywheel5x5("modular_turbine_5x5_flywheel");
+		public static final Block flywheel7x7 = new MTFlywheel7x7("modular_turbine_7x7_flywheel");
+		public static final Block flywheel9x9 = new MTFlywheel9x9("modular_turbine_9x9_flywheel");
+	}
 
 	static {
 		if (Loader.isModLoaded("opencomputers")) {

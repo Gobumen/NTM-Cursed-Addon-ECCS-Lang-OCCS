@@ -105,6 +105,7 @@
     "hbm.MixinTileEntityCrateTungsten",
     "hbm.MixinTileEntityDiFurnaceRTG",
     "hbm.MixinTileEntityFEL",
+    "hbm.MixinTileEntityFluidPump",
     "hbm.MixinTileEntityHeatBoiler",
     "hbm.MixinTileEntityHeatBoilerIndustrial",
     "hbm.MixinTileEntityLaunchPadBase",

@@ -12,6 +12,7 @@ import com.leafia.contents.fluids.AddonFluidType;
 import com.leafia.contents.fluids.traits.FT_DFCFuel;
 import com.leafia.contents.fluids.traits.FT_LFTRCoolant;
 import com.leafia.contents.fluids.traits.FT_Magnetic;
+import com.leafia.contents.machines.misc.modular_turbine.core.MTCoreTE;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -62,6 +63,18 @@ public class AddonFluidTraits {
 
 		double eff_steam_cool = 0.5D;
 		AddonFluids.DEATHSTEAM.addTraits(new FT_Coolable(Fluids.ULTRAHOTSTEAM, 1, 10, 960).setEff(CoolingType.HEATEXCHANGER, eff_steam_cool));
+
+		MTCoreTE.steamTypes.add(AddonFluids.DEATHSTEAM);
+		MTCoreTE.steamTypes.add(Fluids.ULTRAHOTSTEAM);
+		MTCoreTE.steamTypes.add(Fluids.SUPERHOTSTEAM);
+		MTCoreTE.steamTypes.add(Fluids.HOTSTEAM);
+		MTCoreTE.steamTypes.add(Fluids.STEAM);
+		MTCoreTE.steamTypes.add(Fluids.SPENTSTEAM);
+
+		/*
+		ES    UDS    SDS     DS        S
+		1B -> 10B -> 100B -> 1,000B -> 10,000B
+		 */
 
 		for (Entry<AddonFluidType,FluidType> entry : copyTraits.entrySet()) {
 			if (entry.getKey().copyFunction != null)

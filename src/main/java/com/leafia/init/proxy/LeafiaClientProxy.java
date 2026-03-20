@@ -44,6 +44,10 @@ import com.leafia.contents.machines.heat.rtheater.HeaterRTGRender;
 import com.leafia.contents.machines.heat.rtheater.HeaterRTGTE;
 import com.leafia.contents.machines.misc.heatex.CoolantHeatexRender;
 import com.leafia.contents.machines.misc.heatex.CoolantHeatexTE;
+import com.leafia.contents.machines.misc.modular_turbine.ModularTurbineComponentRender;
+import com.leafia.contents.machines.misc.modular_turbine.ModularTurbineComponentTE;
+import com.leafia.contents.machines.misc.modular_turbine.core.MTCoreRender;
+import com.leafia.contents.machines.misc.modular_turbine.core.MTCoreTE;
 import com.leafia.contents.machines.powercores.ams.base.AMSBaseRender;
 import com.leafia.contents.machines.powercores.ams.base.AMSBaseTE;
 import com.leafia.contents.machines.powercores.ams.emitter.AMSEmitterRender;
@@ -193,6 +197,8 @@ public class LeafiaClientProxy extends LeafiaServerProxy {
 			ClientRegistry.bindTileEntitySpecialRenderer(TileEntityCrateDesh.class,crateLabel);
 
 			ClientRegistry.bindTileEntitySpecialRenderer(RackTE.class,new RackRender());
+			ClientRegistry.bindTileEntitySpecialRenderer(ModularTurbineComponentTE.class,new ModularTurbineComponentRender());
+			ClientRegistry.bindTileEntitySpecialRenderer(MTCoreTE.class,new MTCoreRender());
 		}
 		AddonJars.initJars();
 	}
