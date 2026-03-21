@@ -32,7 +32,7 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 	// Work fraction extracted by a non-decompressing stage
 	private static final double PARTIAL_EXPANSION_FRACTION = 0.2D;
 	// Converts stage-specific work into an effective nozzle speed
-	private static final double NOZZLE_SPEED_COEFFICIENT = 30D;
+	private static final double NOZZLE_SPEED_COEFFICIENT = 140D;
 	private static final double NOZZLE_VELOCITY_COEFFICIENT = 0.92D;
 	private static final double INLET_WHIRL_FRACTION = 0.97D;
 	private static final double RELATIVE_EXIT_VELOCITY_FRACTION = 0.82D;
@@ -49,8 +49,21 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 	private static final double VISCOUS_FRICTION_COEFFICIENT = 0.02D;
 	private static final double WINDAGE_COEFFICIENT = 0.0015D;
 	private static final double POWER_SCALE = 500D;
+	private static final double ADMISSION_NOMINAL_TAU_TICKS = 4D;
+	private static final double ADMISSION_NOMINAL_RESPONSE = 1D-Math.exp(-1D/ADMISSION_NOMINAL_TAU_TICKS);
+	private static final double ADMISSION_STABLE_RELATIVE_ERROR = 0.03D;
+	private static final double ADMISSION_MAX_BUFFER_TICKS = 2D;
+	private static final double ADMISSION_FLOW_EPSILON = 1.0E-9D;
+	private static final double ADMISSION_BUFFER_EPSILON = 1.0E-6D;
+	private static final double TWO_PI = Math.PI*2D;
+	private static final double TICK_SECONDS = 1D/20D;
 
 	public double rps;
+	public double lastTargetRPS = 0;
+	public double lastDriveTorque = 0;
+	public double lastGeneratorTorque = 0;
+	public double lastFrictionTorque = 0;
+	public double lastWindageTorque = 0;
 	public final List<ModularTurbineComponentTE> components = new ArrayList<>();
 	public final List<TurbineAssembly> assemblies = new ArrayList<>();
 	public int length = 0;
@@ -107,6 +120,35 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 	}
 	public static double getStageRadius(int size) {
 		return Math.max(size,2)*0.35D;
+	}
+	private static double getEffectiveMassFlow(TurbineAssembly assembly,double rawMassFlow) {
+		if (assembly.nominalMassFlow <= ADMISSION_FLOW_EPSILON && assembly.admissionBufferMass <= ADMISSION_BUFFER_EPSILON) {
+			assembly.nominalMassFlow = rawMassFlow;
+			assembly.admissionBufferMass = 0;
+			return rawMassFlow;
+		}
+
+		assembly.nominalMassFlow += (rawMassFlow-assembly.nominalMassFlow)*ADMISSION_NOMINAL_RESPONSE;
+		double stableBand = Math.max(assembly.nominalMassFlow*ADMISSION_STABLE_RELATIVE_ERROR,ADMISSION_FLOW_EPSILON);
+		double maxBufferMass = Math.max(assembly.nominalMassFlow,0)*ADMISSION_MAX_BUFFER_TICKS;
+		if (Math.abs(rawMassFlow-assembly.nominalMassFlow) <= stableBand && assembly.admissionBufferMass <= ADMISSION_BUFFER_EPSILON) {
+			assembly.admissionBufferMass = 0;
+			return rawMassFlow;
+		}
+
+		double availableMass = rawMassFlow+assembly.admissionBufferMass;
+		double effectiveMassFlow = Math.min(assembly.nominalMassFlow,availableMass);
+		assembly.admissionBufferMass = Math.max(availableMass-effectiveMassFlow,0);
+		if (assembly.admissionBufferMass > maxBufferMass) {
+			double overflowMass = assembly.admissionBufferMass-maxBufferMass;
+			effectiveMassFlow += overflowMass;
+			assembly.admissionBufferMass = maxBufferMass;
+		}
+		if (assembly.admissionBufferMass <= ADMISSION_BUFFER_EPSILON && Math.abs(effectiveMassFlow-rawMassFlow) <= stableBand) {
+			assembly.admissionBufferMass = 0;
+			return rawMassFlow;
+		}
+		return effectiveMassFlow;
 	}
 	@Override
 	public String getPacketIdentifier() {
@@ -246,6 +288,8 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 					int ops = Math.min(inputOps,(int)(outputOps/division));
 					assembly.input.setFill(assembly.input.getFill()-ops);
 					assembly.output.setFill((int)(assembly.output.getFill()+ops*division));
+					assembly.lastOps = ops;
+					assembly.lastDivision = division;
 
 					// STEAM FLOW DIRECTION CHECK (BLADE DIRECTIONS AND PORT COUNT)
 					int wrongBlades = 0;
@@ -281,14 +325,21 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 						}
 						assembly.receivingPositions.clear();
 					}
+					assembly.lastWrongBlades = wrongBlades;
 
 					// ADD TURBULENCE (FOR BADLY PLACED BLADES)
 					turbulence = Math.min(turbulence+wrongBlades*10d/assembly.bladeDirections.size(),100);
 
 					// TORQUE CALCULATION
 					double bladeEfficiency = Math.max(assembly.bladeDirections.size()-wrongBlades,0)/(double)assembly.bladeDirections.size();
+					assembly.lastBladeEfficiency = bladeEfficiency;
 					double stageSpecificWork = getStageSpecificWork(assembly.typeIn,assembly.decompress);
-					double massFlow = ops*getSteamMassEquivalent(assembly.typeIn);
+					double rawMassFlow = ops*getSteamMassEquivalent(assembly.typeIn);
+					double massFlow = getEffectiveMassFlow(assembly,rawMassFlow);
+					assembly.lastRawMassFlow = rawMassFlow;
+					assembly.lastEffectiveMassFlow = massFlow;
+					assembly.lastAdmissionBufferMass = assembly.admissionBufferMass;
+					assembly.lastNominalMassFlow = assembly.nominalMassFlow;
 					double stageRadius = getStageRadius(assembly.size);
 					double availableWork = massFlow*stageSpecificWork*bladeEfficiency;
 					if (massFlow > 0 && stageSpecificWork > 0) {
@@ -309,7 +360,7 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 				}
 				if (targetRPSWeight > 0)
 					targetRPS /= targetRPSWeight;
-				double omega = rps*Math.PI*2;
+				double omega = rps*TWO_PI;
 				double generatorEmf = GENERATOR_EMF_COEFFICIENT*omega;
 				double generatorCurrent = generatorEmf/GENERATOR_TOTAL_RESISTANCE;
 				generatorCurrent = Math.min(Math.max(generatorCurrent,-GENERATOR_CURRENT_LIMIT),GENERATOR_CURRENT_LIMIT);
@@ -318,9 +369,10 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 				windageTorque = WINDAGE_COEFFICIENT*rps*Math.abs(rps);
 
 				double netTorque = driveTorque-generatorTorque-frictionTorque-windageTorque;
-				rps += netTorque/weight;
+				omega += netTorque/weight*TICK_SECONDS;
+				rps = omega/TWO_PI;
 
-				double outputOmega = rps*Math.PI*2;
+				double outputOmega = rps*TWO_PI;
 				powerGenerated += (long)Math.max(generatorTorque*outputOmega*POWER_SCALE,0);
 			}
 			// ADD TURBULENCE (FOR SUDDEN INCREASE OF RPS)
@@ -328,6 +380,11 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 			turbulence *= 0.99;
 			turbulence = Math.min(turbulence+turbulenceAdd,100);
 			turbulence = 0; // removed temporarily because it's annoying to test
+			lastTargetRPS = targetRPS;
+			lastDriveTorque = driveTorque;
+			lastGeneratorTorque = generatorTorque;
+			lastFrictionTorque = frictionTorque;
+			lastWindageTorque = windageTorque;
 			//LeafiaDebug.debugLog(world,"TURBULENCE: "+turbulence);
 			LeafiaDebug.debugLog(world,"RPS: "+rps);
 			LeafiaDebug.debugLog(world,"powerGenerated: "+SIPfx.auto(powerGenerated*20)+"HE/s");
@@ -367,6 +424,16 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 		public int size = -1;
 		public Set<Integer> receivingPositions = new HashSet<>();
 		public Map<Integer,Boolean> bladeDirections = new HashMap<>(); // false: normal, true: opposite
+		public int lastOps = 0;
+		public double lastDivision = 1;
+		public int lastWrongBlades = 0;
+		public double lastBladeEfficiency = 0;
+		public double admissionBufferMass = 0;
+		public double nominalMassFlow = 0;
+		public double lastRawMassFlow = 0;
+		public double lastEffectiveMassFlow = 0;
+		public double lastAdmissionBufferMass = 0;
+		public double lastNominalMassFlow = 0;
 	}
 	public double turbulence;
 	public void disassemble() {
