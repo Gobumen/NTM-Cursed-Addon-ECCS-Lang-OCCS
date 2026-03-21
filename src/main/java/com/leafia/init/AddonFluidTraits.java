@@ -61,8 +61,9 @@ public class AddonFluidTraits {
 		double eff_steam_heatex = 0.25D;
 		Fluids.ULTRAHOTSTEAM.addTraits(new FT_Heatable().setEff(HeatingType.BOILER, eff_steam_boil).setEff(HeatingType.HEATEXCHANGER, eff_steam_heatex).addStep(960, 10, AddonFluids.DEATHSTEAM, 1));
 
+		double eff_steam_turbine = 1.0D;
 		double eff_steam_cool = 0.5D;
-		AddonFluids.DEATHSTEAM.addTraits(new FT_Coolable(Fluids.ULTRAHOTSTEAM, 1, 10, 960).setEff(CoolingType.HEATEXCHANGER, eff_steam_cool));
+		AddonFluids.DEATHSTEAM.addTraits(new FT_Coolable(Fluids.ULTRAHOTSTEAM, 1, 10, 960).setEff(CoolingType.TURBINE, eff_steam_turbine).setEff(CoolingType.HEATEXCHANGER, eff_steam_cool));
 
 		MTCoreTE.steamTypes.add(AddonFluids.DEATHSTEAM);
 		MTCoreTE.steamTypes.add(Fluids.ULTRAHOTSTEAM);
