@@ -4,6 +4,7 @@ import com.hbm.blocks.BlockDummyable;
 import com.hbm.inventory.fluid.FluidType;
 import com.hbm.inventory.fluid.Fluids;
 import com.hbm.inventory.fluid.tank.FluidTankNTM;
+import com.hbm.inventory.fluid.trait.FT_Coolable;
 import com.leafia.contents.machines.misc.modular_turbine.MTPacketId;
 import com.leafia.contents.machines.misc.modular_turbine.ModularTurbineBlockBase;
 import com.leafia.contents.machines.misc.modular_turbine.ModularTurbineBlockBase.TurbineComponentType;
@@ -28,10 +29,31 @@ import java.util.*;
 import java.util.Map.Entry;
 
 public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITickable {
+	// Work fraction extracted by a non-decompressing stage
+	private static final double PARTIAL_EXPANSION_FRACTION = 0.2D;
+	// Converts stage-specific work into an effective nozzle speed
+	private static final double NOZZLE_SPEED_COEFFICIENT = 30D;
+	private static final double NOZZLE_VELOCITY_COEFFICIENT = 0.92D;
+	private static final double INLET_WHIRL_FRACTION = 0.97D;
+	private static final double RELATIVE_EXIT_VELOCITY_FRACTION = 0.82D;
+	private static final double EXIT_WHIRL_FRACTION = 1D;
+	private static final double OPTIMAL_SPEED_RATIO = 0.5D;
+	// Converts the angular-momentum proxy into the rotor torque scale
+	private static final double ANGULAR_MOMENTUM_TORQUE_COEFFICIENT = 0.02D;
+	// Effective electrical loading until a real generator/load model exists
+	private static final double GENERATOR_LOAD_FRACTION = 1D;
+	private static final double GENERATOR_TORQUE_COEFFICIENT = 0.1D;
+	private static final double COULOMB_FRICTION_TORQUE = 0.35D;
+	private static final double FRICTION_RPS_EPSILON = 0.25D;
+	private static final double VISCOUS_FRICTION_COEFFICIENT = 0.02D;
+	private static final double WINDAGE_COEFFICIENT = 0.0015D;
+	private static final double POWER_SCALE = 500D;
+
 	public double rps;
 	public final List<ModularTurbineComponentTE> components = new ArrayList<>();
 	public final List<TurbineAssembly> assemblies = new ArrayList<>();
 	public int length = 0;
+	// Rotor inertia scalar
 	public double weight = 0;
 	public static final List<FluidType> steamTypes = new ArrayList<>();
 	public static FluidType getNextSteam(FluidType type,boolean decompress) {
@@ -44,6 +66,46 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 				return null;
 		} else
 			return type;
+	}
+	public static FT_Coolable getSteamExpansion(FluidType type) {
+		if (type.hasTrait(FT_Coolable.class))
+			return type.getTrait(FT_Coolable.class);
+		return null;
+	}
+	public static double getSteamMassEquivalent(FluidType type) {
+		if (type.equals(Fluids.SPENTSTEAM))
+			return 1;
+		FT_Coolable expansion = getSteamExpansion(type);
+		if (expansion == null)
+			return 0;
+		return getSteamMassEquivalent(expansion.coolsTo)*expansion.amountProduced/(double)expansion.amountReq;
+	}
+	public static double getTurbineStepWork(FluidType type) {
+		FT_Coolable expansion = getSteamExpansion(type);
+		if (expansion == null)
+			return 0;
+		return expansion.heatEnergy*expansion.getEfficiency(FT_Coolable.CoolingType.TURBINE)/(double)expansion.amountReq;
+	}
+	public static double getSteamRemainingWork(FluidType type) {
+		FT_Coolable expansion = getSteamExpansion(type);
+		if (expansion == null)
+			return 0;
+		return getTurbineStepWork(type)+getSteamRemainingWork(expansion.coolsTo)*expansion.amountProduced/(double)expansion.amountReq;
+	}
+	public static double getSteamSpecificRemainingWork(FluidType type) {
+		return getSteamRemainingWork(type)/getSteamMassEquivalent(type);
+	}
+	public static double getStageSpecificWork(FluidType type,boolean decompress) {
+		double specificWork = getSteamSpecificRemainingWork(type);
+		if (!decompress)
+			return specificWork*PARTIAL_EXPANSION_FRACTION;
+		FluidType nextSteam = getNextSteam(type,true);
+		if (nextSteam == null)
+			return specificWork;
+		return Math.max(specificWork-getSteamSpecificRemainingWork(nextSteam),0);
+	}
+	public static double getStageRadius(int size) {
+		return Math.max(size,2)*0.35D;
 	}
 	@Override
 	public String getPacketIdentifier() {
@@ -160,6 +222,11 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 	public void update() {
 		if (!world.isRemote) {
 			double targetRPS = 0;
+			double targetRPSWeight = 0;
+			double driveTorque = 0;
+			double generatorTorque = 0;
+			double frictionTorque = 0;
+			double windageTorque = 0;
 			long powerGenerated = 0;
 			if (weight > 0) {
 				for (TurbineAssembly assembly : assemblies) {
@@ -217,25 +284,40 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 					// ADD TURBULENCE (FOR BADLY PLACED BLADES)
 					turbulence = Math.min(turbulence+wrongBlades*10d/assembly.bladeDirections.size(),100);
 
-					// RPS CALCULATION
-					int compression = steamTypes.size()-steamTypes.indexOf(assembly.typeIn)-1-1;
-					targetRPS += Math.pow(2,compression)/200*ops;
-				}
-				targetRPS = Math.pow(targetRPS,0.8);
-				//double targetRPSTurb = targetRPS*Math.max(0,Math.pow((100-turbulence*0.85)/100,2));
-				double targetRPSTurb = targetRPS-Math.max(rps-10,0)*Math.pow(turbulence/100,1)*9;
-				rps = rps+(targetRPSTurb-rps)/weight;
+					// TORQUE CALCULATION
+					double bladeEfficiency = Math.max(assembly.bladeDirections.size()-wrongBlades,0)/(double)assembly.bladeDirections.size();
+					double stageSpecificWork = getStageSpecificWork(assembly.typeIn,assembly.decompress);
+					double massFlow = ops*getSteamMassEquivalent(assembly.typeIn);
+					double stageRadius = getStageRadius(assembly.size);
+					double availableWork = massFlow*stageSpecificWork*bladeEfficiency;
+					if (massFlow > 0 && stageSpecificWork > 0) {
+						double nozzleSpeed = NOZZLE_VELOCITY_COEFFICIENT*Math.sqrt(2*Math.max(stageSpecificWork,0))*NOZZLE_SPEED_COEFFICIENT;
+						double inletWhirl = nozzleSpeed*INLET_WHIRL_FRACTION;
+						double stageTargetRPS = inletWhirl*OPTIMAL_SPEED_RATIO/(Math.PI*2*stageRadius);
+						targetRPS += stageTargetRPS*availableWork;
+						targetRPSWeight += availableWork;
 
-				double generatorPower = 500;
-				double subtracted = rps*(Math.pow(generatorPower,0.65)/1_000_000/Math.pow(weight,1.65));
-				rps -= subtracted;
-				//powerGenerated += (long)((Math.pow(subtracted+1,1/0.65)-1)*(Math.pow(rps+1,5)-1)*Math.pow(weight,3.5)/30000);
-				powerGenerated += (long)((Math.pow(subtracted+1,1/0.65)-1)*(Math.pow(rps+1,2.8)-1)*Math.pow(weight,3.5)/4/500*generatorPower);
-				//powerGenerated += (long)((Math.pow(subtracted+1,1/0.65)-1)*(Math.pow(rps+1,2.8)-1)*Math.pow(weight,2.7)/3/500*generatorPower);
-				//powerGenerated += (long)((Math.pow(subtracted+1,5)-1)*50*Math.pow(weight,4));
+						double omega = rps*Math.PI*2;
+						double bladeSpeed = omega*stageRadius;
+						double relativeInletVelocity = inletWhirl-bladeSpeed;
+						double relativeExitVelocity = -RELATIVE_EXIT_VELOCITY_FRACTION*relativeInletVelocity;
+						double outletWhirl = bladeSpeed+relativeExitVelocity*EXIT_WHIRL_FRACTION;
+						double stageTorque = massFlow*stageRadius*(inletWhirl-outletWhirl)*bladeEfficiency*ANGULAR_MOMENTUM_TORQUE_COEFFICIENT;
+						driveTorque += stageTorque;
+					}
+				}
+				if (targetRPSWeight > 0)
+					targetRPS /= targetRPSWeight;
+				generatorTorque = GENERATOR_TORQUE_COEFFICIENT*GENERATOR_LOAD_FRACTION*rps;
+				frictionTorque = COULOMB_FRICTION_TORQUE*Math.tanh(rps/FRICTION_RPS_EPSILON)+VISCOUS_FRICTION_COEFFICIENT*rps;
+				windageTorque = WINDAGE_COEFFICIENT*rps*Math.abs(rps);
+
+				double netTorque = driveTorque-generatorTorque-frictionTorque-windageTorque;
+				rps += netTorque/weight;
+
+				double omega = rps*Math.PI*2;
+				powerGenerated += (long)Math.max(generatorTorque*omega*POWER_SCALE,0);
 			}
-			//rps *= 0.995;
-			rps -= rps*0.005*Math.pow(261.8,0.75)/Math.max(weight,0.75);
 			// ADD TURBULENCE (FOR SUDDEN INCREASE OF RPS)
 			double turbulenceAdd = Math.pow(Math.max(targetRPS-rps,0)/110,7.2)/Math.max(8,60-turbulence*2);
 			turbulence *= 0.99;
@@ -244,6 +326,10 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 			//LeafiaDebug.debugLog(world,"TURBULENCE: "+turbulence);
 			LeafiaDebug.debugLog(world,"RPS: "+rps);
 			LeafiaDebug.debugLog(world,"powerGenerated: "+SIPfx.auto(powerGenerated*20)+"HE/s");
+			LeafiaDebug.debugLog(world,"Drive torque: "+driveTorque);
+			LeafiaDebug.debugLog(world,"Generator torque: "+generatorTorque);
+			LeafiaDebug.debugLog(world,"Friction torque: "+frictionTorque);
+			LeafiaDebug.debugLog(world,"Windage torque: "+windageTorque);
 			LeafiaDebug.debugLog(world,"TargetRPS-RPS difference: "+(targetRPS-rps));
 			LeafiaDebug.debugLog(world,"Turbulence: "+turbulence);
 			LeafiaDebug.debugLog(world,"Weight: "+weight+" WU");
