@@ -40,9 +40,10 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 	private static final double OPTIMAL_SPEED_RATIO = 0.5D;
 	// Converts the angular-momentum proxy into the rotor torque scale
 	private static final double ANGULAR_MOMENTUM_TORQUE_COEFFICIENT = 0.02D;
-	// Effective electrical loading until a real generator/load model exists
-	private static final double GENERATOR_LOAD_FRACTION = 1D;
-	private static final double GENERATOR_TORQUE_COEFFICIENT = 0.1D;
+	private static final double GENERATOR_EMF_COEFFICIENT = 0.12D;
+	private static final double GENERATOR_TOTAL_RESISTANCE = 1.8D;
+	private static final double GENERATOR_CURRENT_LIMIT = 16D;
+	private static final double GENERATOR_TORQUE_COEFFICIENT = 0.12D;
 	private static final double COULOMB_FRICTION_TORQUE = 0.35D;
 	private static final double FRICTION_RPS_EPSILON = 0.25D;
 	private static final double VISCOUS_FRICTION_COEFFICIENT = 0.02D;
@@ -308,15 +309,19 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 				}
 				if (targetRPSWeight > 0)
 					targetRPS /= targetRPSWeight;
-				generatorTorque = GENERATOR_TORQUE_COEFFICIENT*GENERATOR_LOAD_FRACTION*rps;
+				double omega = rps*Math.PI*2;
+				double generatorEmf = GENERATOR_EMF_COEFFICIENT*omega;
+				double generatorCurrent = generatorEmf/GENERATOR_TOTAL_RESISTANCE;
+				generatorCurrent = Math.min(Math.max(generatorCurrent,-GENERATOR_CURRENT_LIMIT),GENERATOR_CURRENT_LIMIT);
+				generatorTorque = GENERATOR_TORQUE_COEFFICIENT*generatorCurrent;
 				frictionTorque = COULOMB_FRICTION_TORQUE*Math.tanh(rps/FRICTION_RPS_EPSILON)+VISCOUS_FRICTION_COEFFICIENT*rps;
 				windageTorque = WINDAGE_COEFFICIENT*rps*Math.abs(rps);
 
 				double netTorque = driveTorque-generatorTorque-frictionTorque-windageTorque;
 				rps += netTorque/weight;
 
-				double omega = rps*Math.PI*2;
-				powerGenerated += (long)Math.max(generatorTorque*omega*POWER_SCALE,0);
+				double outputOmega = rps*Math.PI*2;
+				powerGenerated += (long)Math.max(generatorTorque*outputOmega*POWER_SCALE,0);
 			}
 			// ADD TURBULENCE (FOR SUDDEN INCREASE OF RPS)
 			double turbulenceAdd = Math.pow(Math.max(targetRPS-rps,0)/110,7.2)/Math.max(8,60-turbulence*2);
