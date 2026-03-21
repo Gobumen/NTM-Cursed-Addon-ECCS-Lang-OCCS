@@ -1,5 +1,6 @@
 package com.leafia.contents.machines.misc.modular_turbine.core;
 
+import com.hbm.blocks.BlockDummyable;
 import com.hbm.inventory.fluid.FluidType;
 import com.hbm.inventory.fluid.Fluids;
 import com.hbm.inventory.fluid.tank.FluidTankNTM;
@@ -23,10 +24,8 @@ import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.Map.Entry;
 
 public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITickable {
 	public double rps;
@@ -85,8 +84,6 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 				assembly.output.readFromNBT(tag,"output");
 				assembly.typeIn = Fluids.fromName(tag.getString("typeIn"));
 				assembly.decompress = tag.getBoolean("decompress");
-				assembly.bladeCount = tag.getShort("bladeCount");
-				assembly.badBlades = tag.getShort("badBlades");
 				assembly.size = tag.getByte("size");
 			} else return false;
 		}
@@ -117,14 +114,19 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 			NBTTagCompound tag = new NBTTagCompound();
 			NBTTagList posList = new NBTTagList();
 			for (Integer p : assembly.positionsInOrder)
-				posList.appendTag(new NBTTagShort((short)(int)p));
+				posList.appendTag(new NBTTagShort(p.shortValue()));
 			tag.setTag("positions",posList);
+			NBTTagList bladeMap = new NBTTagList();
+			for (Entry<Integer,Boolean> entry : assembly.bladeDirections.entrySet()) {
+				NBTTagCompound e = new NBTTagCompound();
+				e.setShort("pos",entry.getKey().shortValue());
+				e.setBoolean("opposite",entry.getValue());
+			}
+			tag.setTag("bladeMap",bladeMap);
 			assembly.input.writeToNBT(tag,"input");
 			assembly.output.writeToNBT(tag,"output");
 			tag.setString("typeIn",assembly.typeIn.getName());
 			tag.setBoolean("decompress",assembly.decompress);
-			tag.setShort("bladeCount",(short)assembly.bladeCount);
-			tag.setShort("badBlades",(short)assembly.badBlades);
 			tag.setByte("size",(byte)assembly.size);
 			assemList.appendTag(tag);
 		}
@@ -177,6 +179,44 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 					assembly.input.setFill(assembly.input.getFill()-ops);
 					assembly.output.setFill((int)(assembly.output.getFill()+ops*division));
 
+					// STEAM FLOW DIRECTION CHECK (BLADE DIRECTIONS AND PORT COUNT)
+					int wrongBlades = 0;
+					if (!assembly.receivingPositions.isEmpty()) {
+						int startIndex = assembly.positionsInOrder.get(0);
+						int endIndex = assembly.positionsInOrder.get(assembly.positionsInOrder.size()-1);
+						// CHECK IF THERE ARE 2+ INPUT PORTS
+						// IF SO, DETECT ALL BLADES PLACED BETWEEN THE FIRST AND LAST PORTS AS WRONG
+						int flowCounterStart = assembly.receivingPositions.size();
+						int flowCounter = flowCounterStart;
+						boolean shouldBeOpposite = true;
+						for (int i = startIndex; i <= endIndex; i++) {
+							// IF IT'S AN INPUT PORT
+							if (assembly.receivingPositions.contains(i)) {
+								flowCounter--;
+								shouldBeOpposite = false;
+							}
+							// IF IT'S BLADES
+							if (assembly.bladeDirections.containsKey(i)) {
+								boolean isOpposite = assembly.bladeDirections.get(i);
+								if (shouldBeOpposite != isOpposite || (flowCounter > 0 && flowCounter < flowCounterStart)) {
+									wrongBlades++;
+									EnumFacing dir = EnumFacing.byIndex(getBlockMetadata()-10).getOpposite();
+									LeafiaDebug.debugPos(
+											world,
+											new BlockPos(pos).offset(dir,i+1),
+											0.05f,0xFF0000,
+											"BAD BLADE",
+											"FLOWCOUNTER: "+flowCounter+"/"+flowCounterStart
+									);
+								}
+							}
+						}
+						assembly.receivingPositions.clear();
+					}
+
+					// ADD TURBULENCE (FOR BADLY PLACED BLADES)
+					turbulence = Math.min(turbulence+wrongBlades*10d/assembly.bladeDirections.size(),100);
+
 					// RPS CALCULATION
 					int compression = steamTypes.size()-steamTypes.indexOf(assembly.typeIn)-1-1;
 					targetRPS += Math.pow(2,compression)/200*ops;
@@ -190,13 +230,17 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 				double subtracted = rps*(Math.pow(generatorPower,0.65)/1_000_000/Math.pow(weight,1.65));
 				rps -= subtracted;
 				//powerGenerated += (long)((Math.pow(subtracted+1,1/0.65)-1)*(Math.pow(rps+1,5)-1)*Math.pow(weight,3.5)/30000);
-				powerGenerated += (long)((Math.pow(subtracted+1,1/0.65)-1)*(Math.pow(rps+1,2.8)-1)*Math.pow(weight,3.5)/4);
+				powerGenerated += (long)((Math.pow(subtracted+1,1/0.65)-1)*(Math.pow(rps+1,2.8)-1)*Math.pow(weight,3.5)/4/500*generatorPower);
+				//powerGenerated += (long)((Math.pow(subtracted+1,1/0.65)-1)*(Math.pow(rps+1,2.8)-1)*Math.pow(weight,2.7)/3/500*generatorPower);
 				//powerGenerated += (long)((Math.pow(subtracted+1,5)-1)*50*Math.pow(weight,4));
 			}
-			rps *= 0.995;
+			//rps *= 0.995;
+			rps -= rps*0.005*Math.pow(261.8,0.75)/Math.max(weight,0.75);
+			// ADD TURBULENCE (FOR SUDDEN INCREASE OF RPS)
 			double turbulenceAdd = Math.pow(Math.max(targetRPS-rps,0)/110,7.2)/Math.max(8,60-turbulence*2);
 			turbulence *= 0.99;
 			turbulence = Math.min(turbulence+turbulenceAdd,100);
+			turbulence = 0; // removed temporarily because it's annoying to test
 			//LeafiaDebug.debugLog(world,"TURBULENCE: "+turbulence);
 			LeafiaDebug.debugLog(world,"RPS: "+rps);
 			LeafiaDebug.debugLog(world,"powerGenerated: "+SIPfx.auto(powerGenerated*20)+"HE/s");
@@ -210,6 +254,10 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 				NBTTagCompound tag = new NBTTagCompound();
 				assembly.input.writeToNBT(tag,"i");
 				assembly.output.writeToNBT(tag,"o");
+				NBTTagList flowList = new NBTTagList();
+				for (Integer receiving : assembly.receivingPositions)
+					flowList.appendTag(new NBTTagShort(receiving.shortValue()));
+				tag.setTag("b",flowList);
 				syncList.appendTag(tag);
 			}
 			syncCompound.setTag("a",syncList);
@@ -225,9 +273,9 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 		public FluidTankNTM output;
 		public FluidType typeIn;
 		public boolean decompress = false;
-		public int bladeCount = 0;
-		public int badBlades = 0;
 		public int size = -1;
+		public Set<Integer> receivingPositions = new HashSet<>();
+		public Map<Integer,Boolean> bladeDirections = new HashMap<>(); // false: normal, true: opposite
 	}
 	public double turbulence;
 	public void disassemble() {
@@ -305,8 +353,10 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 				if (core == null)
 					return new ReturnCodeError(prevPos,offs,AssemblyErrorReason.BUG);
 				else {
+					EnumFacing partDir = EnumFacing.byIndex(world.getBlockState(core).getValue(BlockDummyable.META)-10).getOpposite();
 					if (world.getTileEntity(core) instanceof ModularTurbineComponentTE te) {
 						components.add(te);
+						te.core = this;
 
 						// ALIGNMENT CHECK
 						if (dir.getAxis() == Axis.X)
@@ -363,7 +413,7 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 							lastAssembly.positionsInOrder.add(i);
 							te.assembly = lastAssembly;
 							if (turbine.componentType().equals(TurbineComponentType.BLADES)) {
-								lastAssembly.bladeCount++;
+								lastAssembly.bladeDirections.put(i,!dir.equals(partDir));
 								lastAssembly.size = turbine.size();
 							}
 
@@ -410,7 +460,7 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 								if (lastAssembly.typeIn == null)
 									return new ReturnCodeError(pos.offset(dir,lastAssembly.positionsInOrder.get(0)+1),prevPos,AssemblyErrorReason.NO_IDENTIFIER);
 
-								if (lastAssembly.bladeCount == 0)
+								if (lastAssembly.bladeDirections.isEmpty())
 									return new ReturnCodeError(pos.offset(dir,lastAssembly.positionsInOrder.get(0)+1),prevPos,AssemblyErrorReason.NO_BLADES);
 							}
 							lastAssembly = null;
@@ -428,7 +478,7 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 					if (lastAssembly.typeIn == null)
 						return new ReturnCodeError(pos.offset(dir,lastAssembly.positionsInOrder.get(0)+1),offs,AssemblyErrorReason.NO_IDENTIFIER);
 
-					if (lastAssembly.bladeCount == 0)
+					if (lastAssembly.bladeDirections.isEmpty())
 						return new ReturnCodeError(pos.offset(dir,lastAssembly.positionsInOrder.get(0)+1),prevPos,AssemblyErrorReason.NO_BLADES);
 				}
 				break;
@@ -442,8 +492,8 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 		for (TurbineAssembly assembly : assemblies) {
 			// temporary values
 			FluidType nextSteam = getNextSteam(assembly.typeIn,assembly.decompress);
-			assembly.input = new FluidTankNTM(assembly.typeIn,calculateBufferSize(assembly.typeIn,mostCompression,assembly.bladeCount,assembly.size));
-			assembly.output = new FluidTankNTM(nextSteam,calculateBufferSize(nextSteam,mostCompression,assembly.bladeCount*4,assembly.size));
+			assembly.input = new FluidTankNTM(assembly.typeIn,calculateBufferSize(assembly.typeIn,mostCompression,assembly.bladeDirections.keySet().size(),assembly.size));
+			assembly.output = new FluidTankNTM(nextSteam,calculateBufferSize(nextSteam,mostCompression,assembly.bladeDirections.keySet().size()*4,assembly.size));
 		}
 		return new ReturnCodeSuccess();
 	}

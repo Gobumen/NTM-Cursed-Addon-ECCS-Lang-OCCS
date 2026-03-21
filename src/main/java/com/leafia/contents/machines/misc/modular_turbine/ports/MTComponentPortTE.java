@@ -104,4 +104,43 @@ public class MTComponentPortTE extends ModularTurbineComponentTE implements ITic
 		compound.setBoolean("decompress",decompress);
 		return super.writeToNBT(compound);
 	}
+	void onFill() {
+		if (assembly != null && core != null) {
+			int index = core.components.indexOf(this);
+			if (index == -1)
+				core.disassemble();
+			else
+				assembly.receivingPositions.add(index);
+		}
+	}
+	@Override
+	public long transferFluid(FluidType type, int pressure, long amount) {
+		int tanks = 0;
+		for(FluidTankNTM tank : this.getReceivingTanks()) {
+			if (tank.getTankType() == type && tank.getPressure() == pressure)
+				++tanks;
+		}
+		if (tanks > 1) {
+			int firstRound = (int)Math.floor((double)amount/(double)tanks);
+			for(FluidTankNTM tank : this.getReceivingTanks()) {
+				if (tank.getTankType() == type && tank.getPressure() == pressure) {
+					int toAdd = Math.min(firstRound, tank.getMaxFill() - tank.getFill());
+					tank.setFill(tank.getFill() + toAdd);
+					amount -= (long)toAdd;
+					onFill();
+				}
+			}
+		}
+		if (amount > 0L) {
+			for(FluidTankNTM tank : this.getReceivingTanks()) {
+				if (tank.getTankType() == type && tank.getPressure() == pressure) {
+					int toAdd = (int)Math.min(amount, (long)(tank.getMaxFill() - tank.getFill()));
+					tank.setFill(tank.getFill() + toAdd);
+					amount -= (long)toAdd;
+					onFill();
+				}
+			}
+		}
+		return amount;
+	}
 }
