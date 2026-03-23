@@ -3,6 +3,7 @@ package com.leafia.contents.machines.powercores.dfc;
 import com.hbm.items.ModItems;
 import com.hbm.items.machine.ItemLens;
 import com.hbm.util.I18nUtil;
+import com.leafia.Tags;
 import com.leafia.contents.AddonItems;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemStack;
@@ -21,6 +22,7 @@ public class LCEItemLens extends ItemLens {
     // ctor for the existing ams_lens
     public LCEItemLens(long maxDamage,String s) {
         super(maxDamage, s);
+        setRegistryName(Tags.MODID, s);
         fieldMod = 1.0F;
         drainMod = 1.0F;
         energyMod = 1.0F;
@@ -28,6 +30,7 @@ public class LCEItemLens extends ItemLens {
 
     public LCEItemLens(long maxDamage,float fieldMod,float drainMod,float energyMod,String s) {
         super(maxDamage, s);
+        setRegistryName(Tags.MODID, s);
         this.fieldMod = fieldMod;
         this.drainMod = drainMod;
         this.energyMod = energyMod;

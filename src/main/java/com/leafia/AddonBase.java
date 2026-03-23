@@ -51,7 +51,7 @@ public class AddonBase {
 	@Mod.Instance(Tags.MODID)
 	public static AddonBase instance;
 
-	public static final String MODID = "leafia";
+	public static final String MODID = Tags.MODID;
 
 	public static final ResourceLocation solid = new ResourceLocation("leafia", "textures/solid.png");
 	public static final ResourceLocation solid_e = new ResourceLocation("leafia", "textures/solid_emissive.png");

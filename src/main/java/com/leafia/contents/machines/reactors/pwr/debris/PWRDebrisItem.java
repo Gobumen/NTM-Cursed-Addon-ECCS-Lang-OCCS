@@ -1,7 +1,7 @@
 package com.leafia.contents.machines.reactors.pwr.debris;
 
-import com.hbm.items.ModItems;
 import com.hbm.util.I18nUtil;
+import com.leafia.Tags;
 import com.leafia.contents.AddonItems;
 import com.leafia.contents.machines.reactors.pwr.debris.PWRDebrisEntity.DebrisType;
 import net.minecraft.block.Block;
@@ -18,7 +18,7 @@ public class PWRDebrisItem extends Item {
 	public boolean canBeCraftedBack = true;
 	public PWRDebrisItem(String s,DebrisType type) {
 		this.setTranslationKey(s);
-		this.setRegistryName(s);
+		this.setRegistryName(Tags.MODID, s);
 		this.type = type;
 		typeNameKey = s.replace("lwr_","item.lwrdebris.");
 		AddonItems.ALL_ITEMS.add(this);
