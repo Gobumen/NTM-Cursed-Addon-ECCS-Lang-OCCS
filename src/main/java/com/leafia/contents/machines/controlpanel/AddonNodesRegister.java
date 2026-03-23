@@ -2,6 +2,7 @@ package com.leafia.contents.machines.controlpanel;
 
 import com.hbm.inventory.control_panel.modular.NTMControlPanelRegistry;
 import com.hbm.inventory.control_panel.modular.categories.NCStockLogic;
+import com.leafia.contents.machines.controlpanel.categories.NCLeafiaInput;
 import com.leafia.contents.machines.controlpanel.categories.NCLeafiaOutput;
 import com.leafia.contents.machines.controlpanel.categories.NCLeafiaText;
 
@@ -13,6 +14,8 @@ public class AddonNodesRegister {
 	public static void register() {
 		if (!NTMControlPanelRegistry.addMenuCategories.contains("Text"))
 			NTMControlPanelRegistry.addMenuCategories.add("Text");
+		NTMControlPanelRegistry.addMenuControl.putIfAbsent("Input",new ArrayList<>());
+		NTMControlPanelRegistry.addMenuControl.get("Input").add(new NCLeafiaInput());
 		NTMControlPanelRegistry.addMenuControl.putIfAbsent("Output",new ArrayList<>());
 		NTMControlPanelRegistry.addMenuControl.get("Output").add(new NCLeafiaOutput());
 		NTMControlPanelRegistry.addMenuControl.putIfAbsent("Text",new ArrayList<>());

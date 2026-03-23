@@ -1,4 +1,4 @@
-package com.leafia.contents.machines.controlpanel.nodes;
+package com.leafia.contents.machines.controlpanel.nodes.string;
 
 import com.hbm.inventory.control_panel.*;
 import com.hbm.inventory.control_panel.DataValue.DataType;

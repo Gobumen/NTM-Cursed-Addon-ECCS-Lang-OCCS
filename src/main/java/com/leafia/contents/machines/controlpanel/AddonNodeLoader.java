@@ -4,6 +4,10 @@ import com.hbm.inventory.control_panel.NodeSystem;
 import com.hbm.inventory.control_panel.modular.INodeLoader;
 import com.hbm.inventory.control_panel.nodes.Node;
 import com.leafia.contents.machines.controlpanel.nodes.*;
+import com.leafia.contents.machines.controlpanel.nodes.string.NodeAddString;
+import com.leafia.contents.machines.controlpanel.nodes.string.NodeFormat;
+import com.leafia.contents.machines.controlpanel.nodes.string.NodeSIPfx;
+import com.leafia.contents.machines.controlpanel.nodes.string.NodeSubString;
 import net.minecraft.nbt.NBTTagCompound;
 
 public class AddonNodeLoader implements INodeLoader {
@@ -25,6 +29,9 @@ public class AddonNodeLoader implements INodeLoader {
 				break;
 			case "format":
 				node = new NodeFormat(0,0);
+				break;
+			case "bulkQuery":
+				node = new NodeBulkQuery(0,0,nodeSystem.parent);
 				break;
 		}
 		return node;
