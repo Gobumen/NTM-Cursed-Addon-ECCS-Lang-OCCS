@@ -37,8 +37,8 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 	public static double RELATIVE_EXIT_VELOCITY_FRACTION = 0.82D;
 	public static double EXIT_WHIRL_FRACTION = 1D;
 	public static double ANGULAR_MOMENTUM_TORQUE_COEFFICIENT = 0.02D;
-	public static double GENERATOR_EMF_COEFFICIENT = 5000D;
-	public static double GENERATOR_TOTAL_RESISTANCE = 1.8D;
+	public static double GENERATOR_EMF_COEFFICIENT = 500D;
+	public static double GENERATOR_TOTAL_RESISTANCE = 0.01;//1.8D;
 	public static double GENERATOR_CURRENT_LIMIT = Double.MAX_VALUE;
 	public static double GENERATOR_TORQUE_COEFFICIENT = 0.012D;
 	public static double COULOMB_FRICTION_TORQUE = 0.7D;
@@ -50,10 +50,10 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 	public static double ADMISSION_NOMINAL_RESPONSE = 1D-Math.exp(-1D/ADMISSION_NOMINAL_TAU_TICKS);
 	public static double ADMISSION_STABLE_RELATIVE_ERROR = 0.03D;
 	// DEATHSTEAM -> ULTRAHOTSTEAM -> SUPERHOTSTEAM -> HOTSTEAM -> STEAM -> SPENTSTEAM stage-work scalars
-	public static double DEATHSTEAM_STAGE_WORK_MULTIPLIER = 1D;
-	public static double ULTRAHOTSTEAM_STAGE_WORK_MULTIPLIER = 1D;
-	public static double SUPERHOTSTEAM_STAGE_WORK_MULTIPLIER = 1D;
-	public static double HOTSTEAM_STAGE_WORK_MULTIPLIER = 1D;
+	public static double DEATHSTEAM_STAGE_WORK_MULTIPLIER = 10000D;
+	public static double ULTRAHOTSTEAM_STAGE_WORK_MULTIPLIER = 1000D;
+	public static double SUPERHOTSTEAM_STAGE_WORK_MULTIPLIER = 100D;
+	public static double HOTSTEAM_STAGE_WORK_MULTIPLIER = 10D;
 	public static double STEAM_STAGE_WORK_MULTIPLIER = 1D;
 	public static double BUFFER_CAPACITY_MULTIPLIER = 16D;
 	public static double ADMISSION_MAX_BUFFER_TICKS = 2D;

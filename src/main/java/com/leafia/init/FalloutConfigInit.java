@@ -4,6 +4,7 @@ import com.hbm.blocks.ModBlocks;
 import com.hbm.blocks.generic.BlockMeta;
 import com.hbm.config.FalloutConfigJSON;
 import com.hbm.config.FalloutConfigJSON.FalloutEntry;
+import com.hbm.util.ReferenceIntTuple;
 import com.leafia.contents.AddonBlocks;
 import com.leafia.contents.AddonBlocks.LegacyBlocks;
 import com.leafia.dev.blocks.blockbase.AddonBlockPowder;
@@ -191,10 +192,10 @@ public class FalloutConfigInit {
 		for (int i = 0; i < entries.size();) {
 			FalloutEntry entry = entries.get(i);
 			try {
-				List<Tuple<IBlockState, Integer>> primaryBlocks = (List<Tuple<IBlockState, Integer>>)primary.get(entry);
+				List<ReferenceIntTuple<IBlockState>>primaryBlocks = (List<ReferenceIntTuple<IBlockState>>)primary.get(entry);
 				boolean doRemove = false;
-				for (Tuple<IBlockState,Integer> tuple : primaryBlocks) {
-					if (block.equals(tuple.getFirst().getBlock())) {
+				for (ReferenceIntTuple<IBlockState> tuple : primaryBlocks) {
+					if (block.equals(tuple.getReference().getBlock())) {
 						doRemove = true;
 						break;
 					}

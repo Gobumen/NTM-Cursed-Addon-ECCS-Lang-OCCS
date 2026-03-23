@@ -1156,7 +1156,7 @@ public class ElevatorEntity extends Entity implements IEntityMultiPart, IEntityC
 				else
 					dataManager.set(FLOOR_DISPLAY,Integer.toString(floor));
 				if (pulley.counterweight == null)
-					dataManager.set(FLOOR_DISPLAY,"E");
+					dataManager.set(FLOOR_DISPLAY,"Er");
 				Vec3d prevMotion = new Vec3d(motionY,motionY,motionZ);
 				move(MoverType.SELF,motionX,motionY,motionZ);
 				//this.pushOutOfBlocks(this.posX, (this.getEntityBoundingBox().minY + this.getEntityBoundingBox().maxY) / (double)2.0F, this.posZ);

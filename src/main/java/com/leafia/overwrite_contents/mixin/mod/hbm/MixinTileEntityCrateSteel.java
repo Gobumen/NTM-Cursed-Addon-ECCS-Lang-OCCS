@@ -113,21 +113,6 @@ public abstract class MixinTileEntityCrateSteel extends TileEntityCrateBase impl
 	public void onPlayerValidate(EntityPlayer plr) {
 		generateSyncPacket().__sendToClient(plr);
 	}
-	@Inject(method = "provideContainer",at = @At(value = "HEAD"),require = 1,remap = false,cancellable = true)
-	public void leafia$onProvideContainer(int ID,EntityPlayer player,World world,int x,int y,int z,CallbackInfoReturnable<Container> cir) {
-		if (ID >= 1121 && ID < 1121+4) {
-			cir.setReturnValue(new CrateLabelContainer(player.inventory,this));
-			cir.cancel();
-		}
-	}
-	@SideOnly(Side.CLIENT)
-	@Inject(method = "provideGUI",at = @At(value = "HEAD"),require = 1,remap = false,cancellable = true)
-	public void leafia$onProvideGUI(int ID,EntityPlayer player,World world,int x,int y,int z,CallbackInfoReturnable<GuiScreen> cir) {
-		if (ID >= 1121 && ID < 1121+4) {
-			cir.setReturnValue(new CrateLabelGUI(player.inventory,this,world.getBlockState(pos),EnumFacing.byHorizontalIndex(ID-1121)));
-			cir.cancel();
-		}
-	}
 	@Unique
 	private String leafia$tryReadString(NBTTagCompound compound,String key) {
 		if (compound.hasKey(key))

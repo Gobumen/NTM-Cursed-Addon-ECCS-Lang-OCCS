@@ -53,7 +53,7 @@ public class RBMKRealerSimTE extends TileEntityRBMKRodReaSim {
 
 			neutronVector.rotateYawSelf((float)(Math.PI*2D*world.rand.nextDouble()));
 
-			new RealerSimNeutronStream(makeNode(streamWorld,this),neutronVector,flux,ratio);
+			new RealerSimNeutronStream(makeNode(streamWorld,this),neutronVector,flux*0.75,ratio);
 			// Create new neutron streams
 		}
 	}

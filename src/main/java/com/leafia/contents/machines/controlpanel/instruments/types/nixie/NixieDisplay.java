@@ -6,24 +6,32 @@ import com.hbm.inventory.control_panel.controls.configs.SubElementBaseConfig;
 import com.hbm.main.ResourceManager;
 import com.hbm.render.loader.IModelCustom;
 import com.hbm.render.loader.WaveFrontObjectVAO;
+import com.hbm.render.util.NTMBufferBuilder;
+import com.hbm.render.util.NTMImmediate;
 import com.leafia.AddonBase;
 import com.leafia.contents.machines.controlpanel.instruments.types.AddonInstrumentModels;
 import com.leafia.transformer.LeafiaGls;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.GlStateManager.DestFactor;
 import net.minecraft.client.renderer.GlStateManager.SourceFactor;
 import net.minecraft.client.renderer.OpenGlHelper;
+import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.TextureManager;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
 
 import java.util.List;
 import java.util.Map;
+
+import static com.leafia.AddonBase.getIntegrated;
 
 
 public class NixieDisplay extends Control {
@@ -49,6 +57,7 @@ public class NixieDisplay extends Control {
 		return ControlType.DISPLAY;
 	}
 
+	/// GUI resolution x10
 	@Override
 	public float[] getSize() {
 		return new float[] { 1.75F,2.5F,0.0625F };
@@ -79,8 +88,90 @@ public class NixieDisplay extends Control {
 		LeafiaGls.pushMatrix();
 		LeafiaGls.scale(1/div);
 		LeafiaGls.translate(-font.getStringWidth(s)/2f+0.5f,-7/2f,0);
+		LeafiaGls.blendFunc(SourceFactor.SRC_ALPHA,DestFactor.ONE); // help
 		font.drawString(s,0,0,0xffa746);
+		int col = 0x724615;
+		float sc = 0.25f;
+		{
+			LeafiaGls.blendFunc(SourceFactor.SRC_ALPHA,DestFactor.ONE); // help
+			LeafiaGls.pushMatrix();
+			LeafiaGls.translate(-sc,0,-0.01f);
+			font.drawString(s,0,0,col);
+			LeafiaGls.popMatrix();
+		}
+		{
+			LeafiaGls.blendFunc(SourceFactor.SRC_ALPHA,DestFactor.ONE); // help
+			LeafiaGls.pushMatrix();
+			LeafiaGls.translate(sc,0,-0.02f);
+			font.drawString(s,0,0,col);
+			LeafiaGls.popMatrix();
+		}
+		{
+			LeafiaGls.blendFunc(SourceFactor.SRC_ALPHA,DestFactor.ONE); // help
+			LeafiaGls.pushMatrix();
+			LeafiaGls.translate(0,-sc,-0.03f);
+			font.drawString(s,0,0,col);
+			LeafiaGls.popMatrix();
+		}
+		{
+			LeafiaGls.blendFunc(SourceFactor.SRC_ALPHA,DestFactor.ONE); // help
+			LeafiaGls.pushMatrix();
+			LeafiaGls.translate(0,sc,-0.04f);
+			font.drawString(s,0,0,col);
+			LeafiaGls.popMatrix();
+		}
+		{
+			LeafiaGls.blendFunc(SourceFactor.SRC_ALPHA,DestFactor.ONE); // help
+			LeafiaGls.pushMatrix();
+			LeafiaGls.translate(-sc*2,0,-0.05f);
+			font.drawString(s,0,0,col);
+			LeafiaGls.popMatrix();
+		}
+		{
+			LeafiaGls.blendFunc(SourceFactor.SRC_ALPHA,DestFactor.ONE); // help
+			LeafiaGls.pushMatrix();
+			LeafiaGls.translate(sc*2,0,-0.06f);
+			font.drawString(s,0,0,col);
+			LeafiaGls.popMatrix();
+		}
+		{
+			LeafiaGls.blendFunc(SourceFactor.SRC_ALPHA,DestFactor.ONE); // help
+			LeafiaGls.pushMatrix();
+			LeafiaGls.translate(0,-sc*2,-0.07f);
+			font.drawString(s,0,0,col);
+			LeafiaGls.popMatrix();
+		}
+		{
+			LeafiaGls.blendFunc(SourceFactor.SRC_ALPHA,DestFactor.ONE); // help
+			LeafiaGls.pushMatrix();
+			LeafiaGls.translate(0,sc*2,-0.08f);
+			font.drawString(s,0,0,col);
+			LeafiaGls.popMatrix();
+		}
 		LeafiaGls.popMatrix();
+	}
+
+	@SideOnly(Side.CLIENT)
+	@Override
+	public void renderControl(float[] renderBox,Control selectedControl,GuiControlEdit gui) {
+		float boxMinX = renderBox[0];
+		float boxMinY = renderBox[1];
+		float boxMaxX = renderBox[2];
+		float boxMaxY = renderBox[3];
+		int length = (int)getConfigs().get("length").getNumber();
+		int packedColor = NTMBufferBuilder.packColor(1.0F,this == selectedControl ? 0.8F : 1.0F,1.0F,1.0F);
+		NTMBufferBuilder buf = NTMImmediate.INSTANCE.beginPositionTexColorQuads(length);
+		float padding = (1.75F-1)/2F;
+		appendGuiQuad(buf,boxMinX,boxMinY,boxMinX+padding,boxMaxY,0.0F,0.0F,4/18f,1.0F,packedColor);
+		appendGuiQuad(buf,boxMaxX-padding,boxMinY,boxMaxX,boxMaxY,1-4/18f,0.0F,1,1.0F,packedColor);
+		for (int i = 0; i < length; i++) {
+			float start = length == 1 ? 0 : lerp(boxMinX+padding,boxMaxX-padding-1,(float)i/(length-1));
+			appendGuiQuad(buf,start,boxMinY,start+1,boxMaxY,4/18f,0.0F,1-4/18f,1.0F,packedColor);
+		}
+		NTMImmediate.INSTANCE.draw();
+	}
+	float lerp(float a,float b,float t) {
+		return a+(b-a)*t;
 	}
 
 	@Override
@@ -144,10 +235,10 @@ public class NixieDisplay extends Control {
 				// unicode font offset
 				LeafiaGls.translate(0,-0.1,0);
 
-				draw(font,7,s);
+				/*draw(font,7,s);
 				LeafiaGls.translate(0,0,-0.01);
 				draw(font,6.5f,s);
-				LeafiaGls.translate(0,0,-0.01);
+				LeafiaGls.translate(0,0,-0.01);*/
 				draw(font,6.4f,s);
 				LeafiaGls.popMatrix();
 			}
@@ -179,10 +270,12 @@ public class NixieDisplay extends Control {
 		return AddonInstrumentModels.nixie;
 	}
 
+	static final ResourceLocation guiRl = getIntegrated("control_panel/instruments/nixie.png");
+
 	@Override
 	@SideOnly(Side.CLIENT)
 	public ResourceLocation getGuiTexture() {
-		return ResourceManager.ctrl_display_seven_seg_gui_tex;
+		return guiRl;
 	}
 
 	@Override

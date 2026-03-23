@@ -60,11 +60,11 @@ public abstract class MixinEntityFalloutRain extends EntityExplosionChunkloading
 	public void onWriteEntityFromNBT(NBTTagCompound nbt,CallbackInfo ci) {
 		nbt.setBoolean("digammaFallout",digammaFallout);
 	}
-	/**
+	/*
 	 * @author ntmleafia
 	 * @reason fuck off im going lazy
-	 */
-	@Overwrite(remap = false)
+	 *
+	/*@Overwrite(remap = false)
 	void stompColumnToUpdates(ExtendedBlockStorage[] ebs,int x,int z,double distPercent,Long2ObjectOpenHashMap<IBlockState> updates,
 	                                  Long2ObjectOpenHashMap<IBlockState> spawnFalling,ThreadLocalRandom rand) {
 
@@ -168,7 +168,7 @@ public abstract class MixinEntityFalloutRain extends EntityExplosionChunkloading
 
 			if (!transformed && state.isNormalCube()) solidDepth++;
 		}
-	}
+	}*/
 	@Redirect(method = "processChunkOffThread",at = @At(value = "INVOKE", target = "Lcom/hbm/entity/effect/EntityFalloutRain;getBiomeChange(DILnet/minecraft/world/biome/Biome;)Lnet/minecraft/world/biome/Biome;"),require = 1,remap = false)
 	private Biome onProcessChunkOffThread(double distPercent,int scale,Biome original) {
 		if (digammaFallout)
