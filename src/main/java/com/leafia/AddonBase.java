@@ -44,6 +44,11 @@ import org.apache.logging.log4j.Logger;
 @Mod(modid = Tags.MODID, version = "Unknown", name = Tags.MODNAME, acceptedMinecraftVersions = "[1.12.2]",
 		dependencies = "required-after:hbm@[2.1.0.0,);required:mixinbooter;after:ntmspace")
 public class AddonBase {
+	public enum AddonLoadingStage {
+		BLOCKS,
+		ITEMS
+	}
+	public static AddonLoadingStage staticLoadingStage = null;
 
 	public static final Logger LOGGER = LogManager.getLogger(Tags.MODID);
 	@SidedProxy(clientSide = "com.leafia.init.proxy.LeafiaClientProxy", serverSide = "com.leafia.init.proxy.LeafiaServerProxy")
@@ -105,7 +110,9 @@ public class AddonBase {
 		}
 		AddonFluids.init();
 		AddonFF.init();
+		staticLoadingStage = AddonLoadingStage.BLOCKS;
 		AddonBlocks.preInit();
+		staticLoadingStage = AddonLoadingStage.ITEMS;
 		AddonItems.preInit();
 		if (AddonConfig.enableSellacity) {
 			AddonBiomesGenerator gen = new AddonBiomesGenerator();
