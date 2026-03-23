@@ -39,7 +39,7 @@ public abstract class MixinBlockSpeedy extends BlockBakeBase {
 			ci.cancel();
 	}
 	@SideOnly(Side.CLIENT)
-	@Inject(method = "addInformation",at = @At(value = "HEAD"),require = 1,cancellable = true,remap = false)
+	@Inject(method = "addInformation",at = @At(value = "HEAD"),require = 1,cancellable = true)
 	public void leafia$onAddInformation(ItemStack stack,World player,List<String> tooltip,ITooltipFlag advanced,CallbackInfo ci) {
 		if (this.equals(ModBlocks.asphalt))
 			ci.cancel();
