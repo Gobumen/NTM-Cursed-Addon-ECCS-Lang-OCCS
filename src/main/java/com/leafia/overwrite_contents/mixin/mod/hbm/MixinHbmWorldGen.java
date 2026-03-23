@@ -22,7 +22,7 @@ public class MixinHbmWorldGen {
 		if (dimID == 0 && rand.nextInt(16) == 0)
 			DungeonToolbox.generateOre(world,rand,i,j,1,48,32,32,LegacyBlocks.ore_coal_oil);
 	}
-	@Inject(method = "generateStructures",at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;getBiome(Lnet/minecraft/util/math/BlockPos;)Lnet/minecraft/world/biome/Biome;"),require = 1,cancellable = true,remap = false)
+	@Inject(method = "generateStructures",at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;getBiome(Lnet/minecraft/util/math/BlockPos;)Lnet/minecraft/world/biome/Biome;",remap = true),require = 1,cancellable = true,remap = false)
 	public void leafia$onGenerateStructures(World world,Random rand,int chunkMinX,int chunkMinZ,CallbackInfo ci) {
 		int centerX = chunkMinX + 8;
 		int centerZ = chunkMinZ + 8;
