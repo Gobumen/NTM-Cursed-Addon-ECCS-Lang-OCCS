@@ -339,6 +339,7 @@ tile.ff_pump.name=Special Pipe Pump
 tile.ff_pump.buffer=Buffer: %s
 tile.ff_tank.name=Special Tank
 tile.fluid_duct_gauge.name=Fluid Flow Gauge Block
+tile.fluid_duct_gauge_mdl.desc=Use screwdriver to change display maximum
 tile.fluid_duct_gauge_mdl.name=Fluid Flow Gauge
 tile.fluid_duct_valve_mdl.name=Fluid Valve
 tile.fluid_duct_valve_mdl_rs.name=Redstone Fluid Valve

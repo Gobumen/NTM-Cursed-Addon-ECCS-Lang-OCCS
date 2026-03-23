@@ -29,10 +29,10 @@ public class AddonConfig {
 	public static void loadFromConfig(){
 		_ConfigBuilder builder = new _ConfigBuilder("leafia");
 		builder._separator();
-		builder._category("ASM");
+		builder._category("MIXINS");
 		{
 			enableWackySplashes = builder._boolean("enableWackySplashes",true);
-			enableAcidRainRender = builder._boolean("enableAcidRainRender",true);
+			//enableAcidRainRender = builder._boolean("enableAcidRainRender",true); there's no point in this anymore
 		}
 		builder._separator();
 		builder._category("OVERRIDE");
