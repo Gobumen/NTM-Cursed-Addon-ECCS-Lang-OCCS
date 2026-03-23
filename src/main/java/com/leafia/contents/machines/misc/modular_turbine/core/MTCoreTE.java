@@ -37,12 +37,11 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 	private static final double INLET_WHIRL_FRACTION = 0.97D;
 	private static final double RELATIVE_EXIT_VELOCITY_FRACTION = 0.82D;
 	private static final double EXIT_WHIRL_FRACTION = 1D;
-	private static final double OPTIMAL_SPEED_RATIO = 0.5D;
 	// Converts the angular-momentum proxy into the rotor torque scale
 	private static final double ANGULAR_MOMENTUM_TORQUE_COEFFICIENT = 0.02D;
 	private static final double GENERATOR_EMF_COEFFICIENT = 0.12D;
 	private static final double GENERATOR_TOTAL_RESISTANCE = 1.8D;
-	private static final double GENERATOR_CURRENT_LIMIT = 16D;
+	private static final double GENERATOR_CURRENT_LIMIT = Double.MAX_VALUE;
 	private static final double GENERATOR_TORQUE_COEFFICIENT = 0.12D;
 	private static final double COULOMB_FRICTION_TORQUE = 0.35D;
 	private static final double FRICTION_RPS_EPSILON = 0.25D;
@@ -55,6 +54,9 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 	private static final double ADMISSION_MAX_BUFFER_TICKS = 2D;
 	private static final double ADMISSION_FLOW_EPSILON = 1.0E-9D;
 	private static final double ADMISSION_BUFFER_EPSILON = 1.0E-6D;
+	private static final double EQUILIBRIUM_RPS_EPSILON = 1.0E-6D;
+	private static final double EQUILIBRIUM_RPS_LIMIT = 1.0E6D;
+	private static final int EQUILIBRIUM_SOLVER_ITERATIONS = 48;
 	private static final double TWO_PI = Math.PI*2D;
 	private static final double TICK_SECONDS = 1D/20D;
 
@@ -172,6 +174,51 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 		}
 		return effectiveMassFlow;
 	}
+	private static double getGeneratorTorqueAtOmega(double omega) {
+		double generatorEmf = GENERATOR_EMF_COEFFICIENT*omega;
+		double generatorCurrent = generatorEmf/GENERATOR_TOTAL_RESISTANCE;
+		generatorCurrent = Math.min(Math.max(generatorCurrent,-GENERATOR_CURRENT_LIMIT),GENERATOR_CURRENT_LIMIT);
+		return GENERATOR_TORQUE_COEFFICIENT*generatorCurrent;
+	}
+	private static double getFrictionTorqueAtRPS(double rps) {
+		return COULOMB_FRICTION_TORQUE*Math.tanh(rps/FRICTION_RPS_EPSILON)+VISCOUS_FRICTION_COEFFICIENT*rps;
+	}
+	private static double getWindageTorqueAtRPS(double rps) {
+		return WINDAGE_COEFFICIENT*rps*Math.abs(rps);
+	}
+	private static double getNetTorqueAtRPS(double rps,double driveTorqueIntercept,double driveTorqueOmegaSlope) {
+		double omega = rps*TWO_PI;
+		double driveTorque = driveTorqueIntercept-driveTorqueOmegaSlope*omega;
+		return driveTorque-getGeneratorTorqueAtOmega(omega)-getFrictionTorqueAtRPS(rps)-getWindageTorqueAtRPS(rps);
+	}
+	private static double solveEquilibriumRPS(double driveTorqueIntercept,double driveTorqueOmegaSlope) {
+		double zeroNetTorque = getNetTorqueAtRPS(0,driveTorqueIntercept,driveTorqueOmegaSlope);
+		if (zeroNetTorque <= 0)
+			return 0;
+
+		double linearNoLoadRPS = 0;
+		if (driveTorqueOmegaSlope > EQUILIBRIUM_RPS_EPSILON)
+			linearNoLoadRPS = driveTorqueIntercept/(driveTorqueOmegaSlope*TWO_PI);
+		double low = 0;
+		double high = Math.max(linearNoLoadRPS,1);
+		double highNetTorque = getNetTorqueAtRPS(high,driveTorqueIntercept,driveTorqueOmegaSlope);
+		while (highNetTorque > 0 && high < EQUILIBRIUM_RPS_LIMIT) {
+			low = high;
+			high *= 2;
+			highNetTorque = getNetTorqueAtRPS(high,driveTorqueIntercept,driveTorqueOmegaSlope);
+		}
+		if (highNetTorque > 0)
+			return high;
+		for (int i = 0; i < EQUILIBRIUM_SOLVER_ITERATIONS; i++) {
+			double mid = (low+high)/2;
+			double midNetTorque = getNetTorqueAtRPS(mid,driveTorqueIntercept,driveTorqueOmegaSlope);
+			if (midNetTorque > 0)
+				low = mid;
+			else
+				high = mid;
+		}
+		return (low+high)/2;
+	}
 	@Override
 	public String getPacketIdentifier() {
 		return "MT_CORE";
@@ -287,12 +334,13 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 	public void update() {
 		if (!world.isRemote) {
 			double targetRPS = 0;
-			double targetRPSWeight = 0;
 			double driveTorque = 0;
 			double generatorTorque = 0;
 			double frictionTorque = 0;
 			double windageTorque = 0;
 			long powerGenerated = 0;
+			double driveTorqueIntercept = 0;
+			double driveTorqueOmegaSlope = 0;
 			if (weight > 0) {
 				for (TurbineAssembly assembly : assemblies) {
 					// CALCULATE AVAILABLE TRANSFER AMOUNT
@@ -361,32 +409,25 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 					assembly.lastAdmissionBufferMass = assembly.admissionBufferMass;
 					assembly.lastNominalMassFlow = assembly.nominalMassFlow;
 					double stageRadius = getStageRadius(assembly.size);
-					double availableWork = massFlow*stageSpecificWork*bladeEfficiency;
 					if (massFlow > 0 && stageSpecificWork > 0) {
 						double nozzleSpeed = NOZZLE_VELOCITY_COEFFICIENT*Math.sqrt(2*Math.max(stageSpecificWork,0))*NOZZLE_SPEED_COEFFICIENT;
 						double inletWhirl = nozzleSpeed*INLET_WHIRL_FRACTION;
-						double stageTargetRPS = inletWhirl*OPTIMAL_SPEED_RATIO/(Math.PI*2*stageRadius);
-						targetRPS += stageTargetRPS*availableWork;
-						targetRPSWeight += availableWork;
-
 						double omega = rps*Math.PI*2;
 						double bladeSpeed = omega*stageRadius;
-						double relativeInletVelocity = inletWhirl-bladeSpeed;
-						double relativeExitVelocity = -RELATIVE_EXIT_VELOCITY_FRACTION*relativeInletVelocity;
-						double outletWhirl = bladeSpeed+relativeExitVelocity*EXIT_WHIRL_FRACTION;
-						double stageTorque = massFlow*stageRadius*(inletWhirl-outletWhirl)*bladeEfficiency*ANGULAR_MOMENTUM_TORQUE_COEFFICIENT;
+						double stageTorqueScale =
+								massFlow*stageRadius*bladeEfficiency*ANGULAR_MOMENTUM_TORQUE_COEFFICIENT*
+								(1D+RELATIVE_EXIT_VELOCITY_FRACTION*EXIT_WHIRL_FRACTION);
+						double stageTorque = stageTorqueScale*(inletWhirl-bladeSpeed);
 						driveTorque += stageTorque;
+						driveTorqueIntercept += stageTorqueScale*inletWhirl;
+						driveTorqueOmegaSlope += stageTorqueScale*stageRadius;
 					}
 				}
-				if (targetRPSWeight > 0)
-					targetRPS /= targetRPSWeight;
+				targetRPS = solveEquilibriumRPS(driveTorqueIntercept,driveTorqueOmegaSlope);
 				double omega = rps*TWO_PI;
-				double generatorEmf = GENERATOR_EMF_COEFFICIENT*omega;
-				double generatorCurrent = generatorEmf/GENERATOR_TOTAL_RESISTANCE;
-				generatorCurrent = Math.min(Math.max(generatorCurrent,-GENERATOR_CURRENT_LIMIT),GENERATOR_CURRENT_LIMIT);
-				generatorTorque = GENERATOR_TORQUE_COEFFICIENT*generatorCurrent;
-				frictionTorque = COULOMB_FRICTION_TORQUE*Math.tanh(rps/FRICTION_RPS_EPSILON)+VISCOUS_FRICTION_COEFFICIENT*rps;
-				windageTorque = WINDAGE_COEFFICIENT*rps*Math.abs(rps);
+				generatorTorque = getGeneratorTorqueAtOmega(omega);
+				frictionTorque = getFrictionTorqueAtRPS(rps);
+				windageTorque = getWindageTorqueAtRPS(rps);
 
 				double netTorque = driveTorque-generatorTorque-frictionTorque-windageTorque;
 				omega += netTorque/weight*TICK_SECONDS;
