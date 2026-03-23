@@ -288,17 +288,17 @@ public class CommandLeaf extends CommandBase {
 							notifyCommandListener(sender,this,cl.getSimpleName()+"."+field.getName()+" = "+field.get(null),new Object[0]);
 						else {
 							Object arg = args[0];
-							if (field.getType() == Byte.class)
+							if (field.getType() == Byte.class || field.getType() == byte.class)
 								arg = Byte.parseByte(args[0]);
-							else if (field.getType() == Short.class)
+							else if (field.getType() == Short.class || field.getType() == short.class)
 								arg = Short.parseShort(args[0]);
-							else if (field.getType() == Integer.class)
+							else if (field.getType() == Integer.class || field.getType() == int.class)
 								arg = Integer.parseInt(args[0]);
-							else if (field.getType() == Long.class)
+							else if (field.getType() == Long.class || field.getType() == long.class)
 								arg = Long.parseLong(args[0]);
-							else if (field.getType() == Float.class)
+							else if (field.getType() == Float.class || field.getType() == float.class)
 								arg = Float.parseFloat(args[0]);
-							else if (field.getType() == Double.class)
+							else if (field.getType() == Double.class || field.getType() == double.class)
 								arg = Double.parseDouble(args[0]);
 							field.set(null,arg);
 							notifyCommandListener(sender,this,cl.getSimpleName()+"."+field.getName()+" set to "+args[0],new Object[0]);

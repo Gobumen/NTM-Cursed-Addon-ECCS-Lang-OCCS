@@ -14,6 +14,7 @@ import com.leafia.contents.machines.misc.modular_turbine.core.MTCoreTE.AssemblyR
 import com.leafia.contents.machines.misc.modular_turbine.core.MTCoreTE.AssemblyReturnCode.ReturnCodeSuccess;
 import com.leafia.contents.machines.misc.modular_turbine.ports.MTComponentPortTE;
 import com.leafia.dev.LeafiaDebug;
+import com.leafia.dev.LeafiaDebug.Tracker;
 import com.leafia.dev.container_utility.LeafiaPacket;
 import com.leafia.dev.container_utility.LeafiaPacketReceiver;
 import com.llib.math.SIPfx;
@@ -29,40 +30,40 @@ import java.util.*;
 import java.util.Map.Entry;
 
 public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITickable {
-	private static final double PARTIAL_EXPANSION_FRACTION = 0.2D;
-	private static final double NOZZLE_SPEED_COEFFICIENT = 100D;
-	private static final double NOZZLE_VELOCITY_COEFFICIENT = 0.8D;
-	private static final double INLET_WHIRL_FRACTION = 0.4D;
-	private static final double RELATIVE_EXIT_VELOCITY_FRACTION = 0.82D;
-	private static final double EXIT_WHIRL_FRACTION = 1D;
-	private static final double ANGULAR_MOMENTUM_TORQUE_COEFFICIENT = 0.02D;
-	private static final double GENERATOR_EMF_COEFFICIENT = 50D;
-	private static final double GENERATOR_TOTAL_RESISTANCE = 1.8D;
-	private static final double GENERATOR_CURRENT_LIMIT = Double.MAX_VALUE;
-	private static final double GENERATOR_TORQUE_COEFFICIENT = 0.12D;
-	private static final double COULOMB_FRICTION_TORQUE = 0.7D;
-	private static final double FRICTION_RPS_EPSILON = 0.25D;
-	private static final double VISCOUS_FRICTION_COEFFICIENT = 0.08D;
-	private static final double WINDAGE_COEFFICIENT = 0.003D;
-	private static final double POWER_SCALE = 1D;
-	private static final double ADMISSION_NOMINAL_TAU_TICKS = 4D;
-	private static final double ADMISSION_NOMINAL_RESPONSE = 1D-Math.exp(-1D/ADMISSION_NOMINAL_TAU_TICKS);
-	private static final double ADMISSION_STABLE_RELATIVE_ERROR = 0.03D;
-	private static final double BUFFER_CAPACITY_MULTIPLIER = 16D;
-	private static final double ADMISSION_MAX_BUFFER_TICKS = 2D;
-	private static final double ADMISSION_FLOW_EPSILON = 1.0E-9D;
-	private static final double ADMISSION_BUFFER_EPSILON = 1.0E-6D;
-	private static final double EQUILIBRIUM_RPS_EPSILON = 1.0E-6D;
-	private static final double EQUILIBRIUM_RPS_LIMIT = 1.0E6D;
-	private static final int EQUILIBRIUM_SOLVER_ITERATIONS = 48;
-	private static final double DEFAULT_GLOBAL_GEAR_SCALE = 0.05D;
-	private static final double GEAR_CONTROLLER_MIN_SCALE = 1D/128D;
-	private static final double GEAR_CONTROLLER_MAX_SCALE = 2D;
-	private static final int GEAR_CONTROLLER_SAMPLE_COUNT = 25;
-	private static final double GEAR_CONTROLLER_RESPONSE = 0.25D;
-	private static final double ROTOR_INERTIA_SCALE = 0.5D;
-	private static final double TWO_PI = Math.PI*2D;
-	private static final double TICK_SECONDS = 1D/20D;
+	public static double PARTIAL_EXPANSION_FRACTION = 0.2D;
+	public static double NOZZLE_SPEED_COEFFICIENT = 100D;
+	public static double NOZZLE_VELOCITY_COEFFICIENT = 0.8D;
+	public static double INLET_WHIRL_FRACTION = 0.4D;
+	public static double RELATIVE_EXIT_VELOCITY_FRACTION = 0.82D;
+	public static double EXIT_WHIRL_FRACTION = 1D;
+	public static double ANGULAR_MOMENTUM_TORQUE_COEFFICIENT = 0.02D;
+	public static double GENERATOR_EMF_COEFFICIENT = 5000D;
+	public static double GENERATOR_TOTAL_RESISTANCE = 1.8D;
+	public static double GENERATOR_CURRENT_LIMIT = Double.MAX_VALUE;
+	public static double GENERATOR_TORQUE_COEFFICIENT = 0.012D;
+	public static double COULOMB_FRICTION_TORQUE = 0.7D;
+	public static double FRICTION_RPS_EPSILON = 0.25D;
+	public static double VISCOUS_FRICTION_COEFFICIENT = 0.08D;
+	public static double WINDAGE_COEFFICIENT = 0.003D;
+	public static double POWER_SCALE = 0.00232478632;
+	public static double ADMISSION_NOMINAL_TAU_TICKS = 4D;
+	public static double ADMISSION_NOMINAL_RESPONSE = 1D-Math.exp(-1D/ADMISSION_NOMINAL_TAU_TICKS);
+	public static double ADMISSION_STABLE_RELATIVE_ERROR = 0.03D;
+	public static double BUFFER_CAPACITY_MULTIPLIER = 16D;
+	public static double ADMISSION_MAX_BUFFER_TICKS = 2D;
+	public static double ADMISSION_FLOW_EPSILON = 1.0E-9D;
+	public static double ADMISSION_BUFFER_EPSILON = 1.0E-6D;
+	public static double EQUILIBRIUM_RPS_EPSILON = 1.0E-6D;
+	public static double EQUILIBRIUM_RPS_LIMIT = 1.0E6D;
+	public static int EQUILIBRIUM_SOLVER_ITERATIONS = 48;
+	public static double DEFAULT_GLOBAL_GEAR_SCALE = 0.05D;
+	public static double GEAR_CONTROLLER_MIN_SCALE = 1D/128D;
+	public static double GEAR_CONTROLLER_MAX_SCALE = 2D;
+	public static int GEAR_CONTROLLER_SAMPLE_COUNT = 25;
+	public static double GEAR_CONTROLLER_RESPONSE = 0.25D;
+	public static double ROTOR_INERTIA_SCALE = 0.5D;
+	public static double TWO_PI = Math.PI*2D;
+	public static double TICK_SECONDS = 1D/20D;
 
 	public double rps;
 	public double lastTargetRPS = 0;
@@ -574,16 +575,20 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 			lastWindageTorque = windageTorque;
 			lastGlobalGearScale = globalGearScale;
 			//LeafiaDebug.debugLog(world,"TURBULENCE: "+turbulence);
-			LeafiaDebug.debugLog(world,"RPS: "+rps);
-			LeafiaDebug.debugLog(world,"powerGenerated: "+SIPfx.auto(powerGenerated*20)+"HE/s");
-			LeafiaDebug.debugLog(world,"Drive torque: "+driveTorque);
-			LeafiaDebug.debugLog(world,"Generator torque: "+generatorTorque);
-			LeafiaDebug.debugLog(world,"Friction torque: "+frictionTorque);
-			LeafiaDebug.debugLog(world,"Windage torque: "+windageTorque);
-			LeafiaDebug.debugLog(world,"TargetRPS-RPS difference: "+(targetRPS-rps));
-			LeafiaDebug.debugLog(world,"Turbulence: "+turbulence);
-			LeafiaDebug.debugLog(world,"Global gear scale: "+globalGearScale);
-			LeafiaDebug.debugLog(world,"Weight: "+weight+" WU");
+			Tracker._startProfile(this,"update");
+			Tracker._tracePosition(this,pos.up(),
+					"RPS: "+rps,
+					"powerGenerated: "+SIPfx.auto(powerGenerated*20)+"HE/s",
+					"Drive torque: "+driveTorque,
+					"Generator torque: "+generatorTorque,
+					"Friction torque: "+frictionTorque,
+					"Windage torque: "+windageTorque,
+					"TargetRPS-RPS difference: "+(targetRPS-rps),
+					"Turbulence: "+turbulence,
+					"Global gear scale: "+globalGearScale,
+					"Weight: "+weight+" WU"
+			);
+			Tracker._endProfile(this);
 
 			NBTTagCompound syncCompound = new NBTTagCompound();
 			NBTTagList syncList = new NBTTagList();
