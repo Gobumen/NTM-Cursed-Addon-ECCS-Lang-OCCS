@@ -25,7 +25,7 @@ import java.util.List;
 public class ItemPinkDoor extends ItemModDoor {
 	public ItemPinkDoor(String s) {
 		super(s);
-        setRegistryName(Tags.MODID, s);
+        setRegistryName(s);
 		ModItems.ALL_ITEMS.remove(this);
 		AddonItems.ALL_ITEMS.add(this);
 	}

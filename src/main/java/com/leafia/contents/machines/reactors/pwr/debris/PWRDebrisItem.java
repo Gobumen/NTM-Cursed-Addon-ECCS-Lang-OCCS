@@ -18,7 +18,7 @@ public class PWRDebrisItem extends Item {
 	public boolean canBeCraftedBack = true;
 	public PWRDebrisItem(String s,DebrisType type) {
 		this.setTranslationKey(s);
-		this.setRegistryName(Tags.MODID, s);
+		this.setRegistryName(s);
 		this.type = type;
 		typeNameKey = s.replace("lwr_","item.lwrdebris.");
 		AddonItems.ALL_ITEMS.add(this);
