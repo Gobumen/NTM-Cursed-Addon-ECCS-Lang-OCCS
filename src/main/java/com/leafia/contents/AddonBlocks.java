@@ -10,6 +10,7 @@ import com.hbm.main.MainRegistry;
 import com.hbm.render.block.BlockBakeFrame;
 import com.hbm.render.block.BlockBakeFrame.BlockForm;
 import com.leafia.AddonBase;
+import com.leafia.AddonBase.AddonLoadingStage;
 import com.leafia.contents.AddonFluids.AddonFF;
 import com.leafia.contents.bomb.balefire.AshBalefire;
 import com.leafia.contents.bomb.balefire.BaleoniteBlock;
@@ -105,6 +106,7 @@ import com.leafia.dev.blocks.legacy.LegacyBlockHazardMeta;
 import com.leafia.dev.blocks.legacy.LegacyWasteEarth;
 import com.leafia.dev.blocks.legacy.LegacyWasteIce;
 import com.leafia.dev.blocks.legacy.LegacyWasteSand;
+import com.llib.exceptions.LeafiaDevFlaw;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
@@ -118,6 +120,10 @@ import java.util.Map.Entry;
 import static com.leafia.contents.AddonBlocks.GenericBlockResistance.*;
 
 public class AddonBlocks {
+	static {
+		if (AddonBase.staticLoadingStage != AddonLoadingStage.BLOCKS)
+			throw new LeafiaDevFlaw("AddonBlocks loaded before it should!");
+	}
 	public static final List<Block> ALL_BLOCKS = new ArrayList();
 
 	public enum GenericBlockResistance {

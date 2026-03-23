@@ -14,6 +14,7 @@ import com.hbm.tileentity.machine.*;
 import com.leafia.contents.AddonBlocks;
 import com.leafia.contents.AddonBlocks.PWR;
 import com.leafia.contents.AddonItems;
+import com.leafia.contents.bomb.missile.AddonMissileItemRender;
 import com.leafia.contents.bomb.missile.customnuke.entity.CustomNukeMissileEntity;
 import com.leafia.contents.bomb.missile.customnuke.entity.CustomNukeMissileEntityRender;
 import com.leafia.contents.building.storage.broof.BroofRender;
@@ -118,6 +119,7 @@ public class LeafiaClientProxy extends LeafiaServerProxy {
 				throw flaw;
 			}
 		}
+		AddonMissileItemRender.init();
 		{
 			ModelLoader.setCustomStateMapper(AddonBlocks.door_fuckoff,new StateMap.Builder().ignore(BlockDoor.POWERED).build());
 			ModelLoader.setCustomStateMapper(AddonBlocks.fluid_fluoride,new StateMap.Builder().ignore(BlockFluidClassic.LEVEL).build());

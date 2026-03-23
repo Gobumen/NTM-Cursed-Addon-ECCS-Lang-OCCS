@@ -13,7 +13,6 @@
     "hbm.MixinGUIDiFurnaceRTG",
     "hbm.MixinItemFluidIcon",
     "hbm.MixinItemRenderLaserDetonator",
-    "hbm.MixinItemRenderMissileGeneric",
     "hbm.MixinModEventHandlerClient",
     "hbm.MixinParticleGasFlame",
     "hbm.MixinParticleRBMKMush",
