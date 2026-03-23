@@ -37,7 +37,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class ModularTurbineBlockBase extends AddonBlockDummyable implements IToolable, ILookOverlay {
+public abstract class ModularTurbineBlockBase extends AddonBlockDummyable implements IToolable, ILookOverlay, IMTStageUpgradeContributor, IMTMachineUpgradeContributor {
 	public ModularTurbineBlockBase(String s) {
 		super(Material.IRON,s);
 		setHardness(5);
