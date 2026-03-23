@@ -4,7 +4,6 @@ import com.hbm.inventory.fluid.Fluids;
 import com.hbm.main.ResourceManager;
 import com.hbm.render.loader.WaveFrontObjectVAO;
 import com.leafia.AddonBase;
-import com.leafia.contents.machines.powercores.ams.stabilizer.AMSStabilizerTE;
 import com.leafia.dev.LeafiaItemRenderer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
@@ -13,13 +12,13 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 
-import static com.leafia.init.ResourceInit.getIntegrated;
+import static com.leafia.AddonBase.getIntegrated;
 import static com.leafia.init.ResourceInit.getVAO;
 
 public class AMSBaseRender extends TileEntitySpecialRenderer<AMSBaseTE> {
-	public static final WaveFrontObjectVAO mdl0 = getVAO(getIntegrated("ams/ams_base.obj"));
-	public static final ResourceLocation tex0 = getIntegrated("ams/ams_base.png");
-	public static final ResourceLocation tex1 = getIntegrated("ams/balefire/ams_base.png");
+	public static final WaveFrontObjectVAO mdl0 = getVAO(getIntegrated("machines/ams/ams_base.obj"));
+	public static final ResourceLocation tex0 = getIntegrated("machines/ams/ams_base.png");
+	public static final ResourceLocation tex1 = getIntegrated("machines/ams/balefire/ams_base.png");
 
 	public static class AMSBaseItemRender extends LeafiaItemRenderer {
 		@Override
@@ -87,7 +86,7 @@ public class AMSBaseRender extends TileEntitySpecialRenderer<AMSBaseTE> {
 		GL11.glRotatef(rot, 0F, 1F, 0F);
 		GL11.glScalef(1.1F, 1.1F, 1.1F);
 		GlStateManager.color((byte)(0x20)/255, (byte)(0x20)/255, (byte)(0x40)/255);
-		ResourceManager.sphere_iuv.renderAll();
+		ResourceManager.sphere_ruv.renderAll(); // used to ve sphere_iuv. What even is iuv?
 		GL11.glScalef(1/1.1F, 1/1.1F, 1/1.1F);
 
 		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);

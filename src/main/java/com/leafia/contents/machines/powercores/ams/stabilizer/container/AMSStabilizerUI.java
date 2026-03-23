@@ -1,8 +1,8 @@
 package com.leafia.contents.machines.powercores.ams.stabilizer.container;
 
 import com.hbm.inventory.gui.GuiInfoContainer;
+import com.leafia.AddonBase;
 import com.leafia.contents.machines.powercores.ams.stabilizer.AMSStabilizerTE;
-import com.leafia.init.ResourceInit;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -11,7 +11,7 @@ import org.lwjgl.opengl.GL11;
 
 public class AMSStabilizerUI extends GuiInfoContainer {
 
-	private static ResourceLocation texture = ResourceInit.getIntegrated("ams/gui_stabilizer.png");
+	private static ResourceLocation texture = AddonBase.getIntegrated("machines/ams/gui_stabilizer.png");
 	private AMSStabilizerTE limiter;
 
 	public AMSStabilizerUI(InventoryPlayer invPlayer,AMSStabilizerTE tedf) {

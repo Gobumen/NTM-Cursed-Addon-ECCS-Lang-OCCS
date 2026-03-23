@@ -1,7 +1,7 @@
 package com.leafia.init;
 
 import com.hbm.blocks.ModBlocks;
-import com.hbm.items.RBMKItemRenderers;
+import com.hbm.main.client.NTMClientRegistry;
 import com.hbm.render.item.TEISRBase;
 import com.hbm.render.tileentity.IItemRendererProvider;
 import com.leafia.contents.AddonBlocks;
@@ -10,10 +10,14 @@ import com.leafia.contents.AddonBlocks.LetterSigns;
 import com.leafia.contents.AddonItems;
 import com.leafia.contents.AddonItems.ElevatorStyles;
 import com.leafia.contents.bomb.missile.customnuke.CustomNukeMissileItemRender;
-import com.leafia.contents.building.broof.BroofRender.BroofItemRender;
+import com.leafia.contents.building.storage.broof.BroofRender.BroofItemRender;
+import com.leafia.contents.building.doors.renderers.ReactorDoorRender.ReactorDoorItemRender;
 import com.leafia.contents.building.light.LightRender.LightItemRender;
 import com.leafia.contents.building.sign.SignRender.SignItemRender;
+import com.leafia.contents.building.storage.rack.RackRender;
+import com.leafia.contents.building.storage.rack.RackRender.RackItemRender;
 import com.leafia.contents.gear.advisor.AdvisorRender;
+import com.leafia.contents.gear.utility.FuzzyIdentifierRender;
 import com.leafia.contents.machines.elevators.EvBufferRender.EvBufferItemRender;
 import com.leafia.contents.machines.elevators.EvPulleyRender.EvPulleyItemRender;
 import com.leafia.contents.machines.elevators.car.styles.EvStyleItem;
@@ -80,6 +84,7 @@ public class ItemRendererInit {
 		register(AddonBlocks.fluid_duct_valve_mdl_rs,equipment);
 
 		register(AddonItems.advisor,new AdvisorRender());
+		register(AddonItems.fuzzy_identifier, FuzzyIdentifierRender.INSTANCE);
 
 		//register(AddonItems.addon_battery_pack,new AddonBatteryPackItemRender());
 
@@ -102,8 +107,8 @@ public class ItemRendererInit {
 
 		register(AddonBlocks.heater_rt,new HeaterRTGRender());
 
-		register(AddonBlocks.rbmk_rod_realersim,RBMKItemRenderers.RBMK_ROD);
-		register(AddonBlocks.rbmk_rod_realersim_mod,RBMKItemRenderers.RBMK_ROD);
+		//register(AddonBlocks.rbmk_rod_realersim,RBMKItemRenderers.RBMK_ROD);
+		//register(AddonBlocks.rbmk_rod_realersim_mod,RBMKItemRenderers.RBMK_ROD);
 
 		EvFloorItemRender floorRender = new EvFloorItemRender();
 		register(Elevators.s6_floor,floorRender);
@@ -112,6 +117,10 @@ public class ItemRendererInit {
 		register(Elevators.pulley,new EvPulleyItemRender());
 
 		register(AddonBlocks.hp_boiler,new HPBoilerItemRender());
+
+		register(AddonBlocks.reactor_door,new ReactorDoorItemRender());
+
+		register(AddonBlocks.sellacity_rack,new RackItemRender());
 
 		/*fix(AddonItems.ams_focus_blank);
 		fix(AddonItems.ams_focus_booster);
@@ -136,7 +145,7 @@ public class ItemRendererInit {
 	//private static void fix(Block block) { fixFuckingLocations.add(Item.getItemFromBlock(block)); }
 	public static void apply() {
 		for (Entry<Item,TEISRBase> entry : renderers.entrySet()) {
-			entry.getKey().setTileEntityItemStackRenderer(entry.getValue());
+			NTMClientRegistry.bindTeisr(entry.getKey(), entry.getValue());
 		}
 	}
 }

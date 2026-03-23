@@ -5,10 +5,13 @@ import com.hbm.main.ResourceManager;
 import com.hbm.render.loader.HFRWavefrontObject;
 import com.hbm.render.loader.WaveFrontObjectVAO;
 import com.leafia.contents.bomb.missile.AddonMissileItemRender;
-import com.leafia.contents.building.broof.BroofRender;
+import com.leafia.contents.building.storage.broof.BroofRender;
+import com.leafia.contents.building.doors.renderers.ReactorDoorRender;
 import com.leafia.contents.building.light.LightRender;
+import com.leafia.contents.building.storage.rack.RackRender;
 import com.leafia.contents.effects.folkvangr.visual.LCERenderCloudFleija;
 import com.leafia.contents.gear.advisor.AdvisorRender;
+import com.leafia.contents.machines.controlpanel.instruments.types.AddonInstrumentModels;
 import com.leafia.contents.machines.elevators.EvBufferRender;
 import com.leafia.contents.machines.elevators.EvPulleyRender;
 import com.leafia.contents.machines.elevators.EvShaftRender;
@@ -88,6 +91,9 @@ public class ResourceInit {
 		_initClass(EvFloorRender.class);
 		_initClass(HPBoilerRender.class);
 		_initClass(BlackholeRenderer.class);
+		_initClass(ReactorDoorRender.class);
+		_initClass(AddonInstrumentModels.class);
+		_initClass(RackRender.class);
 		/*{
 			setWreckModel("intact");
 			setWreckModel("metal_rubble_0");
@@ -127,9 +133,5 @@ public class ResourceInit {
 		WaveFrontObjectVAO.allVBOs.remove(vao);
 		allVAOs.add(vao);
 		return vao;
-	}
-
-	public static ResourceLocation getIntegrated(String s) {
-		return new ResourceLocation("leafia","textures/_integrated/"+s);
 	}
 }

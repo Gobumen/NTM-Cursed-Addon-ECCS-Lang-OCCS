@@ -14,7 +14,7 @@ import com.leafia.contents.network.spk_cable.uninos.ISPKReceiver;
 import com.leafia.contents.nonmachines.storage.items.CrateLabelContainer;
 import com.leafia.contents.nonmachines.storage.items.CrateLabelGUI;
 import com.leafia.dev.container_utility.LeafiaPacket;
-import com.leafia.overwrite_contents.interfaces.IMixinTileEntityCrateBase;
+import com.leafia.overwrite_contents.interfaces.IMixinTileEntityCrate;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
@@ -40,7 +40,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(TileEntityCrateTungsten.class)
-public abstract class MixinTileEntityCrateTungsten extends TileEntityCrate implements IMixinTileEntityCrateBase, IBufPacketReceiver, ITickable, ILaserable, IGUIProvider, ISPKReceiver {
+public abstract class MixinTileEntityCrateTungsten extends TileEntityCrate implements IMixinTileEntityCrate, IBufPacketReceiver, ITickable, ILaserable, IGUIProvider, ISPKReceiver {
 
     public MixinTileEntityCrateTungsten(int scount, String name) {
         super(scount, name);

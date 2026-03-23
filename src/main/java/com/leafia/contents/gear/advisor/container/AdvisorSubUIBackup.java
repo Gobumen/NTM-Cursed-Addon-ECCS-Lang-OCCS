@@ -5,19 +5,17 @@ import com.leafia.contents.gear.advisor.AdvisorItem.AdvisorPacket;
 import com.leafia.contents.gear.advisor.AdvisorItem.AdvisorSignalType;
 import com.leafia.dev.custompacket.LeafiaCustomPacket;
 import com.leafia.dev.gui.GuiScreenLeafia;
-import com.leafia.init.LeafiaSoundEvents;
 import com.leafia.transformer.LeafiaGls;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.util.ResourceLocation;
 
 import java.io.IOException;
 
-import static com.leafia.init.ResourceInit.getIntegrated;
+import static com.leafia.AddonBase.getIntegrated;
 
 public class AdvisorSubUIBackup extends GuiScreenLeafia implements IAdvisorUI {
-	public static ResourceLocation texture = getIntegrated("advisor/ui/main.png");
+	public static ResourceLocation texture = getIntegrated("items/advisor/ui/main.png");
 	final int scr;
 	public AdvisorSubUIBackup(int scroll) {
 		AdvisorUI.instance = this;

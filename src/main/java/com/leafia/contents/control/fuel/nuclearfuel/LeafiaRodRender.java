@@ -1,6 +1,8 @@
 package com.leafia.contents.control.fuel.nuclearfuel;
 
 import com.hbm.render.NTMRenderHelper;
+import com.hbm.render.item.TEISRBase;
+import com.hbm.render.model.BakedModelTransforms;
 import com.leafia.contents.AddonItems.LeafiaRods;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
@@ -8,22 +10,37 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.GlStateManager.SourceFactor;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.block.model.IBakedModel;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
+import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.tileentity.TileEntityItemStackRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.client.model.IModel;
+import net.minecraftforge.client.model.ModelLoaderRegistry;
 import org.lwjgl.opengl.GL11;
 
 import java.util.Random;
 
-public class LeafiaRodRender extends TileEntityItemStackRenderer {
+public class LeafiaRodRender extends TEISRBase {
 
-	public static final LeafiaRodRender INSTANCE = new LeafiaRodRender();
+	@Override
+	public ModelBinding createModelBinding(Item item) {
+		return ModelBinding.inventory(item, BakedModelTransforms.defaultItemTransforms());
+	}
 
-	public TransformType type;
-	public IBakedModel itemModel;
+	@Override
+	public IModel loadModel(Item item, ModelResourceLocation location) {
+		if (item instanceof LeafiaRodItem rod) {
+			try {
+				ModelResourceLocation source = rod.getResourceLocation();
+				return ModelLoaderRegistry.getModel(new ResourceLocation(source.getNamespace(), "item/" + source.getPath()));
+			} catch (Exception ignored) {
+			}
+		}
+		return super.loadModel(item, location);
+	}
 
 	enum Face {
 		NORMAL,
@@ -644,10 +661,7 @@ public class LeafiaRodRender extends TileEntityItemStackRenderer {
 
 		GL11.glPushMatrix();
 		GL11.glTranslated(0.5, 0.5, -HALF_A_PIXEL);
-		if (rod.specialRodModel == null)
-			Minecraft.getMinecraft().getRenderItem().renderItem(stack, itemModel);
-		else
-			Minecraft.getMinecraft().getRenderItem().renderItem(stack, rod.bakedSpecialRod);
+		Minecraft.getMinecraft().getRenderItem().renderItem(stack, itemModel);
 		GL11.glPopMatrix();
 
 		NBTTagCompound data = stack.getTagCompound();
@@ -759,6 +773,5 @@ public class LeafiaRodRender extends TileEntityItemStackRenderer {
 
 		GL11.glPopAttrib();
 		GL11.glPopMatrix();
-		super.renderByItem(stack);
 	}
 }

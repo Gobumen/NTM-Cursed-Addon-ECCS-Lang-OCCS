@@ -1,12 +1,10 @@
 package com.leafia.overwrite_contents.mixin.mod.hbm;
 
-import com.hbm.blocks.generic.BlockPowder;
 import com.hbm.explosion.ExplosionNukeGeneric;
 import com.leafia.contents.AddonBlocks.LegacyBlocks;
 import com.llamalad7.mixinextras.sugar.Local;
 import net.minecraft.block.BlockSand;
 import net.minecraft.block.BlockSand.EnumType;
-import net.minecraft.block.BlockSnow;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.math.BlockPos;

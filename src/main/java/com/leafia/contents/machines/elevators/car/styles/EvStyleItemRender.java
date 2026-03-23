@@ -69,6 +69,11 @@ public class EvStyleItemRender extends TEISRBase {
 			.get(TransformType.GROUND)
 			.setScale(0.2).setPosition(-2,3,-4.25).setRotation(-270,0,0).getHelper();
 
+    @Override
+    public boolean useFMMPerspective(Item item) {
+        return true;
+    }
+
 	@Override
 	public void renderByItem(ItemStack itemStackIn) {
 		LeafiaGls.pushMatrix();

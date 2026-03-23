@@ -8,19 +8,23 @@ import com.custom_hbm.sound.LCEAudioWrapperClient;
 import com.custom_hbm.sound.LCEAudioWrapperClientStartStop;
 import com.hbm.entity.effect.EntityCloudFleija;
 import com.hbm.entity.effect.EntityCloudFleijaRainbow;
+import com.hbm.main.client.NTMClientRegistry;
 import com.hbm.tileentity.deco.TileEntitySpinnyLight;
 import com.hbm.tileentity.machine.*;
 import com.leafia.contents.AddonBlocks;
 import com.leafia.contents.AddonBlocks.PWR;
 import com.leafia.contents.AddonItems;
+import com.leafia.contents.bomb.missile.AddonMissileItemRender;
 import com.leafia.contents.bomb.missile.customnuke.entity.CustomNukeMissileEntity;
 import com.leafia.contents.bomb.missile.customnuke.entity.CustomNukeMissileEntityRender;
-import com.leafia.contents.building.broof.BroofRender;
-import com.leafia.contents.building.broof.BroofTE;
+import com.leafia.contents.building.storage.broof.BroofRender;
+import com.leafia.contents.building.storage.broof.BroofTE;
 import com.leafia.contents.building.light.LightRender;
 import com.leafia.contents.building.light.LightTE;
 import com.leafia.contents.building.sign.SignRender;
 import com.leafia.contents.building.sign.SignTE;
+import com.leafia.contents.building.storage.rack.RackRender;
+import com.leafia.contents.building.storage.rack.RackTE;
 import com.leafia.contents.cannery.AddonJars;
 import com.leafia.contents.control.fuel.nuclearfuel.LeafiaRodItem;
 import com.leafia.contents.control.fuel.nuclearfuel.LeafiaRodRender;
@@ -28,7 +32,6 @@ import com.leafia.contents.debug.blackhole_test.DebugBHRender;
 import com.leafia.contents.debug.blackhole_test.DebugBHTE;
 import com.leafia.contents.effects.folkvangr.visual.LCERenderCloudFleija;
 import com.leafia.contents.effects.folkvangr.visual.LCERenderCloudRainbow;
-import com.leafia.contents.gear.utility.FuzzyIdentifierRender;
 import com.leafia.contents.machines.elevators.*;
 import com.leafia.contents.machines.elevators.car.ElevatorEntity;
 import com.leafia.contents.machines.elevators.car.ElevatorRender;
@@ -42,6 +45,10 @@ import com.leafia.contents.machines.heat.rtheater.HeaterRTGRender;
 import com.leafia.contents.machines.heat.rtheater.HeaterRTGTE;
 import com.leafia.contents.machines.misc.heatex.CoolantHeatexRender;
 import com.leafia.contents.machines.misc.heatex.CoolantHeatexTE;
+import com.leafia.contents.machines.misc.modular_turbine.ModularTurbineComponentRender;
+import com.leafia.contents.machines.misc.modular_turbine.ModularTurbineComponentTE;
+import com.leafia.contents.machines.misc.modular_turbine.core.MTCoreRender;
+import com.leafia.contents.machines.misc.modular_turbine.core.MTCoreTE;
 import com.leafia.contents.machines.powercores.ams.base.AMSBaseRender;
 import com.leafia.contents.machines.powercores.ams.base.AMSBaseTE;
 import com.leafia.contents.machines.powercores.ams.emitter.AMSEmitterRender;
@@ -79,14 +86,12 @@ import com.leafia.contents.network.spk_cable.SPKCableTE;
 import com.leafia.contents.nonmachines.storage.fluid.fftank.FFTankRender;
 import com.leafia.contents.nonmachines.storage.fluid.fftank.FFTankTE;
 import com.leafia.contents.nonmachines.storage.items.CrateLabelRender;
-import com.leafia.contents.worldgen.NTMStructBuffer.StructLoader;
 import com.leafia.eventbuses.LeafiaClientListener;
 import com.leafia.init.ItemRendererInit;
 import com.llib.exceptions.LeafiaDevFlaw;
 import net.minecraft.block.BlockDoor;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.statemap.StateMap;
-import net.minecraft.client.resources.IReloadableResourceManager;
 import net.minecraft.item.Item;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
@@ -114,7 +119,7 @@ public class LeafiaClientProxy extends LeafiaServerProxy {
 				throw flaw;
 			}
 		}
-		((IReloadableResourceManager) Minecraft.getMinecraft().getResourceManager()).registerReloadListener(new StructLoader());
+		AddonMissileItemRender.init();
 		{
 			ModelLoader.setCustomStateMapper(AddonBlocks.door_fuckoff,new StateMap.Builder().ignore(BlockDoor.POWERED).build());
 			ModelLoader.setCustomStateMapper(AddonBlocks.fluid_fluoride,new StateMap.Builder().ignore(BlockFluidClassic.LEVEL).build());
@@ -135,7 +140,9 @@ public class LeafiaClientProxy extends LeafiaServerProxy {
 			RenderingRegistry.registerEntityRenderingHandler(EvWeightEntity.class,EvWeightRender.FACTORY);
 		}
 		{
-			ClientRegistry.bindTileEntitySpecialRenderer(TileEntitySpinnyLight.class,new LCERenderSpinnyLight());
+			LCERenderSpinnyLight spinnyLightRender = new LCERenderSpinnyLight();
+			ClientRegistry.bindTileEntitySpecialRenderer(TileEntitySpinnyLight.class, spinnyLightRender);
+			NTMClientRegistry.bindTeisr(spinnyLightRender.getItemForRenderer(), spinnyLightRender.getRenderer(spinnyLightRender.getItemForRenderer()));
 
 			ClientRegistry.bindTileEntitySpecialRenderer(SPKCableTE.class,new SPKCableRender());
 
@@ -190,6 +197,10 @@ public class LeafiaClientProxy extends LeafiaServerProxy {
 			ClientRegistry.bindTileEntitySpecialRenderer(TileEntityCrateSteel.class,crateLabel);
 			ClientRegistry.bindTileEntitySpecialRenderer(TileEntityCrateTungsten.class,crateLabel);
 			ClientRegistry.bindTileEntitySpecialRenderer(TileEntityCrateDesh.class,crateLabel);
+
+			ClientRegistry.bindTileEntitySpecialRenderer(RackTE.class,new RackRender());
+			ClientRegistry.bindTileEntitySpecialRenderer(ModularTurbineComponentTE.class,new ModularTurbineComponentRender());
+			ClientRegistry.bindTileEntitySpecialRenderer(MTCoreTE.class,new MTCoreRender());
 		}
 		AddonJars.initJars();
 	}
@@ -225,7 +236,7 @@ public class LeafiaClientProxy extends LeafiaServerProxy {
 		ItemRendererInit.apply();
 
 		for (LeafiaRodItem rod : LeafiaRodItem.fromResourceMap.values()) {
-			rod.setTileEntityItemStackRenderer(LeafiaRodRender.INSTANCE);
+			NTMClientRegistry.bindTeisr(rod, new LeafiaRodRender());
 			//ItemRendererInit.fixFuckingLocations.add(rod);
 		}
 
@@ -246,6 +257,5 @@ public class LeafiaClientProxy extends LeafiaServerProxy {
 					new ModelResourceLocation(toFix.getRegistryName(), "inventory")
 			);
 		}*/
-		AddonItems.fuzzy_identifier.setTileEntityItemStackRenderer(FuzzyIdentifierRender.INSTANCE);
 	}
 }

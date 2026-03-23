@@ -3,7 +3,7 @@ package com.leafia.overwrite_contents.mixin.mod.hbm;
 import com.hbm.blocks.ModBlocks;
 import com.hbm.blocks.generic.BlockBakeBase;
 import com.hbm.blocks.generic.BlockSpeedy;
-import com.leafia.contents.building.linedasphalt.AsphaltBlock;
+import com.leafia.contents.building.generic.lined_asphalt.AsphaltBlock;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.util.ITooltipFlag;
@@ -38,17 +38,8 @@ public abstract class MixinBlockSpeedy extends BlockBakeBase {
 		if (this.equals(ModBlocks.asphalt))
 			ci.cancel();
 	}
-    @SideOnly(Side.CLIENT)
-	@Inject(
-			method = {
-					"addInformation(Lnet/minecraft/item/ItemStack;Lnet/minecraft/world/World;Ljava/util/List;Lnet/minecraft/client/util/ITooltipFlag;)V",
-					"func_190948_a(Lnet/minecraft/item/ItemStack;Lnet/minecraft/world/World;Ljava/util/List;Lnet/minecraft/client/util/ITooltipFlag;)V"
-			},
-			at = @At(value = "HEAD"),
-			require = 1,
-			cancellable = true,
-			remap = false
-	)
+	@SideOnly(Side.CLIENT)
+	@Inject(method = "addInformation",at = @At(value = "HEAD"),require = 1,cancellable = true,remap = false)
 	public void leafia$onAddInformation(ItemStack stack,World player,List<String> tooltip,ITooltipFlag advanced,CallbackInfo ci) {
 		if (this.equals(ModBlocks.asphalt))
 			ci.cancel();

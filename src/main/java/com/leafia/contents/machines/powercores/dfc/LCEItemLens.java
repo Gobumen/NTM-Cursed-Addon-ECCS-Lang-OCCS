@@ -3,6 +3,7 @@ package com.leafia.contents.machines.powercores.dfc;
 import com.hbm.items.ModItems;
 import com.hbm.items.machine.ItemLens;
 import com.hbm.util.I18nUtil;
+import com.leafia.Tags;
 import com.leafia.contents.AddonItems;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemStack;

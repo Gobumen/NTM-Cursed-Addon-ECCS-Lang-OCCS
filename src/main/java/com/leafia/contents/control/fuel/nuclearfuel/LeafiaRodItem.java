@@ -24,7 +24,6 @@ import com.leafia.dev.items.itembase.AddonItemHazardBase;
 import com.leafia.init.hazards.types.radiation.Neutrons;
 import com.leafia.overwrite_contents.interfaces.IMixinEntityNukeExploisonMK5;
 import com.llib.LeafiaLib;
-import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
@@ -85,7 +84,6 @@ public class LeafiaRodItem extends AddonItemHazardBase implements IHasCustomMode
 	public int baseMeta = 0;
 	public ItemType baseItemType = ItemType.VOID;
 	public ModelResourceLocation specialRodModel = null;
-	public IBakedModel bakedSpecialRod = null;
 	public Purity purity = Purity.RAW;
 	public String functionId = "null";
 	public double life = 0;

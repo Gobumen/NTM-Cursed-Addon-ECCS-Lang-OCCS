@@ -1,0 +1,23 @@
+{
+  "required": true,
+  "package": "com.leafia.overwrite_contents.mixin",
+  "refmap": "mixins.leafia.refmap.json",
+  "compatibilityLevel": "JAVA_8",
+  "target": "@env(DEFAULT)",
+  "client": [
+    "MixinEntityRenderer",
+    "MixinGuiMainMenu"
+  ],
+  "mixins": [
+    "MixinBlockFire",
+    "MixinEntityItem",
+    "MixinEntityPlayer",
+    "MixinForgeHooks",
+    "MixinItemStack",
+    "MixinServerWorldEventHandler",
+    "MixinWorld"
+  ],
+  "server": [],
+  "setSourceFile": true,
+  "minVersion": "0.8.7"
+}
