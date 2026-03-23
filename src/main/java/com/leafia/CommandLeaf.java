@@ -1,9 +1,9 @@
 package com.leafia;
 
 import com.custom_hbm.contents.torex.LCETorex;
-import com.hbm.entity.effect.EntityNukeTorex;
 import com.leafia.contents.AddonItems;
 import com.leafia.contents.gear.wands.ItemWandV;
+import com.leafia.contents.machines.misc.modular_turbine.core.MTCoreTE;
 import com.leafia.dev.LeafiaDebug;
 import com.leafia.dev.LeafiaDebug.Tracker;
 import com.leafia.dev.container_utility.LeafiaPacket;
@@ -31,6 +31,7 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -38,6 +39,17 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class CommandLeaf extends CommandBase {
+	public static class DebugTargetClass {
+		protected static final List<DebugTargetClass> list = new ArrayList<>();
+
+		public static final DebugTargetClass targetTurbine = new DebugTargetClass(MTCoreTE.class);
+
+		final Class<?> target;
+		public DebugTargetClass(Class<?> target) {
+			this.target = target;
+			list.add(this);
+		}
+	}
 	@Override
 	public String getName() {
 		return "hbmleaf";
@@ -204,12 +216,23 @@ public class CommandLeaf extends CommandBase {
 							list.add("remove");
 						}
 						break;
+					case "field":
+						if (LeafiaDebug.isDevEnv) {
+							args = shiftArgs(args,1);
+							if (args.length-1 <= 0) {
+								for (DebugTargetClass cl : DebugTargetClass.list)
+									list.add(cl.target.getSimpleName());
+							}
+						}
+						break;
 				}
 			} else {
 				list.add("eases");
 				list.add("shake");
 				list.add("torex");
 				list.add("wand");
+				if (LeafiaDebug.isDevEnv)
+					list.add("field");
 				list.add("AAvisualizer");
 			}
 			if(list.size() > 1 && !nosort)
@@ -235,6 +258,58 @@ public class CommandLeaf extends CommandBase {
 			Style header = new Style().setColor(TextFormatting.LIGHT_PURPLE);
 			darkRow = false;
 			switch(args[0]) {
+				case "field": {
+					if (!LeafiaDebug.isDevEnv)
+						throw new WrongUsageException("LeafiaDebug.isDevEnv has to be true to use this command!", new Object[0]);
+					args = shiftArgs(args,1);
+					if (args.length < 1)
+						throw new WrongUsageException("/hbmleaf field <class> <field> [newValue]", new Object[0]);
+					Class<?> cl = null;
+					for (DebugTargetClass c : DebugTargetClass.list) {
+						if (c.target.getSimpleName().equalsIgnoreCase(args[0])) {
+							cl = c.target;
+							break;
+						}
+					}
+					if (cl == null)
+						throw new WrongUsageException(args[0]+" is not a valid /hbmleaf field target", new Object[0]);
+					args = shiftArgs(args,1);
+					if (args.length < 1)
+						throw new WrongUsageException("/hbmleaf field <class> <field> [newValue]", new Object[0]);
+					Field field = null;
+					try {
+						field = cl.getDeclaredField(args[0]);
+					} catch (NoSuchFieldException e) {
+						throw new WrongUsageException("Field "+args[0]+" doesn't exist for class "+cl.getSimpleName(), new Object[0]);
+					}
+					args = shiftArgs(args,1);
+					try {
+						if (args.length < 1)
+							notifyCommandListener(sender,this,cl.getSimpleName()+"."+field.getName()+" = "+field.get(null),new Object[0]);
+						else {
+							Object arg = args[0];
+							if (field.getType() == Byte.class)
+								arg = Byte.parseByte(args[0]);
+							else if (field.getType() == Short.class)
+								arg = Short.parseShort(args[0]);
+							else if (field.getType() == Integer.class)
+								arg = Integer.parseInt(args[0]);
+							else if (field.getType() == Long.class)
+								arg = Long.parseLong(args[0]);
+							else if (field.getType() == Float.class)
+								arg = Float.parseFloat(args[0]);
+							else if (field.getType() == Double.class)
+								arg = Double.parseDouble(args[0]);
+							field.set(null,arg);
+							notifyCommandListener(sender,this,cl.getSimpleName()+"."+field.getName()+" set to "+args[0],new Object[0]);
+						}
+					} catch (IllegalAccessException ignored) {
+						throw new WrongUsageException("Field "+field.getName()+" couldn't be accessed", new Object[0]);
+					} catch (Exception e) {
+						throw new WrongUsageException(e.getMessage(), new Object[0]);
+					}
+					break;
+				}
 				case "wand": {
 					args = shiftArgs(args,1);
 					if (args.length < 1)
