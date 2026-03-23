@@ -22,7 +22,6 @@ public class LCEItemLens extends ItemLens {
     // ctor for the existing ams_lens
     public LCEItemLens(long maxDamage,String s) {
         super(maxDamage, s);
-        setRegistryName(Tags.MODID, s);
         fieldMod = 1.0F;
         drainMod = 1.0F;
         energyMod = 1.0F;
@@ -30,7 +29,7 @@ public class LCEItemLens extends ItemLens {
 
     public LCEItemLens(long maxDamage,float fieldMod,float drainMod,float energyMod,String s) {
         super(maxDamage, s);
-        setRegistryName(Tags.MODID, s);
+        setRegistryName(s);
         this.fieldMod = fieldMod;
         this.drainMod = drainMod;
         this.energyMod = energyMod;

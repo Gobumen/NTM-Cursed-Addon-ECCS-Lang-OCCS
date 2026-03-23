@@ -34,6 +34,7 @@ import com.leafia.dev.items.itembase.AddonItemHazardBaked;
 import com.leafia.init.hazards.ItemRads;
 import com.leafia.dev.items.itembase.AddonItemBaked;
 import com.leafia.settings.AddonConfig;
+import com.llib.exceptions.LeafiaDevFlaw;
 import net.minecraft.block.Block;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.Item;
@@ -54,6 +55,10 @@ import static com.leafia.contents.control.fuel.nuclearfuel.LeafiaRodItem.ItemTyp
 import static com.leafia.contents.control.fuel.nuclearfuel.LeafiaRodItem.Purity.*;
 
 public class AddonItems {
+	static {
+		if (true)
+			throw new LeafiaDevFlaw("no.");
+	}
 	public static final List<Item> ALL_ITEMS = new ArrayList<Item>();
 	public static final Item door_fuckoff = new ItemPinkDoor("door_fuckoff").setCreativeTab(null);
 
