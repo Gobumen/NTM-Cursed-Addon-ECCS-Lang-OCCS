@@ -60,6 +60,7 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 	private static final double GEAR_CONTROLLER_MAX_SCALE = 2D;
 	private static final int GEAR_CONTROLLER_SAMPLE_COUNT = 25;
 	private static final double GEAR_CONTROLLER_RESPONSE = 0.25D;
+	private static final double ROTOR_INERTIA_SCALE = 0.5D;
 	private static final double TWO_PI = Math.PI*2D;
 	private static final double TICK_SECONDS = 1D/20D;
 
@@ -554,7 +555,8 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 				windageTorque = getWindageTorqueAtRPS(rps);
 
 				double netTorque = driveTorque-generatorTorque-frictionTorque-windageTorque;
-				omega += netTorque/weight*TICK_SECONDS;
+				double effectiveWeight = weight*ROTOR_INERTIA_SCALE;
+				omega += netTorque/effectiveWeight*TICK_SECONDS;
 				rps = omega/TWO_PI;
 
 				double outputOmega = rps*TWO_PI;
