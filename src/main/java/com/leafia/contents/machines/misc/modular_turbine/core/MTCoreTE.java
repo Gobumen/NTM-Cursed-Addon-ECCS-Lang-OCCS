@@ -118,6 +118,28 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 			return specificWork;
 		return Math.max(specificWork-getSteamSpecificRemainingWork(nextSteam),0);
 	}
+	private static int getStageInputAmount(FluidType type,boolean decompress) {
+		if (!decompress)
+			return 1;
+		FT_Coolable expansion = getSteamExpansion(type);
+		if (expansion == null)
+			return 0;
+		return expansion.amountReq;
+	}
+	private static int getStageOutputAmount(FluidType type,boolean decompress) {
+		if (!decompress)
+			return 1;
+		FT_Coolable expansion = getSteamExpansion(type);
+		if (expansion == null)
+			return 0;
+		return expansion.amountProduced;
+	}
+	private static double getStageOutputRatio(FluidType type,boolean decompress) {
+		int inputAmount = getStageInputAmount(type,decompress);
+		if (inputAmount <= 0)
+			return 0;
+		return getStageOutputAmount(type,decompress)/(double)inputAmount;
+	}
 	public static double getStageRadius(int size) {
 		return Math.max(size,2)*0.35D;
 	}
@@ -274,21 +296,19 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 			if (weight > 0) {
 				for (TurbineAssembly assembly : assemblies) {
 					// CALCULATE AVAILABLE TRANSFER AMOUNT
-					int outputOps = assembly.output.getMaxFill()-assembly.output.getFill();
-					double division = 1;
-					if (assembly.decompress) division = 10;
-					FluidType outType = getNextSteam(assembly.typeIn,assembly.decompress);
-					if (outType.equals(Fluids.SPENTSTEAM))
-						division *= 10;
+					int inputAmount = getStageInputAmount(assembly.typeIn,assembly.decompress);
+					int outputAmount = getStageOutputAmount(assembly.typeIn,assembly.decompress);
+					double division = getStageOutputRatio(assembly.typeIn,assembly.decompress);
 
-					// CURRENT TANK FILL
-					int inputOps = assembly.input.getFill();
+					int inputOps = inputAmount > 0 ? assembly.input.getFill()/inputAmount : 0;
+					int outputOps = outputAmount > 0 ? (assembly.output.getMaxFill()-assembly.output.getFill())/outputAmount : 0;
 
-					// AMOUNT TO TRANSFER
-					int ops = Math.min(inputOps,(int)(outputOps/division));
-					assembly.input.setFill(assembly.input.getFill()-ops);
-					assembly.output.setFill((int)(assembly.output.getFill()+ops*division));
-					assembly.lastOps = ops;
+					int ops = Math.min(inputOps,outputOps);
+					int inputConsumed = ops*inputAmount;
+					int outputProduced = ops*outputAmount;
+					assembly.input.setFill(assembly.input.getFill()-inputConsumed);
+					assembly.output.setFill(assembly.output.getFill()+outputProduced);
+					assembly.lastOps = inputConsumed;
 					assembly.lastDivision = division;
 
 					// STEAM FLOW DIRECTION CHECK (BLADE DIRECTIONS AND PORT COUNT)
@@ -334,7 +354,7 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 					double bladeEfficiency = Math.max(assembly.bladeDirections.size()-wrongBlades,0)/(double)assembly.bladeDirections.size();
 					assembly.lastBladeEfficiency = bladeEfficiency;
 					double stageSpecificWork = getStageSpecificWork(assembly.typeIn,assembly.decompress);
-					double rawMassFlow = ops*getSteamMassEquivalent(assembly.typeIn);
+					double rawMassFlow = inputConsumed*getSteamMassEquivalent(assembly.typeIn);
 					double massFlow = getEffectiveMassFlow(assembly,rawMassFlow);
 					assembly.lastRawMassFlow = rawMassFlow;
 					assembly.lastEffectiveMassFlow = massFlow;
