@@ -1,10 +1,10 @@
 package com.leafia.contents.building.pinkdoor;
 
-import com.hbm.blocks.ModBlocks;
 import com.hbm.config.BombConfig;
 import com.hbm.items.ModItems;
 import com.hbm.items.tool.ItemModDoor;
 import com.hbm.util.I18nUtil;
+import com.leafia.Tags;
 import com.leafia.contents.AddonBlocks;
 import com.leafia.contents.AddonItems;
 import net.minecraft.block.Block;
@@ -25,6 +25,7 @@ import java.util.List;
 public class ItemPinkDoor extends ItemModDoor {
 	public ItemPinkDoor(String s) {
 		super(s);
+        setRegistryName(Tags.MODID, s);
 		ModItems.ALL_ITEMS.remove(this);
 		AddonItems.ALL_ITEMS.add(this);
 	}
