@@ -1,7 +1,7 @@
 package com.leafia.contents.nonmachines.storage.items;
 
 import com.hbm.tileentity.machine.storage.TileEntityCrateBase;
-import com.leafia.overwrite_contents.interfaces.IMixinTileEntityCrateBase;
+import com.leafia.overwrite_contents.interfaces.IMixinTileEntityCrate;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
@@ -13,7 +13,7 @@ public class CrateLabelContainer extends Container {
 	final TileEntityCrateBase te;
 	public CrateLabelContainer(InventoryPlayer invPlayer,TileEntityCrateBase te) {
 		this.te = te;
-		this.addSlotToContainer(new SlotItemHandler(((IMixinTileEntityCrateBase)te).leafia$getIconHandler(), 0, 62, 35));
+		this.addSlotToContainer(new SlotItemHandler(((IMixinTileEntityCrate)te).leafia$getIconHandler(), 0, 62, 35));
 		for(int i = 0; i < 3; i++)
 		{
 			for(int j = 0; j < 9; j++)

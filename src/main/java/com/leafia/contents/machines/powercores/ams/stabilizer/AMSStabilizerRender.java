@@ -12,15 +12,15 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 
-import static com.leafia.init.ResourceInit.getIntegrated;
+import static com.leafia.AddonBase.getIntegrated;
 import static com.leafia.init.ResourceInit.getVAO;
 
 public class AMSStabilizerRender extends TileEntitySpecialRenderer<AMSStabilizerTE> {
-	public static final WaveFrontObjectVAO mdl0 = getVAO(getIntegrated("ams/ams_limiter.obj"));
-	public static final WaveFrontObjectVAO mdld = getVAO(getIntegrated("ams/ams_limiter_destroyed.obj"));
-	public static final ResourceLocation texd = getIntegrated("ams/ams_destroyed.png");
-	public static final ResourceLocation tex0 = getIntegrated("ams/ams_limiter.png");
-	public static final ResourceLocation tex1 = getIntegrated("ams/balefire/ams_limiter.png");
+	public static final WaveFrontObjectVAO mdl0 = getVAO(getIntegrated("machines/ams/ams_limiter.obj"));
+	public static final WaveFrontObjectVAO mdld = getVAO(getIntegrated("machines/ams/ams_limiter_destroyed.obj"));
+	public static final ResourceLocation texd = getIntegrated("machines/ams/ams_destroyed.png");
+	public static final ResourceLocation tex0 = getIntegrated("machines/ams/ams_limiter.png");
+	public static final ResourceLocation tex1 = getIntegrated("machines/ams/balefire/ams_limiter.png");
 	public static class AMSStabilizerItemRender extends LeafiaItemRenderer {
 		@Override
 		protected double _sizeReference() {

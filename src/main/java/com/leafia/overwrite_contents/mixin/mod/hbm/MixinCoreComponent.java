@@ -74,7 +74,6 @@ public abstract class MixinCoreComponent extends BlockContainer {
 	 * @reason who cares
 	 */
 	@Override
-	@Overwrite
 	public void onBlockPlacedBy(World worldIn,BlockPos pos,IBlockState state,EntityLivingBase placer,ItemStack stack) {
 		super.onBlockPlacedBy(worldIn,pos,state,placer,stack);
 		TileEntity te = worldIn.getTileEntity(pos);

@@ -3,11 +3,8 @@ package com.leafia.contents.nonmachines.storage.items;
 import com.hbm.tileentity.machine.storage.TileEntityCrateBase;
 import com.hbm.util.I18nUtil;
 import com.leafia.AddonBase;
-import com.leafia.contents.miscellanous.slop.SlopTE;
-import com.leafia.contents.miscellanous.slop.container.SlopContainer;
-import com.leafia.dev.container_utility.LeafiaPacket;
 import com.leafia.dev.gui.LCEGuiInfoContainer;
-import com.leafia.overwrite_contents.interfaces.IMixinTileEntityCrateBase;
+import com.leafia.overwrite_contents.interfaces.IMixinTileEntityCrate;
 import com.leafia.transformer.LeafiaGls;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
@@ -48,7 +45,7 @@ public class CrateLabelGUI extends LCEGuiInfoContainer {
 	@Override
 	public void initGui() {
 		super.initGui();
-		IMixinTileEntityCrateBase mixin = (IMixinTileEntityCrateBase)entity;
+		IMixinTileEntityCrate mixin = (IMixinTileEntityCrate)entity;
 		fields[0] = new GuiTextField(0,fontRenderer,guiLeft+61,guiTop+26-5,54,5);
 		fields[0].setText(mixin.leafia$verticalLabels()[(int)MathHelper.positiveModulo(1-facing.getHorizontalIndex(),4)]);
 		fields[1] = new GuiTextField(0,fontRenderer,guiLeft+61,guiTop+16+(70-16)/2-9-2,54,5);
@@ -76,7 +73,7 @@ public class CrateLabelGUI extends LCEGuiInfoContainer {
 	protected void keyTyped(char typedChar,int keyCode) throws IOException {
 		boolean ignore = false;
 		int index = 0;
-		IMixinTileEntityCrateBase mixin = (IMixinTileEntityCrateBase)entity;
+		IMixinTileEntityCrate mixin = (IMixinTileEntityCrate)entity;
 		for (GuiTextField field : fields) {
 			ignore = ignore || field.textboxKeyTyped(typedChar,keyCode);
 			while (fontRenderer.getStringWidth(field.getText()) > fontRenderer.getStringWidth("handle with care"))

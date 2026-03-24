@@ -20,6 +20,7 @@ public class AddonConfig {
 	public static int meteorDiverterProtectionRadius = 3;
 	public static boolean enableMeteorCraters = true;
 	public static boolean enableSellacity = LeafiaDebug.isDevEnv;
+	public static boolean enableBarrelSidePorts = false;
 	public static class ConfigOverrides {
 		public static boolean blockReplacement = true;
 		public static void applyGeneralConfig() {
@@ -29,10 +30,10 @@ public class AddonConfig {
 	public static void loadFromConfig(){
 		_ConfigBuilder builder = new _ConfigBuilder("leafia");
 		builder._separator();
-		builder._category("ASM");
+		builder._category("MIXINS");
 		{
 			enableWackySplashes = builder._boolean("enableWackySplashes",true);
-			enableAcidRainRender = builder._boolean("enableAcidRainRender",true);
+			//enableAcidRainRender = builder._boolean("enableAcidRainRender",true); there's no point in this anymore
 		}
 		builder._separator();
 		builder._category("OVERRIDE");
@@ -43,11 +44,14 @@ public class AddonConfig {
 		builder._separator();
 		builder._category("GENERAL");
 		{
-			builder._comment("Replaces item radiations with LCE radiations");
-			enableHealthMod = builder._boolean("enableRadClassification",true);
-
 			builder._comment("How far DFC components can reach");
 			dfcComponentRange = builder._integer("dfcComponentRange",50);
+
+			builder._comment("Whether the barrels should look ugly or not");
+			enableBarrelSidePorts = builder._boolean("enableBarrelSidePorts",false);
+
+			builder._comment("Replaces item radiations with LCE radiations");
+			enableHealthMod = builder._boolean("enableRadClassification",true);
 
 			builder._comment("How long the placer of Meteor Protection Beacon has to be alive (in seconds)");
 			meteorDiverterMinAliveTime = builder._integer("meteorDiverterMinAliveTime",30*60);

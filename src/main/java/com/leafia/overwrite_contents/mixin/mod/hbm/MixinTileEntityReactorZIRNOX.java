@@ -11,6 +11,7 @@ import com.hbm.handler.CompatHandler;
 import com.hbm.handler.MultiblockHandlerXR;
 import com.hbm.handler.radiation.ChunkRadiationManager;
 import com.hbm.handler.threading.PacketThreading;
+import com.hbm.inventory.control_panel.*;
 import com.hbm.inventory.fluid.FluidType;
 import com.hbm.inventory.fluid.Fluids;
 import com.hbm.inventory.fluid.tank.FluidTankNTM;
@@ -43,6 +44,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.Optional;
@@ -58,12 +60,15 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static com.hbm.entity.projectile.EntityZirnoxDebris.DebrisType.*;
 
 @Mixin(value = TileEntityReactorZirnox.class)
-public abstract class MixinTileEntityReactorZIRNOX extends TileEntityMachineBase implements LeafiaPacketReceiver, IFluidStandardSenderMK2, IMixinTileEntityReactorZIRNOX, IGUIProvider, CompatHandler.OCComponent {
+public abstract class MixinTileEntityReactorZIRNOX extends TileEntityMachineBase implements LeafiaPacketReceiver, IFluidStandardSenderMK2, IMixinTileEntityReactorZIRNOX, IGUIProvider, CompatHandler.OCComponent, IControllable {
 	@Shadow(remap = false)
 	public FluidTankNTM water;
 	@Shadow(remap = false)
@@ -628,6 +633,47 @@ public abstract class MixinTileEntityReactorZIRNOX extends TileEntityMachineBase
 
 	}
 
+	// CCP //
+	@Override
+	public BlockPos getControlPos() {
+		return getPos();
+	}
+	@Override
+	public World getControlWorld() {
+		return getWorld();
+	}
+	@Override
+	public void receiveEvent(BlockPos from,ControlEvent e) {
+		if (e.name.equals("zirnox_ctrl_set_level"))
+			rodsTarget = (byte)MathHelper.clamp(e.vars.get("level").getNumber(),0,100);
+	}
+	@Override
+	public Map<String,DataValue> getQueryData() {
+		Map<String,DataValue> map = new HashMap<>();
+		map.put("temperature",new DataValueFloat((float)hulltemp));
+		map.put("pressure",new DataValueFloat((float)pressureLCE));
+		map.put("water",new DataValueFloat(water.getFill()));
+		map.put("steam",new DataValueFloat(steam.getFill()));
+		map.put("compression",new DataValueFloat((float)Math.pow(10,compression)));
+		map.put("co2",new DataValueFloat(carbonDioxide.getFill()));
+		return map;
+	}
+	@Override
+	public List<String> getInEvents() {
+		return Collections.singletonList("zirnox_ctrl_set_level");
+	}
+	@Override
+	public void validate() {
+		super.validate();
+		ControlEventSystem.get(world).addControllable(this);
+	}
+	@Override
+	public void invalidate() {
+		super.invalidate();
+		ControlEventSystem.get(world).removeControllable(this);
+	}
+
+	// OC //
 	@Callback(direct = true)
 	@Optional.Method(modid = "opencomputers")
 	public Object[] getTemp(Context context, Arguments args) {

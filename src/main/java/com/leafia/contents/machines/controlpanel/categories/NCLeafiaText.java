@@ -4,13 +4,10 @@ import com.hbm.inventory.control_panel.ItemList;
 import com.hbm.inventory.control_panel.SubElementNodeEditor;
 import com.hbm.inventory.control_panel.modular.INodeMenuCreator;
 import com.hbm.inventory.control_panel.nodes.Node;
-import com.hbm.inventory.control_panel.nodes.NodeCancelEvent;
-import com.hbm.inventory.control_panel.nodes.NodeEventBroadcast;
-import com.hbm.inventory.control_panel.nodes.NodeSetVar;
-import com.leafia.contents.machines.controlpanel.nodes.NodeAddString;
-import com.leafia.contents.machines.controlpanel.nodes.NodeFormat;
-import com.leafia.contents.machines.controlpanel.nodes.NodeSIPfx;
-import com.leafia.contents.machines.controlpanel.nodes.NodeSubString;
+import com.leafia.contents.machines.controlpanel.nodes.string.NodeAddString;
+import com.leafia.contents.machines.controlpanel.nodes.string.NodeFormat;
+import com.leafia.contents.machines.controlpanel.nodes.string.NodeSIPfx;
+import com.leafia.contents.machines.controlpanel.nodes.string.NodeSubString;
 
 public class NCLeafiaText implements INodeMenuCreator {
 	@Override

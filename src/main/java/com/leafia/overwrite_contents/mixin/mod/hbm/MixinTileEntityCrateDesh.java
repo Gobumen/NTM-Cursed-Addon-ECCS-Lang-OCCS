@@ -2,12 +2,11 @@ package com.leafia.overwrite_contents.mixin.mod.hbm;
 
 import com.custom_hbm.util.LCETuple.Pair;
 import com.hbm.tileentity.machine.TileEntityCrateDesh;
-import com.hbm.tileentity.machine.TileEntityCrateSteel;
 import com.hbm.tileentity.machine.storage.TileEntityCrateBase;
 import com.leafia.contents.nonmachines.storage.items.CrateLabelContainer;
 import com.leafia.contents.nonmachines.storage.items.CrateLabelGUI;
 import com.leafia.dev.container_utility.LeafiaPacket;
-import com.leafia.overwrite_contents.interfaces.IMixinTileEntityCrateBase;
+import com.leafia.overwrite_contents.interfaces.IMixinTileEntityCrate;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
@@ -27,7 +26,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(value = TileEntityCrateDesh.class)
-public abstract class MixinTileEntityCrateDesh extends TileEntityCrateBase implements IMixinTileEntityCrateBase {
+public abstract class MixinTileEntityCrateDesh extends TileEntityCrateBase implements IMixinTileEntityCrate {
 	public MixinTileEntityCrateDesh(int scount) {
 		super(scount);
 	}
@@ -113,21 +112,6 @@ public abstract class MixinTileEntityCrateDesh extends TileEntityCrateBase imple
 	@Override
 	public void onPlayerValidate(EntityPlayer plr) {
 		generateSyncPacket().__sendToClient(plr);
-	}
-	@Inject(method = "provideContainer",at = @At(value = "HEAD"),require = 1,remap = false,cancellable = true)
-	public void leafia$onProvideContainer(int ID,EntityPlayer player,World world,int x,int y,int z,CallbackInfoReturnable<Container> cir) {
-		if (ID >= 1121 && ID < 1121+4) {
-			cir.setReturnValue(new CrateLabelContainer(player.inventory,this));
-			cir.cancel();
-		}
-	}
-	@SideOnly(Side.CLIENT)
-	@Inject(method = "provideGUI",at = @At(value = "HEAD"),require = 1,remap = false,cancellable = true)
-	public void leafia$onProvideGUI(int ID,EntityPlayer player,World world,int x,int y,int z,CallbackInfoReturnable<GuiScreen> cir) {
-		if (ID >= 1121 && ID < 1121+4) {
-			cir.setReturnValue(new CrateLabelGUI(player.inventory,this,world.getBlockState(pos),EnumFacing.byHorizontalIndex(ID-1121)));
-			cir.cancel();
-		}
 	}
 	@Unique
 	private String leafia$tryReadString(NBTTagCompound compound,String key) {

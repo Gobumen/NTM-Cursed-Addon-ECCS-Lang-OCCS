@@ -14,7 +14,7 @@ import com.leafia.contents.network.spk_cable.uninos.ISPKReceiver;
 import com.leafia.contents.nonmachines.storage.items.CrateLabelContainer;
 import com.leafia.contents.nonmachines.storage.items.CrateLabelGUI;
 import com.leafia.dev.container_utility.LeafiaPacket;
-import com.leafia.overwrite_contents.interfaces.IMixinTileEntityCrateBase;
+import com.leafia.overwrite_contents.interfaces.IMixinTileEntityCrate;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
@@ -24,6 +24,7 @@ import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
@@ -40,10 +41,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(TileEntityCrateTungsten.class)
-public abstract class MixinTileEntityCrateTungsten extends TileEntityCrate implements IMixinTileEntityCrateBase, IBufPacketReceiver, ITickable, ILaserable, IGUIProvider, ISPKReceiver {
+public abstract class MixinTileEntityCrateTungsten extends TileEntityCrate implements IMixinTileEntityCrate, IBufPacketReceiver, ITickable, ILaserable, IGUIProvider, ISPKReceiver {
 
-    public MixinTileEntityCrateTungsten(int scount, String name) {
-        super(scount, name);
+    public MixinTileEntityCrateTungsten(int scount,String name,int crateColumns,int crateRows,int crateX,int crateY,int playerInventoryX,int playerInventoryY,int hotbarY,int guiWidth,int guiHeight,int inventoryLabelX,int titleColor,int inventoryLabelColor,ResourceLocation texture) {
+        super(scount,name,crateColumns,crateRows,crateX,crateY,playerInventoryX,playerInventoryY,hotbarY,guiWidth,guiHeight,inventoryLabelX,titleColor,inventoryLabelColor,texture);
     }
 
     @Shadow(remap = false)
@@ -54,7 +55,6 @@ public abstract class MixinTileEntityCrateTungsten extends TileEntityCrate imple
 
     @Unique
     public int leafia$heatTimer;
-
     /**
      * @author ntmleafia
      * @reason i preferred Extended algorithm
@@ -221,13 +221,6 @@ public abstract class MixinTileEntityCrateTungsten extends TileEntityCrate imple
     @Override
     public void onPlayerValidate(EntityPlayer plr) {
         generateSyncPacket().__sendToClient(plr);
-    }
-    @Inject(method = "provideContainer",at = @At(value = "HEAD"),require = 1,remap = false,cancellable = true)
-    public void leafia$onProvideContainer(int ID,EntityPlayer player,World world,int x,int y,int z,CallbackInfoReturnable<Container> cir) {
-        if (ID >= 1121 && ID < 1121+4) {
-            cir.setReturnValue(new CrateLabelContainer(player.inventory,this));
-            cir.cancel();
-        }
     }
     @SideOnly(Side.CLIENT)
     @Inject(method = "provideGUI",at = @At(value = "HEAD"),require = 1,remap = false,cancellable = true)

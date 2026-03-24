@@ -1,8 +1,8 @@
 package com.leafia.contents.machines.powercores.ams.base.container;
 
 import com.hbm.inventory.gui.GuiInfoContainer;
+import com.leafia.AddonBase;
 import com.leafia.contents.machines.powercores.ams.base.AMSBaseTE;
-import com.leafia.init.ResourceInit;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -11,7 +11,7 @@ import org.lwjgl.opengl.GL11;
 
 public class AMSBaseUI extends GuiInfoContainer {
 
-	private static ResourceLocation texture = ResourceInit.getIntegrated("ams/gui_base.png");
+	private static ResourceLocation texture = AddonBase.getIntegrated("machines/ams/gui_base.png");
 	private AMSBaseTE base;
 
 	public AMSBaseUI(InventoryPlayer invPlayer,AMSBaseTE tedf) {

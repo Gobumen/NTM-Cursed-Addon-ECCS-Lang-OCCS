@@ -1,7 +1,6 @@
 package com.leafia.contents.network.fluid;
 
 import com.hbm.inventory.fluid.FluidType;
-import com.hbm.main.ResourceManager;
 import com.hbm.render.loader.WaveFrontObjectVAO;
 import com.leafia.contents.AddonBlocks;
 import com.leafia.contents.network.fluid.gauges.FluidDuctGaugeTE;
@@ -10,7 +9,6 @@ import com.leafia.dev.LeafiaItemRenderer;
 import com.leafia.transformer.LeafiaGls;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -96,7 +94,7 @@ public class FluidDuctEquipmentRender extends TileEntitySpecialRenderer<FluidDuc
 			bindTexture(tex);
 			mdl.renderPart("body");
 			if (te instanceof FluidDuctGaugeTE gauge) {
-				LeafiaGls.rotate(-gauge.local_fillPerSec/(float)gauge.maximum*360,0,0,1);
+				LeafiaGls.rotate(-Math.min(gauge.fillPerSec/(float)gauge.maximum*360,350+gauge.local_dialRand),0,0,1);
 				mdl.renderPart("needle");
 			}
 			if (te instanceof FluidDuctValveTE valve && mdl != mdlValveRS) {

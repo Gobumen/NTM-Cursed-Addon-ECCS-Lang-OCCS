@@ -21,5 +21,9 @@ public class MixinControlEvent {
 		register(new ControlEvent("lftr_ctrl_set_level").setVar("level", 0));
 		register(new ControlEvent("pwr_computer_set_master").setVar("level", 0));
 		register(new ControlEvent("pwr_computer_set_level").setVar("name","").setVar("level", 0));
+		register(new ControlEvent("set_pump_buffer").setVar("size",0));
+		register(new ControlEvent("set_pump_pressure").setVar("pu",0));
+		register(new ControlEvent("set_pump_priority").setVar("priority",2));
+		register(new ControlEvent("zirnox_ctrl_set_level").setVar("level", 0));
 	}
 }

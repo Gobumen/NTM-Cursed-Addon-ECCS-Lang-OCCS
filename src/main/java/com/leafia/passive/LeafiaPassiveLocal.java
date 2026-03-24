@@ -25,6 +25,7 @@ public class LeafiaPassiveLocal {
 		Digamma.update();
 		for (Runnable callback : queue)
 			callback.run();
+		LeafiaPassiveServer.queue.clear(); // prevent memory leaks
 		queue.clear();
 		if (Minecraft.getMinecraft().isGamePaused()) {
 			for (IMixinTileEntityCore core : trackingCores)

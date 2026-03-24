@@ -1,7 +1,6 @@
 package com.leafia.contents.machines.powercores.ams.emitter;
 
 import com.hbm.inventory.fluid.Fluids;
-import com.hbm.main.ResourceManager;
 import com.hbm.render.NTMRenderHelper;
 import com.hbm.render.loader.WaveFrontObjectVAO;
 import com.leafia.contents.machines.powercores.ams.base.AMSBaseTE;
@@ -14,15 +13,15 @@ import org.lwjgl.opengl.GL11;
 
 import java.util.Random;
 
-import static com.leafia.init.ResourceInit.getIntegrated;
+import static com.leafia.AddonBase.getIntegrated;
 import static com.leafia.init.ResourceInit.getVAO;
 
 public class AMSEmitterRender extends TileEntitySpecialRenderer<AMSEmitterTE> {
-	public static final WaveFrontObjectVAO mdl0 = getVAO(getIntegrated("ams/ams_emitter.obj"));
-	public static final WaveFrontObjectVAO mdld = getVAO(getIntegrated("ams/ams_emitter_destroyed.obj"));
-	public static final ResourceLocation texd = getIntegrated("ams/ams_destroyed.png");
-	public static final ResourceLocation tex0 = getIntegrated("ams/ams_emitter.png");
-	public static final ResourceLocation tex1 = getIntegrated("ams/balefire/ams_emitter.png");
+	public static final WaveFrontObjectVAO mdl0 = getVAO(getIntegrated("machines/ams/ams_emitter.obj"));
+	public static final WaveFrontObjectVAO mdld = getVAO(getIntegrated("machines/ams/ams_emitter_destroyed.obj"));
+	public static final ResourceLocation texd = getIntegrated("machines/ams/ams_destroyed.png");
+	public static final ResourceLocation tex0 = getIntegrated("machines/ams/ams_emitter.png");
+	public static final ResourceLocation tex1 = getIntegrated("machines/ams/balefire/ams_emitter.png");
 	Random rand = new Random();
 
 	public static class AMSEmitterItemRender extends LeafiaItemRenderer {
