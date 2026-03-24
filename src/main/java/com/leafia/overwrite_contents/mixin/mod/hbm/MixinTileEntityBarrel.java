@@ -12,6 +12,7 @@ import com.hbm.tileentity.machine.TileEntityBarrel;
 import com.hbm.uninos.UniNodespace;
 import com.leafia.contents.network.pipe_amat.uninos.AmatNet;
 import com.leafia.contents.network.pipe_amat.uninos.AmatNode;
+import com.leafia.settings.AddonConfig;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
@@ -43,7 +44,7 @@ public abstract class MixinTileEntityBarrel extends TileEntityMachineBase implem
 	@Overwrite(remap = false)
 	public boolean hasCapability(Capability<?> capability,@Nullable EnumFacing facing) {
 		if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
-			if (facing != null) {
+			if (facing != null && !AddonConfig.enableBarrelSidePorts) {
 				if (!facing.equals(EnumFacing.UP) && !facing.equals(EnumFacing.DOWN))
 					return false;
 			}
@@ -58,6 +59,16 @@ public abstract class MixinTileEntityBarrel extends TileEntityMachineBase implem
 	 */
 	@Overwrite(remap = false)
 	protected DirPos[] getConPos() {
+		if (AddonConfig.enableBarrelSidePorts) {
+			return new DirPos[]{
+					new DirPos(pos.getX() + 1, pos.getY(), pos.getZ(), Library.POS_X),
+					new DirPos(pos.getX() - 1, pos.getY(), pos.getZ(), Library.NEG_X),
+					new DirPos(pos.getX(), pos.getY() + 1, pos.getZ(), Library.POS_Y),
+					new DirPos(pos.getX(), pos.getY() - 1, pos.getZ(), Library.NEG_Y),
+					new DirPos(pos.getX(), pos.getY(), pos.getZ() + 1, Library.POS_Z),
+					new DirPos(pos.getX(), pos.getY(), pos.getZ() - 1, Library.NEG_Z)
+			};
+		}
 		return new DirPos[]{
 				//new DirPos(pos.getX() + 1, pos.getY(), pos.getZ(), Library.POS_X),
 				//new DirPos(pos.getX() - 1, pos.getY(), pos.getZ(), Library.NEG_X),
