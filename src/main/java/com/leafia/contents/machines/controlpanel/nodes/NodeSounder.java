@@ -20,11 +20,12 @@ import java.util.List;
 import java.util.Map;
 
 public class NodeSounder extends NodeOutput {
-	NodeSnd snd = NodeSnd.BUTTON_ACCEPT;
+	public NodeSnd snd = NodeSnd.BUTTON_ACCEPT;
 	TileEntityControlPanel panel;
 	public enum NodeSnd {
 		BUTTON_ACCEPT(HBMSoundHandler.buttonYes),
 		BUTTON_DENY(HBMSoundHandler.buttonNo),
+		BUTTON(LeafiaSoundEvents.sbWallButton),
 		CLICK_ACCEPT(SoundEvents.UI_BUTTON_CLICK),
 		CLICK_INVALID(LeafiaSoundEvents.UI_BUTTON_INVALID),
 		ARMED(HBMSoundHandler.fstbmbStart),
