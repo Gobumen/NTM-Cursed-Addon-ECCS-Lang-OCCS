@@ -70,7 +70,7 @@ public class LargeSwitch extends Control {
 		LeafiaGls.popMatrix();
 		LeafiaGls.shadeModel(GL11.GL_FLAT);
 	}
-	static final float increment = 15;
+	static final float increment = 100/7f;
 	@Override
 	public void receiveEvent(ControlEvent evt) {
 		if (evt.name.equals("ctrl_press"))
