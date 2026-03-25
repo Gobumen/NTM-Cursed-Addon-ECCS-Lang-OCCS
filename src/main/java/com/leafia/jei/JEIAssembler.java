@@ -2,16 +2,12 @@ package com.leafia.jei;
 
 import com.hbm.blocks.ModBlocks;
 import com.hbm.handler.jei.JEIConfig;
-import com.hbm.handler.jei.JeiRecipes;
 import com.hbm.inventory.RecipesCommon.AStack;
 import com.hbm.inventory.fluid.FluidStack;
 import com.hbm.inventory.recipes.AssemblyMachineRecipes;
 import com.hbm.inventory.recipes.loader.GenericRecipe;
 import com.hbm.inventory.recipes.loader.GenericRecipes.IOutput;
-import com.hbm.items.ModItems;
 import com.hbm.items.machine.ItemBlueprints;
-import com.hbm.items.machine.ItemFluidIcon;
-
 import com.hbm.util.I18nUtil;
 import com.leafia.dev.LeafiaClientUtil;
 import com.leafia.jei.JEIAssembler.Recipe;
@@ -78,25 +74,16 @@ public class JEIAssembler implements IRecipeCategory<Recipe> {
 				outputs.add(stacks[0]);
 			}
 
-			// for searching
-			if (!inputFluid.isEmpty()) {
-				ItemStack icon = ItemFluidIcon.make(inputFluid.get(0));
-				inputs.add(Collections.singletonList(icon));
-			} else {
-				inputs.add(Collections.singletonList(new ItemStack(Items.AIR)));
-			}
-			if (!outputFluid.isEmpty()) {
-				ItemStack icon = ItemFluidIcon.make(outputFluid.get(0));
-				outputs.add(icon);
-			} else {
-				outputs.add(new ItemStack(Items.AIR));
-			}
 		}
 
 		@Override
 		public void getIngredients(IIngredients ingredients) {
 			ingredients.setInputLists(VanillaTypes.ITEM,inputs);
-			ingredients.setOutputs(VanillaTypes.ITEM,outputs);
+			ingredients.setOutput(VanillaTypes.ITEM,outputs.get(0));
+			if (!inputFluid.isEmpty())
+				ingredients.setInput(VanillaTypes.FLUID,_JEIFluidHelper.toForge(inputFluid.get(0)));
+			if (!outputFluid.isEmpty())
+				ingredients.setOutput(VanillaTypes.FLUID,_JEIFluidHelper.toForge(outputFluid.get(0)));
 		}
 		@SideOnly(Side.CLIENT)
 		@Override
@@ -118,6 +105,11 @@ public class JEIAssembler implements IRecipeCategory<Recipe> {
 			if (!outputFluid.isEmpty())
 				LeafiaClientUtil.jeiFluidRenderInfo(outputFluid.get(0),list,mouseX,mouseY,100,55,52,4);
 			return list;
+		}
+		@Override
+		public boolean handleClick(Minecraft minecraft,int mouseX,int mouseY,int mouseButton) {
+			return (!inputFluid.isEmpty() && _JEIFluidHelper.handleClick(inputFluid.get(0),mouseX,mouseY,28,55,52,4,mouseButton)) ||
+					(!outputFluid.isEmpty() && _JEIFluidHelper.handleClick(outputFluid.get(0),mouseX,mouseY,100,55,52,4,mouseButton));
 		}
 	}
 

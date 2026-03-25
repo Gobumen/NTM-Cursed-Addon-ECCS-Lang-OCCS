@@ -4,9 +4,7 @@ import com.hbm.blocks.ModBlocks;
 import com.hbm.handler.jei.JEIConfig;
 import com.hbm.inventory.fluid.FluidStack;
 import com.hbm.inventory.fluid.FluidType;
-import com.hbm.inventory.fluid.Fluids;
 import com.hbm.inventory.recipes.HydrotreatingRecipes;
-import com.hbm.items.machine.ItemFluidIcon;
 import com.hbm.util.I18nUtil;
 import com.hbm.util.Tuple.Triplet;
 import com.leafia.dev.LeafiaClientUtil;
@@ -20,8 +18,6 @@ import mezz.jei.api.ingredients.VanillaTypes;
 import mezz.jei.api.recipe.IRecipeCategory;
 import mezz.jei.api.recipe.IRecipeWrapper;
 import net.minecraft.client.Minecraft;
-import net.minecraft.init.Items;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -64,24 +60,10 @@ public class JEIHydrotreater implements IRecipeCategory<Recipe> {
 			outputFluid.add(fluids.getY());
 			outputFluid.add(fluids.getZ());
 		}
-		static ItemStack makeIcon(FluidStack stack) {
-			if (stack.type.equals(Fluids.NONE))
-				return new ItemStack(Items.AIR);
-			else
-				return ItemFluidIcon.make(stack);
-		}
 		@Override
 		public void getIngredients(IIngredients ingredients) {
-			List<ItemStack> in = new ArrayList<>();
-			List<ItemStack> out = new ArrayList<>();
-			// for searching
-			for (FluidStack f : inputFluid)
-				in.add(makeIcon(f));
-			for (FluidStack f : outputFluid)
-				out.add(makeIcon(f));
-
-			ingredients.setInputs(VanillaTypes.ITEM,in);
-			ingredients.setOutputs(VanillaTypes.ITEM,out);
+			ingredients.setInputs(VanillaTypes.FLUID,_JEIFluidHelper.toForge(inputFluid));
+			ingredients.setOutputs(VanillaTypes.FLUID,_JEIFluidHelper.toForge(outputFluid));
 		}
 		@SideOnly(Side.CLIENT)
 		@Override
@@ -107,6 +89,18 @@ public class JEIHydrotreater implements IRecipeCategory<Recipe> {
 				LeafiaClientUtil.jeiFluidRenderInfo(stack,list,mouseX,mouseY,91+i*18,1,16,34);
 			}
 			return list;
+		}
+		@Override
+		public boolean handleClick(Minecraft minecraft,int mouseX,int mouseY,int mouseButton) {
+			for (int i = 0; i < inputFluid.size(); i++) {
+				if (_JEIFluidHelper.handleClick(inputFluid.get(i),mouseX,mouseY,37+i*18,1,16,34,mouseButton))
+					return true;
+			}
+			for (int i = 0; i < outputFluid.size(); i++) {
+				if (_JEIFluidHelper.handleClick(outputFluid.get(i),mouseX,mouseY,91+i*18,1,16,34,mouseButton))
+					return true;
+			}
+			return false;
 		}
 	}
 
