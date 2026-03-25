@@ -5,10 +5,8 @@ import com.hbm.handler.jei.JEIConfig;
 import com.hbm.inventory.fluid.FluidStack;
 import com.hbm.inventory.fluid.FluidType;
 import com.hbm.inventory.recipes.ReformingRecipes;
-import com.hbm.items.machine.ItemFluidIcon;
 import com.hbm.util.I18nUtil;
 import com.hbm.util.Tuple;
-import com.hbm.util.Tuple.Quartet;
 import com.hbm.util.Tuple.Triplet;
 import com.leafia.dev.LeafiaClientUtil;
 import com.leafia.jei.JEIReformer.Recipe;
@@ -21,7 +19,6 @@ import mezz.jei.api.ingredients.VanillaTypes;
 import mezz.jei.api.recipe.IRecipeCategory;
 import mezz.jei.api.recipe.IRecipeWrapper;
 import net.minecraft.client.Minecraft;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -30,7 +27,6 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Map.Entry;
 
 public class JEIReformer implements IRecipeCategory<Recipe> {
@@ -69,13 +65,8 @@ public class JEIReformer implements IRecipeCategory<Recipe> {
 
 		@Override
 		public void getIngredients(IIngredients ingredients) {
-			ingredients.setInput(VanillaTypes.ITEM,ItemFluidIcon.make(inputFluid));
-			List<ItemStack> outs = new ArrayList<>();
-			// for searching
-			for (FluidStack f : outputFluid)
-				outs.add(ItemFluidIcon.make(f));
-
-			ingredients.setOutputs(VanillaTypes.ITEM,outs);
+			ingredients.setInput(VanillaTypes.FLUID,_JEIFluidHelper.toForge(inputFluid));
+			ingredients.setOutputs(VanillaTypes.FLUID,_JEIFluidHelper.toForge(outputFluid));
 		}
 		@SideOnly(Side.CLIENT)
 		@Override
@@ -97,6 +88,16 @@ public class JEIReformer implements IRecipeCategory<Recipe> {
 				LeafiaClientUtil.jeiFluidRenderInfo(stack,list,mouseX,mouseY,73+i*18,1,16,34);
 			}
 			return list;
+		}
+		@Override
+		public boolean handleClick(Minecraft minecraft,int mouseX,int mouseY,int mouseButton) {
+			if (_JEIFluidHelper.handleClick(inputFluid,mouseX,mouseY,37,1,16,34,mouseButton))
+				return true;
+			for (int i = 0; i < outputFluid.size(); i++) {
+				if (_JEIFluidHelper.handleClick(outputFluid.get(i),mouseX,mouseY,73+i*18,1,16,34,mouseButton))
+					return true;
+			}
+			return false;
 		}
 	}
 
