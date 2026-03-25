@@ -22,7 +22,7 @@ import java.util.Map;
 public class NodeSounder extends NodeOutput {
 	NodeSnd snd = NodeSnd.BUTTON_ACCEPT;
 	TileEntityControlPanel panel;
-	enum NodeSnd {
+	public enum NodeSnd {
 		BUTTON_ACCEPT(HBMSoundHandler.buttonYes),
 		BUTTON_DENY(HBMSoundHandler.buttonNo),
 		CLICK_ACCEPT(SoundEvents.UI_BUTTON_CLICK),

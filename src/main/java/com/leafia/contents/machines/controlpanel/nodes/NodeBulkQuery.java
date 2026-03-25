@@ -3,7 +3,6 @@ package com.leafia.contents.machines.controlpanel.nodes;
 import com.hbm.inventory.control_panel.*;
 import com.hbm.inventory.control_panel.modular.StockNodesRegister;
 import com.hbm.inventory.control_panel.nodes.Node;
-import com.hbm.inventory.control_panel.nodes.NodeQueryBlock;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
@@ -18,7 +17,6 @@ public class NodeBulkQuery extends Node {
 	public enum CombineMethod { ADD,MULTIPLY,AVERAGE }
 	public CombineMethod combineMethod = CombineMethod.ADD;
 	public String dataName = "";
-	public NodeDropdown combineSelector;
 	public NodeDropdown dataSelector;
 
 	public NodeBulkQuery(float x, float y, Control ctrl) {
@@ -27,7 +25,7 @@ public class NodeBulkQuery extends Node {
 
 		this.outputs.add(new NodeConnection("Output", this, outputs.size(), false, DataValue.DataType.GENERIC, new DataValueFloat(0)));
 
-		combineSelector = new NodeDropdown(this, otherElements.size(),s -> {
+		NodeDropdown combineSelector = new NodeDropdown(this, otherElements.size(),s -> {
 			try {
 				combineMethod = CombineMethod.valueOf(s);
 			} catch (IllegalArgumentException ignored) {}
