@@ -63,6 +63,8 @@
   "external.actualexplosion": { "category": "block", "sounds": ["leafia:external/169628396"]},
   "external.glitch_alpha10302": { "category": "block", "sounds": ["leafia:external/glitch_alpha10302"]},
 
+  "block.az5": { "subtitle": "subtitles.block.az5", "category": "block", "sounds": ["leafia:external/az5"]},
+
   "item.geiger1": {"subtitle": "subtitles.item.geiger", "category": "player", "sounds": [{"name": "leafia:tool/geiger1", "stream": false}]},
   "item.geiger2": {"subtitle": "subtitles.item.geiger", "category": "player", "sounds": [{"name": "leafia:tool/geiger2", "stream": false}]},
   "item.geiger3": {"subtitle": "subtitles.item.geiger", "category": "player", "sounds": [{"name": "leafia:tool/geiger3", "stream": false}]},

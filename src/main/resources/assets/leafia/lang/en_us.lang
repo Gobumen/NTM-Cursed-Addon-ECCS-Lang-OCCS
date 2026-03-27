@@ -273,6 +273,7 @@ subtitles.ccp.sbwallswitch=Switch flipped
 subtitles.block.arc_welder=Arc Welder humming
 subtitles.block.arc_welder_start=Arc Welder starts
 subtitles.block.arc_welder_stop=Arc Welder stops
+subtitles.block.az5=AZ-5 Engaged
 subtitles.block.dfc.energyburst=DFC bursts energy
 subtitles.block.dfc.ignite=DFC ignites
 subtitles.block.reactor_door_close=Reactor Door closing

@@ -273,6 +273,7 @@ subtitles.ccp.sbwallswitch=スイッチが切り替えられる
 subtitles.block.arc_welder=アーク溶接機が稼働する
 subtitles.block.arc_welder_start=アーク溶接機が起動する
 subtitles.block.arc_welder_stop=アーク溶接機が停止する
+subtitles.block.az5=AZ-5が発動する
 subtitles.block.dfc.energyburst=DFCがエネルギーを放出する
 subtitles.block.dfc.ignite=DFCが点火する
 subtitles.block.reactor_door_close=原子炉の扉が閉じる
