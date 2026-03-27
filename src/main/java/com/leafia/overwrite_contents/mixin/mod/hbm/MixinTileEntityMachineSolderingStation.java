@@ -40,7 +40,7 @@ public abstract class MixinTileEntityMachineSolderingStation extends TileEntityM
 		if (world.isRemote) {
 			if (progress > 0 || leafia$client_looptimer) {
 				if (leafia$client_sfx == null) {
-					leafia$client_sfx = AddonBase.proxy.getLoopedSound(LeafiaSoundEvents.crafting_tech1_part,SoundCategory.BLOCKS,pos.getX()+0.5f,pos.getY()+0.5f,pos.getZ()+0.5f,1,1);
+					leafia$client_sfx = AddonBase.proxy.getLoopedSoundStartStop(world,LeafiaSoundEvents.crafting_tech1_part,null,null,SoundCategory.BLOCKS,pos.getX()+0.5f,pos.getY()+0.5f,pos.getZ()+0.5f,1,1);
 					leafia$client_sfx.startSound();
 				}
 				ForgeDirection dir = ForgeDirection.getOrientation(this.getBlockMetadata()-10);
