@@ -66,7 +66,7 @@ public abstract class MixinTileEntityRBMKBase extends TileEntityLoadedBase imple
 		if (!world.isRemote) {
 			if (heat > maxHeat() && !world.getGameRules().getBoolean(RBMKKeys.KEY_DISABLE_MELTDOWNS.keyString)) {
 				if (heat >= leafia$lastHeat || heat >= 2000)
-					leafia$damage += IMixinTileEntityRBMKBase.dmgIncrement+(int)(Math.max(0,heat-3000)/1000);
+					leafia$damage += IMixinTileEntityRBMKBase.dmgIncrement+(int)(Math.max(0,heat-3000)/2000);
 			} else
 				leafia$damage = Math.max(leafia$damage-1,0);
 			if (leafia$damage > IMixinTileEntityRBMKBase.maxDamage)
