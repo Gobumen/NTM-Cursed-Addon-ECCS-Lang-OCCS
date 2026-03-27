@@ -7,6 +7,7 @@ import com.hbm.inventory.RecipesCommon.AStack;
 import com.hbm.inventory.fluid.FluidStack;
 import com.hbm.inventory.recipes.SolderingRecipes;
 import com.hbm.inventory.recipes.SolderingRecipes.SolderingRecipe;
+import com.hbm.items.machine.ItemFluidIcon;
 import com.hbm.util.I18nUtil;
 import com.leafia.dev.LeafiaClientUtil;
 import com.leafia.dev.LeafiaUtil;
@@ -82,6 +83,11 @@ public class JEISoldering implements IRecipeCategory<Recipe> {
 				} else
 					inputs.add(Collections.singletonList(new ItemStack(Items.AIR)));
 			}
+			// for searching
+			if (inputFluid != null) {
+				ItemStack icon = ItemFluidIcon.make(inputFluid);
+				inputs.add(Collections.singletonList(icon));
+			}
 		}
 
 		@Override
@@ -124,10 +130,10 @@ public class JEISoldering implements IRecipeCategory<Recipe> {
 			LeafiaClientUtil.jeiFluidRenderInfo(inputFluid,list,mouseX,mouseY,38-1,38-1,52,16);
 			return list;
 		}
-		@Override
+		/*@Override
 		public boolean handleClick(Minecraft minecraft,int mouseX,int mouseY,int mouseButton) {
 			return _JEIFluidHelper.handleClick(inputFluid,mouseX,mouseY,38-1,38-1,52,16,mouseButton);
-		}
+		}*/
 	}
 
 	protected final IDrawable background;

@@ -5,6 +5,7 @@ import com.hbm.handler.jei.JEIConfig;
 import com.hbm.inventory.fluid.FluidStack;
 import com.hbm.inventory.fluid.FluidType;
 import com.hbm.inventory.recipes.RefineryRecipes;
+import com.hbm.items.machine.ItemFluidIcon;
 import com.hbm.util.I18nUtil;
 import com.hbm.util.Tuple;
 import com.hbm.util.Tuple.Quartet;
@@ -19,6 +20,7 @@ import mezz.jei.api.ingredients.VanillaTypes;
 import mezz.jei.api.recipe.IRecipeCategory;
 import mezz.jei.api.recipe.IRecipeWrapper;
 import net.minecraft.client.Minecraft;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -64,10 +66,20 @@ public class JEIVacuum implements IRecipeCategory<Recipe> {
 			outputFluid.add(out.getZ());
 		}
 
-		@Override
+		/*@Override
 		public void getIngredients(IIngredients ingredients) {
 			ingredients.setInput(VanillaTypes.FLUID,_JEIFluidHelper.toForge(inputFluid));
 			ingredients.setOutputs(VanillaTypes.FLUID,_JEIFluidHelper.toForge(outputFluid));
+		}*/
+		@Override
+		public void getIngredients(IIngredients ingredients) {
+			ingredients.setInput(VanillaTypes.ITEM,ItemFluidIcon.make(inputFluid));
+			List<ItemStack> outs = new ArrayList<>();
+			// for searching
+			for (FluidStack f : outputFluid)
+				outs.add(ItemFluidIcon.make(f));
+
+			ingredients.setOutputs(VanillaTypes.ITEM,outs);
 		}
 		@SideOnly(Side.CLIENT)
 		@Override
@@ -90,7 +102,7 @@ public class JEIVacuum implements IRecipeCategory<Recipe> {
 			}
 			return list;
 		}
-		@Override
+		/*@Override
 		public boolean handleClick(Minecraft minecraft,int mouseX,int mouseY,int mouseButton) {
 			if (_JEIFluidHelper.handleClick(inputFluid,mouseX,mouseY,37,1,16,34,mouseButton))
 				return true;
@@ -99,7 +111,7 @@ public class JEIVacuum implements IRecipeCategory<Recipe> {
 					return true;
 			}
 			return false;
-		}
+		}*/
 	}
 
 	protected final IDrawable background;

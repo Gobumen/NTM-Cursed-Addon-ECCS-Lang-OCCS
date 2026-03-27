@@ -94,10 +94,10 @@ public class JEIAcidizer implements IRecipeCategory<Recipe> {
 			LeafiaClientUtil.jeiFluidRenderInfo(inputFluid,list,mouseX,mouseY,38-1,2-1,16,52);
 			return list;
 		}
-		@Override
+		/*@Override
 		public boolean handleClick(Minecraft minecraft,int mouseX,int mouseY,int mouseButton) {
 			return _JEIFluidHelper.handleClick(inputFluid,mouseX,mouseY,38-1,2-1,16,52,mouseButton);
-		}
+		}*/
 	}
 
 	protected final IDrawable background;
