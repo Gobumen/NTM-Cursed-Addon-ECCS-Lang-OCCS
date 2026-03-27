@@ -24,6 +24,9 @@
 
   "external.sbpickore": {"category": "block", "sounds": [{"name": "leafia:external/pickaxe_ore", "stream": false},{"name": "leafia:external/pickaxe_ore2", "stream": false}]},
 
+  "external.sbwallswitch": {"subtitle": "subtitles.ccp.sbwallswitch", "category": "block", "sounds": [{"name": "leafia:external/apexconsole2switch", "stream": false}]},
+  "external.sbwallbutton": {"subtitle": "subtitles.ccp.sbwallbutton", "category": "block", "sounds": [{"name": "leafia:external/tinywallbutton", "stream": false}]},
+
   "weapon.nuke": {"subtitle": "subtitles.weapon.nuke", "category": "player", "sounds": [{"name": "leafia:weapon/nuclearExplosion", "stream": false}]},
   "weapon.nuke_n": {"subtitle": "subtitles.weapon.nuke_n", "category": "player", "sounds": [{"name": "leafia:weapon/nuclearexplosion_louder", "stream": false}]},
   "weapon.nuke_d": {"subtitle": "subtitles.weapon.nuke_d", "category": "player", "sounds": [{"name": "leafia:weapon/nuclear_distant_mix", "stream": false}]},
@@ -59,6 +62,8 @@
   "external.longexplosion": { "category": "block", "sounds": ["leafia:external/178962800"]},
   "external.actualexplosion": { "category": "block", "sounds": ["leafia:external/169628396"]},
   "external.glitch_alpha10302": { "category": "block", "sounds": ["leafia:external/glitch_alpha10302"]},
+
+  "block.az5": { "subtitle": "subtitles.block.az5", "category": "block", "sounds": ["leafia:external/az5"]},
 
   "item.geiger1": {"subtitle": "subtitles.item.geiger", "category": "player", "sounds": [{"name": "leafia:tool/geiger1", "stream": false}]},
   "item.geiger2": {"subtitle": "subtitles.item.geiger", "category": "player", "sounds": [{"name": "leafia:tool/geiger2", "stream": false}]},

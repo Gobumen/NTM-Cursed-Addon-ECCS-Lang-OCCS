@@ -82,6 +82,11 @@ public class LeafiaSoundEvents {
 	public static SoundEvent reactor_door_open;
 	public static SoundEvent reactor_door_close;
 
+	public static SoundEvent sbWallSwitch;
+	public static SoundEvent sbWallButton;
+
+	public static SoundEvent az5;
+
 	public static void init() {
 		mukeExplosion = register("weapon.mukeExplosion");
 
@@ -177,6 +182,11 @@ public class LeafiaSoundEvents {
 		reactor_door_handle = register("external.reactor_door_handle");
 		reactor_door_open = register("external.reactor_door_open");
 		reactor_door_close = register("external.reactor_door_close");
+
+		sbWallSwitch = register("external.sbwallswitch");
+		sbWallButton = register("external.sbwallbutton");
+
+		az5 = register("block.az5");
 	}
 
 	public static SoundEvent register(String name) {

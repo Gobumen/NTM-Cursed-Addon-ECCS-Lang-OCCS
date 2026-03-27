@@ -165,7 +165,7 @@ public class NixieDisplay extends Control {
 		appendGuiQuad(buf,boxMinX,boxMinY,boxMinX+padding,boxMaxY,0.0F,0.0F,4/18f,1.0F,packedColor);
 		appendGuiQuad(buf,boxMaxX-padding,boxMinY,boxMaxX,boxMaxY,1-4/18f,0.0F,1,1.0F,packedColor);
 		for (int i = 0; i < length; i++) {
-			float start = length == 1 ? 0 : lerp(boxMinX+padding,boxMaxX-padding-1,(float)i/(length-1));
+			float start = length == 1 ? boxMinX+padding : lerp(boxMinX+padding,boxMaxX-padding-1,(float)i/(length-1));
 			appendGuiQuad(buf,start,boxMinY,start+1,boxMaxY,4/18f,0.0F,1-4/18f,1.0F,packedColor);
 		}
 		NTMImmediate.INSTANCE.draw();

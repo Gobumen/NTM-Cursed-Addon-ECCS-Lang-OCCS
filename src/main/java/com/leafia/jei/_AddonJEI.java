@@ -5,10 +5,7 @@ import com.leafia.contents.AddonBlocks;
 import com.leafia.contents.AddonBlocks.PWR;
 import com.leafia.contents.control.fuel.nuclearfuel.LeafiaRodCraftingJEI;
 import com.leafia.contents.control.fuel.nuclearfuel.LeafiaRodDecayJEI;
-import mezz.jei.api.IGuiHelper;
-import mezz.jei.api.IModPlugin;
-import mezz.jei.api.IModRegistry;
-import mezz.jei.api.JEIPlugin;
+import mezz.jei.api.*;
 import mezz.jei.api.recipe.IRecipeCategoryRegistration;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
@@ -19,6 +16,7 @@ import java.util.Objects;
 public class _AddonJEI implements IModPlugin {
 	public static String GENERIC_ROD_UNCRAFTING = "leafia.generic_rod_uncrafting";
 	public static String GENERIC_ROD_DECAY = "leafia.generic_rod_decay";
+	static IJeiRuntime runtime;
 	@Override
 	public void register(IModRegistry registry) {
 		{
@@ -67,5 +65,9 @@ public class _AddonJEI implements IModPlugin {
 				new LeafiaRodCraftingJEI(help),
 				new LeafiaRodDecayJEI(help)
 		);
+	}
+	@Override
+	public void onRuntimeAvailable(IJeiRuntime jeiRuntime) {
+		runtime = jeiRuntime;
 	}
 }

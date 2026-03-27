@@ -4,13 +4,11 @@ import com.hbm.blocks.ModBlocks;
 import com.hbm.handler.jei.JEIConfig;
 import com.hbm.handler.jei.JeiRecipes;
 import com.hbm.inventory.RecipesCommon.AStack;
-import com.hbm.inventory.RecipesCommon.ComparableStack;
 import com.hbm.inventory.RecipesCommon.OreDictStack;
 import com.hbm.inventory.fluid.FluidStack;
 import com.hbm.inventory.fluid.FluidType;
 import com.hbm.inventory.recipes.CrystallizerRecipes;
 import com.hbm.inventory.recipes.CrystallizerRecipes.CrystallizerRecipe;
-import com.hbm.items.machine.ItemFluidIcon;
 import com.hbm.util.I18nUtil;
 import com.hbm.util.Tuple.Pair;
 import com.leafia.dev.LeafiaClientUtil;
@@ -30,7 +28,10 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.lang.reflect.Field;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map.Entry;
 
 public class JEIAcidizer implements IRecipeCategory<Recipe> {
@@ -75,7 +76,8 @@ public class JEIAcidizer implements IRecipeCategory<Recipe> {
 
 		@Override
 		public void getIngredients(IIngredients ingredients) {
-			ingredients.setInputLists(VanillaTypes.ITEM,Arrays.asList(inputs,Collections.singletonList(ItemFluidIcon.make(inputFluid))));
+			ingredients.setInputLists(VanillaTypes.ITEM,Collections.singletonList(inputs));
+			ingredients.setInput(VanillaTypes.FLUID,_JEIFluidHelper.toForge(inputFluid));
 			ingredients.setOutput(VanillaTypes.ITEM,output);
 		}
 
@@ -91,6 +93,10 @@ public class JEIAcidizer implements IRecipeCategory<Recipe> {
 			List<String> list = new ArrayList<>();
 			LeafiaClientUtil.jeiFluidRenderInfo(inputFluid,list,mouseX,mouseY,38-1,2-1,16,52);
 			return list;
+		}
+		@Override
+		public boolean handleClick(Minecraft minecraft,int mouseX,int mouseY,int mouseButton) {
+			return _JEIFluidHelper.handleClick(inputFluid,mouseX,mouseY,38-1,2-1,16,52,mouseButton);
 		}
 	}
 

@@ -1,5 +1,6 @@
 package com.leafia.passive;
 
+import com.hbm.inventory.control_panel.nodes.Node;
 import com.leafia.contents.AddonItems;
 import com.leafia.contents.machines.reactors.pwr.PWRDiagnosis;
 import com.leafia.contents.machines.reactors.pwr.blocks.wreckage.PWRMeshedWreck;
@@ -7,7 +8,9 @@ import com.leafia.dev.LeafiaDebug.Tracker;
 import net.minecraft.world.World;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class LeafiaPassiveServer {
@@ -20,7 +23,9 @@ public class LeafiaPassiveServer {
 		Tracker.postTick(world);
 		PWRMeshedWreck.rmCache.clear();
 	}
+	public static final Set<Node> tickedNodes = new HashSet<>();
 	public static void priorTick(World world) {
+		tickedNodes.clear();
 		//if (ModItems.wand_leaf.darnit != null)
 		//	ModItems.wand_leaf.darnit.run();
 		Tracker.preTick(world);
