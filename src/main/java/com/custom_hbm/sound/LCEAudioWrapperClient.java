@@ -20,7 +20,7 @@ public class LCEAudioWrapperClient extends LCEAudioWrapper {
     private float pitch = 1;
     private boolean looped = true;
     private ISound.AttenuationType attenuationType = ISound.AttenuationType.NONE;
-    private BiFunction<Float, Double, Double> attentuationFunction = null;
+    private BiFunction<Float, Double, Double> attenuationFunction = null;
 	LCEAudioDynamic sound;
 	
 	public LCEAudioWrapperClient(SoundEvent source,SoundCategory cat) {
@@ -40,8 +40,8 @@ public class LCEAudioWrapperClient extends LCEAudioWrapper {
         sound.setPitch(pitch);
         sound.setLooped(looped);
         sound.setAttenuation(attenuationType);
-        if (attentuationFunction != null)
-            sound.setCustomAttenuation(attentuationFunction);
+        if (attenuationFunction != null)
+            sound.setCustomAttenuation(attenuationFunction);
     }
 
     public void setAttenuation(ISound.AttenuationType attenuationType) {
@@ -108,8 +108,8 @@ public class LCEAudioWrapperClient extends LCEAudioWrapper {
 	}
 
 	@Override
-	public LCEAudioWrapperClient setCustomAttentuation(BiFunction<Float,Double,Double> attentuationFunction) {
-        this.attentuationFunction = attentuationFunction;
+	public LCEAudioWrapperClient setCustomAttenuation(BiFunction<Float,Double,Double> attentuationFunction) {
+        this.attenuationFunction = attentuationFunction;
 		sound.setCustomAttenuation(attentuationFunction);
 		return this;
 	}

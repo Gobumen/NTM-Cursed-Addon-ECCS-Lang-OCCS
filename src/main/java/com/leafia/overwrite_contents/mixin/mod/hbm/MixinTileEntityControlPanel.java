@@ -1,6 +1,9 @@
 package com.leafia.overwrite_contents.mixin.mod.hbm;
 
+import com.hbm.inventory.control_panel.ControlEvent;
 import com.hbm.inventory.control_panel.ControlPanel;
+import com.hbm.inventory.control_panel.DataValue;
+import com.hbm.inventory.control_panel.DataValueFloat;
 import com.hbm.tileentity.IPersistentNBT;
 import com.hbm.tileentity.machine.TileEntityControlPanel;
 import com.leafia.dev.container_utility.LeafiaPacket;
@@ -10,6 +13,7 @@ import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.math.BlockPos;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -17,6 +21,10 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 @Mixin(value = TileEntityControlPanel.class)
 public abstract class MixinTileEntityControlPanel extends TileEntity implements IMixinTileEntityControlPanel, LeafiaPacketReceiver, IPersistentNBT {
@@ -112,5 +120,25 @@ public abstract class MixinTileEntityControlPanel extends TileEntity implements 
 		if (nbtTagCompound.hasKey("skin"))
 			skin = Block.getBlockFromName(nbtTagCompound.getString("skin"));
 		panel.readFromNBT(nbtTagCompound.getCompoundTag("panel"));
+	}
+
+	@Inject(method = "receiveEvent",at = @At(value = "HEAD"),remap = false,require = 1)
+	void leafia$onReceiveEvent(BlockPos from,ControlEvent e,CallbackInfo ci) {
+		if (e.name.equals("setGlobalVar")) {
+			String name = e.vars.get("name").toString();
+			if (panel.globalVars.containsKey(name)) {
+				DataValue val = e.vars.get("value");
+				if (panel.globalVars.get(name) instanceof DataValueFloat)
+					panel.globalVars.put(name,new DataValueFloat(val.getNumber()));
+				else
+					panel.globalVars.put(name,val);
+			}
+		}
+	}
+
+	@Inject(method = "getInEvents",at = @At(value = "HEAD"),require = 1,remap = false,cancellable = true)
+	void leafia$onGetInEvents(CallbackInfoReturnable<List<String>> cir) {
+		cir.setReturnValue(Arrays.asList("setGlobalVar","tick"));
+		cir.cancel();
 	}
 }

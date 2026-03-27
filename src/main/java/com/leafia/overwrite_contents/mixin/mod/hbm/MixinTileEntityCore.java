@@ -13,7 +13,6 @@ import com.hbm.items.machine.ItemCatalyst;
 import com.hbm.items.special.ItemAMSCore;
 import com.hbm.lib.Library;
 import com.hbm.main.AdvancementManager;
-import com.hbm.packet.PacketDispatcher;
 import com.hbm.tileentity.IGUIProvider;
 import com.hbm.tileentity.TileEntityMachineBase;
 import com.hbm.tileentity.machine.TileEntityCore;
@@ -625,16 +624,16 @@ public abstract class MixinTileEntityCore extends TileEntityMachineBase implemen
 		}
 		if (world.isRemote) {
 			meltdownSFX = AddonBase.proxy.getLoopedSound(LeafiaSoundEvents.dfc_meltdown, SoundCategory.BLOCKS, pos.getX() + 0.5f, pos.getY() + 0.5f, pos.getZ() + 0.5f, 1.0f, 1)
-					.setCustomAttentuation((intended, distance) -> Math.pow(MathHelper.clamp(1 - (distance - 50) / 500, 0, 1), 6.66))
+					.setCustomAttenuation((intended,distance) -> Math.pow(MathHelper.clamp(1 - (distance - 50) / 500, 0, 1), 6.66))
 					.setLooped(false);
 			extinguishSFX = AddonBase.proxy.getLoopedSound(SoundEvents.BLOCK_FIRE_EXTINGUISH, SoundCategory.BLOCKS, pos.getX() + 0.5f, pos.getY() + 0.5f, pos.getZ() + 0.5f, 1.0f, 0.8f)
-					.setCustomAttentuation((intended, distance) -> Math.pow(MathHelper.clamp(1 - (distance - 50) / 500, 0, 1), 6.66))
+					.setCustomAttenuation((intended,distance) -> Math.pow(MathHelper.clamp(1 - (distance - 50) / 500, 0, 1), 6.66))
 					.setLooped(false);
 			overloadSFX = AddonBase.proxy.getLoopedSound(LeafiaSoundEvents.overload, SoundCategory.BLOCKS, pos.getX() + 0.5f, pos.getY() + 0.5f, pos.getZ() + 0.5f, 1.0f, 1)
-					.setCustomAttentuation((intended, distance) -> Math.pow(MathHelper.clamp(1 - (distance - 20) / 300, 0, 1), 6.66))
+					.setCustomAttenuation((intended,distance) -> Math.pow(MathHelper.clamp(1 - (distance - 20) / 300, 0, 1), 6.66))
 					.setLooped(false);
 			explosionsSFX = AddonBase.proxy.getLoopedSound(LeafiaSoundEvents.longexplosion, SoundCategory.BLOCKS, pos.getX() + 0.5f, pos.getY() + 0.5f, pos.getZ() + 0.5f, 1.0f, 1)
-					.setCustomAttentuation((intended, distance) -> Math.pow(MathHelper.clamp(1 - (distance - 50) / 500, 0, 1), 6.66))
+					.setCustomAttenuation((intended,distance) -> Math.pow(MathHelper.clamp(1 - (distance - 50) / 500, 0, 1), 6.66))
 					.setLooped(false);
 		}
 	}
@@ -860,7 +859,7 @@ public abstract class MixinTileEntityCore extends TileEntityMachineBase implemen
 										client_type.sfx, SoundCategory.BLOCKS,
 										pos.getX(), pos.getY(), pos.getZ(),
 										1, 1
-								).setCustomAttentuation(client_type.attentuationFunction);
+								).setCustomAttenuation(client_type.attentuationFunction);
 							}
 						}
 						break;

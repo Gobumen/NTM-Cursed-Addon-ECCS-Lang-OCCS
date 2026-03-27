@@ -25,5 +25,6 @@ public class MixinControlEvent {
 		register(new ControlEvent("set_pump_pressure").setVar("pu",0));
 		register(new ControlEvent("set_pump_priority").setVar("priority",2));
 		register(new ControlEvent("zirnox_ctrl_set_level").setVar("level", 0));
+		register(new ControlEvent("setGlobalVar").setVar("name","").setVar("value",""));
 	}
 }

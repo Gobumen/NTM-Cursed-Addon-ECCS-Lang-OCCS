@@ -15,8 +15,8 @@ public class NodeClock extends Node {
 	public NodeClock(float x,float y) {
 		super(x,y);
 		this.outputs.add(new NodeConnection("Clock Signal",this,outputs.size(),false,DataType.NUMBER,new DataValueFloat(0)));
-		this.inputs.add(new NodeConnection("Uptime",this,inputs.size(),true,DataType.NUMBER,new DataValueFloat(1)));
-		this.inputs.add(new NodeConnection("Downtime",this,inputs.size(),true,DataType.NUMBER,new DataValueFloat(1)));
+		this.inputs.add(new NodeConnection("Uptime",this,inputs.size(),true,DataType.NUMBER,new DataValueFloat(2)));
+		this.inputs.add(new NodeConnection("Downtime",this,inputs.size(),true,DataType.NUMBER,new DataValueFloat(2)));
 		evalCache = new DataValue[1];
 		recalcSize();
 	}

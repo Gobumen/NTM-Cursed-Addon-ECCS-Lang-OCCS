@@ -14,6 +14,8 @@ import com.leafia.contents.gear.wands.ItemWandSaving.HighlightSavingWandRemove;
 import com.leafia.contents.gear.wands.ItemWandSaving.HighlightSavingWandSave;
 import com.leafia.contents.machines.controlpanel.instruments.types.starbound.LargeSwitch;
 import com.leafia.contents.machines.controlpanel.instruments.types.starbound.LargeSwitch.CCPLargeSwitchSyncPacket;
+import com.leafia.contents.machines.controlpanel.instruments.types.textindicator.TextIndicator;
+import com.leafia.contents.machines.controlpanel.instruments.types.textindicator.TextIndicator.CCPTextIndicatorSyncPacket;
 import com.leafia.contents.machines.elevators.car.ElevatorEntity.*;
 import com.leafia.contents.machines.misc.modular_turbine.core.MTCoreBlock;
 import com.leafia.contents.machines.misc.modular_turbine.core.MTCoreBlock.TurbineErrorHighlight;
@@ -65,6 +67,7 @@ public class LeafiaCustomPacket extends RecordablePacket {
 		ADVISOR(new AdvisorPacket()),
 		TURBINE_ERROR(new TurbineErrorHighlight()),
 		CCP_SWITCH_SYNC(new CCPLargeSwitchSyncPacket()),
+		CCP_INDICATOR_SYNC(new CCPTextIndicatorSyncPacket())
 		;
 		final LeafiaCustomPacketEncoder encoder;
 		CustomPacketType() { encoder = null; }

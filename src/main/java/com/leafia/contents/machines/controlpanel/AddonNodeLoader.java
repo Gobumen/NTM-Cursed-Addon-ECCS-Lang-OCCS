@@ -6,6 +6,7 @@ import com.hbm.inventory.control_panel.nodes.Node;
 import com.leafia.contents.machines.controlpanel.nodes.*;
 import com.leafia.contents.machines.controlpanel.nodes.NodeBulkQuery;
 import com.leafia.contents.machines.controlpanel.nodes.bool.NodePulse;
+import com.leafia.contents.machines.controlpanel.nodes.bool.NodeSRLatch;
 import com.leafia.contents.machines.controlpanel.nodes.string.NodeAddString;
 import com.leafia.contents.machines.controlpanel.nodes.string.NodeFormat;
 import com.leafia.contents.machines.controlpanel.nodes.string.NodeSIPfx;
@@ -25,6 +26,7 @@ public class AddonNodeLoader implements INodeLoader {
 			case "bulkQuery" -> new NodeBulkQuery(0,0,nodeSystem.parent);
 			case "leafia_clock" -> new NodeClock(0,0);
 			case "leafia_pulse" -> new NodePulse(0,0);
+			case "leafia_sr_latch" -> new NodeSRLatch(0,0);
 			default -> null;
 		};
 		return node;

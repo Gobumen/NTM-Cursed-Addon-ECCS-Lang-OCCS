@@ -33,6 +33,7 @@ public class NodeSounder extends NodeOutput {
 		BLEEP(HBMSoundHandler.techBleep),
 		POP(HBMSoundHandler.techBoop),
 		SHUTDOWN(HBMSoundHandler.shutdown),
+		AZ_5(LeafiaSoundEvents.az5),
 		;
 		final SoundEvent evt;
 		NodeSnd(SoundEvent evt) {

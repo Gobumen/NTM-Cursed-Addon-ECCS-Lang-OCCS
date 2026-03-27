@@ -38,6 +38,7 @@
     "hbm.MixinContainerDiFurnaceRTG",
     "hbm.MixinContaminationUtil",
     "hbm.MixinControlEvent",
+    "hbm.MixinControlType",
     "hbm.MixinCoreComponent",
     "hbm.MixinCoreCore",
     "hbm.MixinDiamondPronter",

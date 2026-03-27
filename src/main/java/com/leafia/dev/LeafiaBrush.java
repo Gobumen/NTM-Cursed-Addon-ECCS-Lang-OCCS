@@ -22,7 +22,8 @@ public class LeafiaBrush {
 	}
 	public enum BrushMode {
 		QUADS(GL11.GL_QUADS),
-		TRIANGLE_FAN(GL11.GL_TRIANGLE_FAN);
+		TRIANGLE_FAN(GL11.GL_TRIANGLE_FAN),
+		LINES(GL11.GL_LINES);
 		final int value;
 		BrushMode(int value) {
 			this.value = value;
