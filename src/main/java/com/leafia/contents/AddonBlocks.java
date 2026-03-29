@@ -47,6 +47,7 @@ import com.leafia.contents.machines.misc.modular_turbine.flywheel.MTFlywheel3x3;
 import com.leafia.contents.machines.misc.modular_turbine.flywheel.MTFlywheel5x5;
 import com.leafia.contents.machines.misc.modular_turbine.flywheel.MTFlywheel7x7;
 import com.leafia.contents.machines.misc.modular_turbine.flywheel.MTFlywheel9x9;
+import com.leafia.contents.machines.misc.modular_turbine.generator.MTGenerator3x3;
 import com.leafia.contents.machines.misc.modular_turbine.ports.*;
 import com.leafia.contents.machines.misc.modular_turbine.separator.MTSeparator3x3;
 import com.leafia.contents.machines.misc.modular_turbine.separator.MTSeparator5x5;
@@ -485,6 +486,8 @@ public class AddonBlocks {
 		public static final Block flywheel5x5 = new MTFlywheel5x5("modular_turbine_5x5_flywheel");
 		public static final Block flywheel7x7 = new MTFlywheel7x7("modular_turbine_7x7_flywheel");
 		public static final Block flywheel9x9 = new MTFlywheel9x9("modular_turbine_9x9_flywheel");
+
+		public static final Block generator3x3 = new MTGenerator3x3("modular_turbine_3x3_generator");
 	}
 
 	static {

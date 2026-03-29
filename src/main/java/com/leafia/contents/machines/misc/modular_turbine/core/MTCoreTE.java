@@ -412,7 +412,7 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 			if (world.getBlockState(offs).getBlock() instanceof ModularTurbineBlockBase turbine) {
 				BlockPos core = turbine.findCore(world,offs);
 				if (core != null) {
-					if (world.getTileEntity(core) instanceof ModularTurbineComponentTE te) {
+					if (world.getTileEntity(core) instanceof ModularTurbineComponentTE te && !components.contains(te)) {
 						components.add(te);
 						te.core = this;
 						if (assemblyMap.containsKey(i))
@@ -834,12 +834,12 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 			if (world.getBlockState(offs).getBlock() instanceof ModularTurbineBlockBase turbine) {
 				boolean aligned = true;
 				BlockPos core = turbine.findCore(world,offs);
-				weight += turbine.weight();
 				if (core == null)
 					return new ReturnCodeError(prevPos,offs,AssemblyErrorReason.BUG);
 				else {
 					EnumFacing partDir = EnumFacing.byIndex(world.getBlockState(core).getValue(BlockDummyable.META)-10).getOpposite();
-					if (world.getTileEntity(core) instanceof ModularTurbineComponentTE te) {
+					if (world.getTileEntity(core) instanceof ModularTurbineComponentTE te && !components.contains(te)) {
+						weight += turbine.weight();
 						components.add(te);
 						te.core = this;
 
@@ -851,6 +851,10 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 						aligned = aligned && (core.getY()+turbine.shaftHeight() == offs.getY());
 						if (!aligned)
 							return new ReturnCodeError(prevPos,offs,AssemblyErrorReason.NOT_ALIGNED);
+
+						// DIRECTION CHECK
+						if (!partDir.getAxis().equals(dir.getAxis()))
+							return new ReturnCodeError(prevPos,offs,AssemblyErrorReason.NOT_ALIGNED); // bruh
 
 						// COMPATIBILITY CHECK
 						int size = turbine.size();

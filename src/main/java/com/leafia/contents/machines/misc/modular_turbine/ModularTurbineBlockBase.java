@@ -115,6 +115,9 @@ public abstract class ModularTurbineBlockBase extends AddonBlockDummyable implem
 
 		dir = getDirModified(dir);
 
+		if (player.isSneaking())
+			pos = pos.offset(dir.toEnumFacing(),getDimensions()[2]-o);
+
 		int x = pos.getX();
 		int y = pos.getY();
 		int z = pos.getZ();

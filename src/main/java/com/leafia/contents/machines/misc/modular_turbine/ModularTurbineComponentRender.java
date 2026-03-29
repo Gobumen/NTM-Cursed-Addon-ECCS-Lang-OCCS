@@ -15,6 +15,8 @@ public class ModularTurbineComponentRender extends TileEntitySpecialRenderer<Mod
 	public static final WaveFrontObjectVAO mdl = getVAO(getIntegrated(basePath+"export.obj"));
 	public static final ResourceLocation tex0 = getIntegrated(basePath+"texture0.png");
 	public static final ResourceLocation tex1 = getIntegrated(basePath+"texture1.png");
+	public static final WaveFrontObjectVAO genMdl = getVAO(getIntegrated(basePath+"gen3x3.obj"));
+	public static final ResourceLocation gen3x3tetx = getIntegrated(basePath+"generator3x3.png");
 	@Override
 	public void render(ModularTurbineComponentTE te,double x,double y,double z,float partialTicks,int destroyStage,float alpha) {
 		LeafiaGls.pushMatrix();
@@ -41,6 +43,13 @@ public class ModularTurbineComponentRender extends TileEntitySpecialRenderer<Mod
 				LeafiaGls.disableCull();
 				mdl.renderPart(name+".001");
 				LeafiaGls.enableCull();
+			} else if (block.componentType() == TurbineComponentType.GENERATOR) {
+				switch(block.size()) {
+					case 3 -> {
+						bindTexture(gen3x3tetx);
+						genMdl.renderAll();
+					}
+				}
 			} else {
 				bindTexture(tex1);
 				switch(block.size()) {
