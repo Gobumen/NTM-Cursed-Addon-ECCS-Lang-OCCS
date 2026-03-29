@@ -3,6 +3,9 @@ package com.leafia.contents.machines.misc.modular_turbine.generator;
 import com.hbm.tileentity.TileEntityProxyCombo;
 import com.leafia.contents.machines.misc.modular_turbine.ModularTurbineBlockBase;
 import com.leafia.contents.machines.misc.modular_turbine.ModularTurbineComponentTE;
+import com.leafia.contents.machines.misc.modular_turbine.core.MTCoreData.StageUpgradeSummary;
+import com.leafia.contents.machines.misc.modular_turbine.core.MTCoreTE;
+import com.leafia.contents.machines.misc.modular_turbine.core.MTCoreTE.TurbineAssembly;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
@@ -44,5 +47,9 @@ public class MTGenerator3x3 extends ModularTurbineBlockBase implements IMTGenera
 		if (meta >= 12) return new ModularTurbineComponentTE();
 		if (meta >= extra) return new TileEntityProxyCombo(false,false,true);
 		return null;
+	}
+	@Override
+	public void contributeStageUpgradeOffsets(StageUpgradeSummary summary,MTCoreTE core,TurbineAssembly assembly,ModularTurbineComponentTE component) {
+
 	}
 }
