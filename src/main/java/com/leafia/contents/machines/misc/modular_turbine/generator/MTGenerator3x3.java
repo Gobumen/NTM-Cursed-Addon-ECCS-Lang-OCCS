@@ -3,6 +3,7 @@ package com.leafia.contents.machines.misc.modular_turbine.generator;
 import com.hbm.tileentity.TileEntityProxyCombo;
 import com.leafia.contents.machines.misc.modular_turbine.ModularTurbineBlockBase;
 import com.leafia.contents.machines.misc.modular_turbine.ModularTurbineComponentTE;
+import com.leafia.contents.machines.misc.modular_turbine.core.MTCoreData.MachineUpgradeSummary;
 import com.leafia.contents.machines.misc.modular_turbine.core.MTCoreData.StageUpgradeContext;
 import com.leafia.contents.machines.misc.modular_turbine.core.MTCoreData.StageUpgradeSummary;
 import com.leafia.contents.machines.misc.modular_turbine.core.MTCoreTE;
@@ -49,7 +50,7 @@ public class MTGenerator3x3 extends ModularTurbineBlockBase implements IMTGenera
 		return null;
 	}
 	@Override
-	public void contributeStageUpgradeOffsets(StageUpgradeSummary summary,MTCoreTE core,StageUpgradeContext context,ModularTurbineComponentTE component) {
-
+	public void contributeMachineUpgradeOffsets(MachineUpgradeSummary summary,MTCoreTE core,ModularTurbineComponentTE component) {
+		summary.addGeneratorTorqueCoefficientOffset(0.05);
 	}
 }

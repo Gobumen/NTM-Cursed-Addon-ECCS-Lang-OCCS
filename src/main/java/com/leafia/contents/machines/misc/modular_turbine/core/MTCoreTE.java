@@ -37,15 +37,15 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 	public static double RELATIVE_EXIT_VELOCITY_FRACTION = 0.82D;
 	public static double EXIT_WHIRL_FRACTION = 1D;
 	public static double ANGULAR_MOMENTUM_TORQUE_COEFFICIENT = 0.02D;
-	public static double GENERATOR_EMF_COEFFICIENT = 500D;
+	public static double GENERATOR_EMF_COEFFICIENT = 1; //500D;
 	public static double GENERATOR_TOTAL_RESISTANCE = 0.01;//1.8D;
 	public static double GENERATOR_CURRENT_LIMIT = Double.MAX_VALUE;
-	public static double GENERATOR_TORQUE_COEFFICIENT = 0.012D;
+	public static double GENERATOR_TORQUE_COEFFICIENT = 0.0D;
 	public static double COULOMB_FRICTION_TORQUE = 0.7D;
 	public static double FRICTION_RPS_EPSILON = 0.25D;
 	public static double VISCOUS_FRICTION_COEFFICIENT = 0.08D;
 	public static double WINDAGE_COEFFICIENT = 0.003D;
-	public static double POWER_SCALE = 0.00232478632;
+	public static double POWER_SCALE = 0.00232478632*2;
 	public static double ADMISSION_NOMINAL_TAU_TICKS = 4D;
 	public static double ADMISSION_NOMINAL_RESPONSE = 1D-Math.exp(-1D/ADMISSION_NOMINAL_TAU_TICKS);
 	public static double ADMISSION_STABLE_RELATIVE_ERROR = 0.03D;
@@ -412,11 +412,13 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 			if (world.getBlockState(offs).getBlock() instanceof ModularTurbineBlockBase turbine) {
 				BlockPos core = turbine.findCore(world,offs);
 				if (core != null) {
-					if (world.getTileEntity(core) instanceof ModularTurbineComponentTE te && !components.contains(te)) {
-						components.add(te);
-						te.core = this;
-						if (assemblyMap.containsKey(i))
-							te.assembly = assemblyMap.get(i);
+					if (world.getTileEntity(core) instanceof ModularTurbineComponentTE te) {
+						if (!components.contains(te)) {
+							components.add(te);
+							te.core = this;
+							if (assemblyMap.containsKey(i))
+								te.assembly = assemblyMap.get(i);
+						}
 					} else return false;
 				} else return false;
 			} else
@@ -890,125 +892,127 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 					return new ReturnCodeError(prevPos,offs,AssemblyErrorReason.BUG);
 				else {
 					EnumFacing partDir = EnumFacing.byIndex(world.getBlockState(core).getValue(BlockDummyable.META)-10).getOpposite();
-					if (world.getTileEntity(core) instanceof ModularTurbineComponentTE te && !components.contains(te)) {
-						weight += turbine.weight();
-						components.add(te);
-						te.core = this;
+					if (world.getTileEntity(core) instanceof ModularTurbineComponentTE te) {
+						if (!components.contains(te)) {
+							weight += turbine.weight();
+							components.add(te);
+							te.core = this;
 
-						// ALIGNMENT CHECK
-						if (dir.getAxis() == Axis.X)
-							aligned = core.getZ() == offs.getZ();
-						else if (dir.getAxis() == Axis.Z)
-							aligned = core.getX() == offs.getX();
-						aligned = aligned && (core.getY()+turbine.shaftHeight() == offs.getY());
-						if (!aligned)
-							return new ReturnCodeError(prevPos,offs,AssemblyErrorReason.NOT_ALIGNED);
+							// ALIGNMENT CHECK
+							if (dir.getAxis() == Axis.X)
+								aligned = core.getZ() == offs.getZ();
+							else if (dir.getAxis() == Axis.Z)
+								aligned = core.getX() == offs.getX();
+							aligned = aligned && (core.getY()+turbine.shaftHeight() == offs.getY());
+							if (!aligned)
+								return new ReturnCodeError(prevPos,offs,AssemblyErrorReason.NOT_ALIGNED);
 
-						// DIRECTION CHECK
-						if (!partDir.getAxis().equals(dir.getAxis()))
-							return new ReturnCodeError(prevPos,offs,AssemblyErrorReason.NOT_ALIGNED); // bruh
+							// DIRECTION CHECK
+							if (!partDir.getAxis().equals(dir.getAxis()))
+								return new ReturnCodeError(prevPos,offs,AssemblyErrorReason.NOT_ALIGNED); // bruh
 
-						// COMPATIBILITY CHECK
-						int size = turbine.size();
-						boolean compatible = connectable.length == 0 || turbine.canConnectTo().length == 0;
-						for (int s : connectable) {
-							if (s == size) {
-								compatible = true;
-								break;
-							}
-						}
-						for (int s : turbine.canConnectTo()) {
-							if (s == size) {
-								compatible = true;
-								break;
-							}
-						}
-						if (!compatible)
-							return new ReturnCodeError(prevPos,offs,AssemblyErrorReason.INCOMPATIBLE_SIZE);
-
-						// UPDATING PREVIOUS PARAMETERS & FORMING ASSEMBLY
-						connectable = turbine.canConnectTo();
-						boolean isSeparator = turbine.componentType().isSeparator;
-						if (turbine.componentType().equals(TurbineComponentType.INLINE_PORT)) {
-							// IF IT'S INLINE PORT, OVERRIDE isSeparator SO
-							// ONE OF THEM WILL FORM AN ASSEMBLY WHEN 2 OF THEM ARE PLACED IN A ROW
-							if (previousWasSeparator)
-								isSeparator = false;
-						}
-						boolean joinsSteamAssembly = !isSeparator;
-
-						// IF IT'S INLINE PORT, EXPAND PREVIOUS ASSEMBLY
-						// THIS IS THE ONLY WAY WE CAN GET 2 ASSEMBLIES ADJACENT
-						// WITHOUT HAVING TO PLACE A SEPARATOR IN-BETWEEN
-						if (turbine.componentType().equals(TurbineComponentType.INLINE_PORT)) {
-							if (lastAssembly != null)
-								joinsSteamAssembly = true;
-						}
-
-						if (joinsSteamAssembly) {
-							// ELSE, CREATE A NEW ASSEMBLY OR EXPAND PREVIOUS ONE
-							if (lastAssembly == null) {
-								lastAssembly = new TurbineAssembly();
-								assemblies.add(lastAssembly);
-							}
-							lastAssembly.positionsInOrder.add(i);
-							te.assembly = lastAssembly;
-							if (turbine.componentType().equals(TurbineComponentType.BLADES)) {
-								lastAssembly.bladeDirections.put(i,!dir.equals(partDir));
-								lastAssembly.size = turbine.size();
-							}
-
-							// CHECK FOR IDENTIFIERS
-							if (te instanceof MTComponentPortTE port) {
-								if (port.identifier != null) {
-									// CHECK IF THERE WAS ALREADY A COMPONENT WITH IDENTIFIER
-									if (lastAssembly.typeIn != null) {
-										// IF SO, CHECK IF THE IDENTIFIER MATCHES
-										// previousPortPos IS ALWAYS NOT NULL HERE BECAUSE
-										// WHEN typeIn IS SET previousPortPos IS ALSO SET AND THUS
-										// IMPOSSIBLE TO REACH HERE WITH IT BEING NULL
-
-										// JUST SAYIN' BECAUSE I'M DUMB
-										if (!lastAssembly.typeIn.equals(port.identifier) || lastAssembly.decompress != port.decompress)
-											return new ReturnCodeError(previousPortPos,offs,AssemblyErrorReason.IDENTIFIER_MISMATCH);
-									}
-									lastAssembly.typeIn = port.identifier;
-									lastAssembly.decompress = port.decompress;
-									previousPortPos = offs;
-
-									// SET LEAST/MOST COMPRESSION FOR LATER USE
-									FluidType nextSteam = getNextSteam(port.identifier,port.decompress);
-									if (nextSteam == null) {
-										if (port.decompress)
-											return new ReturnCodeError(prevPos,offs,AssemblyErrorReason.CANT_DECOMPRESS);
-										else
-											return new ReturnCodeError(prevPos,offs,AssemblyErrorReason.INVALID_IDENTIFIER);
-									}
-									int steamIndex = steamTypes.indexOf(port.identifier);
-									int nextSteamIndex = steamTypes.indexOf(nextSteam);
-									if (steamIndex == -1)
-										return new ReturnCodeError(prevPos,offs,AssemblyErrorReason.INVALID_IDENTIFIER);
-									if (mostCompression == -1 || nextSteamIndex < mostCompression)
-										mostCompression = nextSteamIndex;
-									if (leastCompression == -1 || steamIndex > leastCompression)
-										leastCompression = steamIndex;
+							// COMPATIBILITY CHECK
+							int size = turbine.size();
+							boolean compatible = connectable.length == 0 || turbine.canConnectTo().length == 0;
+							for (int s : connectable) {
+								if (s == size) {
+									compatible = true;
+									break;
 								}
 							}
-						}
-						if (isSeparator) {
-							// SEPARATE ASSEMBLY IF IT'S A SEPARATOR
-							if (lastAssembly != null) {
-								if (lastAssembly.typeIn == null)
-									return new ReturnCodeError(pos.offset(dir,lastAssembly.getStartPosition()+1),prevPos,AssemblyErrorReason.NO_IDENTIFIER);
-
-								if (lastAssembly.bladeDirections.isEmpty())
-									return new ReturnCodeError(pos.offset(dir,lastAssembly.getStartPosition()+1),prevPos,AssemblyErrorReason.NO_BLADES);
+							for (int s : turbine.canConnectTo()) {
+								if (s == size) {
+									compatible = true;
+									break;
+								}
 							}
-							lastAssembly = null;
+							if (!compatible)
+								return new ReturnCodeError(prevPos,offs,AssemblyErrorReason.INCOMPATIBLE_SIZE);
+
+							// UPDATING PREVIOUS PARAMETERS & FORMING ASSEMBLY
+							connectable = turbine.canConnectTo();
+							boolean isSeparator = turbine.componentType().isSeparator;
+							if (turbine.componentType().equals(TurbineComponentType.INLINE_PORT)) {
+								// IF IT'S INLINE PORT, OVERRIDE isSeparator SO
+								// ONE OF THEM WILL FORM AN ASSEMBLY WHEN 2 OF THEM ARE PLACED IN A ROW
+								if (previousWasSeparator)
+									isSeparator = false;
+							}
+							boolean joinsSteamAssembly = !isSeparator;
+
+							// IF IT'S INLINE PORT, EXPAND PREVIOUS ASSEMBLY
+							// THIS IS THE ONLY WAY WE CAN GET 2 ASSEMBLIES ADJACENT
+							// WITHOUT HAVING TO PLACE A SEPARATOR IN-BETWEEN
+							if (turbine.componentType().equals(TurbineComponentType.INLINE_PORT)) {
+								if (lastAssembly != null)
+									joinsSteamAssembly = true;
+							}
+
+							if (joinsSteamAssembly) {
+								// ELSE, CREATE A NEW ASSEMBLY OR EXPAND PREVIOUS ONE
+								if (lastAssembly == null) {
+									lastAssembly = new TurbineAssembly();
+									assemblies.add(lastAssembly);
+								}
+								lastAssembly.positionsInOrder.add(i);
+								te.assembly = lastAssembly;
+								if (turbine.componentType().equals(TurbineComponentType.BLADES)) {
+									lastAssembly.bladeDirections.put(i,!dir.equals(partDir));
+									lastAssembly.size = turbine.size();
+								}
+
+								// CHECK FOR IDENTIFIERS
+								if (te instanceof MTComponentPortTE port) {
+									if (port.identifier != null) {
+										// CHECK IF THERE WAS ALREADY A COMPONENT WITH IDENTIFIER
+										if (lastAssembly.typeIn != null) {
+											// IF SO, CHECK IF THE IDENTIFIER MATCHES
+											// previousPortPos IS ALWAYS NOT NULL HERE BECAUSE
+											// WHEN typeIn IS SET previousPortPos IS ALSO SET AND THUS
+											// IMPOSSIBLE TO REACH HERE WITH IT BEING NULL
+
+											// JUST SAYIN' BECAUSE I'M DUMB
+											if (!lastAssembly.typeIn.equals(port.identifier) || lastAssembly.decompress != port.decompress)
+												return new ReturnCodeError(previousPortPos,offs,AssemblyErrorReason.IDENTIFIER_MISMATCH);
+										}
+										lastAssembly.typeIn = port.identifier;
+										lastAssembly.decompress = port.decompress;
+										previousPortPos = offs;
+
+										// SET LEAST/MOST COMPRESSION FOR LATER USE
+										FluidType nextSteam = getNextSteam(port.identifier,port.decompress);
+										if (nextSteam == null) {
+											if (port.decompress)
+												return new ReturnCodeError(prevPos,offs,AssemblyErrorReason.CANT_DECOMPRESS);
+											else
+												return new ReturnCodeError(prevPos,offs,AssemblyErrorReason.INVALID_IDENTIFIER);
+										}
+										int steamIndex = steamTypes.indexOf(port.identifier);
+										int nextSteamIndex = steamTypes.indexOf(nextSteam);
+										if (steamIndex == -1)
+											return new ReturnCodeError(prevPos,offs,AssemblyErrorReason.INVALID_IDENTIFIER);
+										if (mostCompression == -1 || nextSteamIndex < mostCompression)
+											mostCompression = nextSteamIndex;
+										if (leastCompression == -1 || steamIndex > leastCompression)
+											leastCompression = steamIndex;
+									}
+								}
+							}
+							if (isSeparator) {
+								// SEPARATE ASSEMBLY IF IT'S A SEPARATOR
+								if (lastAssembly != null) {
+									if (lastAssembly.typeIn == null)
+										return new ReturnCodeError(pos.offset(dir,lastAssembly.getStartPosition()+1),prevPos,AssemblyErrorReason.NO_IDENTIFIER);
+
+									if (lastAssembly.bladeDirections.isEmpty())
+										return new ReturnCodeError(pos.offset(dir,lastAssembly.getStartPosition()+1),prevPos,AssemblyErrorReason.NO_BLADES);
+								}
+								lastAssembly = null;
+							}
+							// DON'T REPLACE THIS WITH isSeparator VARIABLE AS IT GETS
+							// OVERRIDDEN ON INLINE_PORT TYPE
+							previousWasSeparator = turbine.componentType().isSeparator;
 						}
-						// DON'T REPLACE THIS WITH isSeparator VARIABLE AS IT GETS
-						// OVERRIDDEN ON INLINE_PORT TYPE
-						previousWasSeparator = turbine.componentType().isSeparator;
 					} else
 						return new ReturnCodeError(prevPos,offs,AssemblyErrorReason.BUG);
 				}
