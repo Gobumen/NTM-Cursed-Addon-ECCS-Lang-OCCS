@@ -488,8 +488,10 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 	}
 	private void compileAssemblyModel(boolean recomputeGearRatios) {
 		compiledMachineStats = compileMachineStats(summarizeMachineUpgrades());
-		for (TurbineAssembly assembly : assemblies)
-			assembly.compiledStats = compileStageStats(assembly,summarizeStageUpgrades(assembly));
+		for (int assemblyIndex = 0; assemblyIndex < assemblies.size(); assemblyIndex++) {
+			TurbineAssembly assembly = assemblies.get(assemblyIndex);
+			assembly.compiledStats = compileStageStats(assembly,summarizeStageUpgrades(assemblyIndex,assembly));
+		}
 		if (recomputeGearRatios)
 			assignBaseGearRatios(assemblies);
 		else
@@ -502,22 +504,74 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 			collectMachineUpgradeOffsets(summary,component);
 		return summary;
 	}
-	private StageUpgradeSummary summarizeStageUpgrades(TurbineAssembly assembly) {
+	private StageUpgradeSummary summarizeStageUpgrades(int targetAssemblyIndex,TurbineAssembly targetAssembly) {
 		StageUpgradeSummary summary = new StageUpgradeSummary();
-		for (ModularTurbineComponentTE component : components) {
-			if (component.assembly != assembly)
+		for (int componentPosition = 0; componentPosition < components.size(); componentPosition++) {
+			ModularTurbineComponentTE component = components.get(componentPosition);
+			StageUpgradeContext context = resolveStageUpgradeContext(targetAssemblyIndex,targetAssembly,componentPosition,component);
+			if (context == null)
 				continue;
-			collectStageUpgradeOffsets(summary,assembly,component);
+			collectStageUpgradeOffsets(summary,context,component);
 		}
 		return summary;
+	}
+	private StageUpgradeContext resolveStageUpgradeContext(int targetAssemblyIndex,TurbineAssembly targetAssembly,int componentPosition,ModularTurbineComponentTE component) {
+		if (component.assembly != null) {
+			if (component.assembly != targetAssembly)
+				return null;
+			return new StageUpgradeContext(
+					targetAssembly,
+					targetAssemblyIndex > 0 ? assemblies.get(targetAssemblyIndex-1) : null,
+					targetAssemblyIndex+1 < assemblies.size() ? assemblies.get(targetAssemblyIndex+1) : null,
+					componentPosition,
+					StageUpgradeRelation.MEMBER
+			);
+		}
+		TurbineAssembly previousAssembly = findPreviousAssembly(componentPosition);
+		if (previousAssembly == targetAssembly) {
+			return new StageUpgradeContext(
+					targetAssembly,
+					previousAssembly,
+					findNextAssembly(componentPosition),
+					componentPosition,
+					StageUpgradeRelation.AFTER_TARGET
+			);
+		}
+		TurbineAssembly nextAssembly = findNextAssembly(componentPosition);
+		if (nextAssembly == targetAssembly) {
+			return new StageUpgradeContext(
+					targetAssembly,
+					findPreviousAssembly(componentPosition),
+					nextAssembly,
+					componentPosition,
+					StageUpgradeRelation.BEFORE_TARGET
+			);
+		}
+		return null;
+	}
+	private TurbineAssembly findPreviousAssembly(int componentPosition) {
+		TurbineAssembly previousAssembly = null;
+		for (TurbineAssembly assembly : assemblies) {
+			if (assembly.getEndPosition() >= componentPosition)
+				break;
+			previousAssembly = assembly;
+		}
+		return previousAssembly;
+	}
+	private TurbineAssembly findNextAssembly(int componentPosition) {
+		for (TurbineAssembly assembly : assemblies) {
+			if (assembly.getStartPosition() > componentPosition)
+				return assembly;
+		}
+		return null;
 	}
 	private void collectMachineUpgradeOffsets(MachineUpgradeSummary summary,ModularTurbineComponentTE component) {
 		component.contributeMachineUpgradeOffsets(summary,this,component);
 		((IMTMachineUpgradeContributor)world.getBlockState(component.getPos()).getBlock()).contributeMachineUpgradeOffsets(summary,this,component);
 	}
-	private void collectStageUpgradeOffsets(StageUpgradeSummary summary,TurbineAssembly assembly,ModularTurbineComponentTE component) {
-		component.contributeStageUpgradeOffsets(summary,this,assembly,component);
-		((IMTStageUpgradeContributor) world.getBlockState(component.getPos()).getBlock()).contributeStageUpgradeOffsets(summary,this,assembly,component);
+	private void collectStageUpgradeOffsets(StageUpgradeSummary summary,StageUpgradeContext context,ModularTurbineComponentTE component) {
+		component.contributeStageUpgradeOffsets(summary,this,context,component);
+		((IMTStageUpgradeContributor) world.getBlockState(component.getPos()).getBlock()).contributeStageUpgradeOffsets(summary,this,context,component);
 	}
 	private CompiledMachineStats compileMachineStats(MachineUpgradeSummary upgrades) {
 		CompiledMachineStats machineStats = new CompiledMachineStats();
@@ -556,17 +610,6 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 		compiledStats.authorityWeight = Math.max(compiledStats.bladeArea*compiledStats.steamMassEquivalent,ADMISSION_FLOW_EPSILON);
 		compiledStats.baseGearRatio = assembly.baseGearRatio;
 		return compiledStats;
-	}
-	private TickSummary simulateTick() {
-		TickSummary tickSummary = new TickSummary();
-		if (weight <= 0)
-			return tickSummary;
-		CompiledMachineStats machineStats = getCompiledMachineStats();
-		List<StageRuntimeData> stageData = evaluateStages();
-		DriveCurve driveCurve = buildDriveCurve(stageData);
-		updateGlobalGearScale(machineStats,driveCurve);
-		applyRotationalStep(machineStats,stageData,driveCurve,tickSummary);
-		return tickSummary;
 	}
 	private List<StageRuntimeData> evaluateStages() {
 		List<StageRuntimeData> stageData = new ArrayList<>();
@@ -611,8 +654,8 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 	private int countWrongBlades(TurbineAssembly assembly) {
 		int wrongBlades = 0;
 		if (!assembly.receivingPositions.isEmpty()) {
-			int startIndex = assembly.positionsInOrder.get(0);
-			int endIndex = assembly.positionsInOrder.get(assembly.positionsInOrder.size()-1);
+			int startIndex = assembly.getStartPosition();
+			int endIndex = assembly.getEndPosition();
 			int flowCounterStart = assembly.receivingPositions.size();
 			int flowCounter = flowCounterStart;
 			boolean shouldBeOpposite = true;
@@ -678,21 +721,36 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 		double outputOmega = rps*TWO_PI;
 		tickSummary.powerGenerated += (long)Math.max(tickSummary.generatorTorque*outputOmega*machineStats.powerScale,0);
 	}
-	private void updateTurbulence(TickSummary tickSummary) {
+	@Override
+	public void update() {
+		if (world.isRemote)
+			return;
+		TickSummary tickSummary = new TickSummary();
+
+		// Simulate the current shaft state.
+		if (weight > 0) {
+			CompiledMachineStats machineStats = getCompiledMachineStats();
+			List<StageRuntimeData> stageData = evaluateStages();
+			DriveCurve driveCurve = buildDriveCurve(stageData);
+			updateGlobalGearScale(machineStats,driveCurve);
+			applyRotationalStep(machineStats,stageData,driveCurve,tickSummary);
+		}
+
+		// Apply turbulence damping and transient spike accumulation.
 		double turbulenceAdd = Math.pow(Math.max(tickSummary.targetRPS-rps,0)/110,7.2)/Math.max(8,60-turbulence*2);
 		turbulence *= 0.99;
 		turbulence = Math.min(turbulence+turbulenceAdd,100);
 		turbulence = 0; // removed temporarily because it's annoying to test
-	}
-	private void commitTickSummary(TickSummary tickSummary) {
+
+		// Commit the visible summary for overlays/debug output.
 		lastTargetRPS = tickSummary.targetRPS;
 		lastDriveTorque = tickSummary.driveTorque;
 		lastGeneratorTorque = tickSummary.generatorTorque;
 		lastFrictionTorque = tickSummary.frictionTorque;
 		lastWindageTorque = tickSummary.windageTorque;
 		lastGlobalGearScale = globalGearScale;
-	}
-	private void debugTick(TickSummary tickSummary) {
+
+		// Emit debug traces.
 		Tracker._startProfile(this,"update");
 		Tracker._tracePosition(this,pos.up(),
 				"RPS: "+rps,
@@ -707,8 +765,8 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 				"Weight: "+weight+" WU"
 		);
 		Tracker._endProfile(this);
-	}
-	private void syncSteamState() {
+
+		// Sync steam buffers and incoming-flow markers to clients.
 		NBTTagCompound syncCompound = new NBTTagCompound();
 		NBTTagList syncList = new NBTTagList();
 		for (TurbineAssembly assembly : assemblies) {
@@ -725,16 +783,6 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 		LeafiaPacket._start(this)
 				.__write(MTPacketId.CORE_STEAM_SYNC.id,syncCompound)
 				.__sendToAffectedClients();
-	}
-	@Override
-	public void update() {
-		if (world.isRemote)
-			return;
-		TickSummary tickSummary = simulateTick();
-		updateTurbulence(tickSummary);
-		commitTickSummary(tickSummary);
-		debugTick(tickSummary);
-		syncSteamState();
 	}
 	public static class TurbineAssembly {
 		/// NOTE: The values stored here are actually 1 lower than actual offset
@@ -758,6 +806,12 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 		public double lastEffectiveMassFlow = 0;
 		public double lastAdmissionBufferMass = 0;
 		public double lastNominalMassFlow = 0;
+		int getStartPosition() {
+			return positionsInOrder.get(0);
+		}
+		int getEndPosition() {
+			return positionsInOrder.get(positionsInOrder.size()-1);
+		}
 	}
 	public double turbulence;
 	public void disassemble() {
@@ -816,7 +870,7 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 	protected AssemblyReturnCode reassemble_internal() {
 		disassemble();
 		int[] connectable = new int[]{};
-		boolean wasSeparator = false;
+		boolean previousWasSeparator = false;
 		EnumFacing dir = getAssemblyFacing();
 		BlockPos offs = new BlockPos(pos);
 		BlockPos prevPos = offs;
@@ -825,8 +879,6 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 		int i = 0;
 		int leastCompression = -1;
 		int mostCompression = -1;
-		Map<FluidType,Integer> typeToSizeMap = new HashMap<>();
-		Map<FluidType,Integer> typeToBladesMap = new HashMap<>();
 		while (true) {
 			if (i > 300) // Who in the sane mind does this?
 				return new ReturnCodeError(pos,offs,AssemblyErrorReason.TOO_LONG);
@@ -880,20 +932,20 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 						if (turbine.componentType().equals(TurbineComponentType.INLINE_PORT)) {
 							// IF IT'S INLINE PORT, OVERRIDE isSeparator SO
 							// ONE OF THEM WILL FORM AN ASSEMBLY WHEN 2 OF THEM ARE PLACED IN A ROW
-							if (wasSeparator)
+							if (previousWasSeparator)
 								isSeparator = false;
 						}
-						boolean makeAssembly = !isSeparator;
+						boolean joinsSteamAssembly = !isSeparator;
 
 						// IF IT'S INLINE PORT, EXPAND PREVIOUS ASSEMBLY
 						// THIS IS THE ONLY WAY WE CAN GET 2 ASSEMBLIES ADJACENT
 						// WITHOUT HAVING TO PLACE A SEPARATOR IN-BETWEEN
 						if (turbine.componentType().equals(TurbineComponentType.INLINE_PORT)) {
 							if (lastAssembly != null)
-								makeAssembly = true;
+								joinsSteamAssembly = true;
 						}
 
-						if (makeAssembly) {
+						if (joinsSteamAssembly) {
 							// ELSE, CREATE A NEW ASSEMBLY OR EXPAND PREVIOUS ONE
 							if (lastAssembly == null) {
 								lastAssembly = new TurbineAssembly();
@@ -947,28 +999,28 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 							// SEPARATE ASSEMBLY IF IT'S A SEPARATOR
 							if (lastAssembly != null) {
 								if (lastAssembly.typeIn == null)
-									return new ReturnCodeError(pos.offset(dir,lastAssembly.positionsInOrder.get(0)+1),prevPos,AssemblyErrorReason.NO_IDENTIFIER);
+									return new ReturnCodeError(pos.offset(dir,lastAssembly.getStartPosition()+1),prevPos,AssemblyErrorReason.NO_IDENTIFIER);
 
 								if (lastAssembly.bladeDirections.isEmpty())
-									return new ReturnCodeError(pos.offset(dir,lastAssembly.positionsInOrder.get(0)+1),prevPos,AssemblyErrorReason.NO_BLADES);
+									return new ReturnCodeError(pos.offset(dir,lastAssembly.getStartPosition()+1),prevPos,AssemblyErrorReason.NO_BLADES);
 							}
 							lastAssembly = null;
 						}
 						// DON'T REPLACE THIS WITH isSeparator VARIABLE AS IT GETS
 						// OVERRIDDEN ON INLINE_PORT TYPE
-						wasSeparator = turbine.componentType().isSeparator;
+						previousWasSeparator = turbine.componentType().isSeparator;
 					} else
 						return new ReturnCodeError(prevPos,offs,AssemblyErrorReason.BUG);
 				}
 			} else {
-				if (!wasSeparator)
+				if (!previousWasSeparator)
 					return new ReturnCodeError(prevPos,offs,AssemblyErrorReason.OPEN_END);
 				if (lastAssembly != null) {
 					if (lastAssembly.typeIn == null)
-						return new ReturnCodeError(pos.offset(dir,lastAssembly.positionsInOrder.get(0)+1),offs,AssemblyErrorReason.NO_IDENTIFIER);
+						return new ReturnCodeError(pos.offset(dir,lastAssembly.getStartPosition()+1),offs,AssemblyErrorReason.NO_IDENTIFIER);
 
 					if (lastAssembly.bladeDirections.isEmpty())
-						return new ReturnCodeError(pos.offset(dir,lastAssembly.positionsInOrder.get(0)+1),prevPos,AssemblyErrorReason.NO_BLADES);
+						return new ReturnCodeError(pos.offset(dir,lastAssembly.getStartPosition()+1),prevPos,AssemblyErrorReason.NO_BLADES);
 				}
 				break;
 			};
@@ -977,7 +1029,6 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 		}
 		length = i;
 		// CALCULATE BUFFERS
-		int compression = leastCompression-mostCompression;
 		for (TurbineAssembly assembly : assemblies) {
 			// temporary values
 			FluidType nextSteam = getNextSteam(assembly.typeIn,assembly.decompress);

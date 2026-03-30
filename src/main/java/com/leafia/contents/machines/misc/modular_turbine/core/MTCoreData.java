@@ -40,6 +40,37 @@ public final class MTCoreData {
 			return Math.min(Math.max(value,min),max);
 		}
 	}
+	/** Relationship between a component and the stage currently being compiled. */
+	public enum StageUpgradeRelation {
+		MEMBER,
+		BEFORE_TARGET,
+		AFTER_TARGET,
+	}
+	/** Stage-local compile context. {@code assembly} is the target stage; neighbors use {@code relation}. */
+	public static final class StageUpgradeContext {
+		public final TurbineAssembly assembly;
+		public final TurbineAssembly previousAssembly;
+		public final TurbineAssembly nextAssembly;
+		public final int componentPosition;
+		public final StageUpgradeRelation relation;
+		StageUpgradeContext(TurbineAssembly assembly,TurbineAssembly previousAssembly,TurbineAssembly nextAssembly,int componentPosition,StageUpgradeRelation relation) {
+			this.assembly = assembly;
+			this.previousAssembly = previousAssembly;
+			this.nextAssembly = nextAssembly;
+			this.componentPosition = componentPosition;
+			this.relation = relation;
+		}
+		public boolean isMember() {
+			return relation == StageUpgradeRelation.MEMBER;
+		}
+		public boolean isBeforeTarget() {
+			return relation == StageUpgradeRelation.BEFORE_TARGET;
+		}
+		public boolean isAfterTarget() {
+			return relation == StageUpgradeRelation.AFTER_TARGET;
+		}
+	}
+	/** Mutable accumulator for one compiled steam stage. */
 	public static final class StageUpgradeSummary {
 		private double partialExpansionFractionOffset;
 		private double nozzleSpeedCoefficientOffset;
@@ -105,6 +136,7 @@ public final class MTCoreData {
 			return flowCapacity;
 		}
 	}
+	/** Mutable accumulator for shaft-wide machine properties. */
 	public static final class MachineUpgradeSummary {
 		private double generatorEmfCoefficientOffset;
 		private double generatorTotalResistanceOffset;
