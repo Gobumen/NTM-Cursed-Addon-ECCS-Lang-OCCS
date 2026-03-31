@@ -31,23 +31,21 @@ import com.leafia.contents.machines.misc.modular_turbine.core.MTCoreData.*;
 
 public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITickable {
 	public static double PARTIAL_EXPANSION_FRACTION = 0.2D;
-	public static double NOZZLE_SPEED_COEFFICIENT = 100D;
-	public static double NOZZLE_VELOCITY_COEFFICIENT = 0.8D;
-	public static double INLET_WHIRL_FRACTION = 0.4D;
-	public static double RELATIVE_EXIT_VELOCITY_FRACTION = 0.82D;
-	public static double EXIT_WHIRL_FRACTION = 1D;
+	/** nozzle-to-inlet swirl gain */
+	public static double INLET_WHIRL_COEFFICIENT = 32D;
+	/** exit-swirl recovery */
+	public static double EXIT_WHIRL_RECOVERY_FACTOR = 0.82D;
 	public static double ANGULAR_MOMENTUM_TORQUE_COEFFICIENT = 0.02D;
-	public static double GENERATOR_EMF_COEFFICIENT = 1; //500D;
-	public static double GENERATOR_TOTAL_RESISTANCE = 0.01;//1.8D;
-	public static double GENERATOR_CURRENT_LIMIT = Double.MAX_VALUE;
-	public static double GENERATOR_TORQUE_COEFFICIENT = 0.0D;
+	/** Effective linear electrical load slope */
+	public static double GENERATOR_LOAD_COEFFICIENT = 0.0D;
+	/** Saturation cap applied to the effective generator counter-torque. */
+	public static double GENERATOR_TORQUE_LIMIT = Double.MAX_VALUE;
 	public static double COULOMB_FRICTION_TORQUE = 0.7D;
 	public static double FRICTION_RPS_EPSILON = 0.25D;
 	public static double VISCOUS_FRICTION_COEFFICIENT = 0.08D;
 	public static double WINDAGE_COEFFICIENT = 0.003D;
 	public static double POWER_SCALE = 0.00232478632*2;
 	public static double ADMISSION_NOMINAL_TAU_TICKS = 4D;
-	public static double ADMISSION_NOMINAL_RESPONSE = 1D-Math.exp(-1D/ADMISSION_NOMINAL_TAU_TICKS);
 	public static double ADMISSION_STABLE_RELATIVE_ERROR = 0.03D;
 	// DEATHSTEAM -> ULTRAHOTSTEAM -> SUPERHOTSTEAM -> HOTSTEAM -> STEAM -> SPENTSTEAM stage-work scalars
 	public static double DEATHSTEAM_STAGE_WORK_MULTIPLIER = 10000D;
@@ -70,23 +68,6 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 	public static double ROTOR_INERTIA_SCALE = 0.5D;
 	public static double TWO_PI = Math.PI*2D;
 	public static double TICK_SECONDS = 1D/20D;
-	private static final TunableDomain PARTIAL_EXPANSION_FRACTION_DOMAIN = TunableDomain.additive(0D,1D,-0.15D,0.15D);
-	private static final TunableDomain NOZZLE_SPEED_COEFFICIENT_DOMAIN = TunableDomain.multiplicative(0D,Double.MAX_VALUE,-0.5D,0.5D);
-	private static final TunableDomain NOZZLE_VELOCITY_COEFFICIENT_DOMAIN = TunableDomain.multiplicative(0D,1D,-0.25D,0.25D);
-	private static final TunableDomain INLET_WHIRL_FRACTION_DOMAIN = TunableDomain.multiplicative(0D,1D,-0.25D,0.25D);
-	private static final TunableDomain RELATIVE_EXIT_VELOCITY_FRACTION_DOMAIN = TunableDomain.multiplicative(0D,1D,-0.25D,0.25D);
-	private static final TunableDomain EXIT_WHIRL_FRACTION_DOMAIN = TunableDomain.multiplicative(0D,1D,-0.25D,0.25D);
-	private static final TunableDomain ANGULAR_MOMENTUM_TORQUE_COEFFICIENT_DOMAIN = TunableDomain.multiplicative(0D,Double.MAX_VALUE,-0.35D,0.35D);
-	private static final TunableDomain GENERATOR_EMF_COEFFICIENT_DOMAIN = TunableDomain.multiplicative(0D,Double.MAX_VALUE,-0.5D,0.5D);
-	private static final TunableDomain GENERATOR_TOTAL_RESISTANCE_DOMAIN = TunableDomain.multiplicative(ADMISSION_FLOW_EPSILON,Double.MAX_VALUE,-0.5D,0.5D);
-	private static final TunableDomain GENERATOR_CURRENT_LIMIT_DOMAIN = TunableDomain.multiplicative(0D,Double.MAX_VALUE,-0.75D,1D);
-	private static final TunableDomain GENERATOR_TORQUE_COEFFICIENT_DOMAIN = TunableDomain.multiplicative(0D,Double.MAX_VALUE,-0.5D,0.5D);
-	private static final TunableDomain COULOMB_FRICTION_TORQUE_DOMAIN = TunableDomain.multiplicative(0D,Double.MAX_VALUE,-0.5D,0.5D);
-	private static final TunableDomain FRICTION_RPS_EPSILON_DOMAIN = TunableDomain.multiplicative(EQUILIBRIUM_RPS_EPSILON,Double.MAX_VALUE,0D,0D);
-	private static final TunableDomain VISCOUS_FRICTION_COEFFICIENT_DOMAIN = TunableDomain.multiplicative(0D,Double.MAX_VALUE,-0.5D,0.5D);
-	private static final TunableDomain WINDAGE_COEFFICIENT_DOMAIN = TunableDomain.multiplicative(0D,Double.MAX_VALUE,-0.5D,0.5D);
-	private static final TunableDomain POWER_SCALE_DOMAIN = TunableDomain.multiplicative(0D,Double.MAX_VALUE,0D,0D);
-	private static final TunableDomain ROTOR_INERTIA_SCALE_DOMAIN = TunableDomain.multiplicative(ADMISSION_FLOW_EPSILON,Double.MAX_VALUE,0D,0D);
 
 	public double rps;
 	public double lastTargetRPS = 0;
@@ -193,16 +174,15 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 		return Math.max(size,2)*0.35D;
 	}
 	private static double getStageInletWhirl(FluidType type,boolean decompress) {
-		return getStageInletWhirl(getStageSpecificWork(type,decompress),NOZZLE_SPEED_COEFFICIENT,NOZZLE_VELOCITY_COEFFICIENT,INLET_WHIRL_FRACTION);
+		return getStageInletWhirl(getStageSpecificWork(type,decompress),INLET_WHIRL_COEFFICIENT);
 	}
 	private static double getStageInletWhirl(CompiledStageStats compiledStats) {
-		return getStageInletWhirl(compiledStats.stageSpecificWork,compiledStats.nozzleSpeedCoefficient,compiledStats.nozzleVelocityCoefficient,compiledStats.inletWhirlFraction);
+		return getStageInletWhirl(compiledStats.stageSpecificWork,compiledStats.inletWhirlCoefficient);
 	}
-	private static double getStageInletWhirl(double stageSpecificWork,double nozzleSpeedCoefficient,double nozzleVelocityCoefficient,double inletWhirlFraction) {
+	private static double getStageInletWhirl(double stageSpecificWork,double inletWhirlCoefficient) {
 		if (stageSpecificWork <= 0)
 			return 0;
-		double nozzleSpeed = nozzleVelocityCoefficient*Math.sqrt(2*Math.max(stageSpecificWork,0))*nozzleSpeedCoefficient;
-		return nozzleSpeed*inletWhirlFraction;
+		return Math.sqrt(2*Math.max(stageSpecificWork,0))*inletWhirlCoefficient;
 	}
 	private static void assignBaseGearRatios(List<TurbineAssembly> assemblies) {
 		double weightedLogSum = 0;
@@ -254,7 +234,7 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 			return cappedRawMassFlow;
 		}
 
-		assembly.nominalMassFlow += (rawMassFlow-assembly.nominalMassFlow)*ADMISSION_NOMINAL_RESPONSE;
+		assembly.nominalMassFlow += (rawMassFlow-assembly.nominalMassFlow)*(1D-Math.exp(-1D/ADMISSION_NOMINAL_TAU_TICKS));
 		assembly.nominalMassFlow = Math.min(assembly.nominalMassFlow,flowCapacity);
 		double stableBand = Math.max(assembly.nominalMassFlow*ADMISSION_STABLE_RELATIVE_ERROR,ADMISSION_FLOW_EPSILON);
 		double maxBufferMass = Math.max(assembly.nominalMassFlow,0)*ADMISSION_MAX_BUFFER_TICKS;
@@ -278,10 +258,8 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 		return effectiveMassFlow;
 	}
 	private static double getGeneratorTorqueAtOmega(CompiledMachineStats machineStats,double omega) {
-		double generatorEmf = machineStats.generatorEmfCoefficient*omega;
-		double generatorCurrent = generatorEmf/machineStats.generatorTotalResistance;
-		generatorCurrent = Math.min(Math.max(generatorCurrent,-machineStats.generatorCurrentLimit),machineStats.generatorCurrentLimit);
-		return machineStats.generatorTorqueCoefficient*generatorCurrent;
+		double generatorTorque = machineStats.generatorLoadCoefficient*omega;
+		return Math.min(Math.max(generatorTorque,-machineStats.generatorTorqueLimit),machineStats.generatorTorqueLimit);
 	}
 	private static double getFrictionTorqueAtRPS(CompiledMachineStats machineStats,double rps) {
 		return machineStats.coulombFrictionTorque*Math.tanh(rps/machineStats.frictionRpsEpsilon)+machineStats.viscousFrictionCoefficient*rps;
@@ -577,27 +555,22 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 	}
 	private CompiledMachineStats compileMachineStats(MachineUpgradeSummary upgrades) {
 		CompiledMachineStats machineStats = new CompiledMachineStats();
-		machineStats.generatorEmfCoefficient = GENERATOR_EMF_COEFFICIENT_DOMAIN.resolve(GENERATOR_EMF_COEFFICIENT,upgrades.getGeneratorEmfCoefficientOffset());
-		machineStats.generatorTotalResistance = GENERATOR_TOTAL_RESISTANCE_DOMAIN.resolve(GENERATOR_TOTAL_RESISTANCE,upgrades.getGeneratorTotalResistanceOffset());
-		machineStats.generatorCurrentLimit = GENERATOR_CURRENT_LIMIT_DOMAIN.resolve(GENERATOR_CURRENT_LIMIT,upgrades.getGeneratorCurrentLimitOffset());
-		machineStats.generatorTorqueCoefficient = GENERATOR_TORQUE_COEFFICIENT_DOMAIN.resolve(GENERATOR_TORQUE_COEFFICIENT,upgrades.getGeneratorTorqueCoefficientOffset());
-		machineStats.coulombFrictionTorque = COULOMB_FRICTION_TORQUE_DOMAIN.resolve(COULOMB_FRICTION_TORQUE,upgrades.getCoulombFrictionTorqueOffset());
-		machineStats.frictionRpsEpsilon = FRICTION_RPS_EPSILON_DOMAIN.resolve(FRICTION_RPS_EPSILON,upgrades.getFrictionRpsEpsilonOffset());
-		machineStats.viscousFrictionCoefficient = VISCOUS_FRICTION_COEFFICIENT_DOMAIN.resolve(VISCOUS_FRICTION_COEFFICIENT,upgrades.getViscousFrictionCoefficientOffset());
-		machineStats.windageCoefficient = WINDAGE_COEFFICIENT_DOMAIN.resolve(WINDAGE_COEFFICIENT,upgrades.getWindageCoefficientOffset());
-		machineStats.powerScale = POWER_SCALE_DOMAIN.resolve(POWER_SCALE,upgrades.getPowerScaleOffset());
-		machineStats.rotorInertiaScale = ROTOR_INERTIA_SCALE_DOMAIN.resolve(ROTOR_INERTIA_SCALE,upgrades.getRotorInertiaScaleOffset());
+		machineStats.generatorLoadCoefficient = GENERATOR_LOAD_COEFFICIENT+upgrades.getGeneratorLoadCoefficientOffset();
+		machineStats.generatorTorqueLimit = GENERATOR_TORQUE_LIMIT*(1D+upgrades.getGeneratorTorqueLimitOffset());
+		machineStats.coulombFrictionTorque = COULOMB_FRICTION_TORQUE*(1D+upgrades.getCoulombFrictionTorqueOffset());
+		machineStats.frictionRpsEpsilon = FRICTION_RPS_EPSILON*(1D+upgrades.getFrictionRpsEpsilonOffset());
+		machineStats.viscousFrictionCoefficient = VISCOUS_FRICTION_COEFFICIENT*(1D+upgrades.getViscousFrictionCoefficientOffset());
+		machineStats.windageCoefficient = WINDAGE_COEFFICIENT*(1D+upgrades.getWindageCoefficientOffset());
+		machineStats.powerScale = POWER_SCALE*(1D+upgrades.getPowerScaleOffset());
+		machineStats.rotorInertiaScale = ROTOR_INERTIA_SCALE*(1D+upgrades.getRotorInertiaScaleOffset());
 		return machineStats;
 	}
 	private CompiledStageStats compileStageStats(TurbineAssembly assembly,StageUpgradeSummary upgrades) {
 		CompiledStageStats compiledStats = new CompiledStageStats();
-		compiledStats.partialExpansionFraction = PARTIAL_EXPANSION_FRACTION_DOMAIN.resolve(PARTIAL_EXPANSION_FRACTION,upgrades.getPartialExpansionFractionOffset());
-		compiledStats.nozzleSpeedCoefficient = NOZZLE_SPEED_COEFFICIENT_DOMAIN.resolve(NOZZLE_SPEED_COEFFICIENT,upgrades.getNozzleSpeedCoefficientOffset());
-		compiledStats.nozzleVelocityCoefficient = NOZZLE_VELOCITY_COEFFICIENT_DOMAIN.resolve(NOZZLE_VELOCITY_COEFFICIENT,upgrades.getNozzleVelocityCoefficientOffset());
-		compiledStats.inletWhirlFraction = INLET_WHIRL_FRACTION_DOMAIN.resolve(INLET_WHIRL_FRACTION,upgrades.getInletWhirlFractionOffset());
-		compiledStats.relativeExitVelocityFraction = RELATIVE_EXIT_VELOCITY_FRACTION_DOMAIN.resolve(RELATIVE_EXIT_VELOCITY_FRACTION,upgrades.getRelativeExitVelocityFractionOffset());
-		compiledStats.exitWhirlFraction = EXIT_WHIRL_FRACTION_DOMAIN.resolve(EXIT_WHIRL_FRACTION,upgrades.getExitWhirlFractionOffset());
-		compiledStats.angularMomentumTorqueCoefficient = ANGULAR_MOMENTUM_TORQUE_COEFFICIENT_DOMAIN.resolve(ANGULAR_MOMENTUM_TORQUE_COEFFICIENT,upgrades.getAngularMomentumTorqueCoefficientOffset());
+		compiledStats.partialExpansionFraction = PARTIAL_EXPANSION_FRACTION+upgrades.getPartialExpansionFractionOffset();
+		compiledStats.inletWhirlCoefficient = INLET_WHIRL_COEFFICIENT*(1D+upgrades.getInletWhirlCoefficientOffset());
+		compiledStats.exitWhirlRecoveryFactor = EXIT_WHIRL_RECOVERY_FACTOR*(1D+upgrades.getExitWhirlRecoveryFactorOffset());
+		compiledStats.angularMomentumTorqueCoefficient = ANGULAR_MOMENTUM_TORQUE_COEFFICIENT*(1D+upgrades.getAngularMomentumTorqueCoefficientOffset());
 		compiledStats.inputAmount = getStageInputAmount(assembly.typeIn,assembly.decompress);
 		compiledStats.outputAmount = getStageOutputAmount(assembly.typeIn,assembly.decompress);
 		compiledStats.division = getStageOutputRatio(assembly.typeIn,assembly.decompress);
@@ -605,7 +578,7 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 		compiledStats.stageSpecificWork = getStageSpecificWork(assembly,compiledStats);
 		compiledStats.stageRadius = getStageRadius(assembly.size);
 		compiledStats.inletWhirl = getStageInletWhirl(compiledStats);
-		compiledStats.torqueResponseFactor = compiledStats.angularMomentumTorqueCoefficient*(1D+compiledStats.relativeExitVelocityFraction*compiledStats.exitWhirlFraction);
+		compiledStats.torqueResponseFactor = compiledStats.angularMomentumTorqueCoefficient*(1D+compiledStats.exitWhirlRecoveryFactor);
 		compiledStats.bladeCount = assembly.bladeDirections.size();
 		compiledStats.bladeArea = Math.max(compiledStats.bladeCount+upgrades.getBladeArea(),ADMISSION_FLOW_EPSILON);
 		compiledStats.flowCapacity = upgrades.getFlowCapacity() > ADMISSION_FLOW_EPSILON ? upgrades.getFlowCapacity() : Double.POSITIVE_INFINITY;

@@ -4,42 +4,6 @@ import com.leafia.contents.machines.misc.modular_turbine.core.MTCoreTE.TurbineAs
 
 public final class MTCoreData {
 	private MTCoreData() { }
-
-	static final class TunableDomain {
-		private final double minResolved;
-		private final double maxResolved;
-		private final double minOffset;
-		private final double maxOffset;
-		private final boolean multiplicative;
-		private TunableDomain(double minResolved,double maxResolved,double minOffset,double maxOffset,boolean multiplicative) {
-			this.minResolved = minResolved;
-			this.maxResolved = maxResolved;
-			this.minOffset = minOffset;
-			this.maxOffset = maxOffset;
-			this.multiplicative = multiplicative;
-		}
-		static TunableDomain additive(double minResolved,double maxResolved,double minOffset,double maxOffset) {
-			return new TunableDomain(minResolved,maxResolved,minOffset,maxOffset,false);
-		}
-		static TunableDomain multiplicative(double minResolved,double maxResolved,double minOffset,double maxOffset) {
-			return new TunableDomain(minResolved,maxResolved,minOffset,maxOffset,true);
-		}
-		double resolve(double baseValue,double offset) {
-			double boundedBase = sanitize(baseValue,minResolved,maxResolved);
-			double boundedOffset = sanitize(offset,minOffset,maxOffset);
-			double resolved = multiplicative ? boundedBase*(1D+boundedOffset) : boundedBase+boundedOffset;
-			return sanitize(resolved,minResolved,maxResolved);
-		}
-		private static double sanitize(double value,double min,double max) {
-			if (Double.isNaN(value))
-				return min;
-			if (value == Double.POSITIVE_INFINITY)
-				return max;
-			if (value == Double.NEGATIVE_INFINITY)
-				return min;
-			return Math.min(Math.max(value,min),max);
-		}
-	}
 	/** Relationship between a component and the stage currently being compiled. */
 	public enum StageUpgradeRelation {
 		MEMBER,
@@ -73,31 +37,19 @@ public final class MTCoreData {
 	/** Mutable accumulator for one compiled steam stage. */
 	public static final class StageUpgradeSummary {
 		private double partialExpansionFractionOffset;
-		private double nozzleSpeedCoefficientOffset;
-		private double nozzleVelocityCoefficientOffset;
-		private double inletWhirlFractionOffset;
-		private double relativeExitVelocityFractionOffset;
-		private double exitWhirlFractionOffset;
+		private double inletWhirlCoefficientOffset;
+		private double exitWhirlRecoveryFactorOffset;
 		private double angularMomentumTorqueCoefficientOffset;
 		private double bladeArea;
 		private double flowCapacity;
 		public void addPartialExpansionFractionOffset(double offset) {
 			partialExpansionFractionOffset += offset;
 		}
-		public void addNozzleSpeedCoefficientOffset(double offset) {
-			nozzleSpeedCoefficientOffset += offset;
+		public void addInletWhirlCoefficientOffset(double offset) {
+			inletWhirlCoefficientOffset += offset;
 		}
-		public void addNozzleVelocityCoefficientOffset(double offset) {
-			nozzleVelocityCoefficientOffset += offset;
-		}
-		public void addInletWhirlFractionOffset(double offset) {
-			inletWhirlFractionOffset += offset;
-		}
-		public void addRelativeExitVelocityFractionOffset(double offset) {
-			relativeExitVelocityFractionOffset += offset;
-		}
-		public void addExitWhirlFractionOffset(double offset) {
-			exitWhirlFractionOffset += offset;
+		public void addExitWhirlRecoveryFactorOffset(double offset) {
+			exitWhirlRecoveryFactorOffset += offset;
 		}
 		public void addAngularMomentumTorqueCoefficientOffset(double offset) {
 			angularMomentumTorqueCoefficientOffset += offset;
@@ -111,20 +63,11 @@ public final class MTCoreData {
 		double getPartialExpansionFractionOffset() {
 			return partialExpansionFractionOffset;
 		}
-		double getNozzleSpeedCoefficientOffset() {
-			return nozzleSpeedCoefficientOffset;
+		double getInletWhirlCoefficientOffset() {
+			return inletWhirlCoefficientOffset;
 		}
-		double getNozzleVelocityCoefficientOffset() {
-			return nozzleVelocityCoefficientOffset;
-		}
-		double getInletWhirlFractionOffset() {
-			return inletWhirlFractionOffset;
-		}
-		double getRelativeExitVelocityFractionOffset() {
-			return relativeExitVelocityFractionOffset;
-		}
-		double getExitWhirlFractionOffset() {
-			return exitWhirlFractionOffset;
+		double getExitWhirlRecoveryFactorOffset() {
+			return exitWhirlRecoveryFactorOffset;
 		}
 		double getAngularMomentumTorqueCoefficientOffset() {
 			return angularMomentumTorqueCoefficientOffset;
@@ -138,27 +81,19 @@ public final class MTCoreData {
 	}
 	/** Mutable accumulator for shaft-wide machine properties. */
 	public static final class MachineUpgradeSummary {
-		private double generatorEmfCoefficientOffset;
-		private double generatorTotalResistanceOffset;
-		private double generatorCurrentLimitOffset;
-		private double generatorTorqueCoefficientOffset;
+		private double generatorLoadCoefficientOffset;
+		private double generatorTorqueLimitOffset;
 		private double coulombFrictionTorqueOffset;
 		private double frictionRpsEpsilonOffset;
 		private double viscousFrictionCoefficientOffset;
 		private double windageCoefficientOffset;
 		private double powerScaleOffset;
 		private double rotorInertiaScaleOffset;
-		public void addGeneratorEmfCoefficientOffset(double offset) {
-			generatorEmfCoefficientOffset += offset;
+		public void addGeneratorLoadCoefficientOffset(double offset) {
+			generatorLoadCoefficientOffset += offset;
 		}
-		public void addGeneratorTotalResistanceOffset(double offset) {
-			generatorTotalResistanceOffset += offset;
-		}
-		public void addGeneratorCurrentLimitOffset(double offset) {
-			generatorCurrentLimitOffset += offset;
-		}
-		public void addGeneratorTorqueCoefficientOffset(double offset) {
-			generatorTorqueCoefficientOffset += offset;
+		public void addGeneratorTorqueLimitOffset(double offset) {
+			generatorTorqueLimitOffset += offset;
 		}
 		public void addCoulombFrictionTorqueOffset(double offset) {
 			coulombFrictionTorqueOffset += offset;
@@ -178,17 +113,11 @@ public final class MTCoreData {
 		public void addRotorInertiaScaleOffset(double offset) {
 			rotorInertiaScaleOffset += offset;
 		}
-		double getGeneratorEmfCoefficientOffset() {
-			return generatorEmfCoefficientOffset;
+		double getGeneratorLoadCoefficientOffset() {
+			return generatorLoadCoefficientOffset;
 		}
-		double getGeneratorTotalResistanceOffset() {
-			return generatorTotalResistanceOffset;
-		}
-		double getGeneratorCurrentLimitOffset() {
-			return generatorCurrentLimitOffset;
-		}
-		double getGeneratorTorqueCoefficientOffset() {
-			return generatorTorqueCoefficientOffset;
+		double getGeneratorTorqueLimitOffset() {
+			return generatorTorqueLimitOffset;
 		}
 		double getCoulombFrictionTorqueOffset() {
 			return coulombFrictionTorqueOffset;
@@ -210,10 +139,8 @@ public final class MTCoreData {
 		}
 	}
 	static final class CompiledMachineStats {
-		double generatorEmfCoefficient;
-		double generatorTotalResistance;
-		double generatorCurrentLimit;
-		double generatorTorqueCoefficient;
+		double generatorLoadCoefficient;
+		double generatorTorqueLimit;
 		double coulombFrictionTorque;
 		double frictionRpsEpsilon;
 		double viscousFrictionCoefficient;
@@ -223,11 +150,8 @@ public final class MTCoreData {
 	}
 	static final class CompiledStageStats {
 		double partialExpansionFraction;
-		double nozzleSpeedCoefficient;
-		double nozzleVelocityCoefficient;
-		double inletWhirlFraction;
-		double relativeExitVelocityFraction;
-		double exitWhirlFraction;
+		double inletWhirlCoefficient;
+		double exitWhirlRecoveryFactor;
 		double angularMomentumTorqueCoefficient;
 		int inputAmount;
 		int outputAmount;
