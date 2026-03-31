@@ -173,19 +173,6 @@ public final class MTCoreData {
 			return bladeArea/Math.max(bladeCount,1);
 		}
 	}
-	static final class DriveCurve {
-		double baseDriveTorqueIntercept;
-		double baseDriveTorqueOmegaSlope;
-		boolean hasPositiveDrive() {
-			return baseDriveTorqueIntercept > 0 && baseDriveTorqueOmegaSlope > 0;
-		}
-		double getDriveTorqueIntercept(double globalGearScale) {
-			return baseDriveTorqueIntercept*globalGearScale;
-		}
-		double getDriveTorqueOmegaSlope(double globalGearScale) {
-			return baseDriveTorqueOmegaSlope*globalGearScale*globalGearScale;
-		}
-	}
 	static final class TickSummary {
 		double targetRPS;
 		double driveTorque;
@@ -204,12 +191,6 @@ public final class MTCoreData {
 			this.compiledStats = compiledStats;
 			this.massFlow = massFlow;
 			this.stageTorqueScale = stageTorqueScale;
-		}
-		double getBaseDriveTorqueInterceptContribution() {
-			return stageTorqueScale*compiledStats.inletWhirl*compiledStats.baseGearRatio;
-		}
-		double getBaseDriveTorqueOmegaSlopeContribution() {
-			return stageTorqueScale*compiledStats.stageRadius*compiledStats.baseGearRatio*compiledStats.baseGearRatio;
 		}
 		double getDriveTorque(double omega,double globalGearScale) {
 			if (massFlow <= 0 || compiledStats.stageSpecificWork <= 0)

@@ -57,14 +57,11 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 	public static double ADMISSION_MAX_BUFFER_TICKS = 2D;
 	public static double ADMISSION_FLOW_EPSILON = 1.0E-9D;
 	public static double ADMISSION_BUFFER_EPSILON = 1.0E-6D;
-	public static double EQUILIBRIUM_RPS_EPSILON = 1.0E-6D;
-	public static double EQUILIBRIUM_RPS_LIMIT = 1.0E6D;
-	public static int EQUILIBRIUM_SOLVER_ITERATIONS = 48;
 	public static double DEFAULT_GLOBAL_GEAR_SCALE = 0.05D;
-	public static double GEAR_CONTROLLER_MIN_SCALE = 1D/128D;
-	public static double GEAR_CONTROLLER_MAX_SCALE = 2D;
-	public static int GEAR_CONTROLLER_SAMPLE_COUNT = 25;
-	public static double GEAR_CONTROLLER_RESPONSE = 0.25D;
+	public static double GOVERNED_RPS = 60D;
+	public static double THROTTLE_GOVERNOR_PROPORTIONAL_GAIN = 0.04D;
+	public static double THROTTLE_GOVERNOR_INTEGRAL_GAIN = 0.0025D;
+	public static double THROTTLE_GOVERNOR_ADMISSION_RATE = 0.02D;
 	public static double ROTOR_INERTIA_SCALE = 0.5D;
 	public static double TWO_PI = Math.PI*2D;
 	public static double TICK_SECONDS = 1D/20D;
@@ -77,11 +74,14 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 	public double lastWindageTorque = 0;
 	public double globalGearScale = DEFAULT_GLOBAL_GEAR_SCALE;
 	public double lastGlobalGearScale = DEFAULT_GLOBAL_GEAR_SCALE;
+	public double admission = 0;
+	public double lastAdmission = 0;
 	public final List<ModularTurbineComponentTE> components = new ArrayList<>();
 	public final List<TurbineAssembly> assemblies = new ArrayList<>();
 	public int length = 0;
 	// Rotor inertia scalar
 	public double weight = 0;
+	private double governorIntegral = 0;
 	private CompiledMachineStats compiledMachineStats;
 	public static final List<FluidType> steamTypes = new ArrayList<>();
 	public static FluidType getNextSteam(FluidType type,boolean decompress) {
@@ -267,64 +267,6 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 	private static double getWindageTorqueAtRPS(CompiledMachineStats machineStats,double rps) {
 		return machineStats.windageCoefficient*rps*Math.abs(rps);
 	}
-	private static double getNetTorqueAtRPS(CompiledMachineStats machineStats,double rps,double driveTorqueIntercept,double driveTorqueOmegaSlope) {
-		double omega = rps*TWO_PI;
-		double driveTorque = driveTorqueIntercept-driveTorqueOmegaSlope*omega;
-		return driveTorque-getGeneratorTorqueAtOmega(machineStats,omega)-getFrictionTorqueAtRPS(machineStats,rps)-getWindageTorqueAtRPS(machineStats,rps);
-	}
-	private static double solveEquilibriumRPS(CompiledMachineStats machineStats,double driveTorqueIntercept,double driveTorqueOmegaSlope) {
-		double zeroNetTorque = getNetTorqueAtRPS(machineStats,0,driveTorqueIntercept,driveTorqueOmegaSlope);
-		if (zeroNetTorque <= 0)
-			return 0;
-
-		double linearNoLoadRPS = 0;
-		if (driveTorqueOmegaSlope > EQUILIBRIUM_RPS_EPSILON)
-			linearNoLoadRPS = driveTorqueIntercept/(driveTorqueOmegaSlope*TWO_PI);
-		double low = 0;
-		double high = Math.max(linearNoLoadRPS,1);
-		double highNetTorque = getNetTorqueAtRPS(machineStats,high,driveTorqueIntercept,driveTorqueOmegaSlope);
-		while (highNetTorque > 0 && high < EQUILIBRIUM_RPS_LIMIT) {
-			low = high;
-			high *= 2;
-			highNetTorque = getNetTorqueAtRPS(machineStats,high,driveTorqueIntercept,driveTorqueOmegaSlope);
-		}
-		if (highNetTorque > 0)
-			return high;
-		for (int i = 0; i < EQUILIBRIUM_SOLVER_ITERATIONS; i++) {
-			double mid = (low+high)/2;
-			double midNetTorque = getNetTorqueAtRPS(machineStats,mid,driveTorqueIntercept,driveTorqueOmegaSlope);
-			if (midNetTorque > 0)
-				low = mid;
-			else
-				high = mid;
-		}
-		return (low+high)/2;
-	}
-	private static double predictedPowerForGearScale(CompiledMachineStats machineStats,double globalGearScale,double baseDriveIntercept,double baseDriveOmegaSlope) {
-		double driveTorqueIntercept = baseDriveIntercept*globalGearScale;
-		double driveTorqueOmegaSlope = baseDriveOmegaSlope*globalGearScale*globalGearScale;
-		double equilibriumRPS = solveEquilibriumRPS(machineStats,driveTorqueIntercept,driveTorqueOmegaSlope);
-		double equilibriumOmega = equilibriumRPS*TWO_PI;
-		double generatorTorque = getGeneratorTorqueAtOmega(machineStats,equilibriumOmega);
-		return Math.max(generatorTorque*equilibriumOmega*machineStats.powerScale*20D,0);
-	}
-	private static double optimizeInstantaneousGearScale(CompiledMachineStats machineStats,double baseDriveIntercept,double baseDriveOmegaSlope) {
-		double bestScale = GEAR_CONTROLLER_MIN_SCALE;
-		double bestPower = Double.NEGATIVE_INFINITY;
-		double minLog2Scale = Math.log(GEAR_CONTROLLER_MIN_SCALE)/Math.log(2);
-		double maxLog2Scale = Math.log(GEAR_CONTROLLER_MAX_SCALE)/Math.log(2);
-		for (int i = 0; i < GEAR_CONTROLLER_SAMPLE_COUNT; i++) {
-			double t = GEAR_CONTROLLER_SAMPLE_COUNT <= 1 ? 0 : i/(double)(GEAR_CONTROLLER_SAMPLE_COUNT-1);
-			double log2Scale = minLog2Scale+(maxLog2Scale-minLog2Scale)*t;
-			double scale = Math.pow(2,log2Scale);
-			double power = predictedPowerForGearScale(machineStats,scale,baseDriveIntercept,baseDriveOmegaSlope);
-			if (power > bestPower) {
-				bestPower = power;
-				bestScale = scale;
-			}
-		}
-		return bestScale;
-	}
 	private static int requireTankCapacity(long bufferSize,FluidType fluid) {
 		if (bufferSize > Integer.MAX_VALUE)
 			throw new IllegalStateException("Buffer size exceeds FluidTankNTM capacity for "+fluid.getName()+": "+bufferSize);
@@ -348,7 +290,9 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 	protected boolean assembleFromNBT_internal(NBTTagCompound compound) {
 		length = compound.getInteger("length");
 		weight = compound.getDouble("weight");
-		globalGearScale = compound.hasKey("globalGearScale") ? compound.getDouble("globalGearScale") : DEFAULT_GLOBAL_GEAR_SCALE;
+		globalGearScale = DEFAULT_GLOBAL_GEAR_SCALE;
+		admission = compound.hasKey("admission") ? compound.getDouble("admission") : 0;
+		governorIntegral = compound.hasKey("governorIntegral") ? compound.getDouble("governorIntegral") : admission;
 		EnumFacing dir = getAssemblyFacing();
 		Map<Integer,TurbineAssembly> assemblyMap = new HashMap<>();
 		boolean missingGearRatio = false;
@@ -408,7 +352,8 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 	public NBTTagCompound writeAssemblyToNBT(NBTTagCompound compound) {
 		compound.setInteger("length",length);
 		compound.setDouble("weight",weight);
-		compound.setDouble("globalGearScale",globalGearScale);
+		compound.setDouble("admission",admission);
+		compound.setDouble("governorIntegral",governorIntegral);
 		NBTTagList assemList = new NBTTagList();
 		for (TurbineAssembly assembly : assemblies) {
 			NBTTagCompound tag = new NBTTagCompound();
@@ -586,15 +531,15 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 		compiledStats.baseGearRatio = assembly.baseGearRatio;
 		return compiledStats;
 	}
-	private List<StageRuntimeData> evaluateStages() {
+	private List<StageRuntimeData> evaluateStages(double admission) {
 		List<StageRuntimeData> stageData = new ArrayList<>();
 		for (TurbineAssembly assembly : assemblies)
-			stageData.add(evaluateStage(assembly));
+			stageData.add(evaluateStage(assembly,admission));
 		return stageData;
 	}
-	private StageRuntimeData evaluateStage(TurbineAssembly assembly) {
+	private StageRuntimeData evaluateStage(TurbineAssembly assembly,double admission) {
 		CompiledStageStats compiledStats = assembly.compiledStats;
-		int inputConsumed = transferStageFluids(assembly,compiledStats);
+		int inputConsumed = transferStageFluids(assembly,compiledStats,admission);
 		int wrongBlades = countWrongBlades(assembly);
 		assembly.lastWrongBlades = wrongBlades;
 		applyWrongBladeTurbulence(assembly,wrongBlades);
@@ -614,10 +559,13 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 			stageTorqueScale = massFlow*compiledStats.stageRadius*bladeEfficiency*compiledStats.getBladeAreaFactor()*compiledStats.torqueResponseFactor;
 		return new StageRuntimeData(assembly,compiledStats,massFlow,stageTorqueScale);
 	}
-	private int transferStageFluids(TurbineAssembly assembly,CompiledStageStats compiledStats) {
+	private int transferStageFluids(TurbineAssembly assembly,CompiledStageStats compiledStats,double admission) {
 		int inputOps = compiledStats.inputAmount > 0 ? assembly.input.getFill()/compiledStats.inputAmount : 0;
 		int outputOps = compiledStats.outputAmount > 0 ? (assembly.output.getMaxFill()-assembly.output.getFill())/compiledStats.outputAmount : 0;
-		int ops = Math.min(inputOps,outputOps);
+		int maxOps = Math.min(inputOps,outputOps);
+		double admittedOps = maxOps*admission+assembly.admissionOpCarry;
+		int ops = (int)Math.floor(admittedOps);
+		assembly.admissionOpCarry = admittedOps-ops;
 		int inputConsumed = ops*compiledStats.inputAmount;
 		int outputProduced = ops*compiledStats.outputAmount;
 		assembly.input.setFill(assembly.input.getFill()-inputConsumed);
@@ -661,26 +609,20 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 	private void applyWrongBladeTurbulence(TurbineAssembly assembly,int wrongBlades) {
 		turbulence = Math.min(turbulence+wrongBlades*10d/assembly.compiledStats.bladeArea,100);
 	}
-	private DriveCurve buildDriveCurve(List<StageRuntimeData> stageData) {
-		DriveCurve driveCurve = new DriveCurve();
-		for (StageRuntimeData data : stageData) {
-			driveCurve.baseDriveTorqueIntercept += data.getBaseDriveTorqueInterceptContribution();
-			driveCurve.baseDriveTorqueOmegaSlope += data.getBaseDriveTorqueOmegaSlopeContribution();
-		}
-		return driveCurve;
+	private void updateThrottleGovernor(TickSummary tickSummary) {
+		tickSummary.targetRPS = GOVERNED_RPS;
+		double error = GOVERNED_RPS-rps;
+		double proportionalAdmission = error*THROTTLE_GOVERNOR_PROPORTIONAL_GAIN;
+		double unclampedAdmission = governorIntegral+proportionalAdmission;
+		double targetAdmission = Math.min(Math.max(unclampedAdmission,0D),1D);
+		if (targetAdmission == unclampedAdmission || (targetAdmission <= 0D && error > 0) || (targetAdmission >= 1D && error < 0))
+			governorIntegral += error*THROTTLE_GOVERNOR_INTEGRAL_GAIN;
+		targetAdmission = Math.min(Math.max(governorIntegral+proportionalAdmission,0D),1D);
+		double admissionDelta = targetAdmission-admission;
+		admissionDelta = Math.min(Math.max(admissionDelta,-THROTTLE_GOVERNOR_ADMISSION_RATE),THROTTLE_GOVERNOR_ADMISSION_RATE);
+		admission += admissionDelta;
 	}
-	private void updateGlobalGearScale(CompiledMachineStats machineStats,DriveCurve driveCurve) {
-		if (driveCurve.hasPositiveDrive()) {
-			double targetGearScale = optimizeInstantaneousGearScale(machineStats,driveCurve.baseDriveTorqueIntercept,driveCurve.baseDriveTorqueOmegaSlope);
-			globalGearScale += (targetGearScale-globalGearScale)*GEAR_CONTROLLER_RESPONSE;
-			globalGearScale = Math.min(Math.max(globalGearScale,GEAR_CONTROLLER_MIN_SCALE),GEAR_CONTROLLER_MAX_SCALE);
-		}
-	}
-	private void applyRotationalStep(CompiledMachineStats machineStats,List<StageRuntimeData> stageData,DriveCurve driveCurve,TickSummary tickSummary) {
-		double driveTorqueIntercept = driveCurve.getDriveTorqueIntercept(globalGearScale);
-		double driveTorqueOmegaSlope = driveCurve.getDriveTorqueOmegaSlope(globalGearScale);
-		tickSummary.targetRPS = solveEquilibriumRPS(machineStats,driveTorqueIntercept,driveTorqueOmegaSlope);
-
+	private void applyRotationalStep(CompiledMachineStats machineStats,List<StageRuntimeData> stageData,TickSummary tickSummary) {
 		double omega = rps*TWO_PI;
 		for (StageRuntimeData data : stageData)
 			tickSummary.driveTorque += data.getDriveTorque(omega,globalGearScale);
@@ -704,11 +646,10 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 
 		// Simulate the current shaft state.
 		if (weight > 0) {
+			updateThrottleGovernor(tickSummary);
 			CompiledMachineStats machineStats = getCompiledMachineStats();
-			List<StageRuntimeData> stageData = evaluateStages();
-			DriveCurve driveCurve = buildDriveCurve(stageData);
-			updateGlobalGearScale(machineStats,driveCurve);
-			applyRotationalStep(machineStats,stageData,driveCurve,tickSummary);
+			List<StageRuntimeData> stageData = evaluateStages(admission);
+			applyRotationalStep(machineStats,stageData,tickSummary);
 		}
 
 		// Apply turbulence damping and transient spike accumulation.
@@ -724,6 +665,7 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 		lastFrictionTorque = tickSummary.frictionTorque;
 		lastWindageTorque = tickSummary.windageTorque;
 		lastGlobalGearScale = globalGearScale;
+		lastAdmission = admission;
 
 		// Emit debug traces.
 		Tracker._startProfile(this,"update");
@@ -735,6 +677,7 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 				"Friction torque: "+tickSummary.frictionTorque,
 				"Windage torque: "+tickSummary.windageTorque,
 				"TargetRPS-RPS difference: "+(tickSummary.targetRPS-rps),
+				"Admission: "+admission,
 				"Turbulence: "+turbulence,
 				"Global gear scale: "+globalGearScale,
 				"Weight: "+weight+" WU"
@@ -776,6 +719,7 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 		public int lastWrongBlades = 0;
 		public double lastBladeEfficiency = 0;
 		public double admissionBufferMass = 0;
+		public double admissionOpCarry = 0;
 		public double nominalMassFlow = 0;
 		public double lastRawMassFlow = 0;
 		public double lastEffectiveMassFlow = 0;
@@ -801,6 +745,9 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 		compiledMachineStats = null;
 		globalGearScale = DEFAULT_GLOBAL_GEAR_SCALE;
 		lastGlobalGearScale = DEFAULT_GLOBAL_GEAR_SCALE;
+		admission = 0;
+		lastAdmission = 0;
+		governorIntegral = 0;
 	}
 	public static class AssemblyReturnCode {
 		public static class ReturnCodeSuccess extends AssemblyReturnCode { }
@@ -1016,6 +963,9 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 		}
 		compileAssemblyModel(true);
 		globalGearScale = DEFAULT_GLOBAL_GEAR_SCALE;
+		admission = 0;
+		lastAdmission = 0;
+		governorIntegral = 0;
 		return new ReturnCodeSuccess();
 	}
 	public long calculateBufferSize(FluidType fluid,int mostCompression,int blades,int size) {
