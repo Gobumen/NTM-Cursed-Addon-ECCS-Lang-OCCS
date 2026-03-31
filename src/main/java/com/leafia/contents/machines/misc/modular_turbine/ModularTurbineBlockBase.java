@@ -15,8 +15,14 @@ import com.leafia.contents.machines.misc.modular_turbine.ports.MTComponentPortTE
 import com.leafia.dev.blocks.blockbase.AddonBlockDummyable;
 import com.leafia.dev.container_utility.LeafiaPacket;
 import com.leafia.dev.machine.MachineTooltip;
+import com.leafia.transformer.LeafiaGls;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Gui;
+import net.minecraft.client.gui.ScaledResolution;
+import net.minecraft.client.renderer.GlStateManager.DestFactor;
+import net.minecraft.client.renderer.GlStateManager.SourceFactor;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -24,6 +30,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.TextFormatting;
@@ -36,6 +43,8 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.leafia.AddonBase.getIntegrated;
 
 public abstract class ModularTurbineBlockBase extends AddonBlockDummyable implements IToolable, ILookOverlay, IMTStageUpgradeContributor, IMTMachineUpgradeContributor {
 	public ModularTurbineBlockBase(String s) {
@@ -163,16 +172,38 @@ public abstract class ModularTurbineBlockBase extends AddonBlockDummyable implem
 					texts.add("&[" + (BobMathUtil.getBlink() ? 0xff0000 : 0xffff00) + "&]"+I18nUtil.resolveKey("info.turbine.assembly.unassembled"));
 				if (te instanceof MTComponentPortTE port) {
 					texts.add(I18nUtil.resolveKey("info.turbine.identifier",port.identifier != null ? port.identifier.getLocalizedName() : "N/A"));
-					texts.add(I18nUtil.resolveKey("info.turbine.decompression",I18nUtil.resolveKey(port.decompress ? "info.turbine.state.enabled" : "info.turbine.state.disabled")));
+					if (!port.decompress)
+						texts.add(I18nUtil.resolveKey("info.turbine.decompression",I18nUtil.resolveKey(port.decompress ? "info.turbine.state.enabled" : "info.turbine.state.disabled")));
 					if (te.assembly != null) {
 						texts.add(TextFormatting.GREEN+"-> "+TextFormatting.RESET+te.assembly.input.getTankType().getLocalizedName()+": "+te.assembly.input.getFill()+"/"+te.assembly.input.getMaxFill()+"mB");
 						texts.add(TextFormatting.RED+"<- "+TextFormatting.RESET+te.assembly.output.getTankType().getLocalizedName()+": "+te.assembly.output.getFill()+"/"+te.assembly.output.getMaxFill()+"mB");
 					}
 				}
 			}
+			ILookOverlay.printGeneric(event, I18nUtil.resolveKey(getTranslationKey() + ".name"), 0xFF55FF, 0x3F153F, texts);
+			LeafiaGls.color(1,1,1);
+			if (componentType() == TurbineComponentType.BLADES) { // cursor render
+				event.setCanceled(true);
+				LeafiaGls.enableBlend();
+				LeafiaGls.tryBlendFuncSeparate(SourceFactor.ONE_MINUS_DST_COLOR,DestFactor.ONE_MINUS_SRC_COLOR,SourceFactor.ONE,DestFactor.ZERO);
+				LeafiaGls.pushMatrix();
+				ScaledResolution resolution = event.getResolution();
+				LeafiaGls.translate(resolution.getScaledWidth_double()/2,resolution.getScaledHeight_double()/2,0);
+				Minecraft.getMinecraft().renderEngine.bindTexture(cursor);
+				EnumFacing facing = EnumFacing.byIndex(world.getBlockState(core).getValue(META)-10).getOpposite();
+				float face = facing.getHorizontalAngle();
+				float yaw = Minecraft.getMinecraft().player.rotationYaw;
+				boolean inverse = Minecraft.getMinecraft().player.rotationPitch < 0;
+				LeafiaGls.rotate((face-yaw)*(inverse ? -1 : 1)+(inverse ? 180 : 0),0,0,1);
+				Minecraft.getMinecraft().ingameGUI.drawTexturedModalRect(-6,-6,0,0,12,12);
+				LeafiaGls.popMatrix();
+				LeafiaGls.tryBlendFuncSeparate(SourceFactor.SRC_ALPHA,DestFactor.ONE_MINUS_SRC_ALPHA,SourceFactor.ONE,DestFactor.ZERO);
+				LeafiaGls.disableBlend();
+				Minecraft.getMinecraft().renderEngine.bindTexture(Gui.ICONS);
+			}
 		}
-		ILookOverlay.printGeneric(event, I18nUtil.resolveKey(getTranslationKey() + ".name"), 0xFF55FF, 0x3F153F, texts);
 	}
+	static final ResourceLocation cursor = getIntegrated("machines/modular_turbines/cursor.png");
 	@Override
 	public boolean onBlockActivated(World world,BlockPos pos,IBlockState state,EntityPlayer player,EnumHand hand,EnumFacing facing,float hitX,float hitY,float hitZ) {
 		if (this instanceof IMTPortBlock) {
@@ -219,14 +250,14 @@ public abstract class ModularTurbineBlockBase extends AddonBlockDummyable implem
 									.__sendToAffectedClients();
 						}
 					}
-				} else {
-					if (!world.isRemote) {
+				} else { // why would you want to disable decompression
+					/*if (!world.isRemote) {
 						port.decompress = !port.decompress;
 						LeafiaPacket._start(port)
 								.__write(MTPacketId.PORT_DECOMPRESSION.id,port.decompress)
 								.__sendToAffectedClients();
 					}
-					changed = true;
+					changed = true;*/
 				}
 				if (changed) {
 					if (!world.isRemote && port.core != null)

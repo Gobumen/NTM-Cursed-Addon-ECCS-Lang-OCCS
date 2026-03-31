@@ -840,7 +840,8 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 	protected AssemblyReturnCode reassemble_internal() {
 		disassemble();
 		int[] connectable = new int[]{};
-		boolean previousWasSeparator = false;
+		boolean prevWasSeparator = false;
+		int prevSize = 1;
 		EnumFacing dir = getAssemblyFacing();
 		BlockPos offs = new BlockPos(pos);
 		BlockPos prevPos = offs;
@@ -889,13 +890,14 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 								}
 							}
 							for (int s : turbine.canConnectTo()) {
-								if (s == size) {
+								if (s == prevSize) {
 									compatible = true;
 									break;
 								}
 							}
 							if (!compatible)
 								return new ReturnCodeError(prevPos,offs,AssemblyErrorReason.INCOMPATIBLE_SIZE);
+							prevSize = size;
 
 							// UPDATING PREVIOUS PARAMETERS & FORMING ASSEMBLY
 							connectable = turbine.canConnectTo();
@@ -903,7 +905,7 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 							if (turbine.componentType().equals(TurbineComponentType.INLINE_PORT)) {
 								// IF IT'S INLINE PORT, OVERRIDE isSeparator SO
 								// ONE OF THEM WILL FORM AN ASSEMBLY WHEN 2 OF THEM ARE PLACED IN A ROW
-								if (previousWasSeparator)
+								if (prevWasSeparator)
 									isSeparator = false;
 							}
 							boolean joinsSteamAssembly = !isSeparator;
@@ -915,6 +917,9 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 								if (lastAssembly != null)
 									joinsSteamAssembly = true;
 							}
+
+							if (!isSeparator && !prevWasSeparator && i == 0)
+								return new ReturnCodeError(prevPos,offs,AssemblyErrorReason.OPEN_END);
 
 							if (joinsSteamAssembly) {
 								// ELSE, CREATE A NEW ASSEMBLY OR EXPAND PREVIOUS ONE
@@ -979,13 +984,13 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 							}
 							// DON'T REPLACE THIS WITH isSeparator VARIABLE AS IT GETS
 							// OVERRIDDEN ON INLINE_PORT TYPE
-							previousWasSeparator = turbine.componentType().isSeparator;
+							prevWasSeparator = turbine.componentType().isSeparator;
 						}
 					} else
 						return new ReturnCodeError(prevPos,offs,AssemblyErrorReason.BUG);
 				}
 			} else {
-				if (!previousWasSeparator)
+				if (!prevWasSeparator)
 					return new ReturnCodeError(prevPos,offs,AssemblyErrorReason.OPEN_END);
 				if (lastAssembly != null) {
 					if (lastAssembly.typeIn == null)
