@@ -57,6 +57,9 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 	public static double ADMISSION_MAX_BUFFER_TICKS = 2D;
 	public static double ADMISSION_FLOW_EPSILON = 1.0E-9D;
 	public static double ADMISSION_BUFFER_EPSILON = 1.0E-6D;
+	public static double EQUILIBRIUM_RPS_EPSILON = 1.0E-6D;
+	public static double EQUILIBRIUM_RPS_LIMIT = 1.0E6D;
+	public static int EQUILIBRIUM_SOLVER_ITERATIONS = 48;
 	public static double DEFAULT_GLOBAL_GEAR_SCALE = 0.05D;
 	public static double GOVERNED_RPS = 60D;
 	public static double THROTTLE_GOVERNOR_PROPORTIONAL_GAIN = 0.04D;
@@ -266,6 +269,39 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 	}
 	private static double getWindageTorqueAtRPS(CompiledMachineStats machineStats,double rps) {
 		return machineStats.windageCoefficient*rps*Math.abs(rps);
+	}
+	private static double getNetTorqueAtRPS(CompiledMachineStats machineStats,double rps,double driveTorqueIntercept,double driveTorqueOmegaSlope) {
+		double omega = rps*TWO_PI;
+		double driveTorque = driveTorqueIntercept-driveTorqueOmegaSlope*omega;
+		return driveTorque-getGeneratorTorqueAtOmega(machineStats,omega)-getFrictionTorqueAtRPS(machineStats,rps)-getWindageTorqueAtRPS(machineStats,rps);
+	}
+	private static double solveEquilibriumRPS(CompiledMachineStats machineStats,double driveTorqueIntercept,double driveTorqueOmegaSlope) {
+		double zeroNetTorque = getNetTorqueAtRPS(machineStats,0,driveTorqueIntercept,driveTorqueOmegaSlope);
+		if (zeroNetTorque <= 0)
+			return 0;
+
+		double linearNoLoadRPS = 0;
+		if (driveTorqueOmegaSlope > EQUILIBRIUM_RPS_EPSILON)
+			linearNoLoadRPS = driveTorqueIntercept/(driveTorqueOmegaSlope*TWO_PI);
+		double low = 0;
+		double high = Math.max(linearNoLoadRPS,1);
+		double highNetTorque = getNetTorqueAtRPS(machineStats,high,driveTorqueIntercept,driveTorqueOmegaSlope);
+		while (highNetTorque > 0 && high < EQUILIBRIUM_RPS_LIMIT) {
+			low = high;
+			high *= 2;
+			highNetTorque = getNetTorqueAtRPS(machineStats,high,driveTorqueIntercept,driveTorqueOmegaSlope);
+		}
+		if (highNetTorque > 0)
+			return high;
+		for (int i = 0; i < EQUILIBRIUM_SOLVER_ITERATIONS; i++) {
+			double mid = (low+high)/2;
+			double midNetTorque = getNetTorqueAtRPS(machineStats,mid,driveTorqueIntercept,driveTorqueOmegaSlope);
+			if (midNetTorque > 0)
+				low = mid;
+			else
+				high = mid;
+		}
+		return (low+high)/2;
 	}
 	private static int requireTankCapacity(long bufferSize,FluidType fluid) {
 		if (bufferSize > Integer.MAX_VALUE)
@@ -610,7 +646,6 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 		turbulence = Math.min(turbulence+wrongBlades*10d/assembly.compiledStats.bladeArea,100);
 	}
 	private void updateThrottleGovernor(TickSummary tickSummary) {
-		tickSummary.targetRPS = GOVERNED_RPS;
 		double error = GOVERNED_RPS-rps;
 		double proportionalAdmission = error*THROTTLE_GOVERNOR_PROPORTIONAL_GAIN;
 		double unclampedAdmission = governorIntegral+proportionalAdmission;
@@ -623,6 +658,15 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 		admission += admissionDelta;
 	}
 	private void applyRotationalStep(CompiledMachineStats machineStats,List<StageRuntimeData> stageData,TickSummary tickSummary) {
+		double driveTorqueIntercept = 0;
+		double driveTorqueOmegaSlope = 0;
+		for (StageRuntimeData data : stageData) {
+			double actualGearRatio = data.compiledStats.getActualGearRatio(globalGearScale);
+			driveTorqueIntercept += data.stageTorqueScale*data.compiledStats.inletWhirl*actualGearRatio;
+			driveTorqueOmegaSlope += data.stageTorqueScale*data.compiledStats.stageRadius*actualGearRatio*actualGearRatio;
+		}
+		tickSummary.targetRPS = Math.min(solveEquilibriumRPS(machineStats,driveTorqueIntercept,driveTorqueOmegaSlope),GOVERNED_RPS);
+
 		double omega = rps*TWO_PI;
 		for (StageRuntimeData data : stageData)
 			tickSummary.driveTorque += data.getDriveTorque(omega,globalGearScale);
