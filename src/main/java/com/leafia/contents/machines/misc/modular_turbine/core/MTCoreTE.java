@@ -44,7 +44,7 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 	public static double FRICTION_RPS_EPSILON = 0.25D;
 	public static double VISCOUS_FRICTION_COEFFICIENT = 0.08D;
 	public static double WINDAGE_COEFFICIENT = 0.003D;
-	public static double POWER_SCALE = 0.00232478632*2;
+	public static double POWER_SCALE = 0.1; //0.00232478632*2;
 	public static double ADMISSION_NOMINAL_TAU_TICKS = 4D;
 	public static double ADMISSION_STABLE_RELATIVE_ERROR = 0.03D;
 	// DEATHSTEAM -> ULTRAHOTSTEAM -> SUPERHOTSTEAM -> HOTSTEAM -> STEAM -> SPENTSTEAM stage-work scalars
