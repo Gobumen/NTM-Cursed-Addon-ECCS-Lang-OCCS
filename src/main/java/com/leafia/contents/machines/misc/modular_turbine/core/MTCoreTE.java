@@ -697,10 +697,12 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 		}
 
 		// Apply turbulence damping and transient spike accumulation.
-		double turbulenceAdd = Math.pow(Math.max(tickSummary.targetRPS-rps,0)/110,7.2)/Math.max(8,60-turbulence*2);
+		double turbulenceAdd = Math.pow(Math.max(tickSummary.targetRPS-rps,0)/28,5)/5;//Math.pow(Math.max(tickSummary.targetRPS-rps,0)/110,7.2)/Math.max(8,60-turbulence*2);
 		turbulence *= 0.99;
 		turbulence = Math.min(turbulence+turbulenceAdd,100);
-		turbulence = 0; // removed temporarily because it's annoying to test
+
+		rps -= rps*Math.pow(turbulence/100,0.75)*0.05;
+		//turbulence = 0; // removed temporarily because it's annoying to test
 
 		// Commit the visible summary for overlays/debug output.
 		lastTargetRPS = tickSummary.targetRPS;
@@ -776,6 +778,8 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 			return positionsInOrder.get(positionsInOrder.size()-1);
 		}
 	}
+	public boolean turbulenceReasonInputSurge = false;
+	public boolean turbulenceReasonReverseBlades = false;
 	public double turbulence;
 	public void disassemble() {
 		for (ModularTurbineComponentTE component : components) {
