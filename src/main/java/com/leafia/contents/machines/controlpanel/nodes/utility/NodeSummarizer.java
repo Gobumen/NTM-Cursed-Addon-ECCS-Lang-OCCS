@@ -1,14 +1,16 @@
 package com.leafia.contents.machines.controlpanel.nodes.utility;
 
-import com.hbm.inventory.control_panel.DataValue;
+import com.hbm.inventory.control_panel.*;
 import com.hbm.inventory.control_panel.DataValue.DataType;
-import com.hbm.inventory.control_panel.DataValueFloat;
-import com.hbm.inventory.control_panel.NodeConnection;
-import com.hbm.inventory.control_panel.NodeDropdown;
 import com.hbm.inventory.control_panel.nodes.Node;
 import com.leafia.contents.machines.controlpanel.AddonNodesRegister;
 import com.leafia.contents.machines.controlpanel.nodes.NodeBulkQuery.CombineMethod;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagFloat;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.math.MathHelper;
+
+import java.util.Arrays;
 
 public class NodeSummarizer extends Node {
 	public CombineMethod combineMethod = CombineMethod.AVERAGE;
@@ -33,7 +35,7 @@ public class NodeSummarizer extends Node {
 		recalcSize();
 	}
 	@Override
-	public DataValue evaluate(int i) {
+	public DataValue evaluate(int unused) {
 		if (inputs.get(0) == null) return null;
 		if (inputs.get(1) == null) return null;
 		if (inputs.get(2) == null) return null;
@@ -42,19 +44,34 @@ public class NodeSummarizer extends Node {
 		if (length != internalList.length)
 			internalList = new float[length];
 		if (inputs.get(0).evaluate().getBoolean()) {
-			//internalList[needle] = fuck
+			if (needle >= internalList.length) {
+				for (int i = 0; i < internalList.length-1; i++)
+					internalList[i] = internalList[i+1];
+				internalList[internalList.length-1] = inputs.get(1).evaluate().getNumber();
+			} else {
+				internalList[needle] = inputs.get(1).evaluate().getNumber();
+				needle++;
+			}
+		}
+		if (inputs.get(2).evaluate().getBoolean()) {
+			Arrays.fill(internalList,0);
+			needle = 0;
 		}
 		float value = 0;
 		int total = 0;
 		for (float v : internalList) {
+			boolean stopLoop = false;
 			switch(combineMethod) {
 				case ADD -> value += v;
 				case MULTIPLY -> value *= v;
 				case AVERAGE -> {
 					value += v;
 					total++;
+					if (total >= needle-1)
+						stopLoop = true;
 				}
 			}
+			if (stopLoop) break;
 		}
 		if (total > 0 && combineMethod == CombineMethod.AVERAGE)
 			value /= total;
@@ -67,5 +84,30 @@ public class NodeSummarizer extends Node {
 	@Override
 	public String getDisplayName() {
 		return "Summarizer";
+	}
+	@Override
+	public NBTTagCompound writeToNBT(NBTTagCompound tag,NodeSystem sys) {
+		tag.setString("nodeType","leafia_summarizer");
+		tag.setString("combineMethod",combineMethod.name());
+		NBTTagList list = new NBTTagList();
+		for (float v : internalList)
+			list.appendTag(new NBTTagFloat(v));
+		tag.setTag("list",list);
+		tag.setInteger("needle",needle);
+		return super.writeToNBT(tag,sys);
+	}
+	@Override
+	public void readFromNBT(NBTTagCompound tag, NodeSystem sys) {
+		try {
+			combineMethod = CombineMethod.valueOf(tag.getString("combineMethod"));
+		} catch (IllegalArgumentException ignored) {}
+		if (tag.hasKey("list")) {
+			NBTTagList list = tag.getTagList("list",5);
+			internalList = new float[list.tagCount()];
+			for (int i = 0; i < internalList.length; i++)
+				internalList[i] = list.getFloatAt(i);
+		}
+		needle = tag.getInteger("needle");
+		super.readFromNBT(tag,sys);
 	}
 }

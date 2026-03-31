@@ -1192,7 +1192,7 @@ public class ElevatorEntity extends Entity implements IEntityMultiPart, IEntityC
 			updateDoorCollisions();
 		} catch (ConcurrentModificationException ignored) {}
 	}
-	public void onButtonServer(String id,EntityPlayer player,EnumHand hand) {
+	public void onButtonServer(String id,@Nullable EntityPlayer player,@Nullable EnumHand hand) {
 		if (id.equals("fire")) {
 			buttons.clear();
 			//dataManager.set(STYLE_BACK,"s6wall");

@@ -13,6 +13,8 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 
+import javax.annotation.Nullable;
+
 public class EvChipS6 extends EvChipBase {
 	public EvChipS6(ElevatorEntity entity) {
 		super(entity);
@@ -25,7 +27,7 @@ public class EvChipS6 extends EvChipBase {
 	public String getType() { return "s6"; }
 	int bellTimer = 0;
 	@Override
-	public void onButtonServer(String id,EntityPlayer player,EnumHand hand) {
+	public void onButtonServer(String id,@Nullable EntityPlayer player,@Nullable EnumHand hand) {
 		if (id.startsWith("floor") && !entity.enabledButtons.contains(id)) {
 			int floor = Integer.parseInt(id.substring(5));
 			//if (entity.doorOpen && floor == entity.getDataInteger(ElevatorEntity.FLOOR)) return;

@@ -11,7 +11,9 @@ import com.leafia.contents.machines.controlpanel.nodes.string.NodeAddString;
 import com.leafia.contents.machines.controlpanel.nodes.string.NodeFormat;
 import com.leafia.contents.machines.controlpanel.nodes.string.NodeSIPfx;
 import com.leafia.contents.machines.controlpanel.nodes.string.NodeSubString;
+import com.leafia.contents.machines.controlpanel.nodes.utility.NodeCache;
 import com.leafia.contents.machines.controlpanel.nodes.utility.NodeClock;
+import com.leafia.contents.machines.controlpanel.nodes.utility.NodeSummarizer;
 import net.minecraft.nbt.NBTTagCompound;
 
 public class AddonNodeLoader implements INodeLoader {
@@ -27,6 +29,8 @@ public class AddonNodeLoader implements INodeLoader {
 			case "leafia_clock" -> new NodeClock(0,0);
 			case "leafia_pulse" -> new NodePulse(0,0);
 			case "leafia_sr_latch" -> new NodeSRLatch(0,0);
+			case "leafia_summarizer" -> new NodeSummarizer(0,0);
+			case "leafia_cache" -> new NodeCache(0,0);
 			default -> null;
 		};
 		return node;

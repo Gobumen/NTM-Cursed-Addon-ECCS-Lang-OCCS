@@ -13,6 +13,8 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 
+import javax.annotation.Nullable;
+
 public class EvChipSkylift extends EvChipBase {
 	public EvChipSkylift(ElevatorEntity entity) {
 		super(entity);
@@ -23,7 +25,7 @@ public class EvChipSkylift extends EvChipBase {
 	@Override
 	public String getType() { return "skylift"; }
 	@Override
-	public void onButtonServer(String id,EntityPlayer player,EnumHand hand) {
+	public void onButtonServer(String id,@Nullable EntityPlayer player,@Nullable EnumHand hand) {
 		if (id.startsWith("floor") && !entity.enabledButtons.contains(id)) {
 			int floor = Integer.parseInt(id.substring(5));
 			if (entity.parkFloor == floor) { shouldOpen = true; return; }
