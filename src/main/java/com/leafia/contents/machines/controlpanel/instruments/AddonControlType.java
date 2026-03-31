@@ -3,5 +3,6 @@ package com.leafia.contents.machines.controlpanel.instruments;
 import com.hbm.inventory.control_panel.controls.ControlType;
 
 public class AddonControlType {
-	public static final ControlType RBMKDisplay = ControlType.registerOrGet("RBMK Display");
+	public static final ControlType RBMK_DISPLAY = ControlType.registerOrGet("RBMK Display");
+	public static final ControlType GRAPH = ControlType.registerOrGet("Graph");
 }

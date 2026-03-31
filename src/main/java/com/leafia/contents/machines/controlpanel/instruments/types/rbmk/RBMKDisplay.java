@@ -93,7 +93,7 @@ public class RBMKDisplay extends Control {
 	}
 	@Override
 	public ControlType getControlType() {
-		return AddonControlType.RBMKDisplay;
+		return AddonControlType.RBMK_DISPLAY;
 	}
 	@Override
 	public AxisAlignedBB getBoundingBox() {
