@@ -187,7 +187,6 @@ public abstract class ModularTurbineBlockBase extends AddonBlockDummyable implem
 					texts.add(I18nUtil.resolveKey("info.turbine.weight",String.format("%01.2f WU",c.weight)));
 					texts.add(I18nUtil.resolveKey("info.turbine.turbulence",String.format("%01.2f%%",c.turbulence)));
 					texts.add(I18nUtil.resolveKey("info.turbine.gear",String.format("%01.2f%%",c.globalGearScale)));
-					texts.add(TextFormatting.RED+"-> "+TextFormatting.RESET+SIPfx.auto(c.displayPowerGenerated)+"HE");
 				}
 				if (te instanceof MTComponentPortTE port) {
 					texts.add(I18nUtil.resolveKey("info.turbine.identifier",port.identifier != null ? port.identifier.getLocalizedName() : "N/A"));
@@ -198,6 +197,8 @@ public abstract class ModularTurbineBlockBase extends AddonBlockDummyable implem
 						texts.add(TextFormatting.RED+"<- "+TextFormatting.RESET+te.assembly.output.getTankType().getLocalizedName()+": "+te.assembly.output.getFill()+"/"+te.assembly.output.getMaxFill()+"mB");
 					}
 				}
+				if (te.core != null)
+					texts.add(TextFormatting.RED+"-> "+TextFormatting.RESET+SIPfx.auto(te.core.displayPowerGenerated)+"HE");
 			}
 			ILookOverlay.printGeneric(event, I18nUtil.resolveKey(getTranslationKey() + ".name"), 0xFF55FF, 0x3F153F, texts);
 			LeafiaGls.color(1,1,1);
