@@ -198,7 +198,9 @@ public final class MTCoreData {
 			double actualGearRatio = compiledStats.getActualGearRatio(globalGearScale);
 			double stageOmega = omega*actualGearRatio;
 			double bladeSpeed = stageOmega*compiledStats.stageRadius;
-			double localStageTorque = stageTorqueScale*(compiledStats.inletWhirl-bladeSpeed);
+			double speedRatio = compiledStats.inletWhirl > 0 ? bladeSpeed/compiledStats.inletWhirl : 0;
+			double incidenceEfficiency = MTCoreTE.getIncidenceEfficiency(speedRatio);
+			double localStageTorque = stageTorqueScale*(compiledStats.inletWhirl-bladeSpeed)*incidenceEfficiency;
 			return localStageTorque*actualGearRatio;
 		}
 	}
