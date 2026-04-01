@@ -186,7 +186,7 @@ public abstract class ModularTurbineBlockBase extends AddonBlockDummyable implem
 					texts.add(I18nUtil.resolveKey("info.turbine.rps",String.format("%01.2f",c.rps)));
 					texts.add(I18nUtil.resolveKey("info.turbine.weight",String.format("%01.2f WU",c.weight)));
 					texts.add(I18nUtil.resolveKey("info.turbine.turbulence",String.format("%01.2f%%",c.turbulence)));
-					texts.add(I18nUtil.resolveKey("info.turbine.gear",String.format("%01.2f%%",c.globalGearScale)));
+					texts.add(I18nUtil.resolveKey("info.turbine.gear",String.format("%01.2f",c.globalGearScale)));
 				}
 				if (te instanceof MTComponentPortTE port) {
 					texts.add(I18nUtil.resolveKey("info.turbine.identifier",port.identifier != null ? port.identifier.getLocalizedName() : "N/A"));
