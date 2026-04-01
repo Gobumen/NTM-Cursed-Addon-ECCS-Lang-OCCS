@@ -51,6 +51,6 @@ public class MTGenerator3x3 extends ModularTurbineBlockBase implements IMTGenera
 	}
 	@Override
 	public void contributeMachineUpgradeOffsets(MachineUpgradeSummary summary,MTCoreTE core,ModularTurbineComponentTE component) {
-		summary.addGeneratorLoadCoefficientOffset(0.05);
+		summary.addGeneratorLoadCoefficientOffset(5);
 	}
 }

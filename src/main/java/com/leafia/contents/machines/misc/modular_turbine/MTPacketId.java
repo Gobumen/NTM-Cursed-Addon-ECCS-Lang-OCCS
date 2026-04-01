@@ -6,6 +6,12 @@ public enum MTPacketId {
 
 	CORE_ASSEMBLY_SYNC(0),
 	CORE_STEAM_SYNC(1),
+	CORE_TURBULENCE_REASONS(2),
+	CORE_WEIGHT(3),
+	CORE_TURBULENCE(4),
+	CORE_GENERATION(5),
+	CORE_GLOBAL_GEAR(6),
+	CORE_RPS(7),
 	;
 	public final int id;
 	MTPacketId(int id) {

@@ -16,6 +16,7 @@ import com.leafia.dev.blocks.blockbase.AddonBlockDummyable;
 import com.leafia.dev.container_utility.LeafiaPacket;
 import com.leafia.dev.machine.MachineTooltip;
 import com.leafia.transformer.LeafiaGls;
+import com.llib.math.SIPfx;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
@@ -170,6 +171,24 @@ public abstract class ModularTurbineBlockBase extends AddonBlockDummyable implem
 			if (world.getTileEntity(core) instanceof ModularTurbineComponentTE te) {
 				if (te.core == null)
 					texts.add("&[" + (BobMathUtil.getBlink() ? 0xff0000 : 0xffff00) + "&]"+I18nUtil.resolveKey("info.turbine.assembly.unassembled"));
+				else {
+					MTCoreTE c = te.core;
+					if (c.turbulenceReasonInputSurge || c.turbulenceReasonInverseBlades || c.turbulenceReasonTooManyBlades) {
+						texts.add("&[" + (BobMathUtil.getBlink() ? 0xff0000 : 0xffff00) + "&]"+I18nUtil.resolveKey("info.turbine.assembly.turbulence.warning"));
+						texts.add(TextFormatting.GOLD+I18nUtil.resolveKey("info.turbine.turbulence.reasons"));
+						if (c.turbulenceReasonInputSurge)
+							texts.add(TextFormatting.GOLD+"- "+I18nUtil.resolveKey("info.turbine.turbulence.reason.surge"));
+						if (c.turbulenceReasonInverseBlades)
+							texts.add(TextFormatting.GOLD+"- "+I18nUtil.resolveKey("info.turbine.turbulence.reason.wrongblades"));
+						if (c.turbulenceReasonTooManyBlades)
+							texts.add(TextFormatting.GOLD+"- "+I18nUtil.resolveKey("info.turbine.turbulence.reason.toomanyblades"));
+					}
+					texts.add(I18nUtil.resolveKey("info.turbine.rps",String.format("%01.2f",c.rps)));
+					texts.add(I18nUtil.resolveKey("info.turbine.weight",String.format("%01.2f WU",c.weight)));
+					texts.add(I18nUtil.resolveKey("info.turbine.turbulence",String.format("%01.2f%%",c.turbulence)));
+					texts.add(I18nUtil.resolveKey("info.turbine.gear",String.format("%01.2f%%",c.globalGearScale)));
+					texts.add(TextFormatting.RED+"-> "+TextFormatting.RESET+SIPfx.auto(c.displayPowerGenerated)+"HE");
+				}
 				if (te instanceof MTComponentPortTE port) {
 					texts.add(I18nUtil.resolveKey("info.turbine.identifier",port.identifier != null ? port.identifier.getLocalizedName() : "N/A"));
 					if (!port.decompress)

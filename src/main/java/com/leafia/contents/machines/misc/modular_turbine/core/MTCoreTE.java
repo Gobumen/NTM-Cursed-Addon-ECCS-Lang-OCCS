@@ -44,9 +44,9 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 	public static double FRICTION_RPS_EPSILON = 0.25D;
 	public static double VISCOUS_FRICTION_COEFFICIENT = 0.05D;
 	public static double WINDAGE_COEFFICIENT = 0.01D;
-	public static double INCIDENCE_DESIGN_SPEED_RATIO = 0.5D;
-	public static double INCIDENCE_LOSS_FACTOR = 0.85D;
-	public static double INCIDENCE_EFFICIENCY_FLOOR = 0.05D;
+	public static double INCIDENCE_DESIGN_SPEED_RATIO = 1D;
+	public static double INCIDENCE_LOSS_FACTOR = 0.25D; // UNUSED
+	public static double INCIDENCE_EFFICIENCY_FLOOR = 0.05D; // UNUSED
 	public static double POWER_SCALE = 0.1; //0.00232478632*2;
 	public static double ADMISSION_NOMINAL_TAU_TICKS = 4D;
 	public static double ADMISSION_STABLE_RELATIVE_ERROR = 0.03D;
@@ -275,8 +275,42 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 	}
 	static double getIncidenceEfficiency(double speedRatio) {
 		double deviation = (speedRatio-INCIDENCE_DESIGN_SPEED_RATIO)/INCIDENCE_DESIGN_SPEED_RATIO;
-		return Math.max(1-INCIDENCE_LOSS_FACTOR*deviation*deviation,INCIDENCE_EFFICIENCY_FLOOR);
+		return 1; //Math.max(1-INCIDENCE_LOSS_FACTOR*deviation*deviation,INCIDENCE_EFFICIENCY_FLOOR);
 	}
+	private static double getNetTorqueAtRPS(CompiledMachineStats machineStats,double rps,double driveTorqueIntercept,double driveTorqueOmegaSlope) {
+		double omega = rps*TWO_PI;
+		double driveTorque = driveTorqueIntercept-driveTorqueOmegaSlope*omega;
+		return driveTorque-getGeneratorTorqueAtOmega(machineStats,omega)-getFrictionTorqueAtRPS(machineStats,rps)-getWindageTorqueAtRPS(machineStats,rps);
+	}
+	private static double solveEquilibriumRPS(CompiledMachineStats machineStats,double driveTorqueIntercept,double driveTorqueOmegaSlope) {
+		double zeroNetTorque = getNetTorqueAtRPS(machineStats,0,driveTorqueIntercept,driveTorqueOmegaSlope);
+		if (zeroNetTorque <= 0)
+			return 0;
+
+		double linearNoLoadRPS = 0;
+		if (driveTorqueOmegaSlope > EQUILIBRIUM_RPS_EPSILON)
+			linearNoLoadRPS = driveTorqueIntercept/(driveTorqueOmegaSlope*TWO_PI);
+		double low = 0;
+		double high = Math.max(linearNoLoadRPS,1);
+		double highNetTorque = getNetTorqueAtRPS(machineStats,high,driveTorqueIntercept,driveTorqueOmegaSlope);
+		while (highNetTorque > 0 && high < EQUILIBRIUM_RPS_LIMIT) {
+			low = high;
+			high *= 2;
+			highNetTorque = getNetTorqueAtRPS(machineStats,high,driveTorqueIntercept,driveTorqueOmegaSlope);
+		}
+		if (highNetTorque > 0)
+			return high;
+		for (int i = 0; i < EQUILIBRIUM_SOLVER_ITERATIONS; i++) {
+			double mid = (low+high)/2;
+			double midNetTorque = getNetTorqueAtRPS(machineStats,mid,driveTorqueIntercept,driveTorqueOmegaSlope);
+			if (midNetTorque > 0)
+				low = mid;
+			else
+				high = mid;
+		}
+		return (low+high)/2;
+	}
+	/*
 	private static double getNetTorqueAtRPS(CompiledMachineStats machineStats,double rps,List<StageRuntimeData> stageData,double globalGearScale) {
 		double omega = rps*TWO_PI;
 		double driveTorque = 0;
@@ -307,7 +341,7 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 				high = mid;
 		}
 		return (low+high)/2;
-	}
+	}*/
 	private static int requireTankCapacity(long bufferSize,FluidType fluid) {
 		if (bufferSize > Integer.MAX_VALUE)
 			throw new IllegalStateException("Buffer size exceeds FluidTankNTM capacity for "+fluid.getName()+": "+bufferSize);
@@ -420,25 +454,6 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 		}
 		compound.setTag("assemblies",assemList);
 		return compound;
-	}
-	@Override
-	public void onReceivePacketLocal(byte key,Object value) {
-		if (key == MTPacketId.CORE_ASSEMBLY_SYNC.id) {
-			disassemble();
-			if (value != null)
-				assembleFromNBT((NBTTagCompound)value);
-		} if (key == MTPacketId.CORE_STEAM_SYNC.id) {
-			NBTTagCompound compound = (NBTTagCompound)value;
-			NBTTagList list = compound.getTagList("a",10);
-			for (int i = 0; i < assemblies.size(); i++) {
-				if (i < list.tagCount()) {
-					TurbineAssembly assembly = assemblies.get(i);
-					NBTTagCompound tag = list.getCompoundTagAt(i);
-					assembly.input.readFromNBT(tag,"i");
-					assembly.output.readFromNBT(tag,"o");
-				}
-			}
-		}
 	}
 	@Override
 	public void onReceivePacketServer(byte key,Object value,EntityPlayer plr) { }
@@ -583,7 +598,17 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 		int inputConsumed = transferStageFluids(assembly,compiledStats,admission);
 		int wrongBlades = countWrongBlades(assembly);
 		assembly.lastWrongBlades = wrongBlades;
-		applyWrongBladeTurbulence(assembly,wrongBlades);
+		// applyWrongBladeTurbulence
+		double turbAddWrongBlades = wrongBlades*0.5d/assembly.compiledStats.bladeArea*Math.min(inputConsumed,1);
+		if (turbAddWrongBlades > 0.3) turbulenceReasonInverseBlades = true;
+		turbulence = Math.min(turbulence+turbAddWrongBlades,100);
+
+		// apply blade count turbulence
+		double turbAddBladeCount = Math.pow(assembly.bladeDirections.size()/5d,5)*0.015*Math.min(inputConsumed,1);
+		maxTurbAddBladeCount = Math.max(maxTurbAddBladeCount,turbAddBladeCount);
+
+		//LeafiaDebug.debugLog(world,"WrongBlades: "+turbAddWrongBlades);
+		//LeafiaDebug.debugLog(world,"BladeCount: "+turbAddBladeCount);
 
 		double bladeEfficiency = Math.max(compiledStats.bladeCount-wrongBlades,0)/(double)compiledStats.bladeCount;
 		assembly.lastBladeEfficiency = bladeEfficiency;
@@ -647,9 +672,6 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 		}
 		return wrongBlades;
 	}
-	private void applyWrongBladeTurbulence(TurbineAssembly assembly,int wrongBlades) {
-		turbulence = Math.min(turbulence+wrongBlades*10d/assembly.compiledStats.bladeArea,100);
-	}
 	private void updateThrottleGovernor(TickSummary tickSummary) {
 		double error = GOVERNED_RPS-rps;
 		double proportionalAdmission = error*THROTTLE_GOVERNOR_PROPORTIONAL_GAIN;
@@ -663,7 +685,17 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 		admission += admissionDelta;
 	}
 	private void applyRotationalStep(CompiledMachineStats machineStats,List<StageRuntimeData> stageData,TickSummary tickSummary) {
-		tickSummary.targetRPS = Math.min(solveEquilibriumRPS(machineStats,stageData,globalGearScale),GOVERNED_RPS);
+		//////////////////////////////////
+		double driveTorqueIntercept = 0;
+		double driveTorqueOmegaSlope = 0;
+		for (StageRuntimeData data : stageData) {
+			double actualGearRatio = data.compiledStats.getActualGearRatio(globalGearScale);
+			driveTorqueIntercept += data.stageTorqueScale*data.compiledStats.inletWhirl*actualGearRatio;
+			driveTorqueOmegaSlope += data.stageTorqueScale*data.compiledStats.stageRadius*actualGearRatio*actualGearRatio;
+		}
+		tickSummary.targetRPS = Math.min(solveEquilibriumRPS(machineStats,driveTorqueIntercept,driveTorqueOmegaSlope),GOVERNED_RPS);
+		//////////////////////////////////
+		//tickSummary.targetRPS = Math.min(solveEquilibriumRPS(machineStats,stageData,globalGearScale),GOVERNED_RPS);
 
 		double omega = rps*TWO_PI;
 		for (StageRuntimeData data : stageData)
@@ -680,11 +712,19 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 		double outputOmega = rps*TWO_PI;
 		tickSummary.powerGenerated += (long)Math.max(tickSummary.generatorTorque*outputOmega*machineStats.powerScale,0);
 	}
+	public long powerOutput = 0;
+	public long displayPowerGenerated = 0;
 	@Override
 	public void update() {
 		if (world.isRemote)
 			return;
+		powerOutput = 0;
+		displayPowerGenerated = 0;
 		TickSummary tickSummary = new TickSummary();
+		maxTurbAddBladeCount = 0;
+		turbulenceReasonInputSurge = false;
+		turbulenceReasonInverseBlades = false;
+		turbulenceReasonTooManyBlades = false;
 
 		// Simulate the current shaft state.
 		if (weight > 0) {
@@ -696,10 +736,15 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 
 		// Apply turbulence damping and transient spike accumulation.
 		double turbulenceAdd = Math.pow(Math.max(tickSummary.targetRPS-rps,0)/28,5)/5;//Math.pow(Math.max(tickSummary.targetRPS-rps,0)/110,7.2)/Math.max(8,60-turbulence*2);
-		turbulence *= 0.99;
-		turbulence = Math.min(turbulence+turbulenceAdd,100);
+		turbulence = Math.max(turbulence-turbulence*0.008-0.008,0);
+		turbulence = Math.min(turbulence+maxTurbAddBladeCount,100);
+		turbulence = Math.min(turbulence+turbulenceAdd*(Math.pow(Math.max(tickSummary.generatorTorque,0)/10000,0.5)*0.95+0.05),100);
+		if (turbulence > 30) {
+			if (turbulenceAdd > 0.3) turbulenceReasonInputSurge = true;
+			if (maxTurbAddBladeCount > 0.3) turbulenceReasonTooManyBlades = true;
+		}
 
-		rps -= rps*Math.pow(turbulence/100,0.75)*0.05;
+		rps -= rps*Math.pow(turbulence/100,1.35)*0.05;
 		//turbulence = 0; // removed temporarily because it's annoying to test
 
 		// Commit the visible summary for overlays/debug output.
@@ -710,6 +755,9 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 		lastWindageTorque = tickSummary.windageTorque;
 		lastGlobalGearScale = globalGearScale;
 		lastAdmission = admission;
+
+		powerOutput = tickSummary.powerGenerated;
+		displayPowerGenerated = powerOutput;
 
 		// Emit debug traces.
 		Tracker._startProfile(this,"update");
@@ -744,7 +792,50 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 		syncCompound.setTag("a",syncList);
 		LeafiaPacket._start(this)
 				.__write(MTPacketId.CORE_STEAM_SYNC.id,syncCompound)
+				.__write(MTPacketId.CORE_TURBULENCE_REASONS.id,new boolean[]{
+						turbulenceReasonInputSurge,
+						turbulenceReasonInverseBlades,
+						turbulenceReasonTooManyBlades
+				})
+				.__write(MTPacketId.CORE_WEIGHT.id,weight)
+				.__write(MTPacketId.CORE_TURBULENCE.id,turbulence)
+				.__write(MTPacketId.CORE_GENERATION.id,displayPowerGenerated)
+				.__write(MTPacketId.CORE_GLOBAL_GEAR.id,globalGearScale)
+				.__write(MTPacketId.CORE_RPS.id,rps) // forgor
 				.__sendToAffectedClients();
+	}
+	@Override
+	public void onReceivePacketLocal(byte key,Object value) {
+		if (key == MTPacketId.CORE_ASSEMBLY_SYNC.id) {
+			disassemble();
+			if (value != null)
+				assembleFromNBT((NBTTagCompound)value);
+		} else if (key == MTPacketId.CORE_STEAM_SYNC.id) {
+			NBTTagCompound compound = (NBTTagCompound)value;
+			NBTTagList list = compound.getTagList("a",10);
+			for (int i = 0; i < assemblies.size(); i++) {
+				if (i < list.tagCount()) {
+					TurbineAssembly assembly = assemblies.get(i);
+					NBTTagCompound tag = list.getCompoundTagAt(i);
+					assembly.input.readFromNBT(tag,"i");
+					assembly.output.readFromNBT(tag,"o");
+				}
+			}
+		} else if (key == MTPacketId.CORE_TURBULENCE_REASONS.id) {
+			boolean[] values = (boolean[])value;
+			turbulenceReasonInputSurge = values[0];
+			turbulenceReasonInverseBlades = values[1];
+			turbulenceReasonTooManyBlades = values[2];
+		} else if (key == MTPacketId.CORE_WEIGHT.id)
+			weight = (double)value;
+		else if (key == MTPacketId.CORE_TURBULENCE.id)
+			turbulence = (double)value;
+		else if (key == MTPacketId.CORE_GENERATION.id)
+			displayPowerGenerated = (long)value;
+		else if (key == MTPacketId.CORE_GLOBAL_GEAR.id)
+			globalGearScale = (double)value;
+		else if (key == MTPacketId.CORE_RPS.id)
+			rps = (double)value;
 	}
 	public static class TurbineAssembly {
 		/// NOTE: The values stored here are actually 1 lower than actual offset
@@ -777,7 +868,9 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 		}
 	}
 	public boolean turbulenceReasonInputSurge = false;
-	public boolean turbulenceReasonReverseBlades = false;
+	public boolean turbulenceReasonInverseBlades = false;
+	public boolean turbulenceReasonTooManyBlades = false;
+	public double maxTurbAddBladeCount = 0;
 	public double turbulence;
 	public void disassemble() {
 		for (ModularTurbineComponentTE component : components) {
