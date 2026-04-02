@@ -386,7 +386,7 @@ public class Graph extends Control {
 					int ypos = -7/2;
 					if (i == 0) ypos = 0;
 					if (i == horizontalLineDivision) ypos = -7;
-					font.drawString(String.format("%01."+decimalLength+"f",value),1,ypos,skin.gridColor);
+					font.drawString(String.format("%01."+decimalLength+"f",value),1,ypos,skin.textColor);
 					LeafiaGls.color(gridColor.getRed(),gridColor.getGreen(),gridColor.getBlue());
 					LeafiaGls.popMatrix();
 					texmg.bindTexture(AddonBase.solid);
@@ -489,6 +489,7 @@ public class Graph extends Control {
 		super.readFromNBT(tag);
 		if (tag.hasKey("graphData")) {
 			NBTTagList list = tag.getTagList("graphData",5);
+			if (list.tagCount() != segments) return;
 			segments = list.tagCount();
 			rebuildArray();
 			for (int i = 0; i < list.tagCount(); i++)
