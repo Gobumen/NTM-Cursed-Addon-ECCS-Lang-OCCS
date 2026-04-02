@@ -487,17 +487,20 @@ public class Graph extends Control {
 	@Override
 	public void readFromNBT(NBTTagCompound tag) {
 		super.readFromNBT(tag);
-		NBTTagList list = tag.getTagList("values",5);
-		segments = list.tagCount();
-		rebuildArray();
-		for (int i = 0; i < list.tagCount(); i++)
-			values[i] = list.getFloatAt(i);
+		if (tag.hasKey("graphData")) {
+			NBTTagList list = tag.getTagList("graphData",5);
+			segments = list.tagCount();
+			rebuildArray();
+			for (int i = 0; i < list.tagCount(); i++)
+				values[i] = list.getFloatAt(i);
+		}
 	}
 	@Override
 	public NBTTagCompound writeToNBT(NBTTagCompound tag) {
 		NBTTagList list = new NBTTagList();
 		for (double value : values)
 			list.appendTag(new NBTTagFloat((float)value));
+		tag.setTag("graphData",list);
 		return super.writeToNBT(tag);
 	}
 }
