@@ -230,20 +230,32 @@ public class LeafiaPacket extends RecordablePacket {
             byte entry = buf.readByte();
             byte type = getType(entry);
 
-            Object[] array = null;
+            Object array = null;
+            int arrayLength = -1;
             if (type == 7) {
                 byte nextMode = getKey(entry);
                 if (nextMode == 31) { // 31 code for Array (Theres no way we would need 31 fucking readerset modes anyway)
                     int entryArray = buf.readInt();
                     entry = (byte) (entryArray & 0b111_11111);
                     type = getType(entry);
-                    array = new Object[entryArray >>> 8];
+                    arrayLength = entryArray >>> 8;
+                    int c = type + readMode * 10;
+                    array = switch (c) {
+                        case 0 -> new boolean[arrayLength];
+                        case 1 -> new byte[arrayLength];
+                        case 2 -> new short[arrayLength];
+                        case 3 -> new int[arrayLength];
+                        case 4 -> new long[arrayLength];
+                        case 5 -> new float[arrayLength];
+                        case 6 -> new double[arrayLength];
+                        default -> new Object[arrayLength];
+                    };
                 } else {
                     readMode = nextMode;
                     continue;
                 }
             }
-            for (int arrayIndex = 0; (array == null) ? (arrayIndex == 0) : (arrayIndex < array.length); arrayIndex++) {
+            for (int arrayIndex = 0; (array == null) ? (arrayIndex == 0) : (arrayIndex < arrayLength); arrayIndex++) {
                 Object value;
                 int c = type + readMode * 10;
                 switch (c) {
@@ -292,7 +304,7 @@ public class LeafiaPacket extends RecordablePacket {
                 if (array == null)
                     signal.put(entry, new Pair<>(readMode, value));
                 else
-                    array[arrayIndex] = value;
+                    Array.set(array, arrayIndex, value);
             }
             if (array != null)
                 signal.put(entry, new Pair<>(readMode, array));
