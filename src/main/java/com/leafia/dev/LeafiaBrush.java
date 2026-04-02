@@ -29,6 +29,9 @@ public class LeafiaBrush {
 			this.value = value;
 		}
 	}
+	public void addVertex(double x,double y,double z) {
+		buf.pos(x,y,z).endVertex();
+	}
 	public void addVertexWithUV(double x,double y,double z,double u,double v) {
 		buf.pos(x,y,z).tex(u,v).endVertex();
 	}

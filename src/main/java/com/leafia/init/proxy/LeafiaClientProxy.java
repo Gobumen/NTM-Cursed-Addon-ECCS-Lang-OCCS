@@ -87,6 +87,7 @@ import com.leafia.contents.nonmachines.storage.fluid.fftank.FFTankRender;
 import com.leafia.contents.nonmachines.storage.fluid.fftank.FFTankTE;
 import com.leafia.contents.nonmachines.storage.items.CrateLabelRender;
 import com.leafia.eventbuses.LeafiaClientListener;
+import com.leafia.eventbuses.LeafiaClientListener.HandlerClient;
 import com.leafia.init.ItemRendererInit;
 import com.llib.exceptions.LeafiaDevFlaw;
 import net.minecraft.block.BlockDoor;
@@ -227,7 +228,8 @@ public class LeafiaClientProxy extends LeafiaServerProxy {
 
 	@Override
 	public void onLoadComplete(FMLLoadCompleteEvent event){
-		if (!Loader.isModLoaded("backups")) LeafiaClientListener.HandlerClient.backupsWarning = true;
+		if (!Loader.isModLoaded("backups")) HandlerClient.backupsWarning = true;
+		if (Loader.isModLoaded("essential")) HandlerClient.assentialWarning = true;
 	}
 
 	@Override

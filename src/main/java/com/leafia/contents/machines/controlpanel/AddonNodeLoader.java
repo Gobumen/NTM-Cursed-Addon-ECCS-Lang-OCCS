@@ -31,6 +31,8 @@ public class AddonNodeLoader implements INodeLoader {
 			case "leafia_sr_latch" -> new NodeSRLatch(0,0);
 			case "leafia_summarizer" -> new NodeSummarizer(0,0);
 			case "leafia_cache" -> new NodeCache(0,0);
+			case "leafia_graph" -> new NodeGraphAdd(0,0,nodeSystem.parent);
+			case "leafia_graph_bounds" -> new NodeGraphBounds(0,0,nodeSystem.parent);
 			default -> null;
 		};
 		return node;

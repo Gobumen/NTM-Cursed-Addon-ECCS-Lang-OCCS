@@ -89,6 +89,7 @@
     "hbm.MixinModItems",
     "hbm.MixinOreDictManager",
     "hbm.MixinSerializableRecipe",
+    "hbm.MixinSubElementItemConfig",
     "hbm.MixinTileEntityBarrel",
     "hbm.MixinTileEntityBatterySocket",
     "hbm.MixinTileEntityCableGauge",

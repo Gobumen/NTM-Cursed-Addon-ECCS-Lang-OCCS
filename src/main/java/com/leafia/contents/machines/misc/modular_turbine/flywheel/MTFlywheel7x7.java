@@ -31,7 +31,7 @@ public class MTFlywheel7x7 extends ModularTurbineBlockBase {
 	}
 	@Override
 	public double weight() {
-		return 240;
+		return 480;
 	}
 	@Override
 	public int[] getDimensions() {

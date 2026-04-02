@@ -596,15 +596,15 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 	private StageRuntimeData evaluateStage(TurbineAssembly assembly,double admission) {
 		CompiledStageStats compiledStats = assembly.compiledStats;
 		int inputConsumed = transferStageFluids(assembly,compiledStats,admission);
-		int wrongBlades = countWrongBlades(assembly);
+		int wrongBlades = countWrongAndStackedBlades(assembly);
 		assembly.lastWrongBlades = wrongBlades;
 		// applyWrongBladeTurbulence
-		double turbAddWrongBlades = wrongBlades*0.5d/assembly.compiledStats.bladeArea*Math.min(inputConsumed,1);
+		double turbAddWrongBlades = wrongBlades*2d/assembly.compiledStats.bladeArea*Math.min(inputConsumed,1);
 		if (turbAddWrongBlades > 0.3) turbulenceReasonInverseBlades = true;
 		turbulence = Math.min(turbulence+turbAddWrongBlades,100);
 
 		// apply blade count turbulence
-		double turbAddBladeCount = Math.pow(assembly.bladeDirections.size()/5d,5)*0.015*Math.min(inputConsumed,1);
+		double turbAddBladeCount = Math.pow(assembly.maxStackedBlades/5d,5)*0.015*Math.min(inputConsumed,1);
 		maxTurbAddBladeCount = Math.max(maxTurbAddBladeCount,turbAddBladeCount);
 
 		//LeafiaDebug.debugLog(world,"WrongBlades: "+turbAddWrongBlades);
@@ -640,8 +640,9 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 		assembly.lastDivision = compiledStats.division;
 		return inputConsumed;
 	}
-	private int countWrongBlades(TurbineAssembly assembly) {
+	private int countWrongAndStackedBlades(TurbineAssembly assembly) {
 		int wrongBlades = 0;
+		assembly.maxStackedBlades = 0;
 		if (!assembly.receivingPositions.isEmpty()) {
 			int startIndex = assembly.getStartPosition();
 			int endIndex = assembly.getEndPosition();
@@ -649,12 +650,16 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 			int flowCounter = flowCounterStart;
 			boolean shouldBeOpposite = true;
 			EnumFacing dir = getAssemblyFacing();
+			int stackCounter = 0;
 			for (int i = startIndex; i <= endIndex; i++) {
 				if (assembly.receivingPositions.contains(i)) {
 					flowCounter--;
 					shouldBeOpposite = false;
+					assembly.maxStackedBlades = Math.max(assembly.maxStackedBlades,stackCounter);
+					stackCounter = 0;
 				}
 				if (assembly.bladeDirections.containsKey(i)) {
+					stackCounter++;
 					boolean isOpposite = assembly.bladeDirections.get(i);
 					if (shouldBeOpposite != isOpposite || (flowCounter > 0 && flowCounter < flowCounterStart)) {
 						wrongBlades++;
@@ -668,6 +673,7 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 					}
 				}
 			}
+			assembly.maxStackedBlades = Math.max(assembly.maxStackedBlades,stackCounter);
 			assembly.receivingPositions.clear();
 		}
 		return wrongBlades;
@@ -739,10 +745,8 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 		turbulence = Math.max(turbulence-turbulence*0.008-0.008,0);
 		turbulence = Math.min(turbulence+maxTurbAddBladeCount,100);
 		turbulence = Math.min(turbulence+turbulenceAdd*(Math.pow(Math.max(tickSummary.generatorTorque,0)/10000,0.5)*0.95+0.05),100);
-		if (turbulence > 30) {
-			if (turbulenceAdd > 0.3) turbulenceReasonInputSurge = true;
-			if (maxTurbAddBladeCount > 0.3) turbulenceReasonTooManyBlades = true;
-		}
+		if (turbulenceAdd > 0.3) turbulenceReasonInputSurge = true;
+		if (maxTurbAddBladeCount > 0.3) turbulenceReasonTooManyBlades = true;
 
 		rps -= rps*Math.pow(turbulence/100,1.35)*0.05;
 		//turbulence = 0; // removed temporarily because it's annoying to test
@@ -860,6 +864,7 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 		public double lastEffectiveMassFlow = 0;
 		public double lastAdmissionBufferMass = 0;
 		public double lastNominalMassFlow = 0;
+		public int maxStackedBlades = 0;
 		int getStartPosition() {
 			return positionsInOrder.get(0);
 		}

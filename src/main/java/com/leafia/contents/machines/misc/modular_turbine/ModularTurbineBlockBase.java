@@ -173,15 +173,17 @@ public abstract class ModularTurbineBlockBase extends AddonBlockDummyable implem
 					texts.add("&[" + (BobMathUtil.getBlink() ? 0xff0000 : 0xffff00) + "&]"+I18nUtil.resolveKey("info.turbine.assembly.unassembled"));
 				else {
 					MTCoreTE c = te.core;
-					if (c.turbulenceReasonInputSurge || c.turbulenceReasonInverseBlades || c.turbulenceReasonTooManyBlades) {
-						texts.add("&[" + (BobMathUtil.getBlink() ? 0xff0000 : 0xffff00) + "&]"+I18nUtil.resolveKey("info.turbine.assembly.turbulence.warning"));
-						texts.add(TextFormatting.GOLD+I18nUtil.resolveKey("info.turbine.turbulence.reasons"));
-						if (c.turbulenceReasonInputSurge)
-							texts.add(TextFormatting.GOLD+"- "+I18nUtil.resolveKey("info.turbine.turbulence.reason.surge"));
-						if (c.turbulenceReasonInverseBlades)
-							texts.add(TextFormatting.GOLD+"- "+I18nUtil.resolveKey("info.turbine.turbulence.reason.wrongblades"));
-						if (c.turbulenceReasonTooManyBlades)
-							texts.add(TextFormatting.GOLD+"- "+I18nUtil.resolveKey("info.turbine.turbulence.reason.toomanyblades"));
+					if (c.turbulence > 20) {
+						texts.add("&[" + (BobMathUtil.getBlink() ? 0xff0000 : 0xffff00) + "&]"+I18nUtil.resolveKey("info.turbine.turbulence.warning"));
+						if (c.turbulenceReasonInputSurge || c.turbulenceReasonInverseBlades || c.turbulenceReasonTooManyBlades) {
+							texts.add(TextFormatting.GOLD+I18nUtil.resolveKey("info.turbine.turbulence.reasons"));
+							if (c.turbulenceReasonInputSurge)
+								texts.add(TextFormatting.GOLD+"- "+I18nUtil.resolveKey("info.turbine.turbulence.reason.surge"));
+							if (c.turbulenceReasonInverseBlades)
+								texts.add(TextFormatting.GOLD+"- "+I18nUtil.resolveKey("info.turbine.turbulence.reason.wrongblades"));
+							if (c.turbulenceReasonTooManyBlades)
+								texts.add(TextFormatting.GOLD+"- "+I18nUtil.resolveKey("info.turbine.turbulence.reason.toomanyblades"));
+						}
 					}
 					texts.add(I18nUtil.resolveKey("info.turbine.rps",String.format("%01.2f",c.rps)));
 					texts.add(I18nUtil.resolveKey("info.turbine.weight",String.format("%01.2f WU",c.weight)));

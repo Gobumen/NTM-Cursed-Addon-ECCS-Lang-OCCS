@@ -89,9 +89,9 @@ public class TextIndicatorCSE extends SubElementBaseConfig {
 
 	@Override
 	public void mouseReleased(int mouseX, int mouseY, int state) {
-		colorR = (float) slideColorR.sliderValue*255;
-		colorG = (float) slideColorG.sliderValue*255;
-		colorB = (float) slideColorB.sliderValue*255;
+		colorR = slideColorR.getValueInt();
+		colorG = slideColorG.getValueInt();
+		colorB = slideColorB.getValueInt();
 	}
 
 	@Override

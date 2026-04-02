@@ -1,8 +1,8 @@
 package com.leafia.eventbuses;
 
+import com.custom_hbm.GuiAssentialWarning;
 import com.custom_hbm.GuiBackupsWarning;
 import com.google.gson.JsonSyntaxException;
-import com.hbm.blocks.ILookOverlay;
 import com.hbm.capability.HbmLivingProps;
 import com.hbm.interfaces.IHasCustomModel;
 import com.hbm.items.IDynamicModels;
@@ -33,7 +33,6 @@ import com.leafia.passive.rendering.TopRender;
 import com.leafia.shit.leafiashader.BigBruh;
 import com.leafia.transformer.LeafiaGls;
 import com.leafia.unsorted.IEntityCustomCollision;
-import com.llib.exceptions.LeafiaDevFlaw;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
@@ -43,8 +42,6 @@ import net.minecraft.client.renderer.ActiveRenderInfo;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.shader.Framebuffer;
 import net.minecraft.client.shader.ShaderLinkHelper;
 import net.minecraft.entity.Entity;
@@ -67,7 +64,6 @@ import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.event.world.GetCollisionBoxesEvent;
-import net.minecraftforge.fml.common.asm.transformers.deobf.FMLDeobfuscatingRemapper;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.ClientTickEvent;
@@ -78,7 +74,6 @@ import org.apache.logging.log4j.Logger;
 import org.lwjgl.opengl.GL11;
 
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.util.*;
 import java.util.Map.Entry;
 
@@ -408,25 +403,38 @@ public class LeafiaClientListener {
 		}
 		public static boolean backupsWarning = false;
 		public static boolean seenWarning = false;
+		public static boolean assentialWarning = false;
+		public static boolean seenAssentialWarning = false;
 		@SubscribeEvent
 		public void onGuiInit(GuiScreenEvent.InitGuiEvent.Post event) {
-			if (seenWarning) return;
-			if (!backupsWarning) return;
 			if (Minecraft.getMinecraft().currentScreen instanceof GuiCTMWarning) return;
 			if (event.getGui() instanceof GuiCTMWarning) {
 				seenWarning = false;
 				return;
 			}
 			if (event.getGui() instanceof net.minecraft.client.gui.GuiMainMenu) {
-				if (backupsWarning) {
+				if (assentialWarning && !seenAssentialWarning) {
+					GuiAssentialWarning.text.add("Essential is NOT compatible with LCA,");
+					GuiAssentialWarning.text.add("or literally any addons that specifies Mixin version > 0.8.4");
+					GuiAssentialWarning.text.add("due to them using the dumbest solution one can ever think of.");
+					GuiAssentialWarning.text.add("");
+					GuiAssentialWarning.text.add("Major game corruptions are expected.");
+					GuiAssentialWarning.text.add("Do not report any bugs occurred with Essential installed.");
+					GuiAssentialWarning.text.add("");
+					GuiAssentialWarning.text.add("I suggest you just close the game and get rid of that junker.");
+					Minecraft.getMinecraft().displayGuiScreen(new GuiAssentialWarning());
+					seenAssentialWarning = true;
+					return;
+				}
+				if (backupsWarning && !seenWarning) {
 					GuiBackupsWarning.text.add("Backups is recommended as the addon is highly unstable.");
 					GuiBackupsWarning.downloadButtonIndex = GuiBackupsWarning.text.size();
 					GuiBackupsWarning.text.add("Click to download Backups");
+					GuiBackupsWarning.text.add("");
+					GuiBackupsWarning.text.add("Press any key to continue");
+					Minecraft.getMinecraft().displayGuiScreen(new GuiBackupsWarning());
+					seenWarning = true;
 				}
-				GuiBackupsWarning.text.add("");
-				GuiBackupsWarning.text.add("Press any key to continue");
-				Minecraft.getMinecraft().displayGuiScreen(new GuiBackupsWarning());
-				seenWarning = true;
 			}
 		}
 		public static float getViewADS(EntityPlayer player) {
