@@ -9,6 +9,7 @@ import com.hbm.main.MainRegistry;
 import com.hbm.tileentity.IPersistentNBT;
 import com.hbm.util.BobMathUtil;
 import com.hbm.util.I18nUtil;
+import com.leafia.contents.machines.misc.modular_turbine.core.MTCoreBlock;
 import com.leafia.contents.machines.misc.modular_turbine.core.MTCoreTE;
 import com.leafia.contents.machines.misc.modular_turbine.ports.IMTPortBlock;
 import com.leafia.contents.machines.misc.modular_turbine.ports.MTComponentPortTE;
@@ -75,7 +76,11 @@ public abstract class ModularTurbineBlockBase extends AddonBlockDummyable implem
 	}
 	@Override
 	public void addInformation(ItemStack stack,@Nullable World worldIn,List<String> tooltip,ITooltipFlag flagIn) {
-		MachineTooltip.addWIP(tooltip);
+		MachineTooltip.addBeta(tooltip);
+		MachineTooltip.addMultiblock(tooltip);
+		MachineTooltip.addModular(tooltip);
+		if (this instanceof MTCoreBlock)
+			MachineTooltip.addCore(tooltip);
 		if (variant().equals("glass"))
 			tooltip.addAll(Arrays.asList(I18nUtil.resolveKey("info.turbine._tooltip.glass").split("\\$")));
 		tooltip.add(TextFormatting.AQUA+I18nUtil.resolveKey("info.turbine.weight","+"+weight()+" WU"));

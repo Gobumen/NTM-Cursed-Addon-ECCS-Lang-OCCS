@@ -2,20 +2,15 @@ package com.leafia.contents.machines.misc.modular_turbine.flywheel;
 
 import com.hbm.handler.MultiblockHandlerXR;
 import com.hbm.lib.ForgeDirection;
-import com.hbm.tileentity.TileEntityProxyCombo;
-import com.leafia.contents.machines.misc.modular_turbine.ModularTurbineBlockBase;
-import com.leafia.contents.machines.misc.modular_turbine.ModularTurbineComponentTE;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
-import org.jetbrains.annotations.Nullable;
 
-public class MTFlywheel7x7 extends MTFlywheelBase {
-	public MTFlywheel7x7(String s) {
+public class MTFlywheel2x2 extends MTFlywheelBase {
+	public MTFlywheel2x2(String s) {
 		super(s);
 	}
 	@Override
 	public int shaftHeight() {
-		return 3;
+		return 1;
 	}
 	@Override
 	public TurbineComponentType componentType() {
@@ -23,19 +18,19 @@ public class MTFlywheel7x7 extends MTFlywheelBase {
 	}
 	@Override
 	public int[] canConnectTo() {
-		return new int[]{7};
+		return new int[]{3};
 	}
 	@Override
 	public int size() {
-		return 7;
+		return 2;
 	}
 	@Override
 	public double weight() {
-		return 240;
+		return 60;
 	}
 	@Override
 	public int[] getDimensions() {
-		return new int[]{4,0,0,0,3,3};
+		return new int[]{1,0,0,0,1,1};
 	}
 	@Override
 	public int getOffset() {
@@ -46,16 +41,13 @@ public class MTFlywheel7x7 extends MTFlywheelBase {
 		super.fillSpace(world,x,y,z,dir,o);
 		x += dir.offsetX * o;
 		z += dir.offsetZ * o;
-		MultiblockHandlerXR.fillSpace(world,x,y,z,new int[]{6,-6,0,0,1,1},this,dir);
-		MultiblockHandlerXR.fillSpace(world,x,y,z,new int[]{5,-5,0,0,2,2},this,dir);
+		MultiblockHandlerXR.fillSpace(world,x,y,z,new int[]{2,-2,0,0,0,0},this,dir);
 	}
 	@Override
 	public boolean checkRequirement(World world,int x,int y,int z,ForgeDirection dir,int o) {
 		x += dir.offsetX * o;
 		z += dir.offsetZ * o;
-		if (!MultiblockHandlerXR.checkSpace(world,x,y,z,new int[]{6,-6,0,0,1,1},x,y,z,dir))
-			return false;
-		if (!MultiblockHandlerXR.checkSpace(world,x,y,z,new int[]{5,-5,0,0,2,2},x,y,z,dir))
+		if (!MultiblockHandlerXR.checkSpace(world,x,y,z,new int[]{2,-2,0,0,0,0},x,y,z,dir))
 			return false;
 		return MultiblockHandlerXR.checkSpace(world,x,y,z,getDimensions(),x,y,z,dir);
 	}

@@ -1,10 +1,13 @@
 package com.leafia.contents.machines.misc.modular_turbine.core;
 
+import com.custom_hbm.sound.LCEAudioWrapper;
 import com.hbm.blocks.BlockDummyable;
 import com.hbm.inventory.fluid.FluidType;
 import com.hbm.inventory.fluid.Fluids;
 import com.hbm.inventory.fluid.tank.FluidTankNTM;
 import com.hbm.inventory.fluid.trait.FT_Coolable;
+import com.hbm.lib.HBMSoundHandler;
+import com.leafia.AddonBase;
 import com.leafia.contents.machines.misc.modular_turbine.*;
 import com.leafia.contents.machines.misc.modular_turbine.ModularTurbineBlockBase.TurbineComponentType;
 import com.leafia.contents.machines.misc.modular_turbine.core.MTCoreTE.AssemblyReturnCode.AssemblyErrorReason;
@@ -15,6 +18,7 @@ import com.leafia.dev.LeafiaDebug;
 import com.leafia.dev.LeafiaDebug.Tracker;
 import com.leafia.dev.container_utility.LeafiaPacket;
 import com.leafia.dev.container_utility.LeafiaPacketReceiver;
+import com.leafia.passive.LeafiaPassiveServer;
 import com.llib.math.SIPfx;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
@@ -23,6 +27,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.util.ITickable;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 
 import java.util.*;
@@ -368,9 +373,15 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 	}
 	public boolean assembleFromNBT(NBTTagCompound compound) {
 		disassemble();
+		stopAllSounds();
+		local$audios.clear();
 		boolean ret = assembleFromNBT_internal(compound);
 		if (!ret)
 			disassemble();
+		else {
+			if (world.isRemote)
+				local$createAudios();
+		}
 		return ret;
 	}
 	protected boolean assembleFromNBT_internal(NBTTagCompound compound) {
@@ -469,7 +480,11 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 	@Override
 	public void onReceivePacketServer(byte key,Object value,EntityPlayer plr) { }
 	@Override
-	public void onPlayerValidate(EntityPlayer plr) { }
+	public void onPlayerValidate(EntityPlayer plr) {
+		LeafiaPacket._start(this)
+				.__write(MTPacketId.CORE_ASSEMBLY_SYNC.id,writeAssemblyToNBT(new NBTTagCompound()))
+				.__sendToClient(plr);
+	}
 	private EnumFacing getAssemblyFacing() {
 		return EnumFacing.byIndex(getBlockMetadata()-10).getOpposite();
 	}
@@ -793,6 +808,11 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 				local$shaftAngle -= 360;
 				local$shaftAnglePrev -= 360;
 			}
+			for (LCEAudioWrapper audio : local$audios) {
+				float ratio = (float)(Math.pow(rps/60,0.75));
+				audio.updatePitch(0.5f+ratio);
+				audio.updateVolume(0.8f*ratio);
+			}
 			EnumFacing dir = EnumFacing.byIndex(getBlockMetadata()-10).getOpposite();
 			for (TurbineAssembly assembly : assemblies) {
 				for (Integer p : assembly.receivingPositions) {
@@ -1024,6 +1044,8 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 	@Override
 	public void invalidate() {
 		disassemble();
+		stopAllSounds();
+		local$audios.clear();
 		super.invalidate();
 	}
 	public AssemblyReturnCode reassemble() {
@@ -1228,5 +1250,47 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 		if (fluid.equals(Fluids.SPENTSTEAM))
 			buffer *= 10;
 		return (long)buffer;
+	}
+	@Override
+	public void readFromNBT(NBTTagCompound compound) {
+		super.readFromNBT(compound);
+		rps = compound.getDouble("rps");
+		turbulence = compound.getDouble("turbulence");
+		if (compound.hasKey("assembly"))
+			LeafiaPassiveServer.queueFunction(()->assembleFromNBT(compound.getCompoundTag("assembly")));
+	}
+	@Override
+	public NBTTagCompound writeToNBT(NBTTagCompound compound) {
+		compound.setDouble("rps",rps);
+		compound.setDouble("turbulence",turbulence);
+		compound.setTag("assembly",writeAssemblyToNBT(new NBTTagCompound()));
+		return super.writeToNBT(compound);
+	}
+	List<LCEAudioWrapper> local$audios = new ArrayList<>();
+	public void stopAllSounds() {
+		for (LCEAudioWrapper audio : local$audios)
+			audio.stopSound();
+	}
+	@SideOnly(Side.CLIENT)
+	public void local$createAudios() {
+		int interval = 15;
+		EnumFacing dir = getAssemblyFacing();
+		for (int i = 0; i < components.size(); i+=interval) {
+			BlockPos p = pos.offset(dir,i+1);
+			local$audios.add(AddonBase.proxy.getLoopedSoundStartStop(
+					world,
+					HBMSoundHandler.turbofanOperate,
+					null,null,
+					SoundCategory.BLOCKS,
+					p.getX()+0.5f,p.getY()+0.5f,p.getZ()+0.5f,
+					0,0.5
+			).setLooped(true).startSound());
+		}
+	}
+	@Override
+	public void onChunkUnload() {
+		super.onChunkUnload();
+		stopAllSounds();
+		local$audios.clear();
 	}
 }

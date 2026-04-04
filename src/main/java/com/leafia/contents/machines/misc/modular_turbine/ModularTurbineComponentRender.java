@@ -1,6 +1,7 @@
 package com.leafia.contents.machines.misc.modular_turbine;
 
 import com.hbm.render.loader.WaveFrontObjectVAO;
+import com.leafia.AddonBase;
 import com.leafia.contents.machines.misc.modular_turbine.ModularTurbineBlockBase.TurbineComponentType;
 import com.leafia.transformer.LeafiaGls;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
@@ -19,6 +20,7 @@ public class ModularTurbineComponentRender extends TileEntitySpecialRenderer<Mod
 	public static final ResourceLocation tex1 = getIntegrated(basePath+"texture1.png");
 	public static final WaveFrontObjectVAO genMdl = getVAO(getIntegrated(basePath+"gen3x3.obj"));
 	public static final ResourceLocation gen3x3tetx = getIntegrated(basePath+"generator3x3.png");
+	public static final WaveFrontObjectVAO fwMdl = getVAO(getIntegrated(basePath+"flywheel.obj"));
 	@Override
 	public void render(ModularTurbineComponentTE te,double x,double y,double z,float partialTicks,int destroyStage,float alpha) {
 		LeafiaGls.pushMatrix();
@@ -56,7 +58,36 @@ public class ModularTurbineComponentRender extends TileEntitySpecialRenderer<Mod
 				LeafiaGls.scale(1,1,totalSize+0.01/totalSizeHalf); // retard gaming
 				mdl.renderPart("Shaft");
 				LeafiaGls.popMatrix();
-				if (block.componentType() == TurbineComponentType.BLADES) {
+				if (block.componentType() == TurbineComponentType.FLYWHEEL) {
+					float light = 0.539f;
+					float dark = 0.195f;
+					bindTexture(AddonBase.solid);
+					switch(block.size()) {
+						case 2: case 3:
+							LeafiaGls.pushMatrix();
+							LeafiaGls.translate(0,0,-0.25);
+							LeafiaGls.color(light,light,light);
+							fwMdl.renderPart("Flywheel"+block.size()+"x"+block.size());
+							LeafiaGls.color(dark,dark,dark);
+							fwMdl.renderPart("Flywheel"+block.size()+"x"+block.size()+".001");
+							LeafiaGls.popMatrix();
+							LeafiaGls.pushMatrix();
+							LeafiaGls.translate(0,0,0.25);
+							LeafiaGls.color(light,light,light);
+							fwMdl.renderPart("Flywheel"+block.size()+"x"+block.size());
+							LeafiaGls.color(dark,dark,dark);
+							fwMdl.renderPart("Flywheel"+block.size()+"x"+block.size()+".001");
+							LeafiaGls.popMatrix();
+							break;
+						case 5: case 7: case 9:
+							LeafiaGls.color(light,light,light);
+							fwMdl.renderPart("Flywheel"+block.size()+"x"+block.size());
+							LeafiaGls.color(dark,dark,dark);
+							fwMdl.renderPart("Flywheel"+block.size()+"x"+block.size()+".001");
+							break;
+					}
+					LeafiaGls.color(1,1,1);
+				} else if (block.componentType() == TurbineComponentType.BLADES) {
 					te.local$checkForBlades(te.local$firstRender);
 					te.local$firstRender = false;
 					double diameter = block.size();
@@ -97,11 +128,6 @@ public class ModularTurbineComponentRender extends TileEntitySpecialRenderer<Mod
 				bindTexture(tex1);
 				mdl.renderPart(name);
 			} else if (block.componentType() == TurbineComponentType.FLYWHEEL) {
-				String name = "Tube"+block.size();
-				bindTexture(tex0);
-				LeafiaGls.disableCull();
-				mdl.renderPart(name+".001");
-				LeafiaGls.enableCull();
 			} else if (block.componentType() == TurbineComponentType.GENERATOR) {
 				switch(block.size()) {
 					case 3 -> {

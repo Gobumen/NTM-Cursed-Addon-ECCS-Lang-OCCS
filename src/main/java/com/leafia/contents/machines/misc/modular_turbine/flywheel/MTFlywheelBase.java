@@ -28,6 +28,10 @@ public abstract class MTFlywheelBase extends ModularTurbineBlockBase {
 		return null;
 	}
 	@Override
+	public boolean isFullCube(IBlockState state) {
+		return false;
+	}
+	@Override
 	public void addCollisionBoxToList(@NotNull IBlockState state,@NotNull World worldIn,@NotNull BlockPos pos,@NotNull AxisAlignedBB entityBox,@NotNull List<AxisAlignedBB> collidingBoxes,@Nullable Entity entityIn,boolean isActualState) {
 		BlockPos corePos = findCore(worldIn,pos);
 		if (corePos != null) {
@@ -38,7 +42,7 @@ public abstract class MTFlywheelBase extends ModularTurbineBlockBase {
 				myPos = new Vec3d(shaft.x,myPos.y,myPos.z);
 			else if (facing.getAxis() == Axis.Z)
 				myPos = new Vec3d(myPos.x,myPos.y,shaft.z);
-			if (shaft.distanceTo(myPos) < size()/2d-0.5) // scary
+			if (shaft.distanceTo(myPos) <= size()/2d-0.333) // scary
 				super.addCollisionBoxToList(state,worldIn,pos,entityBox,collidingBoxes,entityIn,isActualState);
 		}
 	}

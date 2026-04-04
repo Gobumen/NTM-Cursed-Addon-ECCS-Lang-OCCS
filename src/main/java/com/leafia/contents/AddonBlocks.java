@@ -41,12 +41,10 @@ import com.leafia.contents.machines.elevators.floors.EvFloor;
 import com.leafia.contents.machines.heat.hpboiler.HPBoilerBlock;
 import com.leafia.contents.machines.heat.rtheater.HeaterRTGBlock;
 import com.leafia.contents.machines.misc.heatex.CoolantHeatexBlock;
+import com.leafia.contents.machines.misc.modular_turbine.MTShaftBlock;
 import com.leafia.contents.machines.misc.modular_turbine.blades.*;
 import com.leafia.contents.machines.misc.modular_turbine.core.MTCoreBlock;
-import com.leafia.contents.machines.misc.modular_turbine.flywheel.MTFlywheel3x3;
-import com.leafia.contents.machines.misc.modular_turbine.flywheel.MTFlywheel5x5;
-import com.leafia.contents.machines.misc.modular_turbine.flywheel.MTFlywheel7x7;
-import com.leafia.contents.machines.misc.modular_turbine.flywheel.MTFlywheel9x9;
+import com.leafia.contents.machines.misc.modular_turbine.flywheel.*;
 import com.leafia.contents.machines.misc.modular_turbine.generator.MTGenerator3x3;
 import com.leafia.contents.machines.misc.modular_turbine.ports.*;
 import com.leafia.contents.machines.misc.modular_turbine.power_port.MTPowerPortBlock;
@@ -458,6 +456,8 @@ public class AddonBlocks {
 
 		public static final Block core = new MTCoreBlock("modular_turbine_core");
 
+		public static final Block shaft = new MTShaftBlock("modular_turbine_shaft");
+
 		public static final Block blades2x2 = new MTBlades2x2("modular_turbine_2x2_blades","default");
 		public static final Block blades3x3 = new MTBlades3x3("modular_turbine_3x3_blades","default");
 		public static final Block blades5x5 = new MTBlades5x5("modular_turbine_5x5_blades","default");
@@ -490,6 +490,7 @@ public class AddonBlocks {
 		public static final Block port7x7_inline = new MTPort7x7Inline("modular_turbine_7x7_port_inline");
 		public static final Block port9x9_inline = new MTPort9x9Inline("modular_turbine_9x9_port_inline");
 
+		public static final Block flywheel2x2 = new MTFlywheel2x2("modular_turbine_2x2_flywheel");
 		public static final Block flywheel3x3 = new MTFlywheel3x3("modular_turbine_3x3_flywheel");
 		public static final Block flywheel5x5 = new MTFlywheel5x5("modular_turbine_5x5_flywheel");
 		public static final Block flywheel7x7 = new MTFlywheel7x7("modular_turbine_7x7_flywheel");

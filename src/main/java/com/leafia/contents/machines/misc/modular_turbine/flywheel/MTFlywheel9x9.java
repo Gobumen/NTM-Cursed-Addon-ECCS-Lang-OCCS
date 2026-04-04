@@ -31,7 +31,7 @@ public class MTFlywheel9x9 extends MTFlywheelBase {
 	}
 	@Override
 	public double weight() {
-		return 640;
+		return 320;
 	}
 	@Override
 	public int[] getDimensions() {

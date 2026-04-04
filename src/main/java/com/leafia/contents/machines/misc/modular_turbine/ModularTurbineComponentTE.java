@@ -4,11 +4,13 @@ import com.hbm.blocks.BlockDummyable;
 import com.leafia.contents.machines.misc.modular_turbine.ModularTurbineBlockBase.TurbineComponentType;
 import com.leafia.contents.machines.misc.modular_turbine.core.MTCoreTE;
 import com.leafia.contents.machines.misc.modular_turbine.core.MTCoreTE.TurbineAssembly;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ModularTurbineComponentTE extends TileEntity implements IMTStageUpgradeContributor, IMTMachineUpgradeContributor {
 	public MTCoreTE core;
@@ -23,6 +25,18 @@ public class ModularTurbineComponentTE extends TileEntity implements IMTStageUpg
 			}
 		}
 		return null;
+	}
+	AxisAlignedBB local$renderAABB;
+	@SideOnly(Side.CLIENT)
+	@Override
+	public AxisAlignedBB getRenderBoundingBox() {
+		if (local$renderAABB == null) {
+			local$renderAABB = new AxisAlignedBB(
+					pos.getX()-5,pos.getY()-1,pos.getZ()-5,
+					pos.getX()+5,pos.getY()+10,pos.getZ()+5
+			);
+		}
+		return local$renderAABB;
 	}
 
 	public boolean local$firstRender = true;

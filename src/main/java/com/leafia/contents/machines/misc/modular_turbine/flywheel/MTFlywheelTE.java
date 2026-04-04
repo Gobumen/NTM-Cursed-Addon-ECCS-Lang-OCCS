@@ -4,13 +4,12 @@ import com.hbm.handler.threading.PacketThreading;
 import com.hbm.packet.toclient.AuxParticlePacketNT;
 import com.leafia.contents.machines.misc.modular_turbine.ModularTurbineBlockBase;
 import com.leafia.contents.machines.misc.modular_turbine.ModularTurbineComponentTE;
-import com.leafia.dev.LeafiaDebug;
 import com.leafia.dev.math.FiaMatrix;
 import com.leafia.init.LeafiaDamageSource;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
@@ -26,6 +25,10 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class MTFlywheelTE extends ModularTurbineComponentTE implements ITickable {
 	public void grindEntity(Entity entity,double damage) {
+		if (entity instanceof EntityPlayer player) {
+			if (player.isCreative() || player.isSpectator())
+				return;
+		}
 		if (getBlockType() instanceof ModularTurbineBlockBase base) {
 			EnumFacing facing = EnumFacing.byIndex(getBlockMetadata()-10).getOpposite();
 			EnumFacing side = facing.rotateY();
@@ -48,14 +51,16 @@ public class MTFlywheelTE extends ModularTurbineComponentTE implements ITickable
 			} else if (entity instanceof EntityLivingBase && world.getBlockState(headPos).causesSuffocation())
 				grind = true;
 
-			if (!grind) {
+			if (!grind)
 				entity.setPosition(newPos.getX(),newPos.getY(),newPos.getZ());
-				return;
-			}
+
+			if (core.rps > 8)
+				grind = true;
+			if (!grind) return;
 
 			if (!world.isRemote && damage > 0) {
-				if (entity instanceof EntityLiving living) {
-					living.attackEntityFrom(LeafiaDamageSource.flywheel,(float) damage);
+				if (entity instanceof EntityLivingBase living) {
+					living.attackEntityFrom(LeafiaDamageSource.flywheel,(float)damage);
 					if (!living.isEntityAlive()) {
 						// stolen code below
 						NBTTagCompound vdat = new NBTTagCompound();
@@ -64,6 +69,7 @@ public class MTFlywheelTE extends ModularTurbineComponentTE implements ITickable
 						vdat.setInteger("cDiv",5);
 						PacketThreading.createAllAroundThreadedPacket(new AuxParticlePacketNT(vdat,living.posX,living.posY+living.height*0.5,living.posZ),new NetworkRegistry.TargetPoint(living.dimension,living.posX,living.posY+living.height*0.5,living.posZ,150));
 						world.playSound(null,living.posX,living.posY,living.posZ,SoundEvents.ENTITY_ZOMBIE_BREAK_DOOR_WOOD,SoundCategory.BLOCKS,2.0F,0.95F+world.rand.nextFloat()*0.2F);
+						living.setDead();
 					}
 				}
 			}
@@ -78,7 +84,7 @@ public class MTFlywheelTE extends ModularTurbineComponentTE implements ITickable
 	public void update() {
 		if (getBlockType() instanceof ModularTurbineBlockBase base) {
 			int hurtDiameter = base.size()/2*2+1;
-			if (core != null && core.rps > 0) {
+			if (core != null && core.rps >= 0.005) {
 				double damage = Math.max(0,Math.pow(core.weight,0.5)/2*(core.rps-0/*.5*/));
 				EnumFacing facing = EnumFacing.byIndex(getBlockMetadata()-10).getOpposite();
 				EnumFacing side = facing.rotateY();
@@ -103,8 +109,8 @@ public class MTFlywheelTE extends ModularTurbineComponentTE implements ITickable
 						p = new Vec3d(s.x,p.y,p.z);
 					else if (facing.getAxis() == Axis.Z)
 						p = new Vec3d(p.x,p.y,s.z);
-					double fuckyou = s.distanceTo(p);
-					if (fuckyou < hurtRadius+0.4) {
+					double threshold = hurtRadius-1+0.1+entity.width/2;
+					if (s.distanceTo(p) < threshold || s.distanceTo(p.add(0,entity.height,0)) < threshold) {
 						if (world.isRemote)
 							local$grindEntity(entity,damage);
 						else

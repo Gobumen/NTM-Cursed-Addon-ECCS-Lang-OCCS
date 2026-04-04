@@ -94,7 +94,7 @@ public class MTCoreBlock extends ModularTurbineBlockBase {
 	@Override
 	public boolean onBlockActivated(World worldIn,BlockPos pos,IBlockState state,EntityPlayer playerIn,EnumHand hand,EnumFacing facing,float hitX,float hitY,float hitZ) {
 		if (worldIn.getTileEntity(pos) instanceof MTCoreTE core) {
-			if (/*core.components.isEmpty()*/true) {
+			if (core.components.isEmpty()) {
 				if (!worldIn.isRemote) {
 					AssemblyReturnCode code = core.reassemble();
 					if (code instanceof ReturnCodeError error) {
