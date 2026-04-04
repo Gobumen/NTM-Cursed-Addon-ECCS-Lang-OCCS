@@ -32,6 +32,7 @@ import net.minecraft.util.math.BlockPos;
 
 import java.util.*;
 import java.util.Map.Entry;
+import java.util.function.BiFunction;
 
 import com.leafia.contents.machines.misc.modular_turbine.core.MTCoreData.*;
 import net.minecraft.world.World;
@@ -811,7 +812,7 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 			for (LCEAudioWrapper audio : local$audios) {
 				float ratio = (float)(Math.pow(rps/60,0.75));
 				audio.updatePitch(0.5f+ratio);
-				audio.updateVolume(3*ratio);
+				audio.updateVolume(0.25f*(float)ratio);
 			}
 			EnumFacing dir = EnumFacing.byIndex(getBlockMetadata()-10).getOpposite();
 			for (TurbineAssembly assembly : assemblies) {
@@ -1014,6 +1015,11 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 		admission = 0;
 		lastAdmission = 0;
 		governorIntegral = 0;
+		if (!world.isRemote) {
+			LeafiaPacket._start(this)
+					.__write(MTPacketId.CORE_ASSEMBLY_SYNC.id,writeAssemblyToNBT(new NBTTagCompound()))
+					.__sendToAffectedClients();
+		}
 	}
 	public static class AssemblyReturnCode {
 		public static class ReturnCodeSuccess extends AssemblyReturnCode { }
@@ -1271,6 +1277,10 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 		for (LCEAudioWrapper audio : local$audios)
 			audio.stopSound();
 	}
+	BiFunction<Float,Double,Double> local$attenuationFunc = (vol,distance)->{
+		double ratio = 1-Math.max(0,distance-5)/30;
+		return vol*Math.pow(Math.max(0,ratio),3.5);
+	};
 	@SideOnly(Side.CLIENT)
 	public void local$createAudios() {
 		int interval = 10;
@@ -1284,7 +1294,7 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 					SoundCategory.BLOCKS,
 					p.getX()+0.5f,p.getY()+0.5f,p.getZ()+0.5f,
 					0.01f,0.5f
-			).setLooped(true).startSound());
+			).setLooped(true).setCustomAttenuation(local$attenuationFunc).startSound());
 		}
 	}
 	@Override

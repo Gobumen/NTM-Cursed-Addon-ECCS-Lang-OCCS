@@ -1,6 +1,9 @@
 package com.leafia.contents.machines.misc.modular_turbine.flywheel;
 
 import com.hbm.handler.threading.PacketThreading;
+import com.hbm.inventory.RecipesCommon;
+import com.hbm.inventory.recipes.ShredderRecipes;
+import com.hbm.items.ModItems;
 import com.hbm.packet.toclient.AuxParticlePacketNT;
 import com.leafia.contents.machines.misc.modular_turbine.ModularTurbineBlockBase;
 import com.leafia.contents.machines.misc.modular_turbine.ModularTurbineComponentTE;
@@ -9,8 +12,11 @@ import com.leafia.init.LeafiaDamageSource;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
+import net.minecraft.inventory.InventoryHelper;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
@@ -71,6 +77,25 @@ public class MTFlywheelTE extends ModularTurbineComponentTE implements ITickable
 						world.playSound(null,living.posX,living.posY,living.posZ,SoundEvents.ENTITY_ZOMBIE_BREAK_DOOR_WOOD,SoundCategory.BLOCKS,2.0F,0.95F+world.rand.nextFloat()*0.2F);
 						living.setDead();
 					}
+				} else if (entity instanceof EntityItem item && damage >= 5) {
+					ItemStack stack = item.getItem();
+					RecipesCommon.ComparableStack comp = (new RecipesCommon.ComparableStack(stack)).makeSingular();
+					ItemStack sta = ShredderRecipes.shredderRecipes.get(comp);
+					if (sta == null) {
+						comp.meta = 32767;
+						sta = ShredderRecipes.shredderRecipes.get(comp);
+					}
+					if (sta != null && sta.getItem() != ModItems.dust) {
+						int count = sta.getCount()*stack.getCount();
+						int max = sta.getMaxStackSize();
+						int iteration = (int)Math.ceil(count/(double)max);
+						for (int i = 0; i < iteration; i++) {
+							ItemStack stk = new ItemStack(sta.getItem(),1,sta.getMetadata());
+							stk.setCount(i == iteration-1 ? Math.floorMod(count-1,max)+1 : max);
+							InventoryHelper.spawnItemStack(world,item.posX,item.posY,item.posZ,stk);
+						}
+						item.setDead();
+					}
 				}
 			}
 		}
@@ -109,7 +134,7 @@ public class MTFlywheelTE extends ModularTurbineComponentTE implements ITickable
 						p = new Vec3d(s.x,p.y,p.z);
 					else if (facing.getAxis() == Axis.Z)
 						p = new Vec3d(p.x,p.y,s.z);
-					double threshold = hurtRadius-1+0.1+entity.width/2;
+					double threshold = hurtRadius-1+0.25+entity.width/2;
 					if (s.distanceTo(p) < threshold || s.distanceTo(p.add(0,entity.height,0)) < threshold) {
 						if (world.isRemote)
 							local$grindEntity(entity,damage);
