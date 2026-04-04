@@ -6,7 +6,6 @@ import com.hbm.inventory.fluid.FluidType;
 import com.hbm.inventory.fluid.Fluids;
 import com.hbm.inventory.fluid.tank.FluidTankNTM;
 import com.hbm.inventory.fluid.trait.FT_Coolable;
-import com.hbm.lib.HBMSoundHandler;
 import com.leafia.AddonBase;
 import com.leafia.contents.machines.misc.modular_turbine.*;
 import com.leafia.contents.machines.misc.modular_turbine.ModularTurbineBlockBase.TurbineComponentType;
@@ -18,6 +17,7 @@ import com.leafia.dev.LeafiaDebug;
 import com.leafia.dev.LeafiaDebug.Tracker;
 import com.leafia.dev.container_utility.LeafiaPacket;
 import com.leafia.dev.container_utility.LeafiaPacketReceiver;
+import com.leafia.init.LeafiaSoundEvents;
 import com.leafia.passive.LeafiaPassiveServer;
 import com.llib.math.SIPfx;
 import net.minecraft.client.Minecraft;
@@ -811,7 +811,7 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 			for (LCEAudioWrapper audio : local$audios) {
 				float ratio = (float)(Math.pow(rps/60,0.75));
 				audio.updatePitch(0.5f+ratio);
-				audio.updateVolume(0.8f*ratio);
+				audio.updateVolume(3*ratio);
 			}
 			EnumFacing dir = EnumFacing.byIndex(getBlockMetadata()-10).getOpposite();
 			for (TurbineAssembly assembly : assemblies) {
@@ -1273,17 +1273,17 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 	}
 	@SideOnly(Side.CLIENT)
 	public void local$createAudios() {
-		int interval = 15;
+		int interval = 10;
 		EnumFacing dir = getAssemblyFacing();
 		for (int i = 0; i < components.size(); i+=interval) {
 			BlockPos p = pos.offset(dir,i+1);
 			local$audios.add(AddonBase.proxy.getLoopedSoundStartStop(
 					world,
-					HBMSoundHandler.turbofanOperate,
+					LeafiaSoundEvents.modular_turbine,
 					null,null,
 					SoundCategory.BLOCKS,
 					p.getX()+0.5f,p.getY()+0.5f,p.getZ()+0.5f,
-					0,0.5
+					0.01f,0.5f
 			).setLooped(true).startSound());
 		}
 	}

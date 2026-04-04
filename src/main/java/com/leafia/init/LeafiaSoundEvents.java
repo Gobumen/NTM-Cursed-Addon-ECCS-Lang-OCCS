@@ -87,6 +87,8 @@ public class LeafiaSoundEvents {
 
 	public static SoundEvent az5;
 
+	public static SoundEvent modular_turbine;
+
 	public static void init() {
 		mukeExplosion = register("weapon.mukeExplosion");
 
@@ -187,6 +189,8 @@ public class LeafiaSoundEvents {
 		sbWallButton = register("external.sbwallbutton");
 
 		az5 = register("block.az5");
+
+		modular_turbine = register("external.modular_turbine");
 	}
 
 	public static SoundEvent register(String name) {
