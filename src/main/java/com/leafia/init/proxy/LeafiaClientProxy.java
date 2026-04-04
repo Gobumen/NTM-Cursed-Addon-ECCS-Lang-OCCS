@@ -214,6 +214,8 @@ public class LeafiaClientProxy extends LeafiaServerProxy {
 	public LCEAudioWrapper getLoopedSound(SoundEvent sound,SoundCategory cat,float x,float y,float z,float volume,float pitch) {
 		LCEAudioWrapperClient audio = new LCEAudioWrapperClient(sound, cat);
 		audio.updatePosition(x, y, z);
+		audio.updateVolume(volume);
+		audio.updatePitch(pitch);
 		return audio;
 	}
 
@@ -221,8 +223,7 @@ public class LeafiaClientProxy extends LeafiaServerProxy {
 	public LCEAudioWrapper getLoopedSoundStartStop(World world,SoundEvent sound,SoundEvent start,SoundEvent stop,SoundCategory cat,float x,float y,float z,float volume,float pitch) {
 		LCEAudioWrapperClientStartStop audio = new LCEAudioWrapperClientStartStop(world, sound, start, stop, volume, cat);
 		audio.updatePosition(x, y, z);
-		if (pitch != 1)
-			audio.updatePitch(pitch);
+		audio.updatePitch(pitch);
 		return audio;
 	}
 
