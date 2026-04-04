@@ -17,6 +17,7 @@ import com.leafia.dev.container_utility.LeafiaPacket;
 import com.leafia.dev.machine.MachineTooltip;
 import com.leafia.transformer.LeafiaGls;
 import com.llib.math.SIPfx;
+import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
@@ -43,6 +44,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static com.leafia.AddonBase.getIntegrated;
@@ -74,10 +76,15 @@ public abstract class ModularTurbineBlockBase extends AddonBlockDummyable implem
 	@Override
 	public void addInformation(ItemStack stack,@Nullable World worldIn,List<String> tooltip,ITooltipFlag flagIn) {
 		MachineTooltip.addWIP(tooltip);
+		if (variant().equals("glass"))
+			tooltip.addAll(Arrays.asList(I18nUtil.resolveKey("info.turbine._tooltip.glass").split("\\$")));
 		tooltip.add(TextFormatting.AQUA+I18nUtil.resolveKey("info.turbine.weight","+"+weight()+" WU"));
 		super.addInformation(stack,worldIn,tooltip,flagIn);
 	}
 	public abstract TurbineComponentType componentType();
+	public String variant() {
+		return "default";
+	}
 	/// Sizes this component can connect to
 	/// <p>Empty array means all components.
 	public abstract int[] canConnectTo();
@@ -289,5 +296,20 @@ public abstract class ModularTurbineBlockBase extends AddonBlockDummyable implem
 			}
 		}
 		return false;
+	}
+	@Override
+	public void neighborChanged(@NotNull IBlockState state,World world,@NotNull BlockPos pos,@NotNull Block blockIn,@NotNull BlockPos fromPos) {
+		super.neighborChanged(state,world,pos,blockIn,fromPos);
+		BlockPos core = findCore(world,pos);
+		if (core != null && world.getTileEntity(core) instanceof ModularTurbineComponentTE te) {
+			if (world.isRemote)
+				te.local$firstRender = true;
+			else {
+				if (world.getBlockState(fromPos).getBlock() instanceof ModularTurbineBlockBase) {
+					if (te.core != null)
+						te.core.disassemble();
+				}
+			}
+		}
 	}
 }

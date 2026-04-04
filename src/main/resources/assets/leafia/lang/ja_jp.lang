@@ -65,6 +65,7 @@ death.attack.drinkacid=%1$sは強酸性のものを飲んでおっ死んだ
 death.attack.drinkcryo=%1$sは内臓が凍っておっ死んだ
 death.attack.drinkhot=%1$sは危険に熱いものを飲んでおっ死んだ
 death.attack.fleija=%1$sは真空により肺が爆発した
+death.attack.flywheel=%1$sはフライホイールに巻き込まれた
 death.attack.dfc=%1$sは強力なマイクロ波により燃え尽きた
 death.attack.dfcMeltdown=%1$sは崩壊する星の業火の中で蒸発した
 death.attack.mine=%1$sは床に注意をはらうべきだった

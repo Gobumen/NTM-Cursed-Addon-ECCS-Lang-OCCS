@@ -3,7 +3,7 @@
         "ctm_version": 1,
         "type":"CTM",
         "textures":[
-            "leafia:blocks/building/modular_turbine_ctm"
+            "leafia:blocks/building/modular_turbine_port_ctm"
         ],
         "extra": {
             "connect_to": [

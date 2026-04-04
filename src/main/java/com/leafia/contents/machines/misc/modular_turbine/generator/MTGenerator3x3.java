@@ -1,17 +1,14 @@
 package com.leafia.contents.machines.misc.modular_turbine.generator;
 
 import com.hbm.tileentity.TileEntityProxyCombo;
-import com.leafia.contents.machines.misc.modular_turbine.ModularTurbineBlockBase;
 import com.leafia.contents.machines.misc.modular_turbine.ModularTurbineComponentTE;
 import com.leafia.contents.machines.misc.modular_turbine.core.MTCoreData.MachineUpgradeSummary;
-import com.leafia.contents.machines.misc.modular_turbine.core.MTCoreData.StageUpgradeContext;
-import com.leafia.contents.machines.misc.modular_turbine.core.MTCoreData.StageUpgradeSummary;
 import com.leafia.contents.machines.misc.modular_turbine.core.MTCoreTE;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
-public class MTGenerator3x3 extends ModularTurbineBlockBase implements IMTGeneratorBlock {
+public class MTGenerator3x3 extends MTGeneratorBase {
 	public MTGenerator3x3(String s) {
 		super(s);
 	}
@@ -50,7 +47,7 @@ public class MTGenerator3x3 extends ModularTurbineBlockBase implements IMTGenera
 		return null;
 	}
 	@Override
-	public void contributeMachineUpgradeOffsets(MachineUpgradeSummary summary,MTCoreTE core,ModularTurbineComponentTE component) {
-		summary.addGeneratorLoadCoefficientOffset(5);
+	public double generatorPower() {
+		return 5;
 	}
 }

@@ -101,12 +101,12 @@ public class FiaMatrix {
 	}
 	public FiaMatrix rotate(RotationOrder order,Vec3d vector) { return rotate(order,vector.x,vector.y,vector.z); }
 	public FiaMatrix rotate(TupleRotation rotation) { return rotate(rotation.order,rotation.angleX,rotation.angleY,rotation.angleZ); }
-	public FiaMatrix travel(FiaMatrix other) {
+	public FiaMatrix travel(FiaMatrix offset) {
 		return new FiaMatrix(
-				position.add(frontVector.scale(-other.position.z)).add(rightVector.scale(other.position.x)).add(upVector.scale(other.position.y)),
-				rightVector.scale(other.rightVector.x).add(upVector.scale(other.rightVector.y)).subtract(frontVector.scale(other.rightVector.z)),
-				rightVector.scale(other.upVector.x).add(upVector.scale(other.upVector.y)).subtract(frontVector.scale(other.upVector.z)),
-				rightVector.scale(other.frontVector.x).add(upVector.scale(other.frontVector.y)).subtract(frontVector.scale(other.frontVector.z))
+				position.add(frontVector.scale(-offset.position.z)).add(rightVector.scale(offset.position.x)).add(upVector.scale(offset.position.y)),
+				rightVector.scale(offset.rightVector.x).add(upVector.scale(offset.rightVector.y)).subtract(frontVector.scale(offset.rightVector.z)),
+				rightVector.scale(offset.upVector.x).add(upVector.scale(offset.upVector.y)).subtract(frontVector.scale(offset.upVector.z)),
+				rightVector.scale(offset.frontVector.x).add(upVector.scale(offset.frontVector.y)).subtract(frontVector.scale(offset.frontVector.z))
 		);
 	}
 	public FiaMatrix rotateAlong(FiaMatrix other) {

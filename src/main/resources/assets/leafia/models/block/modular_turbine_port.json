@@ -1,0 +1,8 @@
+{
+    "parent": "block/cube_bottom_top",
+    "textures": {
+        "bottom": "leafia:blocks/building/modular_turbine_connector",
+        "side": "leafia:blocks/building/modular_turbine",
+        "top": "leafia:blocks/building/modular_turbine_port"
+    }
+}

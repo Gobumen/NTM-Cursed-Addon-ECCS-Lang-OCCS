@@ -63,7 +63,11 @@ public class AddonFluidTraits {
 
 		double eff_steam_turbine = 1.0D;
 		double eff_steam_cool = 0.5D;
-		AddonFluids.DEATHSTEAM.addTraits(new FT_Coolable(Fluids.ULTRAHOTSTEAM, 1, 10, 960).setEff(CoolingType.TURBINE, eff_steam_turbine).setEff(CoolingType.HEATEXCHANGER, eff_steam_cool));
+		// sorry to break it to you but DEATHSTEAM isn't meant to be used in turbines,
+		// the modular turbine feature is a bonus feature and I don't want to
+		// encourage new players into thinking they're usable
+		// - ntmleafia
+		AddonFluids.DEATHSTEAM.addTraits(new FT_Coolable(Fluids.ULTRAHOTSTEAM, 1, 10, 960)/*.setEff(CoolingType.TURBINE, eff_steam_turbine)*/.setEff(CoolingType.HEATEXCHANGER, eff_steam_cool));
 
 		MTCoreTE.steamTypes.add(AddonFluids.DEATHSTEAM);
 		MTCoreTE.steamTypes.add(Fluids.ULTRAHOTSTEAM);

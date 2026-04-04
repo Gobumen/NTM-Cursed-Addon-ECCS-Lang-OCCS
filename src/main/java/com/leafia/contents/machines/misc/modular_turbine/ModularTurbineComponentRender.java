@@ -4,6 +4,7 @@ import com.hbm.render.loader.WaveFrontObjectVAO;
 import com.leafia.contents.machines.misc.modular_turbine.ModularTurbineBlockBase.TurbineComponentType;
 import com.leafia.transformer.LeafiaGls;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 
@@ -14,6 +15,7 @@ public class ModularTurbineComponentRender extends TileEntitySpecialRenderer<Mod
 	static final String basePath = "machines/modular_turbines/";
 	public static final WaveFrontObjectVAO mdl = getVAO(getIntegrated(basePath+"export.obj"));
 	public static final ResourceLocation tex0 = getIntegrated(basePath+"texture0.png");
+	public static final ResourceLocation tex0g = getIntegrated(basePath+"texture0_glass.png");
 	public static final ResourceLocation tex1 = getIntegrated(basePath+"texture1.png");
 	public static final WaveFrontObjectVAO genMdl = getVAO(getIntegrated(basePath+"gen3x3.obj"));
 	public static final ResourceLocation gen3x3tetx = getIntegrated(basePath+"generator3x3.png");
@@ -29,9 +31,66 @@ public class ModularTurbineComponentRender extends TileEntitySpecialRenderer<Mod
 		}
 		LeafiaGls.shadeModel(GL11.GL_SMOOTH);
 		if (te.getBlockType() instanceof ModularTurbineBlockBase block) {
+			int[] dimensions = block.getDimensions();
+			int forwardSize = dimensions[2];
+			int backwardSize = dimensions[3];
+			int totalSize = 1+forwardSize+backwardSize;
+			double totalSizeHalf = 1+forwardSize/2d+backwardSize/2d;
+			EnumFacing face = EnumFacing.byIndex(te.getBlockMetadata()-10).getOpposite();
+			boolean renderShaft = false;
+			if (block.componentType() != null)
+				renderShaft = true;
+			boolean reverseShaft = face.equals(EnumFacing.SOUTH) || face.equals(EnumFacing.WEST);
+			if (renderShaft) {
+				LeafiaGls.pushMatrix();
+				LeafiaGls.translate(0,block.shaftHeight()+0.5,0);
+				if (te.core != null) {
+					double spin = te.core.local$shaftAnglePrev+(te.core.local$shaftAngle-te.core.local$shaftAnglePrev)*partialTicks;
+					if (!reverseShaft)
+						spin *= -1;
+					LeafiaGls.rotate((float)spin,0,0,1);
+				}
+				bindTexture(tex1);
+				LeafiaGls.pushMatrix();
+				LeafiaGls.translate(0,0,-(forwardSize-backwardSize)/2d);
+				LeafiaGls.scale(1,1,totalSize+0.01/totalSizeHalf); // retard gaming
+				mdl.renderPart("Shaft");
+				LeafiaGls.popMatrix();
+				if (block.componentType() == TurbineComponentType.BLADES) {
+					te.local$checkForBlades(te.local$firstRender);
+					te.local$firstRender = false;
+					double diameter = block.size();
+					ModularTurbineComponentTE curBlade = te;
+					while (true) {
+						if (curBlade.local$nextBlade != null) {
+							curBlade = curBlade.local$nextBlade;
+							diameter *= 0.9;
+						} else break;
+					}
+					LeafiaGls.scale(diameter/3,diameter/3,2);
+					LeafiaGls.disableCull();
+					if (reverseShaft)
+						LeafiaGls.scale(-1,1,1);
+					LeafiaGls.pushMatrix();
+					LeafiaGls.translate(0,0,-0.125);
+					mdl.renderPart("Blades");
+					LeafiaGls.popMatrix();
+					LeafiaGls.pushMatrix();
+					LeafiaGls.scale(Math.pow(0.9,0.5),Math.pow(0.9,0.5),1);
+					LeafiaGls.rotate(7.5f,0,0,1);
+					LeafiaGls.translate(0,0,0.125);
+					mdl.renderPart("Blades");
+					LeafiaGls.popMatrix();
+					LeafiaGls.enableCull();
+				}
+				LeafiaGls.popMatrix();
+			}
 			if (block.componentType() == TurbineComponentType.BLADES) {
 				String name = "Tube"+block.size();
-				bindTexture(tex0);
+				if (block.variant().equals("glass"))
+					bindTexture(tex0g);
+				else
+					bindTexture(tex0);
 				LeafiaGls.disableCull();
 				mdl.renderPart(name+".001");
 				LeafiaGls.enableCull();

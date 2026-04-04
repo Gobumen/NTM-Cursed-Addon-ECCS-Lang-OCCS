@@ -16,6 +16,7 @@ import com.leafia.dev.LeafiaDebug.Tracker;
 import com.leafia.dev.container_utility.LeafiaPacket;
 import com.leafia.dev.container_utility.LeafiaPacketReceiver;
 import com.llib.math.SIPfx;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.*;
 import net.minecraft.tileentity.TileEntity;
@@ -28,6 +29,9 @@ import java.util.*;
 import java.util.Map.Entry;
 
 import com.leafia.contents.machines.misc.modular_turbine.core.MTCoreData.*;
+import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITickable {
 	public static double PARTIAL_EXPANSION_FRACTION = 0.2D;
@@ -56,7 +60,7 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 	public static double SUPERHOTSTEAM_STAGE_WORK_MULTIPLIER = 100D;
 	public static double HOTSTEAM_STAGE_WORK_MULTIPLIER = 10D;
 	public static double STEAM_STAGE_WORK_MULTIPLIER = 1D;
-	public static double BUFFER_CAPACITY_MULTIPLIER = 16D;
+	public static double BUFFER_CAPACITY_MULTIPLIER = 1;//16D;
 	public static double ADMISSION_MAX_BUFFER_TICKS = 2D;
 	public static double ADMISSION_FLOW_EPSILON = 1.0E-9D;
 	public static double ADMISSION_BUFFER_EPSILON = 1.0E-6D;
@@ -88,6 +92,10 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 	// Rotor inertia scalar
 	public double weight = 0;
 	private double governorIntegral = 0;
+
+	public double local$shaftAngle = 0;
+	public double local$shaftAnglePrev = 0;
+
 	private CompiledMachineStats compiledMachineStats;
 	public static final List<FluidType> steamTypes = new ArrayList<>();
 	public static FluidType getNextSteam(FluidType type,boolean decompress) {
@@ -118,7 +126,10 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 		FT_Coolable expansion = getSteamExpansion(type);
 		if (expansion == null)
 			return 0;
-		return expansion.heatEnergy*expansion.getEfficiency(FT_Coolable.CoolingType.TURBINE)/(double)expansion.amountReq;
+		double eff = expansion.getEfficiency(FT_Coolable.CoolingType.TURBINE);
+		if (eff == 0)
+			eff = 1;
+		return expansion.heatEnergy*eff/(double)expansion.amountReq;
 	}
 	public static double getSteamRemainingWork(FluidType type) {
 		FT_Coolable expansion = getSteamExpansion(type);
@@ -634,8 +645,10 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 		assembly.admissionOpCarry = admittedOps-ops;
 		int inputConsumed = ops*compiledStats.inputAmount;
 		int outputProduced = ops*compiledStats.outputAmount;
-		assembly.input.setFill(assembly.input.getFill()-inputConsumed);
-		assembly.output.setFill(assembly.output.getFill()+outputProduced);
+		// ntmleafia: the steams are meant to be processed instantaneously, no matter what
+		// the only bottleneck is meant to be the buffer capacity
+		assembly.input.setFill(assembly.input.getFill()-/*inputConsumed*/maxOps*compiledStats.inputAmount);
+		assembly.output.setFill(assembly.output.getFill()+/*outputProduced*/maxOps*compiledStats.outputAmount);
 		assembly.lastOps = inputConsumed;
 		assembly.lastDivision = compiledStats.division;
 		return inputConsumed;
@@ -674,6 +687,8 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 				}
 			}
 			assembly.maxStackedBlades = Math.max(assembly.maxStackedBlades,stackCounter);
+			assembly.server$lastReceivingPositions.clear();
+			assembly.server$lastReceivingPositions.addAll(assembly.receivingPositions);
 			assembly.receivingPositions.clear();
 		}
 		return wrongBlades;
@@ -720,10 +735,90 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 	}
 	public long powerOutput = 0;
 	public long displayPowerGenerated = 0;
+	@SideOnly(Side.CLIENT)
+	public void local$spawnParticle(World world,BlockPos pos,double diameter,EnumFacing direction,double speed,int travelDistance,int amount) {
+		double x = pos.getX()+0.5;
+		double y = pos.getY()+0.5;
+		double z = pos.getZ()+0.5;
+		x -= direction.getXOffset()*0.5;
+		z -= direction.getZOffset()*0.5;
+		EnumFacing rotate = direction.rotateY();
+		diameter -= 0.75;
+		for (int i = 0; i < amount; i++) {
+			double angle = world.rand.nextDouble()*Math.PI*2;
+			double r = diameter/2*world.rand.nextDouble();
+			double lx = x;
+			double lz = z;
+			EnumFacing ldir = direction;
+			double lsp = speed;
+			int ldst = travelDistance;
+			if (turbulence > 0) {
+				// randomize speed if we have turbulence
+				double turb = turbulence/100;
+				lsp = speed*(1-(world.rand.nextDouble()*0.75+0.25)*turb);
+				if (world.rand.nextInt(100) < turbulence) {
+					// at random chance (higher chance with higher turbulence) we randomize the position of steam
+					int offset = world.rand.nextInt(travelDistance+1);
+					ldst = travelDistance-offset;
+					lx += direction.getXOffset()*offset;
+					lz += direction.getZOffset()*offset;
+					if (world.rand.nextBoolean()) {
+						// at random chance, we reverse the direction
+						ldst = travelDistance-ldst;
+						ldir = direction.getOpposite();
+					}
+				}
+			}
+			Minecraft.getMinecraft().effectRenderer.addEffect(new ParticleMTSteam(
+					world,
+					lx+Math.cos(angle)*r*rotate.getXOffset(),
+					y+Math.sin(angle)*r,
+					lz+Math.cos(angle)*r*rotate.getZOffset(),
+					ldir.getXOffset()*lsp,
+					0,
+					ldir.getZOffset()*lsp,
+					ldst
+			));
+		}
+	}
+	public double getVisualDeltaAngle() {
+		return Math.pow(rps*360,0.9)/20;
+	}
 	@Override
 	public void update() {
-		if (world.isRemote)
+		if (world.isRemote) {
+			local$shaftAnglePrev = local$shaftAngle;
+			local$shaftAngle += getVisualDeltaAngle();
+			if (local$shaftAngle >= 360) {
+				local$shaftAngle -= 360;
+				local$shaftAnglePrev -= 360;
+			}
+			EnumFacing dir = EnumFacing.byIndex(getBlockMetadata()-10).getOpposite();
+			for (TurbineAssembly assembly : assemblies) {
+				for (Integer p : assembly.receivingPositions) {
+					if (assembly.lastOps <= 0) continue;
+					BlockPos center = pos.offset(dir,p+1);
+					int index = assembly.positionsInOrder.indexOf(p);
+					int distForward = 0;
+					int distBackward = 0;
+					for (int i = index+1; i < assembly.positionsInOrder.size(); i++) {
+						if (assembly.receivingPositions.contains(assembly.positionsInOrder.get(i))) break;
+						distForward++;
+					}
+					for (int i = index-1; i >= 0; i--) {
+						if (assembly.receivingPositions.contains(assembly.positionsInOrder.get(i))) break;
+						distBackward++;
+					}
+					double speed = 1+Math.pow(rps,0.75)/1.5;
+					int amount = (1+(int)speed/4)*assembly.size;
+					if (distForward > 0)
+						local$spawnParticle(world,center.offset(dir),assembly.size,dir,speed/20,distForward,amount);
+					if (distBackward > 0)
+						local$spawnParticle(world,center.offset(dir.getOpposite()),assembly.size,dir.getOpposite(),speed/20,distBackward,amount);
+				}
+			}
 			return;
+		}
 		powerOutput = 0;
 		displayPowerGenerated = 0;
 		TickSummary tickSummary = new TickSummary();
@@ -741,7 +836,7 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 		}
 
 		// Apply turbulence damping and transient spike accumulation.
-		double turbulenceAdd = Math.pow(Math.max(tickSummary.targetRPS-rps,0)/28,5)/5;//Math.pow(Math.max(tickSummary.targetRPS-rps,0)/110,7.2)/Math.max(8,60-turbulence*2);
+		double turbulenceAdd = Math.pow(Math.max(tickSummary.targetRPS-rps,0)/24,5)/5;//Math.pow(Math.max(tickSummary.targetRPS-rps,0)/110,7.2)/Math.max(8,60-turbulence*2);
 		turbulence = Math.max(turbulence-turbulence*0.008-0.008,0);
 		turbulence = Math.min(turbulence+maxTurbAddBladeCount,100);
 		turbulence = Math.min(turbulence+turbulenceAdd*(Math.pow(Math.max(tickSummary.generatorTorque,0)/10000,0.5)*0.95+0.05),100);
@@ -787,10 +882,11 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 			NBTTagCompound tag = new NBTTagCompound();
 			assembly.input.writeToNBT(tag,"i");
 			assembly.output.writeToNBT(tag,"o");
+			tag.setInteger("f",assembly.lastOps);
 			NBTTagList flowList = new NBTTagList();
-			for (Integer receiving : assembly.receivingPositions)
+			for (Integer receiving : assembly.server$lastReceivingPositions)
 				flowList.appendTag(new NBTTagShort(receiving.shortValue()));
-			tag.setTag("b",flowList);
+			tag.setTag("r",flowList);
 			syncList.appendTag(tag);
 		}
 		syncCompound.setTag("a",syncList);
@@ -823,6 +919,11 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 					NBTTagCompound tag = list.getCompoundTagAt(i);
 					assembly.input.readFromNBT(tag,"i");
 					assembly.output.readFromNBT(tag,"o");
+					assembly.lastOps = tag.getInteger("f");
+					NBTTagList receiving = tag.getTagList("r",2);
+					assembly.receivingPositions.clear();
+					for (NBTBase j : receiving)
+						assembly.receivingPositions.add(((NBTTagShort)j).getInt());
 				}
 			}
 		} else if (key == MTPacketId.CORE_TURBULENCE_REASONS.id) {
@@ -852,6 +953,7 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 		public double baseGearRatio = 1;
 		private CompiledStageStats compiledStats;
 		public Set<Integer> receivingPositions = new HashSet<>();
+		public Set<Integer> server$lastReceivingPositions = new HashSet<>();
 		public Map<Integer,Boolean> bladeDirections = new HashMap<>(); // false: normal, true: opposite
 		public int lastOps = 0;
 		public double lastDivision = 1;
@@ -1120,6 +1222,7 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 	public long calculateBufferSize(FluidType fluid,int mostCompression,int blades,int size) {
 		// mostCompression IS A SMALLER VALUE BECAUSE THE LOWER THE INDEX IS, THE MORE COMPRESSED THE STEAM IS
 		int index = steamTypes.indexOf(fluid);
+		mostCompression = 0; // ah forget it
 		int delta = index-mostCompression;
 		double buffer = Math.pow(10,delta)/Math.pow(4,delta)*blades*Math.pow(8,(size-1)/2d)*(4500d/steamTypes.get(mostCompression).temperature)*BUFFER_CAPACITY_MULTIPLIER;
 		if (fluid.equals(Fluids.SPENTSTEAM))

@@ -19,7 +19,9 @@ import com.leafia.contents.machines.heat.rtheater.HeaterRTGTE;
 import com.leafia.contents.machines.misc.heatex.CoolantHeatexTE;
 import com.leafia.contents.machines.misc.modular_turbine.ModularTurbineComponentTE;
 import com.leafia.contents.machines.misc.modular_turbine.core.MTCoreTE;
+import com.leafia.contents.machines.misc.modular_turbine.flywheel.MTFlywheelTE;
 import com.leafia.contents.machines.misc.modular_turbine.ports.MTComponentPortTE;
+import com.leafia.contents.machines.misc.modular_turbine.power_port.MTPowerPortTE;
 import com.leafia.contents.machines.panel.controltorch.ControlTorchTE;
 import com.leafia.contents.machines.powercores.ams.base.AMSBaseTE;
 import com.leafia.contents.machines.powercores.ams.emitter.AMSEmitterTE;
@@ -125,6 +127,8 @@ public class TEInit {
 		register(MTCoreTE.class,"mt_core_te");
 		register(ModularTurbineComponentTE.class,"mt_component_te");
 		register(MTComponentPortTE.class,"mt_component_port_te");
+		register(MTPowerPortTE.class,"mt_power_port_te");
+		register(MTFlywheelTE.class,"mt_flywheel_te");
 		register(VoiderTE.class,"debug_voider_te");
 	}
 	private static void register(Class<? extends TileEntity> clazz,String res) {
