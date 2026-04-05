@@ -47,7 +47,7 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 	public static double EXIT_WHIRL_RECOVERY_FACTOR = 0.82D;
 	public static double ANGULAR_MOMENTUM_TORQUE_COEFFICIENT = 0.02D;
 	/** Effective linear electrical load slope */
-	public static double GENERATOR_LOAD_COEFFICIENT = 0.0D;
+	public static double GENERATOR_LOAD_COEFFICIENT = 0.001D;
 	/** Saturation cap applied to the effective generator counter-torque. */
 	public static double GENERATOR_TORQUE_LIMIT = Double.MAX_VALUE;
 	public static double COULOMB_FRICTION_TORQUE = 0.7D;
@@ -57,15 +57,15 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 	public static double INCIDENCE_DESIGN_SPEED_RATIO = 1D;
 	public static double INCIDENCE_LOSS_FACTOR = 0.25D; // UNUSED
 	public static double INCIDENCE_EFFICIENCY_FLOOR = 0.05D; // UNUSED
-	public static double POWER_SCALE = 0.1; //0.00232478632*2;
+	public static double POWER_SCALE = 0.04; //0.00232478632*2;
 	public static double ADMISSION_NOMINAL_TAU_TICKS = 4D;
 	public static double ADMISSION_STABLE_RELATIVE_ERROR = 0.03D;
 	// DEATHSTEAM -> ULTRAHOTSTEAM -> SUPERHOTSTEAM -> HOTSTEAM -> STEAM -> SPENTSTEAM stage-work scalars
-	public static double DEATHSTEAM_STAGE_WORK_MULTIPLIER = 10000D;
+	public static double DEATHSTEAM_STAGE_WORK_MULTIPLIER = 5000D;
 	public static double ULTRAHOTSTEAM_STAGE_WORK_MULTIPLIER = 1000D;
-	public static double SUPERHOTSTEAM_STAGE_WORK_MULTIPLIER = 100D;
-	public static double HOTSTEAM_STAGE_WORK_MULTIPLIER = 10D;
-	public static double STEAM_STAGE_WORK_MULTIPLIER = 1D;
+	public static double SUPERHOTSTEAM_STAGE_WORK_MULTIPLIER = 500D;
+	public static double HOTSTEAM_STAGE_WORK_MULTIPLIER = 25D;
+	public static double STEAM_STAGE_WORK_MULTIPLIER = 125D;
 	public static double BUFFER_CAPACITY_MULTIPLIER = 1;//16D;
 	public static double ADMISSION_MAX_BUFFER_TICKS = 2D;
 	public static double ADMISSION_FLOW_EPSILON = 1.0E-9D;
@@ -361,7 +361,7 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 	}*/
 	private static int requireTankCapacity(long bufferSize,FluidType fluid) {
 		if (bufferSize > Integer.MAX_VALUE)
-			throw new IllegalStateException("Buffer size exceeds FluidTankNTM capacity for "+fluid.getName()+": "+bufferSize);
+			return Integer.MAX_VALUE;//throw new IllegalStateException("Buffer size exceeds FluidTankNTM capacity for "+fluid.getName()+": "+bufferSize);
 		return (int)bufferSize;
 	}
 	@Override
@@ -860,7 +860,9 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 		double turbulenceAdd = Math.pow(Math.max(tickSummary.targetRPS-rps,0)/24,5)/5;//Math.pow(Math.max(tickSummary.targetRPS-rps,0)/110,7.2)/Math.max(8,60-turbulence*2);
 		turbulence = Math.max(turbulence-turbulence*0.008-0.008,0);
 		turbulence = Math.min(turbulence+maxTurbAddBladeCount,100);
-		turbulence = Math.min(turbulence+turbulenceAdd*(Math.pow(Math.max(tickSummary.generatorTorque,0)/10000,0.5)*0.95+0.05),100);
+		double turbMul1 = Math.min(1,weight/300);
+		double turbMul2 = Math.pow(Math.max(tickSummary.generatorTorque,0)/10000,0.5);
+		turbulence = Math.min(turbulence+turbulenceAdd*Math.pow(turbMul2,2.25),100);
 		if (turbulenceAdd > 0.3) turbulenceReasonInputSurge = true;
 		if (maxTurbAddBladeCount > 0.3) turbulenceReasonTooManyBlades = true;
 
@@ -1254,7 +1256,7 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 		int delta = index-mostCompression;
 		double buffer = Math.pow(10,delta)/Math.pow(4,delta)*blades*Math.pow(8,(size-1)/2d)*(4500d/steamTypes.get(mostCompression).temperature)*BUFFER_CAPACITY_MULTIPLIER;
 		if (fluid.equals(Fluids.SPENTSTEAM))
-			buffer *= 10;
+			buffer /= 1000;
 		return (long)buffer;
 	}
 	@Override

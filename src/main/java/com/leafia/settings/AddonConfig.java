@@ -33,7 +33,7 @@ public class AddonConfig {
 		builder._category("MIXINS");
 		{
 			enableWackySplashes = builder._boolean("enableWackySplashes",true);
-			//enableAcidRainRender = builder._boolean("enableAcidRainRender",true); there's no point in this anymore
+			enableAcidRainRender = builder._boolean("enableAcidRainRender",true);
 		}
 		builder._separator();
 		builder._category("OVERRIDE");
