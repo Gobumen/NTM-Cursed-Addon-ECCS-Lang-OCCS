@@ -1,20 +1,15 @@
 {
-  "required": true,
+  "required": false,
   "package": "com.leafia.overwrite_contents.mixin",
   "plugin": "com.leafia.overwrite_contents.MixinConfigPlugin",
   "refmap": "mixins.leafia.refmap.json",
   "compatibilityLevel": "JAVA_8",
   "target": "@env(DEFAULT)",
-  "client": [],
-  "mixins": [
-    "MixinBlockFire",
-    "MixinEntityItem",
-    "MixinEntityPlayer",
-    "MixinForgeHooks",
-    "MixinItemStack",
-    "MixinServerWorldEventHandler",
-    "MixinWorld"
+  "client": [
+    "MixinEntityRenderer_AcidRain",
+    "MixinGuiMainMenu_WackySplashes"
   ],
+  "mixins": [],
   "server": [],
   "setSourceFile": true,
   "minVersion": "0.8.7"
