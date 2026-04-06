@@ -42,7 +42,7 @@ public class CommandLeaf extends CommandBase {
 	public static class DebugTargetClass {
 		protected static final List<DebugTargetClass> list = new ArrayList<>();
 
-		public static final DebugTargetClass targetTurbine = new DebugTargetClass(MTCoreTE.class);
+		//public static final DebugTargetClass targetTurbine = new DebugTargetClass(MTCoreTE.class);
 
 		final Class<?> target;
 		public DebugTargetClass(Class<?> target) {

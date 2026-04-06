@@ -58,7 +58,7 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 	public static double INCIDENCE_DESIGN_SPEED_RATIO = 1D;
 	public static double INCIDENCE_LOSS_FACTOR = 0.25D; // UNUSED
 	public static double INCIDENCE_EFFICIENCY_FLOOR = 0.05D; // UNUSED
-	public static double POWER_SCALE = 0.03; //0.00232478632*2;
+	public static double POWER_SCALE = 0.04; //0.00232478632*2;
 	public static double ADMISSION_NOMINAL_TAU_TICKS = 4D;
 	public static double ADMISSION_STABLE_RELATIVE_ERROR = 0.03D;
 	// DEATHSTEAM -> ULTRAHOTSTEAM -> SUPERHOTSTEAM -> HOTSTEAM -> STEAM -> SPENTSTEAM stage-work scalars
@@ -115,6 +115,7 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 
 	public double local$shaftAngle = 0;
 	public double local$shaftAnglePrev = 0;
+	public int stressSoundTimer = 0;
 
 	private CompiledMachineStats compiledMachineStats;
 	public static final List<FluidType> steamTypes = new ArrayList<>();
@@ -835,7 +836,7 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 			for (LCEAudioWrapper audio : local$audios) {
 				float ratio = (float)(Math.pow(rps/60,0.75));
 				audio.updatePitch(0.5f+ratio);
-				audio.updateVolume(0.25f*(float)ratio);
+				audio.updateVolume(0.25f*ratio);
 			}
 			EnumFacing dir = EnumFacing.byIndex(getBlockMetadata()-10).getOpposite();
 			for (TurbineAssembly assembly : assemblies) {
@@ -863,6 +864,25 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 			}
 			return;
 		}
+		if (stressSoundTimer <= 0) { // just fuck off
+			stressSoundTimer = 70;
+			double vol = Math.pow((Math.max(rps-65,0)/35),3)*0.4;
+			if (vol > 0) {
+				int interval = 5;
+				EnumFacing dir = getAssemblyFacing();
+				for (int i = 0; i < length; i+=interval) {
+					world.playSound(
+							null,
+							pos.offset(dir,1+i),
+							LeafiaSoundEvents.pipestressed,
+							SoundCategory.BLOCKS,
+							(float)vol,0.65f
+					);
+				}
+			}
+		}
+		stressSoundTimer--;
+
 		powerOutput = 0;
 		displayPowerGenerated = 0;
 		TickSummary tickSummary = new TickSummary();
@@ -1315,7 +1335,7 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 	public void local$createAudios() {
 		int interval = 10;
 		EnumFacing dir = getAssemblyFacing();
-		for (int i = 0; i < components.size(); i+=interval) {
+		for (int i = 0; i < length; i+=interval) {
 			BlockPos p = pos.offset(dir,i+1);
 			local$audios.add(AddonBase.proxy.getLoopedSoundStartStop(
 					world,
