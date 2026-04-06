@@ -107,6 +107,7 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 	public double admission = 0;
 	public double lastAdmission = 0;
 	public final List<ModularTurbineComponentTE> components = new ArrayList<>();
+	public final Map<Integer,ModularTurbineComponentTE> positionToComponentMap = new HashMap<>();
 	public final List<TurbineAssembly> assemblies = new ArrayList<>();
 	public int length = 0;
 	// Rotor inertia scalar
@@ -455,6 +456,7 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 				BlockPos core = turbine.findCore(world,offs);
 				if (core != null) {
 					if (world.getTileEntity(core) instanceof ModularTurbineComponentTE te) {
+						positionToComponentMap.put(i,te);
 						if (!components.contains(te)) {
 							components.add(te);
 							te.core = this;
@@ -1055,6 +1057,7 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 		}
 		assemblies.clear();
 		components.clear();
+		positionToComponentMap.clear();
 		length = 0;
 		weight = 0;
 		compiledMachineStats = null;
@@ -1136,6 +1139,7 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 				else {
 					EnumFacing partDir = EnumFacing.byIndex(world.getBlockState(core).getValue(BlockDummyable.META)-10).getOpposite();
 					if (world.getTileEntity(core) instanceof ModularTurbineComponentTE te) {
+						positionToComponentMap.put(i,te);
 						if (!components.contains(te)) {
 							weight += turbine.weight();
 							components.add(te);
