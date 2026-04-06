@@ -175,7 +175,7 @@ public class PWRElementBlock extends BlockMachineBase implements ITooltipProvide
 				if (((ItemTooling)(held.getItem())).getType().equals(IToolable.ToolType.SCREWDRIVER)) {
 					element.inventory.setStackInSlot(0,ItemStack.EMPTY);
 					if (world.isRemote) return true;
-					InventoryHelper.spawnItemStack(world,player.posX,player.posY,player.posZ,stack);
+					InventoryHelper.spawnItemStack(world,player.posX-0.5,player.posY,player.posZ-0.5,stack);
 					held.damageItem(1,player);
 					world.playSound(null,pos,HBMSoundHandler.lockHang,SoundCategory.BLOCKS,0.85f,1);
 					world.playSound(null,pos,HBMSoundHandler.pipePlaced,SoundCategory.BLOCKS,0.65f,0.8f);

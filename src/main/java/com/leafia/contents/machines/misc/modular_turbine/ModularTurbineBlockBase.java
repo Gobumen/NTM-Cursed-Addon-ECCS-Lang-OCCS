@@ -175,32 +175,44 @@ public abstract class ModularTurbineBlockBase extends AddonBlockDummyable implem
 		world.scheduleUpdate(pos, this, 2);
 	}
 	@SideOnly(Side.CLIENT)
+	void addCoreInfo(MTCoreTE c,List<String> texts) {
+		if (c.turbulence > 20) {
+			texts.add("&[" + (BobMathUtil.getBlink() ? 0xff0000 : 0xffff00) + "&]"+I18nUtil.resolveKey("info.turbine.turbulence.warning"));
+			if (c.turbulenceReasonInputSurge || c.turbulenceReasonInverseBlades || c.turbulenceReasonTooManyBlades) {
+				texts.add(TextFormatting.GOLD+I18nUtil.resolveKey("info.turbine.turbulence.reasons"));
+				if (c.turbulenceReasonInputSurge)
+					texts.add(TextFormatting.GOLD+"- "+I18nUtil.resolveKey("info.turbine.turbulence.reason.surge"));
+				if (c.turbulenceReasonInverseBlades)
+					texts.add(TextFormatting.GOLD+"- "+I18nUtil.resolveKey("info.turbine.turbulence.reason.wrongblades"));
+				if (c.turbulenceReasonTooManyBlades)
+					texts.add(TextFormatting.GOLD+"- "+I18nUtil.resolveKey("info.turbine.turbulence.reason.toomanyblades"));
+			}
+		}
+		texts.add(I18nUtil.resolveKey("info.turbine.rps",String.format("%01.2f",c.rps)));
+		texts.add(TextFormatting.GRAY+"- "+I18nUtil.resolveKey("info.turbine.overdrive","+"+MTCoreTE.getRPSBoost(c.overdrive)));
+		if (c.overdrive > 0)
+			texts.add(TextFormatting.GRAY+"- "+I18nUtil.resolveKey("info.turbine.downgrade"));
+		texts.add(I18nUtil.resolveKey("info.turbine.weight",String.format("%01.2f WU",c.weight)));
+		texts.add(I18nUtil.resolveKey("info.turbine.turbulence",String.format("%01.2f%%",c.turbulence)));
+		//texts.add(I18nUtil.resolveKey("info.turbine.gear",String.format("%01.2f",c.globalGearScale)));
+	}
+	@SideOnly(Side.CLIENT)
 	@Override
 	public void printHook(RenderGameOverlayEvent.Pre event,World world,BlockPos pos) {
 		List<String> texts = new ArrayList<>();
 		BlockPos core = findCore(world,pos);
 		if (core != null) {
-			if (world.getTileEntity(core) instanceof ModularTurbineComponentTE te) {
-				if (te.core == null)
+			if (world.getTileEntity(core) instanceof MTCoreTE te) {
+				if (te.components.isEmpty())
+					texts.add("&[" + (BobMathUtil.getBlink() ? 0xff0000 : 0xffff00) + "&]"+I18nUtil.resolveKey("info.turbine.assembly.unassembled"));
+				else
+					addCoreInfo(te,texts);
+			} else if (world.getTileEntity(core) instanceof ModularTurbineComponentTE te) {
+				MTCoreTE c = te.core;
+				if (c == null)
 					texts.add("&[" + (BobMathUtil.getBlink() ? 0xff0000 : 0xffff00) + "&]"+I18nUtil.resolveKey("info.turbine.assembly.unassembled"));
 				else {
-					MTCoreTE c = te.core;
-					if (c.turbulence > 20) {
-						texts.add("&[" + (BobMathUtil.getBlink() ? 0xff0000 : 0xffff00) + "&]"+I18nUtil.resolveKey("info.turbine.turbulence.warning"));
-						if (c.turbulenceReasonInputSurge || c.turbulenceReasonInverseBlades || c.turbulenceReasonTooManyBlades) {
-							texts.add(TextFormatting.GOLD+I18nUtil.resolveKey("info.turbine.turbulence.reasons"));
-							if (c.turbulenceReasonInputSurge)
-								texts.add(TextFormatting.GOLD+"- "+I18nUtil.resolveKey("info.turbine.turbulence.reason.surge"));
-							if (c.turbulenceReasonInverseBlades)
-								texts.add(TextFormatting.GOLD+"- "+I18nUtil.resolveKey("info.turbine.turbulence.reason.wrongblades"));
-							if (c.turbulenceReasonTooManyBlades)
-								texts.add(TextFormatting.GOLD+"- "+I18nUtil.resolveKey("info.turbine.turbulence.reason.toomanyblades"));
-						}
-					}
-					texts.add(I18nUtil.resolveKey("info.turbine.rps",String.format("%01.2f",c.rps)));
-					texts.add(I18nUtil.resolveKey("info.turbine.weight",String.format("%01.2f WU",c.weight)));
-					texts.add(I18nUtil.resolveKey("info.turbine.turbulence",String.format("%01.2f%%",c.turbulence)));
-					texts.add(I18nUtil.resolveKey("info.turbine.gear",String.format("%01.2f",c.globalGearScale)));
+					addCoreInfo(c,texts);
 				}
 				if (te instanceof MTComponentPortTE port) {
 					texts.add(I18nUtil.resolveKey("info.turbine.identifier",port.identifier != null ? port.identifier.getLocalizedName() : "N/A"));

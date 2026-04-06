@@ -1,5 +1,6 @@
 package com.leafia.contents.building.storage.broof.container;
 
+import com.hbm.inventory.TransferStrategy;
 import com.hbm.util.InventoryUtil;
 import com.leafia.contents.building.storage.broof.BroofTE;
 import net.minecraft.entity.player.EntityPlayer;
@@ -37,10 +38,14 @@ public class BroofContainer extends Container {
 			this.addSlotToContainer(new Slot(invPlayer, i, 8 + i * 18, 142 + (18 * 3) + 2));
 		}
 	}
-	
+
+	private static final TransferStrategy TRANSFER_STRATEGY = TransferStrategy.builder(54)
+			.genericMachineRange(0)
+			.build();
+
 	@Override
     public ItemStack transferStackInSlot(EntityPlayer player, int index) {
-        return InventoryUtil.transferStack(this.inventorySlots, index, this.diFurnace.inventory.getSlots());
+        return InventoryUtil.transferStack(this.inventorySlots,index,TRANSFER_STRATEGY,player);
     }
 
 	@Override

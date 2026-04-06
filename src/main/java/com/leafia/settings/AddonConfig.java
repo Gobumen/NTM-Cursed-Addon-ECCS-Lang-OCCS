@@ -21,6 +21,10 @@ public class AddonConfig {
 	public static boolean enableMeteorCraters = true;
 	public static boolean enableSellacity = LeafiaDebug.isDevEnv;
 	public static boolean enableBarrelSidePorts = false;
+	public static boolean enableGovernedRPS = true;
+	public static double governedRPS = 60;
+	public static int maxOptimalTurbineLength = 5;
+	public static double surgeTurbulenceMultiplier = 1;
 	public static class ConfigOverrides {
 		public static boolean blockReplacement = true;
 		public static void applyGeneralConfig() {
@@ -33,7 +37,7 @@ public class AddonConfig {
 		builder._category("MIXINS");
 		{
 			enableWackySplashes = builder._boolean("enableWackySplashes",true);
-			enableAcidRainRender = builder._boolean("enableAcidRainRender",true);
+			//enableAcidRainRender = builder._boolean("enableAcidRainRender",true); yeah no point
 		}
 		builder._separator();
 		builder._category("OVERRIDE");
@@ -63,6 +67,14 @@ public class AddonConfig {
 
 			builder._comment("Whether meteors should create custom craters or not");
 			enableMeteorCraters = builder._boolean("enableMeteorCraters",true);
+
+			builder._comment("Whether the modular turbine RPS should be capped or not");
+			enableGovernedRPS = builder._boolean("enableGovernedRPS",true); builder._popLine();
+			governedRPS = builder._double("minimumGovernedRPS",60);
+			builder._comment("How many blades there can be per side until turbulence skyrockets");
+			maxOptimalTurbineLength = builder._integer("maxOptimalTurbineLength",5);
+			builder._comment("Multiplier of steam input surge turbulence for modular turbines");
+			surgeTurbulenceMultiplier = builder._double("surgeTurbulenceMultiplier",1);
 		}
 		builder._separator();
 		builder._category("CLIENT");

@@ -12,6 +12,7 @@ public enum MTPacketId {
 	CORE_GENERATION(5),
 	CORE_GLOBAL_GEAR(6),
 	CORE_RPS(7),
+	CORE_OVERDRIVE(8),
 	;
 	public final int id;
 	MTPacketId(int id) {

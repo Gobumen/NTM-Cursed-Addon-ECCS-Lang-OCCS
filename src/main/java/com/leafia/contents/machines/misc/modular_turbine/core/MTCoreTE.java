@@ -19,6 +19,7 @@ import com.leafia.dev.container_utility.LeafiaPacket;
 import com.leafia.dev.container_utility.LeafiaPacketReceiver;
 import com.leafia.init.LeafiaSoundEvents;
 import com.leafia.passive.LeafiaPassiveServer;
+import com.leafia.settings.AddonConfig;
 import com.llib.math.SIPfx;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
@@ -47,7 +48,7 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 	public static double EXIT_WHIRL_RECOVERY_FACTOR = 0.82D;
 	public static double ANGULAR_MOMENTUM_TORQUE_COEFFICIENT = 0.02D;
 	/** Effective linear electrical load slope */
-	public static double GENERATOR_LOAD_COEFFICIENT = 0.001D;
+	public static double GENERATOR_LOAD_COEFFICIENT = 0.000001D;
 	/** Saturation cap applied to the effective generator counter-torque. */
 	public static double GENERATOR_TORQUE_LIMIT = Double.MAX_VALUE;
 	public static double COULOMB_FRICTION_TORQUE = 0.7D;
@@ -57,14 +58,14 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 	public static double INCIDENCE_DESIGN_SPEED_RATIO = 1D;
 	public static double INCIDENCE_LOSS_FACTOR = 0.25D; // UNUSED
 	public static double INCIDENCE_EFFICIENCY_FLOOR = 0.05D; // UNUSED
-	public static double POWER_SCALE = 0.04; //0.00232478632*2;
+	public static double POWER_SCALE = 0.03; //0.00232478632*2;
 	public static double ADMISSION_NOMINAL_TAU_TICKS = 4D;
 	public static double ADMISSION_STABLE_RELATIVE_ERROR = 0.03D;
 	// DEATHSTEAM -> ULTRAHOTSTEAM -> SUPERHOTSTEAM -> HOTSTEAM -> STEAM -> SPENTSTEAM stage-work scalars
 	public static double DEATHSTEAM_STAGE_WORK_MULTIPLIER = 5000D;
 	public static double ULTRAHOTSTEAM_STAGE_WORK_MULTIPLIER = 1000D;
 	public static double SUPERHOTSTEAM_STAGE_WORK_MULTIPLIER = 500D;
-	public static double HOTSTEAM_STAGE_WORK_MULTIPLIER = 25D;
+	public static double HOTSTEAM_STAGE_WORK_MULTIPLIER = 250D;
 	public static double STEAM_STAGE_WORK_MULTIPLIER = 125D;
 	public static double BUFFER_CAPACITY_MULTIPLIER = 1;//16D;
 	public static double ADMISSION_MAX_BUFFER_TICKS = 2D;
@@ -74,13 +75,26 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 	public static double EQUILIBRIUM_RPS_LIMIT = 1.0E6D;
 	public static int EQUILIBRIUM_SOLVER_ITERATIONS = 48;
 	public static double DEFAULT_GLOBAL_GEAR_SCALE = 0.05D;
-	public static double GOVERNED_RPS = 60D;
+	public static double GOVERNED_RPS = AddonConfig.governedRPS;
 	public static double THROTTLE_GOVERNOR_PROPORTIONAL_GAIN = 0.04D;
 	public static double THROTTLE_GOVERNOR_INTEGRAL_GAIN = 0.0025D;
 	public static double THROTTLE_GOVERNOR_ADMISSION_RATE = 0.02D;
 	public static double ROTOR_INERTIA_SCALE = 0.8D;
 	public static double TWO_PI = Math.PI*2D;
 	public static double TICK_SECONDS = 1D/20D;
+
+	public int overdrive = 0;
+	public static int getRPSBoost(int level) {
+		return switch(level) {
+			case 1 -> 10;
+			case 2 -> 25;
+			case 3 -> 40;
+			default -> 0;
+		};
+	}
+	public double getGovernedRPS() {
+		return GOVERNED_RPS+getRPSBoost(overdrive);
+	}
 
 	public double rps;
 	public double lastTargetRPS = 0;
@@ -162,14 +176,21 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 		return getStageSpecificWork(assembly.typeIn,assembly.decompress,compiledStats.partialExpansionFraction)*getStageWorkMultiplier(assembly.typeIn);
 	}
 	private static double getStageWorkMultiplier(FluidType type) {
-		return switch (steamTypes.indexOf(type)) {
+		/*return switch (steamTypes.indexOf(type)) {
 			case 0 -> DEATHSTEAM_STAGE_WORK_MULTIPLIER;
 			case 1 -> ULTRAHOTSTEAM_STAGE_WORK_MULTIPLIER;
 			case 2 -> SUPERHOTSTEAM_STAGE_WORK_MULTIPLIER;
 			case 3 -> HOTSTEAM_STAGE_WORK_MULTIPLIER;
 			case 4 -> STEAM_STAGE_WORK_MULTIPLIER;
 			default -> 1D;
-		};
+		};*/
+		/*if (type.equals(Fluids.STEAM))
+			return 125D;
+		else if (type.equals(Fluids.HOTSTEAM))
+			return 1000D;
+		else
+			return 500D;*/
+		return 125;
 	}
 	private static int getStageInputAmount(FluidType type,boolean decompress) {
 		if (!decompress)
@@ -631,7 +652,7 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 		turbulence = Math.min(turbulence+turbAddWrongBlades,100);
 
 		// apply blade count turbulence
-		double turbAddBladeCount = Math.pow(assembly.maxStackedBlades/5d,5)*0.015*Math.min(inputConsumed,1);
+		double turbAddBladeCount = Math.pow(assembly.maxStackedBlades/(double)AddonConfig.maxOptimalTurbineLength,5)*0.015*Math.min(inputConsumed,1);
 		maxTurbAddBladeCount = Math.max(maxTurbAddBladeCount,turbAddBladeCount);
 
 		//LeafiaDebug.debugLog(world,"WrongBlades: "+turbAddWrongBlades);
@@ -659,6 +680,8 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 		double admittedOps = maxOps*admission+assembly.admissionOpCarry;
 		int ops = (int)Math.floor(admittedOps);
 		assembly.admissionOpCarry = admittedOps-ops;
+		if (!AddonConfig.enableGovernedRPS)
+			ops = maxOps;
 		int inputConsumed = ops*compiledStats.inputAmount;
 		int outputProduced = ops*compiledStats.outputAmount;
 		// ntmleafia: the steams are meant to be processed instantaneously, no matter what
@@ -710,7 +733,7 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 		return wrongBlades;
 	}
 	private void updateThrottleGovernor(TickSummary tickSummary) {
-		double error = GOVERNED_RPS-rps;
+		double error = getGovernedRPS()-rps;
 		double proportionalAdmission = error*THROTTLE_GOVERNOR_PROPORTIONAL_GAIN;
 		double unclampedAdmission = governorIntegral+proportionalAdmission;
 		double targetAdmission = Math.min(Math.max(unclampedAdmission,0D),1D);
@@ -730,7 +753,7 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 			driveTorqueIntercept += data.stageTorqueScale*data.compiledStats.inletWhirl*actualGearRatio;
 			driveTorqueOmegaSlope += data.stageTorqueScale*data.compiledStats.stageRadius*actualGearRatio*actualGearRatio;
 		}
-		tickSummary.targetRPS = Math.min(solveEquilibriumRPS(machineStats,driveTorqueIntercept,driveTorqueOmegaSlope),GOVERNED_RPS);
+		tickSummary.targetRPS = Math.min(solveEquilibriumRPS(machineStats,driveTorqueIntercept,driveTorqueOmegaSlope),getGovernedRPS());
 		//////////////////////////////////
 		//tickSummary.targetRPS = Math.min(solveEquilibriumRPS(machineStats,stageData,globalGearScale),GOVERNED_RPS);
 
@@ -857,12 +880,12 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 		}
 
 		// Apply turbulence damping and transient spike accumulation.
-		double turbulenceAdd = Math.pow(Math.max(tickSummary.targetRPS-rps,0)/24,5)/5;//Math.pow(Math.max(tickSummary.targetRPS-rps,0)/110,7.2)/Math.max(8,60-turbulence*2);
+		double turbulenceAdd = Math.pow(Math.max(Math.min(tickSummary.targetRPS,AddonConfig.governedRPS)-rps,0)/24,5)/5;//Math.pow(Math.max(tickSummary.targetRPS-rps,0)/110,7.2)/Math.max(8,60-turbulence*2);
 		turbulence = Math.max(turbulence-turbulence*0.008-0.008,0);
 		turbulence = Math.min(turbulence+maxTurbAddBladeCount,100);
 		double turbMul1 = Math.min(1,weight/300);
 		double turbMul2 = Math.pow(Math.max(tickSummary.generatorTorque,0)/10000,0.5);
-		turbulence = Math.min(turbulence+turbulenceAdd*Math.pow(turbMul2,2.25),100);
+		turbulence = Math.min(turbulence+turbulenceAdd*AddonConfig.surgeTurbulenceMultiplier*Math.pow(turbMul2,2.25),100);
 		if (turbulenceAdd > 0.3) turbulenceReasonInputSurge = true;
 		if (maxTurbAddBladeCount > 0.3) turbulenceReasonTooManyBlades = true;
 
@@ -925,6 +948,7 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 				.__write(MTPacketId.CORE_GENERATION.id,displayPowerGenerated)
 				.__write(MTPacketId.CORE_GLOBAL_GEAR.id,globalGearScale)
 				.__write(MTPacketId.CORE_RPS.id,rps) // forgor
+				.__write(MTPacketId.CORE_OVERDRIVE.id,overdrive)
 				.__sendToAffectedClients();
 	}
 	@Override
@@ -964,6 +988,8 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 			globalGearScale = (double)value;
 		else if (key == MTPacketId.CORE_RPS.id)
 			rps = (double)value;
+		else if (key == MTPacketId.CORE_OVERDRIVE.id)
+			overdrive = (int)value;
 	}
 	public static class TurbineAssembly {
 		/// NOTE: The values stored here are actually 1 lower than actual offset
@@ -1264,6 +1290,7 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 		super.readFromNBT(compound);
 		rps = compound.getDouble("rps");
 		turbulence = compound.getDouble("turbulence");
+		overdrive = compound.getInteger("overdrive");
 		if (compound.hasKey("assembly"))
 			LeafiaPassiveServer.queueFunction(()->assembleFromNBT(compound.getCompoundTag("assembly")));
 	}
@@ -1272,6 +1299,7 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 		compound.setDouble("rps",rps);
 		compound.setDouble("turbulence",turbulence);
 		compound.setTag("assembly",writeAssemblyToNBT(new NBTTagCompound()));
+		compound.setInteger("overdrive",overdrive);
 		return super.writeToNBT(compound);
 	}
 	List<LCEAudioWrapper> local$audios = new ArrayList<>();

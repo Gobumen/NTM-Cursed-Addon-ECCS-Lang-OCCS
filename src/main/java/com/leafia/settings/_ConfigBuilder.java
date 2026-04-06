@@ -53,7 +53,8 @@ public class _ConfigBuilder {
 		}
 	}
 	public boolean _autoLineBreak = true;
-	public void _lineBreak() {
+	public boolean skipLineBreak = false;
+	public void _pushLine() {
 		lines.add("");
 	}
 	private static final String separator = "----------------------------------------------------------";
@@ -67,12 +68,15 @@ public class _ConfigBuilder {
 		lines.add(" # "+comment);
 	}
 	private int readingLine = -1;
+	public void _popLine() {
+		lines.remove(lines.size()-1);
+	}
 	public String _string(String key,String def) {
 		String value = values.getOrDefault(key,def);
 		readingLine = lineIndices.getOrDefault(key,-1);
 		lines.add(" "+key+": "+value);
-		if (_autoLineBreak)
-			_lineBreak();
+		if (_autoLineBreak || skipLineBreak)
+			_pushLine();
 		return value;
 	}
 	public boolean _boolean(String key,boolean def) {

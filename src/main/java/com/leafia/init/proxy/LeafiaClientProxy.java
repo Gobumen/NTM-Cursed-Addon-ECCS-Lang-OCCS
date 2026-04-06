@@ -89,6 +89,8 @@ import com.leafia.contents.nonmachines.storage.items.CrateLabelRender;
 import com.leafia.eventbuses.LeafiaClientListener;
 import com.leafia.eventbuses.LeafiaClientListener.HandlerClient;
 import com.leafia.init.ItemRendererInit;
+import com.leafia.unsorted.ateupd.Reserved6Render;
+import com.leafia.unsorted.ateupd.Reserved6TE;
 import com.llib.exceptions.LeafiaDevFlaw;
 import net.minecraft.block.BlockDoor;
 import net.minecraft.client.Minecraft;
@@ -202,6 +204,8 @@ public class LeafiaClientProxy extends LeafiaServerProxy {
 			ClientRegistry.bindTileEntitySpecialRenderer(RackTE.class,new RackRender());
 			ClientRegistry.bindTileEntitySpecialRenderer(ModularTurbineComponentTE.class,new ModularTurbineComponentRender());
 			ClientRegistry.bindTileEntitySpecialRenderer(MTCoreTE.class,new MTCoreRender());
+
+			ClientRegistry.bindTileEntitySpecialRenderer(Reserved6TE.class,new Reserved6Render());
 		}
 		AddonJars.initJars();
 	}

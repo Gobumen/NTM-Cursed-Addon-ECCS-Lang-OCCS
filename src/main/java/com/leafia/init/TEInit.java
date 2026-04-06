@@ -61,6 +61,7 @@ import com.leafia.contents.network.pipe_amat.AmatDuctTE;
 import com.leafia.contents.network.pipe_amat.charger.AmatDuctChargerTE;
 import com.leafia.contents.network.spk_cable.SPKCableTE;
 import com.leafia.contents.nonmachines.storage.fluid.fftank.FFTankTE;
+import com.leafia.unsorted.ateupd.Reserved6TE;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.registry.GameRegistry;
@@ -130,6 +131,7 @@ public class TEInit {
 		register(MTPowerPortTE.class,"mt_power_port_te");
 		register(MTFlywheelTE.class,"mt_flywheel_te");
 		register(VoiderTE.class,"debug_voider_te");
+		register(Reserved6TE.class,"reserved6_te");
 	}
 	private static void register(Class<? extends TileEntity> clazz,String res) {
 		GameRegistry.registerTileEntity(clazz,new ResourceLocation(AddonBase.MODID,res));

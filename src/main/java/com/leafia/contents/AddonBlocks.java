@@ -106,11 +106,13 @@ import com.leafia.dev.blocks.legacy.LegacyBlockHazardMeta;
 import com.leafia.dev.blocks.legacy.LegacyWasteEarth;
 import com.leafia.dev.blocks.legacy.LegacyWasteIce;
 import com.leafia.dev.blocks.legacy.LegacyWasteSand;
+import com.leafia.unsorted.ateupd.Reserved6Dummyable;
 import com.llib.exceptions.LeafiaDevFlaw;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.item.EnumDyeColor;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
@@ -398,6 +400,27 @@ public class AddonBlocks {
 		public static final Block waste_snow = new AddonBlockPowder(Material.SNOW, SoundType.SNOW, "waste_snow").setCreativeTab(MainRegistry.resourceTab).setHardness(0.1F).setLightOpacity(0);
 		public static final Block waste_snow_block = new LegacyBlockHazardMeta(Material.SNOW, SoundType.SNOW, "waste_snow_block", "contamination/snow/", BlockBakeFrame.BlockForm.ALL, (short) 7).setCreativeTab(MainRegistry.resourceTab).setHardness(0.2F);
 		public static final Block waste_ice = new LegacyWasteIce("waste_ice").setCreativeTab(MainRegistry.resourceTab).setHardness(0.2F);
+
+		public static final Block machine_assembler = new Reserved6Dummyable("hbm","machine_assembler") {
+			@Override
+			public ItemStack getItem() {
+				return new ItemStack(ModBlocks.machine_assembly_machine);
+			}
+			@Override
+			public int[] getDimensions() {
+				return new int[]{1, 0, 2, 1, 2, 1};
+			}
+		};
+		public static final Block machine_chemplant = new Reserved6Dummyable("hbm","machine_chemplant") {
+			@Override
+			public ItemStack getItem() {
+				return new ItemStack(ModBlocks.machine_chemical_plant);
+			}
+			@Override
+			public int[] getDimensions() {
+				return new int[] {2, 0, 2, 1, 2, 1};
+			}
+		};
 	}
 
 	public static final Block ams_base = new AMSBaseBlock(Material.IRON, "ams_base").setHardness(5.0F).setResistance(100.0F).setCreativeTab(MainRegistry.machineTab);
