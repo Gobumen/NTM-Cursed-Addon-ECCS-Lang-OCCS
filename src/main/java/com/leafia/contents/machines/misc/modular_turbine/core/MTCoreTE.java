@@ -67,7 +67,7 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 	public static double SUPERHOTSTEAM_STAGE_WORK_MULTIPLIER = 500D;
 	public static double HOTSTEAM_STAGE_WORK_MULTIPLIER = 250D;
 	public static double STEAM_STAGE_WORK_MULTIPLIER = 125D;
-	public static double BUFFER_CAPACITY_MULTIPLIER = 1;//16D;
+	public static double BUFFER_CAPACITY_MULTIPLIER = 12D;
 	public static double ADMISSION_MAX_BUFFER_TICKS = 2D;
 	public static double ADMISSION_FLOW_EPSILON = 1.0E-9D;
 	public static double ADMISSION_BUFFER_EPSILON = 1.0E-6D;

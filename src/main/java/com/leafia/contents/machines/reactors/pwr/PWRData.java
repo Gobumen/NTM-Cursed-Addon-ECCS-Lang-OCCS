@@ -745,8 +745,10 @@ public class PWRData implements ITickable, LeafiaPacketReceiver {
 				if (block instanceof CoriumFinite) continue;
 				if (block instanceof PWRElementBlock) {
 					//world.newExplosion(null,member.getX()+0.5,member.getY()+0.5,member.getZ()+0.5,11,true,true);
-					//world.setBlockState(member,ModBlocks.corium_block.getDefaultState());
-					world.setBlockState(member,ModBlocks.gas_meltdown.getDefaultState());
+					//if (tankTypes[1].hasTrait(FT_Gaseous.class))
+						world.setBlockState(member,ModBlocks.corium_block.getDefaultState());
+					//else
+					//	world.setBlockState(member,ModBlocks.gas_meltdown.getDefaultState());
 					continue;
 				}
 				//Block fuckyou = Blocks.BLACK_GLAZED_TERRACOTTA;
@@ -802,6 +804,15 @@ public class PWRData implements ITickable, LeafiaPacketReceiver {
 			LeafiaMap<BlockPos, IBlockState> placeMap = new LeafiaMap<>();
 			LeafiaSet<BlockPos> antiPlaceSet = new LeafiaSet<>();
 			List<PWRDebrisEntity> entitiesToSpawn = new ArrayList<>();
+			int debrisPerBlock = 5;
+			if (reactorSize > 30)
+				debrisPerBlock = 4;
+			if (reactorSize > 40)
+				debrisPerBlock = 3;
+			if (reactorSize > 50)
+				debrisPerBlock = 2;
+			if (reactorSize > 70)
+				debrisPerBlock = 1;
 			for (BlockPos pos : vaporized) {
 				if (placeWrecks.contains(pos)) continue; // Somehow
 				boolean converted = false;
@@ -820,12 +831,14 @@ public class PWRData implements ITickable, LeafiaPacketReceiver {
 					Block block = world.getBlockState(pos).getBlock();
 					if (!(block instanceof IFluidBlock) && LeafiaUtil.isSolidVisibleCube(world.getBlockState(pos))) {
 						if (world.getBlockState(pos).getBlockHardness(world, pos) >= 1) {
-							Vec3d ray = new Vec3d(pos).add(0.5, 0.5, 0.5).subtract(centerPoint);
-							PWRDebrisEntity debris = new PWRDebrisEntity(world, pos.getX() + 0.5D, pos.getY() + 0.5, pos.getZ() + 0.5D, world.getBlockState(pos));
-							debris.motionX = signedPow(ray.x, 1) / reactorSize * (1 + world.rand.nextDouble() * 4) + signedPow(pressure.x, 0.8) / 2;
-							debris.motionY = signedPow(ray.y, 1) / reactorSize * (1 + world.rand.nextDouble() * 4) + signedPow(pressure.y, 0.8) / 2;
-							debris.motionZ = signedPow(ray.z, 1) / reactorSize * (1 + world.rand.nextDouble() * 4) + signedPow(pressure.z, 0.8) / 2;
-							entitiesToSpawn.add(debris);
+							for (int i = 0; i < debrisPerBlock; i++) {
+								Vec3d ray = new Vec3d(pos).add(0.5, 0.5, 0.5).subtract(centerPoint);
+								PWRDebrisEntity debris = new PWRDebrisEntity(world, pos.getX() + 0.5D, pos.getY() + 0.5, pos.getZ() + 0.5D, world.getBlockState(pos));
+								debris.motionX = signedPow(ray.x, 1) / reactorSize * (1 + world.rand.nextDouble() * 4) + signedPow(pressure.x, 0.8) / 2;
+								debris.motionY = signedPow(ray.y, 1) / reactorSize * (1 + world.rand.nextDouble() * 4) + signedPow(pressure.y, 0.8) / 2;
+								debris.motionZ = signedPow(ray.z, 1) / reactorSize * (1 + world.rand.nextDouble() * 4) + signedPow(pressure.z, 0.8) / 2;
+								entitiesToSpawn.add(debris);
+							}
 						}
 					}
 					world.setBlockState(pos,ModBlocks.gas_radon_dense.getDefaultState());
