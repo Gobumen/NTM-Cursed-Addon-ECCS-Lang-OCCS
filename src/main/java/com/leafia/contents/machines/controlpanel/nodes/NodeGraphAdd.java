@@ -20,7 +20,7 @@ public class NodeGraphAdd extends NodeOutput {
 		recalcSize();
 	}
 	@Override
-	public boolean doOutput(IControllable iControllable,Map<String,NodeSystem> map,List<BlockPos> list) {
+	public boolean doOutput(IControllable iControllable,Map<String,NodeSystem> map,Map<String,BlockPos> list) {
 		if (inputs.get(0) == null) return false;
 		if (ctrl instanceof Graph graph)
 			graph.pushValue(inputs.get(0).evaluate().getNumber());
