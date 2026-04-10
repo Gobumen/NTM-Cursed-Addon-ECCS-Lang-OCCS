@@ -68,7 +68,7 @@ public class TextIndicator extends Control {
 	}
 	@Override
 	public float[] getSize() {
-		return new float[]{ 6.75F/1.5f,2.75F/1.5f,0.375F/1.5f };
+		return new float[]{ 6.75F/1.5f,/*2.75F/1.5f*/1.8F,0.375F/1.5f };
 	}
 	static final ResourceLocation tex = getIntegrated("control_panel/instruments/textindicator_light.png");
 	@Override
@@ -169,7 +169,7 @@ public class TextIndicator extends Control {
 		@Override
 		public @Nullable Consumer<MessageContext> decode(LeafiaBuf buf) {
 			boolean success = load(buf);
-			value = buf.readByte();
+			int value = buf.readByte();
 			return (ctx)->{
 				if (!success) return;
 				if (instrument instanceof TextIndicator indicator)

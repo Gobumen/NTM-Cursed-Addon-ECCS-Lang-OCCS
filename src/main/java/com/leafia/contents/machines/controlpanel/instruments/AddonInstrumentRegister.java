@@ -3,6 +3,7 @@ package com.leafia.contents.machines.controlpanel.instruments;
 import com.hbm.inventory.control_panel.Control;
 import com.hbm.inventory.control_panel.ControlRegistry;
 import com.leafia.contents.machines.controlpanel.instruments.types.graph.Graph;
+import com.leafia.contents.machines.controlpanel.instruments.types.meters.vertical.MeterVertical;
 import com.leafia.contents.machines.controlpanel.instruments.types.nixie.NixieDisplay;
 import com.leafia.contents.machines.controlpanel.instruments.types.rbmk.RBMKDisplay;
 import com.leafia.contents.machines.controlpanel.instruments.types.starbound.LargeButton;
@@ -20,5 +21,6 @@ public class AddonInstrumentRegister {
 		reg.add(new TextIndicator("Text Indicator","leafia_textindicator",null));
 		reg.add(new RBMKDisplay("RBMK Display","leafia_rbmk",null));
 		reg.add(new Graph("Graph","leafia_graph",null));
+		reg.add(new MeterVertical("Vertical Meter","leafia_meter_v",null));
 	}
 }

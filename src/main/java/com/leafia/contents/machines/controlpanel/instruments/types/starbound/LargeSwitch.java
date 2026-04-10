@@ -115,7 +115,7 @@ public class LargeSwitch extends Control {
 		@Override
 		public @Nullable Consumer<MessageContext> decode(LeafiaBuf buf) {
 			boolean success = load(buf);
-			level = buf.readFloat();
+			float level = buf.readFloat();
 			return (ctx)->{
 				if (!success) return;
 				if (instrument instanceof LargeSwitch sw)
