@@ -50,7 +50,7 @@ public class NodeBulkQuery extends Node {
 	private void setDataSelector() {
 		dataSelector.list.itemNames.clear();
 		Set<String> alreadyAdded = new HashSet<>();
-		for (BlockPos pos : ctrl.connectedSet) {
+		for (BlockPos pos : ctrl.taggedLinks.values()) {
 			TileEntity tile = ctrl.panel.parent.getControlWorld().getTileEntity(pos);
 			if (tile instanceof IControllable) {
 				IControllable te = (IControllable) tile;
@@ -91,7 +91,7 @@ public class NodeBulkQuery extends Node {
 			if (combineMethod == CombineMethod.MULTIPLY)
 				value = 1;
 			int total = 0;
-			for (BlockPos pos : ctrl.connectedSet) {
+			for (BlockPos pos : ctrl.taggedLinks.values()) {
 				TileEntity tile = ctrl.panel.parent.getControlWorld().getTileEntity(pos);
 
 				if (tile instanceof IControllable) {

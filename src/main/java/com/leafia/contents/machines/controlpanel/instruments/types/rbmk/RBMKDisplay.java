@@ -122,8 +122,8 @@ public class RBMKDisplay extends Control {
 		World world = panel.parent.getControlWorld();
 		IBlockState state = world.getBlockState(panel.parent.getControlPos());
 		String error = null;
-		if (connectedSet.isEmpty()) error = "RBMK$not linked";
-		else if (connectedSet.size() > 1) error = "Must have only$1 position$linked";
+		if (taggedLinks.isEmpty()) error = "RBMK$not linked";
+		else if (taggedLinks.size() > 1) error = "Must have only$1 position$linked";
 		if (error != null) {
 			LeafiaGls.rotate(90,1,0,0);
 			LeafiaGls.scale(0.1);
@@ -135,7 +135,7 @@ public class RBMKDisplay extends Control {
 				font.drawString(s,-font.getStringWidth(s)/2,(int)(line*11),0xFFFFFF);
 			}
 		} else {
-			BlockPos center = connectedSet.get(0);
+			BlockPos center = (BlockPos)taggedLinks.values().toArray()[0];
 			EnumFacing facing = state.getValue(BlockControlPanel.FACING).getOpposite();
 			LeafiaGls.scale(1/0.125*sc);
 			LeafiaGls.rotate(90,0,1,0);

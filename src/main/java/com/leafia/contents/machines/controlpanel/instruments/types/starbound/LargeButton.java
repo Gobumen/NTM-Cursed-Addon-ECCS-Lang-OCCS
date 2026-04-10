@@ -109,7 +109,7 @@ public class LargeButton extends Control {
 			tick.addNode(node0);
 			NodeBuffer node1 = new NodeBuffer(230, 120);
 			node1.inputs.get(0).setData(node0, 0, true);
-			node1.inputs.get(1).setDefault(new DataValueFloat(90));
+			node1.inputs.get(1).setDefault(new DataValueFloat(45));
 			tick.addNode(node1);
 			NodeFunction node2 = new NodeFunction(290, 130);
 			NodeSystem node2_subsystem = new NodeSystem(this);
