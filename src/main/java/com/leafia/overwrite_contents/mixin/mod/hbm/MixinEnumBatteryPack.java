@@ -39,9 +39,9 @@ public abstract class MixinEnumBatteryPack {
     @Inject(method = "<clinit>", at = @At(value = "INVOKE", target = "Lcom/hbm/items/machine/ItemBatteryPack$EnumBatteryPack;values()[Lcom/hbm/items/machine/ItemBatteryPack$EnumBatteryPack;", shift = At.Shift.BEFORE))
     private static void leafia$extendEnum(CallbackInfo ci) {
         int base = $VALUES.length;
-        var desh = leafia$ctor_bool("BATTERY_DESH", base, "battery_desh", 125_000L, false);
-        var euphemium = leafia$ctor_bool("BATTERY_EUPHEMIUM", base + 1, "battery_euphemium", 500_000L, false);
-        var slop = leafia$ctor_duration("BATTERY_SLOP", base + 2, "battery_slop", 833_333_333L, 20L * 60L * 10L);
+        var desh = leafia$ctor_bool("BATTERY_DESH", base, "battery_desh", 175_000L, false);
+        var euphemium = leafia$ctor_bool("BATTERY_EUPHEMIUM", base + 1, "battery_euphemium", 900_000L, false);
+        var slop = leafia$ctor_duration("BATTERY_SLOP", base + 2, "battery_slop", 12_222_222L, 20L * 60L * 10L);
         var spk = leafia$ctor_duration("BATTERY_SPK", base + 3, "battery_spk", 16_666_666_667L, 20L * 60L * 5L);
         var electro = leafia$ctor_duration("BATTERY_ELECTRO", base + 4, "battery_electro", 166_666_666_667L, 20L * 60L * 5L);
         var ext = Arrays.copyOf($VALUES, base + 5);
