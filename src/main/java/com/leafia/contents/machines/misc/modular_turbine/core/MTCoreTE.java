@@ -2,6 +2,10 @@ package com.leafia.contents.machines.misc.modular_turbine.core;
 
 import com.custom_hbm.sound.LCEAudioWrapper;
 import com.hbm.blocks.BlockDummyable;
+import com.hbm.inventory.control_panel.ControlEventSystem;
+import com.hbm.inventory.control_panel.DataValue;
+import com.hbm.inventory.control_panel.DataValueFloat;
+import com.hbm.inventory.control_panel.IControllable;
 import com.hbm.inventory.fluid.FluidType;
 import com.hbm.inventory.fluid.Fluids;
 import com.hbm.inventory.fluid.tank.FluidTankNTM;
@@ -40,7 +44,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITickable {
+public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITickable, IControllable {
 	public static double PARTIAL_EXPANSION_FRACTION = 0.2D;
 	/** nozzle-to-inlet swirl gain */
 	public static double INLET_WHIRL_COEFFICIENT = 32D;
@@ -968,10 +972,26 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 				.__write(MTPacketId.CORE_WEIGHT.id,weight)
 				.__write(MTPacketId.CORE_TURBULENCE.id,turbulence)
 				.__write(MTPacketId.CORE_GENERATION.id,displayPowerGenerated)
-				.__write(MTPacketId.CORE_GLOBAL_GEAR.id,globalGearScale)
+				//.__write(MTPacketId.CORE_GLOBAL_GEAR.id,globalGearScale)
 				.__write(MTPacketId.CORE_RPS.id,rps) // forgor
 				.__write(MTPacketId.CORE_OVERDRIVE.id,overdrive)
 				.__sendToAffectedClients();
+		generateds[needle] = displayPowerGenerated;
+		needle = (needle+1)%20;
+		generatedPerSec = 0;
+		for (long gen : generateds)
+			generatedPerSec += gen/20d;
+	}
+	long[] generateds = new long[20];
+	int needle = 0;
+	double generatedPerSec = 0;
+	@Override
+	public Map<String,DataValue> getQueryData() {
+		Map<String,DataValue> mop = new HashMap<>();
+		mop.put("rps",new DataValueFloat((float)rps));
+		mop.put("turbulence",new DataValueFloat((float)turbulence));
+		mop.put("generated",new DataValueFloat((float)generatedPerSec));
+		return mop;
 	}
 	@Override
 	public void onReceivePacketLocal(byte key,Object value) {
@@ -1012,6 +1032,14 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 			rps = (double)value;
 		else if (key == MTPacketId.CORE_OVERDRIVE.id)
 			overdrive = (int)value;
+	}
+	@Override
+	public BlockPos getControlPos() {
+		return getPos();
+	}
+	@Override
+	public World getControlWorld() {
+		return getWorld();
 	}
 	public static class TurbineAssembly {
 		/// NOTE: The values stored here are actually 1 lower than actual offset
@@ -1103,7 +1131,13 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 		disassemble();
 		stopAllSounds();
 		local$audios.clear();
+		ControlEventSystem.get(world).removeControllable(this);
 		super.invalidate();
+	}
+	@Override
+	public void validate() {
+		super.validate();
+		ControlEventSystem.get(world).addControllable(this);
 	}
 	public AssemblyReturnCode reassemble() {
 		AssemblyReturnCode code = reassemble_internal();
