@@ -42,7 +42,7 @@ public abstract class LeverBase extends Control {
 	public IModelCustom getModel() {
 		return AddonInstrumentModels.lever;
 	}
-	static final float increment = 100/7f;
+	static final float increment = 200/7f;
 	@Override
 	public void receiveEvent(ControlEvent evt) {
 		if (evt.name.equals("tick")) {
