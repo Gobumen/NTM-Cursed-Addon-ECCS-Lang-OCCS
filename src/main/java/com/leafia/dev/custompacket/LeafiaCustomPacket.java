@@ -14,6 +14,8 @@ import com.leafia.contents.gear.wands.ItemWandSaving.HighlightSavingWandRemove;
 import com.leafia.contents.gear.wands.ItemWandSaving.HighlightSavingWandSave;
 import com.leafia.contents.machines.controlpanel.instruments.types.graph.Graph;
 import com.leafia.contents.machines.controlpanel.instruments.types.graph.Graph.CCPGraphSyncPacket;
+import com.leafia.contents.machines.controlpanel.instruments.types.lever.LeverBase;
+import com.leafia.contents.machines.controlpanel.instruments.types.lever.LeverBase.CCPLeverSyncPacket;
 import com.leafia.contents.machines.controlpanel.instruments.types.meters.vertical.MeterVertical;
 import com.leafia.contents.machines.controlpanel.instruments.types.meters.vertical.MeterVertical.CCPMeterVerticalSyncPacket;
 import com.leafia.contents.machines.controlpanel.instruments.types.starbound.LargeSwitch;
@@ -74,6 +76,7 @@ public class LeafiaCustomPacket extends RecordablePacket {
 		CCP_INDICATOR_SYNC(new CCPTextIndicatorSyncPacket()),
 		CCP_GRAPH_SYNC(new CCPGraphSyncPacket()),
 		CCP_METER_V_SYNC(new CCPMeterVerticalSyncPacket()),
+		CCP_LEVER_SYNC(new CCPLeverSyncPacket()),
 		;
 		final LeafiaCustomPacketEncoder encoder;
 		CustomPacketType() { encoder = null; }

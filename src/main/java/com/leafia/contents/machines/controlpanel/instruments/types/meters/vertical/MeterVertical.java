@@ -76,7 +76,7 @@ public class MeterVertical extends Control {
 	}
 	@Override
 	public float[] getSize() {
-		return new float[]{ 1.9f,5f,1.25f };
+		return new float[]{ 1.7f,5f,1.25f };
 	}
 	@Override
 	public AxisAlignedBB getBoundingBox() {
@@ -163,7 +163,7 @@ public class MeterVertical extends Control {
 			LeafiaGls.color(0.1F,0.1F,0.1F);
 			mdl.renderPart("Base");
 			{
-				//GL11.glEnable(GL11.GL_CLIP_PLANE0);
+				GL11.glEnable(GL11.GL_CLIP_PLANE0);
 				dbuf.put(new double[]{ 0,1,0,0 });
 				dbuf.rewind();
 				GL11.glClipPlane(GL11.GL_CLIP_PLANE0,dbuf);
@@ -187,12 +187,13 @@ public class MeterVertical extends Control {
 				LeafiaGls.rotate(getAngleForRatio(i),1,0,0);
 				texmg.bindTexture(AddonBase.solid);
 				LeafiaGls.color(0,0,0);
-				int startX = 26;
-				int endX = 18;
+				int offset = 5;
+				int startX = 26-offset+1;
+				int endX = 18-offset-3;
 				if (subdivisions > 0 && i0 < divisions) {
 					for (int j = 1; j <= subdivisions; j++) {
 						LeafiaGls.pushMatrix();
-						int endX2 = 22;
+						int endX2 = 22-offset-3;
 						float increment = 1f/divisions/(subdivisions+1);
 						LeafiaGls.rotate(getAngleForRatio(increment*j+0.5f),1,0,0);
 						LeafiaGls.translate(0,2.9,0);
@@ -221,7 +222,7 @@ public class MeterVertical extends Control {
 					brush.addVertexWithUV(endX,0,0,0,0);
 					brush.draw();
 					String s = String.format("%01."+decimals+"f",lerp(min,max,i0/(float)divisions));
-					font.drawString(s,15-font.getStringWidth(s),-7/2,0);
+					font.drawString(s,15-3-font.getStringWidth(s),-7/2,0);
 				}
 				LeafiaGls.popMatrix();
 			}

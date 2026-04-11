@@ -76,7 +76,8 @@ public class LargeSwitch extends Control {
 		if (evt.name.equals("ctrl_press"))
 			panel.parent.getControlWorld().playSound(null,panel.parent.getControlPos(),LeafiaSoundEvents.sbWallSwitch,SoundCategory.BLOCKS,0.5f,1);
 		else if (evt.name.equals("tick")) {
-			float tgtLevel = MathHelper.clamp(vars.get("position").getNumber(),0,100);
+			vars.put("position",new DataValueFloat(Math.max(Math.min(vars.get("position").getNumber(),100),0)));
+			float tgtLevel = vars.get("position").getNumber();
 			float delta = tgtLevel-curLevel;
 			float difference = Math.abs(delta);
 			if (difference > 0) {

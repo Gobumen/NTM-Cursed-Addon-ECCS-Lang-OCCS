@@ -2,7 +2,11 @@ package com.leafia.contents.machines.controlpanel.instruments;
 
 import com.hbm.inventory.control_panel.Control;
 import com.hbm.inventory.control_panel.ControlRegistry;
+import com.leafia.contents.machines.controlpanel.instruments.types.drawing.Drawing;
 import com.leafia.contents.machines.controlpanel.instruments.types.graph.Graph;
+import com.leafia.contents.machines.controlpanel.instruments.types.lever.LeverHorizontal;
+import com.leafia.contents.machines.controlpanel.instruments.types.lever.LeverVertical;
+import com.leafia.contents.machines.controlpanel.instruments.types.meters.horizontal.MeterHorizontal;
 import com.leafia.contents.machines.controlpanel.instruments.types.meters.vertical.MeterVertical;
 import com.leafia.contents.machines.controlpanel.instruments.types.nixie.NixieDisplay;
 import com.leafia.contents.machines.controlpanel.instruments.types.rbmk.RBMKDisplay;
@@ -21,6 +25,10 @@ public class AddonInstrumentRegister {
 		reg.add(new TextIndicator("Text Indicator","leafia_textindicator",null));
 		reg.add(new RBMKDisplay("RBMK Display","leafia_rbmk",null));
 		reg.add(new Graph("Graph","leafia_graph",null));
+		reg.add(new MeterHorizontal("Horizontal Meter","leafia_meter_h",null));
 		reg.add(new MeterVertical("Vertical Meter","leafia_meter_v",null));
+		reg.add(new Drawing("Boxed Label","leafia_drawing_box",null));
+		reg.add(new LeverHorizontal("Horizontal Lever","leafia_lever_h",null));
+		reg.add(new LeverVertical("Vertical Lever","leafia_lever_v",null));
 	}
 }

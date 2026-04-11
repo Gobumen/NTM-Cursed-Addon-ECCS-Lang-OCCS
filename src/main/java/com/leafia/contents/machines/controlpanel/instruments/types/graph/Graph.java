@@ -219,7 +219,7 @@ public class Graph extends Control {
 			return skin;
 		}
 		public static final GraphSkin CONSOLE = registerOrGet("Console",true,false,0,0,0);
-		public static final GraphSkin LIGHT = registerOrGet("Light",false,true,0xFFFFFF,0xCCCCCC,0xCCCCCC);
+		public static final GraphSkin LIGHT = registerOrGet("Light",false,true,0xFFFFFF,0xCCCCCC,0xAAAAAA);
 		public static final GraphSkin DARK = registerOrGet("Dark",true,true,0x1A1A1A,0x3A3A3A,0xCCCCCC);
 	}
 	@Override
