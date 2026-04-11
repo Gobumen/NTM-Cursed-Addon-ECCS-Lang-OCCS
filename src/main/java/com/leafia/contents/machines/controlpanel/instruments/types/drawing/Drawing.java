@@ -12,6 +12,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -98,10 +99,14 @@ public class Drawing extends Control {
 		}
 	}
 	@Override
+	public AxisAlignedBB getBoundingBox() {
+		return null;
+	}
+	@Override
 	public void render() {
 		LeafiaGls.color(1,1,1);
 		LeafiaGls.pushMatrix();
-		LeafiaGls.translate(posX-width/2d,0,posY-height/2d);
+		LeafiaGls.translate(posX-1/2d,0,posY-1/2d);
 		LeafiaGls.rotate(90,1,0,0);
 		draw(1);
 		LeafiaGls.popMatrix();

@@ -31,7 +31,7 @@ public class NodeSummarizer extends Node {
 		this.inputs.add(new NodeConnection("Enable",this,inputs.size(),true,DataType.NUMBER,new DataValueFloat(0)));
 		this.inputs.add(new NodeConnection("New Value",this,inputs.size(),true,DataType.NUMBER,new DataValueFloat(0)));
 		this.inputs.add(new NodeConnection("Clear",this,inputs.size(),true,DataType.NUMBER,new DataValueFloat(0)));
-		this.inputs.add(new NodeConnection("Trim Count",this,inputs.size(),true,DataType.NUMBER,new DataValueFloat(40)));
+		this.inputs.add(new NodeConnection("Trim Count",this,inputs.size(),true,DataType.NUMBER,new DataValueFloat(20)));
 		recalcSize();
 	}
 	@Override
