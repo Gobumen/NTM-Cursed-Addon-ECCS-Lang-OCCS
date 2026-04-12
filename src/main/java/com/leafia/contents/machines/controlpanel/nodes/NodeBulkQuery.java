@@ -14,7 +14,7 @@ import java.util.Set;
 public class NodeBulkQuery extends Node {
 	public Control ctrl;
 
-	public enum CombineMethod { ADD,MULTIPLY,AVERAGE }
+	public enum CombineMethod { ADD,MULTIPLY,AVERAGE,HIGHEST,LOWEST }
 	public CombineMethod combineMethod = CombineMethod.ADD;
 	public String dataName = "";
 	public NodeDropdown dataSelector;
@@ -91,6 +91,7 @@ public class NodeBulkQuery extends Node {
 			if (combineMethod == CombineMethod.MULTIPLY)
 				value = 1;
 			int total = 0;
+			boolean firstTime = true;
 			for (BlockPos pos : ctrl.connectedSet) {
 				TileEntity tile = ctrl.panel.parent.getControlWorld().getTileEntity(pos);
 
@@ -106,6 +107,14 @@ public class NodeBulkQuery extends Node {
 								case AVERAGE -> {
 									value += curValue;
 									total++;
+								} case HIGHEST -> {
+									if (firstTime) value = curValue;
+									else value = Math.max(curValue,value);
+									firstTime = false;
+								} case LOWEST -> {
+									if (firstTime) value = curValue;
+									else value = Math.min(curValue,value);
+									firstTime = false;
 								}
 							}
 						}

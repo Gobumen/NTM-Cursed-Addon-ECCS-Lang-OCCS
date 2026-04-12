@@ -59,6 +59,7 @@ public class NodeSummarizer extends Node {
 		}
 		float value = 0;
 		int total = 0;
+		boolean firstTime = true;
 		for (float v : internalList) {
 			boolean stopLoop = false;
 			switch(combineMethod) {
@@ -69,6 +70,14 @@ public class NodeSummarizer extends Node {
 					total++;
 					if (total >= needle-1)
 						stopLoop = true;
+				} case HIGHEST -> {
+					if (firstTime) value = v;
+					else value = Math.max(v,value);
+					firstTime = false;
+				} case LOWEST -> {
+					if (firstTime) value = v;
+					else value = Math.min(v,value);
+					firstTime = false;
 				}
 			}
 			if (stopLoop) break;
