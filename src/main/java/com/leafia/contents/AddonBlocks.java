@@ -466,7 +466,7 @@ public class AddonBlocks {
 
 	public static final Block reactor_door = new ReactorDoorBlock(Material.IRON,AddonDoorDecl.REACTOR_DOOR,true,"reactor_door").setHardness(150.0F).setResistance(13500.0F).setCreativeTab(MainRegistry.machineTab);
 
-	public static final Block brick_concrete_dark = new ConcreteBricks(Material.ROCK,"brick_concrete_dark","brick_dark_concrete"); // :leafeon_facepalm:
+	public static final Block brick_concrete_dark = new ConcreteBricks(Material.ROCK,"brick_concrete_dark","brick_dark_concrete").setHardness(15.0F).setResistance(160.0F); // :leafeon_facepalm:
 
 	public static final Block sellacity_rack = new RackBlock(Material.IRON,"sellacity_rack").setHardness(5.0F).setResistance(10.0F).setCreativeTab(MainRegistry.blockTab);
 
