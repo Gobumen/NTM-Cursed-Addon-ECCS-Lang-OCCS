@@ -1344,17 +1344,13 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 		return (long)buffer;
 	}
 	@Override
-	protected void setWorldCreate(World worldIn) {
-		world = worldIn;
-	}
-	@Override
 	public void readFromNBT(NBTTagCompound compound) {
 		super.readFromNBT(compound);
 		rps = compound.getDouble("rps");
 		turbulence = compound.getDouble("turbulence");
 		overdrive = compound.getInteger("overdrive");
 		if (compound.hasKey("assembly"))
-			assembleFromNBT(compound.getCompoundTag("assembly"));
+			LeafiaPassiveServer.queueFunction(()->assembleFromNBT(compound.getCompoundTag("assembly")));
 	}
 	@Override
 	public NBTTagCompound writeToNBT(NBTTagCompound compound) {
