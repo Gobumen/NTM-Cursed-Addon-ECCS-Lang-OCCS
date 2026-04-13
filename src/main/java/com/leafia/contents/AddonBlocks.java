@@ -42,6 +42,7 @@ import com.leafia.contents.machines.heat.hpboiler.HPBoilerBlock;
 import com.leafia.contents.machines.heat.rtheater.HeaterRTGBlock;
 import com.leafia.contents.machines.misc.heatex.CoolantHeatexBlock;
 import com.leafia.contents.machines.misc.modular_turbine.MTShaftBlock;
+import com.leafia.contents.machines.misc.modular_turbine.ModularTurbineBlockBase;
 import com.leafia.contents.machines.misc.modular_turbine.blades.*;
 import com.leafia.contents.machines.misc.modular_turbine.core.MTCoreBlock;
 import com.leafia.contents.machines.misc.modular_turbine.flywheel.*;
@@ -474,6 +475,8 @@ public class AddonBlocks {
 	public static class ModularTurbines {
 		static boolean dummy = false;
 
+		public static List<ModularTurbineBlockBase> ALL_COMPONENTS_FOR_RENDER = new ArrayList<>();
+
 		public static final Block deco_turbine = new AddonBlockBase(Material.IRON,"deco_turbine").setCreativeTab(MainRegistry.blockTab).setHardness(5.0F).setResistance(10.0F);
 		public static final Block power_port = new MTPowerPortBlock(Material.IRON,"modular_turbine_port").setCreativeTab(MainRegistry.machineTab).setHardness(5.0F).setResistance(10.0F);
 
@@ -492,6 +495,18 @@ public class AddonBlocks {
 		public static final Block blades5x5_glass = new MTBlades5x5("modular_turbine_5x5_blades_glass","glass");
 		public static final Block blades7x7_glass = new MTBlades7x7("modular_turbine_7x7_blades_glass","glass");
 		public static final Block blades9x9_glass = new MTBlades9x9("modular_turbine_9x9_blades_glass","glass");
+
+		public static final Block blades2x2_smooth = new MTBlades2x2("modular_turbine_2x2_blades_smooth","smooth");
+		public static final Block blades3x3_smooth = new MTBlades3x3("modular_turbine_3x3_blades_smooth","smooth");
+		public static final Block blades5x5_smooth = new MTBlades5x5("modular_turbine_5x5_blades_smooth","smooth");
+		public static final Block blades7x7_smooth = new MTBlades7x7("modular_turbine_7x7_blades_smooth","smooth");
+		public static final Block blades9x9_smooth = new MTBlades9x9("modular_turbine_9x9_blades_smooth","smooth");
+
+		public static final Block blades2x2_glass_smooth = new MTBlades2x2("modular_turbine_2x2_blades_glass_smooth","glass_smooth");
+		public static final Block blades3x3_glass_smooth = new MTBlades3x3("modular_turbine_3x3_blades_glass_smooth","glass_smooth");
+		public static final Block blades5x5_glass_smooth = new MTBlades5x5("modular_turbine_5x5_blades_glass_smooth","glass_smooth");
+		public static final Block blades7x7_glass_smooth = new MTBlades7x7("modular_turbine_7x7_blades_glass_smooth","glass_smooth");
+		public static final Block blades9x9_glass_smooth = new MTBlades9x9("modular_turbine_9x9_blades_glass_smooth","glass_smooth");
 
 		public static final Block separator3x3 = new MTSeparator3x3("modular_turbine_3x3_separator");
 		public static final Block separator5x5 = new MTSeparator5x5("modular_turbine_5x5_separator");
