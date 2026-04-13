@@ -9,9 +9,9 @@ import net.minecraft.nbt.NBTTagCompound;
 public class NodeParseFloat extends Node {
 	public NodeParseFloat(float x,float y) {
 		super(x,y);
-		outputs.add(new NodeConnection("Number",this,outputs.size(),false,DataType.NUMBER,new DataValueFloat(0)));
+		outputs.add(new NodeConnection("Output",this,outputs.size(),false,DataType.NUMBER,new DataValueFloat(0)));
 		outputs.add(new NodeConnection("Is Error",this,outputs.size(),false,DataType.NUMBER,new DataValueFloat(0)));
-		inputs.add(new NodeConnection("String",this,inputs.size(),true,DataType.STRING,new DataValueString("0")));
+		inputs.add(new NodeConnection("Input",this,inputs.size(),true,DataType.STRING,new DataValueString("0")));
 		recalcSize();
 		evalCache = new DataValue[2];
 	}
@@ -40,7 +40,7 @@ public class NodeParseFloat extends Node {
 	}
 	@Override
 	public String getDisplayName() {
-		return "Parse Number";
+		return "Text to Number";
 	}
 	@Override
 	public NBTTagCompound writeToNBT(NBTTagCompound tag,NodeSystem sys) {
