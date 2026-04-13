@@ -7,12 +7,15 @@ import com.leafia.contents.machines.controlpanel.nodes.*;
 import com.leafia.contents.machines.controlpanel.nodes.NodeBulkQuery;
 import com.leafia.contents.machines.controlpanel.nodes.bool.NodePulse;
 import com.leafia.contents.machines.controlpanel.nodes.bool.NodeSRLatch;
+import com.leafia.contents.machines.controlpanel.nodes.ror.NodeRoRReceiver;
+import com.leafia.contents.machines.controlpanel.nodes.ror.NodeRoRSender;
 import com.leafia.contents.machines.controlpanel.nodes.string.NodeAddString;
 import com.leafia.contents.machines.controlpanel.nodes.string.NodeFormat;
 import com.leafia.contents.machines.controlpanel.nodes.string.NodeSIPfx;
 import com.leafia.contents.machines.controlpanel.nodes.string.NodeSubString;
 import com.leafia.contents.machines.controlpanel.nodes.utility.NodeCache;
 import com.leafia.contents.machines.controlpanel.nodes.utility.NodeClock;
+import com.leafia.contents.machines.controlpanel.nodes.utility.NodeParseFloat;
 import com.leafia.contents.machines.controlpanel.nodes.utility.NodeSummarizer;
 import net.minecraft.nbt.NBTTagCompound;
 
@@ -33,6 +36,9 @@ public class AddonNodeLoader implements INodeLoader {
 			case "leafia_cache" -> new NodeCache(0,0);
 			case "leafia_graph" -> new NodeGraphAdd(0,0,nodeSystem.parent);
 			case "leafia_graph_bounds" -> new NodeGraphBounds(0,0,nodeSystem.parent);
+			case "leafia_parse_float" -> new NodeParseFloat(0,0);
+			case "leafia_ror_receiver" -> new NodeRoRReceiver(0,0,nodeSystem.parent.panel.parent.getControlWorld());
+			case "leafia_ror_sender" -> new NodeRoRSender(0,0,nodeSystem.parent.panel.parent.getControlWorld());
 			default -> null;
 		};
 		return node;

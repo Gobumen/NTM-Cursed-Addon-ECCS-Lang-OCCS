@@ -6,6 +6,7 @@ import com.hbm.inventory.control_panel.modular.INodeMenuCreator;
 import com.hbm.inventory.control_panel.nodes.Node;
 import com.leafia.contents.machines.controlpanel.nodes.utility.NodeCache;
 import com.leafia.contents.machines.controlpanel.nodes.utility.NodeClock;
+import com.leafia.contents.machines.controlpanel.nodes.utility.NodeParseFloat;
 import com.leafia.contents.machines.controlpanel.nodes.utility.NodeSummarizer;
 
 public class NCLeafiaUtility implements INodeMenuCreator {
@@ -15,6 +16,7 @@ public class NCLeafiaUtility implements INodeMenuCreator {
 			case "Cache" -> new NodeCache(x,y);
 			case "Clock" -> new NodeClock(x,y);
 			case "Summarizer" -> new NodeSummarizer(x,y);
+			case "Parse Number" -> new NodeParseFloat(x,y);
 			default -> null;
 		};
 	}
@@ -22,6 +24,7 @@ public class NCLeafiaUtility implements INodeMenuCreator {
 	public void addItems(ItemList itemList,float x,float y,SubElementNodeEditor editor) {
 		itemList.addItems("Cache");
 		itemList.addItems("Clock");
+		itemList.addItems("Parse Number");
 		itemList.addItems("Summarizer");
 	}
 }
