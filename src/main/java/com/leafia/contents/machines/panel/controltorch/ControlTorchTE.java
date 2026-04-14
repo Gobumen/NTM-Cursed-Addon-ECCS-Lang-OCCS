@@ -1,6 +1,7 @@
 package com.leafia.contents.machines.panel.controltorch;
 
 import com.hbm.inventory.control_panel.*;
+import com.hbm.inventory.control_panel.types.*;
 import com.leafia.contents.AddonBlocks;
 import com.leafia.passive.LeafiaPassiveServer;
 import net.minecraft.block.BlockTorch;

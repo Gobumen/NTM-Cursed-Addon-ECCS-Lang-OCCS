@@ -2,6 +2,7 @@ package com.leafia.contents.machines.controlpanel.nodes;
 
 import com.hbm.inventory.control_panel.*;
 import com.hbm.inventory.control_panel.types.*;
+import com.hbm.inventory.control_panel.types.*;
 import com.hbm.inventory.control_panel.types.DataValue.DataType;
 import com.hbm.inventory.control_panel.modular.StockNodesRegister;
 import com.hbm.inventory.control_panel.nodes.NodeOutput;

@@ -48,7 +48,6 @@
     "hbm.MixinEntityDebrisBase",
     "hbm.MixinEntityEffectHandler",
     "hbm.MixinEntityFalloutRain",
-    "hbm.MixinEntityGrenadeASchrab",
     "hbm.MixinEntityMeteor",
     "hbm.MixinEntityMissileBaseNT",
     "hbm.MixinEntityNukeExplosionMK3",

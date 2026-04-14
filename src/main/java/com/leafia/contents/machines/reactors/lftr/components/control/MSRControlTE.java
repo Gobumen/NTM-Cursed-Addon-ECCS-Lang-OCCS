@@ -2,6 +2,7 @@ package com.leafia.contents.machines.reactors.lftr.components.control;
 
 import com.hbm.blocks.generic.BlockPipe;
 import com.hbm.inventory.control_panel.*;
+import com.hbm.inventory.control_panel.types.*;
 import com.leafia.contents.AddonBlocks.LFTR;
 import com.leafia.contents.machines.reactors.lftr.components.element.MSRElementTE;
 import com.leafia.dev.LeafiaDebug.Tracker;

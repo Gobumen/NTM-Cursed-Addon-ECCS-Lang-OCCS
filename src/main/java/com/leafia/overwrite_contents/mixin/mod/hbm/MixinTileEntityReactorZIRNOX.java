@@ -12,6 +12,7 @@ import com.hbm.handler.MultiblockHandlerXR;
 import com.hbm.handler.radiation.ChunkRadiationManager;
 import com.hbm.handler.threading.PacketThreading;
 import com.hbm.inventory.control_panel.*;
+import com.hbm.inventory.control_panel.types.*;
 import com.hbm.inventory.fluid.FluidType;
 import com.hbm.inventory.fluid.Fluids;
 import com.hbm.inventory.fluid.tank.FluidTankNTM;

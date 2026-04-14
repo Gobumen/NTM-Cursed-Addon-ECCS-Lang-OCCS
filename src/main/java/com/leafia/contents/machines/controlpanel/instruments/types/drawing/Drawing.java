@@ -1,6 +1,7 @@
 package com.leafia.contents.machines.controlpanel.instruments.types.drawing;
 
 import com.hbm.inventory.control_panel.*;
+import com.hbm.inventory.control_panel.types.*;
 import com.hbm.inventory.control_panel.controls.ControlType;
 import com.hbm.inventory.control_panel.controls.configs.SubElementBaseConfig;
 import com.hbm.render.loader.IModelCustom;

@@ -2,6 +2,7 @@ package com.leafia.overwrite_contents.mixin.mod.hbm;
 
 import com.hbm.api.energymk2.IEnergyReceiverMK2;
 import com.hbm.inventory.control_panel.*;
+import com.hbm.inventory.control_panel.types.*;
 import com.hbm.items.machine.ItemLens;
 import com.hbm.tileentity.TileEntityMachineBase;
 import com.hbm.tileentity.machine.TileEntityCore;

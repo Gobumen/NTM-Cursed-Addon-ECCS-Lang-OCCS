@@ -1,6 +1,8 @@
 package com.leafia.contents.machines.controlpanel.nodes;
 
 import com.hbm.inventory.control_panel.*;
+import com.hbm.inventory.control_panel.types.*;
+import com.hbm.inventory.control_panel.types.*;
 import com.hbm.inventory.control_panel.modular.StockNodesRegister;
 import com.hbm.inventory.control_panel.nodes.Node;
 import net.minecraft.nbt.NBTTagCompound;
