@@ -8,7 +8,6 @@
   "client": [
     "hbm.MixinCoriumBlock",
     "hbm.MixinCoriumFinite",
-    "hbm.MixinFolderButton",
     "hbm.MixinFT_HEatable",
     "hbm.MixinGUIDiFurnaceRTG",
     "hbm.MixinItemFluidIcon",

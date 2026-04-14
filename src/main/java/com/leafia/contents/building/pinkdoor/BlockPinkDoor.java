@@ -2,7 +2,7 @@ package com.leafia.contents.building.pinkdoor;
 
 import com.hbm.blocks.ModBlocks;
 import com.hbm.blocks.generic.BlockModDoor;
-import com.hbm.entity.grenade.EntityGrenadeZOMG;
+//import com.hbm.entity.grenade.EntityGrenadeZOMG;
 import com.hbm.entity.projectile.EntityBoxcar;
 import com.hbm.entity.projectile.EntityBulletBase;
 import com.hbm.entity.projectile.EntityFallingNuke;
@@ -168,10 +168,10 @@ public class BlockPinkDoor extends BlockModDoor implements IBomb {
 		for (int i = 0; i < 9; i++) spawnDebris(world,pos,DebrisType.ROD);
 		ExplosionLarge.spawnShrapnelShower(world, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, 0, 1D, 0, 35, 0.2D);
 		ExplosionLarge.spawnShrapnels(world, pos.getZ() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, 8);
-		ExplosionChaos.zomg(
+		/*ExplosionChaos.zomg(
 				world,pos.getX()+0.5,pos.getY()+0.5,pos.getZ()+0.5,30,null,
 				new EntityGrenadeZOMG(world,pos.getX()+0.5,pos.getY()+0.5,pos.getZ()+0.5)
-		);
+		);*/
 		for (int i = 0; i < 25; i++) {
 			world.spawnEntity(new EntityFallingBlock(world,
 					pos.getX() + world.rand.nextInt(201)-100,
