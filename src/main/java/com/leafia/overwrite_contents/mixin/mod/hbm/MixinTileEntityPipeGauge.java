@@ -2,8 +2,8 @@ package com.leafia.overwrite_contents.mixin.mod.hbm;
 
 import com.hbm.blocks.network.FluidDuctGauge.TileEntityPipeGauge;
 import com.hbm.inventory.control_panel.ControlEventSystem;
-import com.hbm.inventory.control_panel.DataValue;
-import com.hbm.inventory.control_panel.DataValueFloat;
+import com.hbm.inventory.control_panel.types.DataValue;
+import com.hbm.inventory.control_panel.types.DataValueFloat;
 import com.hbm.inventory.control_panel.IControllable;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;

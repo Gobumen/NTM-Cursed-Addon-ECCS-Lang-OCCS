@@ -1,6 +1,6 @@
 package com.leafia.contents.machines.controlpanel.instruments.types.rbmk;
 
-import com.hbm.inventory.control_panel.DataValue;
+import com.hbm.inventory.control_panel.types.DataValue;
 import com.hbm.inventory.control_panel.GuiControlEdit;
 import com.hbm.inventory.control_panel.controls.configs.SubElementBaseConfig;
 import net.minecraftforge.fml.client.config.GuiCheckBox;
