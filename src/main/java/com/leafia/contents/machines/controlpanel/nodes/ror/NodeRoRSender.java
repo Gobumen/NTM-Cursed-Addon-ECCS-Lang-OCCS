@@ -1,12 +1,11 @@
 package com.leafia.contents.machines.controlpanel.nodes.ror;
 
 import com.hbm.inventory.control_panel.*;
-import com.hbm.inventory.control_panel.DataValue.DataType;
+import com.hbm.inventory.control_panel.types.*;
+import com.hbm.inventory.control_panel.types.DataValue.DataType;
 import com.hbm.inventory.control_panel.modular.StockNodesRegister;
-import com.hbm.inventory.control_panel.nodes.Node;
 import com.hbm.inventory.control_panel.nodes.NodeOutput;
 import com.hbm.tileentity.network.RTTYSystem;
-import com.hbm.tileentity.network.RTTYSystem.RTTYChannel;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -38,7 +37,7 @@ public class NodeRoRSender extends NodeOutput {
 		return super.writeToNBT(tag,sys);
 	}
 	@Override
-	public boolean doOutput(IControllable iControllable,Map<String,NodeSystem> map,List<BlockPos> list) {
+	public boolean doOutput(IControllable from,Map<String,NodeSystem> sendNodeMap,Map<String,BlockPos> positions) {
 		DataValue freq = inputs.get(0).evaluate();
 		DataValue signal = inputs.get(1).evaluate();
 		if (signal != null && freq != null && world != null)
