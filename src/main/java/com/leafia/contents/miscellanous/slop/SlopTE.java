@@ -179,7 +179,7 @@ public class SlopTE extends LCETileEntityMachineBase implements IGUIProvider, Le
 		for (Entity entity : world.getEntitiesWithinAABBExcludingEntity(null,new AxisAlignedBB(center.getX()-range,center.getY()-range,center.getZ()-range,center.getX()+range+1,center.getY()+range+1,center.getZ()+range+1)))
 			tryKill(entity);
 	}
-	private static void tryKill(final Entity toKill) { // copied from IF null grenade
+	public static void tryKill(final Entity toKill) { // copied from IF null grenade
 		if (toKill instanceof MultiPartEntityPart part) {
 			if (part.parent instanceof Entity parent) {
 				tryKill(parent);
