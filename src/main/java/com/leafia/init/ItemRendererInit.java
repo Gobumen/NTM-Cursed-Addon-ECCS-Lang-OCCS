@@ -7,6 +7,7 @@ import com.hbm.render.tileentity.IItemRendererProvider;
 import com.leafia.contents.AddonBlocks;
 import com.leafia.contents.AddonBlocks.Elevators;
 import com.leafia.contents.AddonBlocks.LetterSigns;
+import com.leafia.contents.AddonBlocks.ModularTurbines;
 import com.leafia.contents.AddonItems;
 import com.leafia.contents.AddonItems.ElevatorStyles;
 import com.leafia.contents.bomb.missile.customnuke.CustomNukeMissileItemRender;
@@ -14,7 +15,6 @@ import com.leafia.contents.building.storage.broof.BroofRender.BroofItemRender;
 import com.leafia.contents.building.doors.renderers.ReactorDoorRender.ReactorDoorItemRender;
 import com.leafia.contents.building.light.LightRender.LightItemRender;
 import com.leafia.contents.building.sign.SignRender.SignItemRender;
-import com.leafia.contents.building.storage.rack.RackRender;
 import com.leafia.contents.building.storage.rack.RackRender.RackItemRender;
 import com.leafia.contents.gear.advisor.AdvisorRender;
 import com.leafia.contents.gear.utility.FuzzyIdentifierRender;
@@ -28,6 +28,8 @@ import com.leafia.contents.machines.elevators.items.WeightSpawnItemRender;
 import com.leafia.contents.machines.heat.hpboiler.HPBoilerRender.HPBoilerItemRender;
 import com.leafia.contents.machines.heat.rtheater.HeaterRTGRender;
 import com.leafia.contents.machines.misc.heatex.CoolantHeatexRender;
+import com.leafia.contents.machines.misc.modular_turbine.ModularTurbineBlockBase;
+import com.leafia.contents.machines.misc.modular_turbine.ModularTurbineComponentRender.ModularTurbineComponentItemRender;
 import com.leafia.contents.machines.powercores.ams.base.AMSBaseRender.AMSBaseItemRender;
 import com.leafia.contents.machines.powercores.ams.emitter.AMSEmitterRender.AMSEmitterItemRender;
 import com.leafia.contents.machines.powercores.ams.stabilizer.AMSStabilizerRender.AMSStabilizerItemRender;
@@ -122,6 +124,12 @@ public class ItemRendererInit {
 
 		register(AddonBlocks.sellacity_rack,new RackItemRender());
 
+		//for (ModularTurbineBlockBase component : ModularTurbines.ALL_COMPONENTS_FOR_RENDER)
+		//	ModularTurbineComponentItemRender.registerItemRenderer(component);
+		ModularTurbineComponentItemRender renderer = new ModularTurbineComponentItemRender();
+		for (ModularTurbineBlockBase component : ModularTurbines.ALL_COMPONENTS_FOR_RENDER)
+			register(component,renderer);
+
 		/*fix(AddonItems.ams_focus_blank);
 		fix(AddonItems.ams_focus_booster);
 		fix(AddonItems.ams_focus_limiter);
@@ -132,10 +140,10 @@ public class ItemRendererInit {
 
 		fix(LeafiaRods.leafRod);*/
 	}
-	private static void register(Item item,TEISRBase renderer) { renderers.put(item,renderer); }
-	private static void register(Block block,TEISRBase renderer) { renderers.put(Item.getItemFromBlock(block),renderer); }
-	private static void register(Item item,IItemRendererProvider provider) { renderers.put(item,provider.getRenderer(item)); }
-	private static void register(Block block,IItemRendererProvider provider) { renderers.put(Item.getItemFromBlock(block),provider.getRenderer(Item.getItemFromBlock(block))); }
+	public static void register(Item item,TEISRBase renderer) { renderers.put(item,renderer); }
+	public static void register(Block block,TEISRBase renderer) { renderers.put(Item.getItemFromBlock(block),renderer); }
+	public static void register(Item item,IItemRendererProvider provider) { renderers.put(item,provider.getRenderer(item)); }
+	public static void register(Block block,IItemRendererProvider provider) { renderers.put(Item.getItemFromBlock(block),provider.getRenderer(Item.getItemFromBlock(block))); }
 
 	private static void register(boolean doFix,Item item,TEISRBase renderer) { register(item,renderer); }
 	private static void register(boolean doFix,Block block,TEISRBase renderer) { register(block,renderer); }

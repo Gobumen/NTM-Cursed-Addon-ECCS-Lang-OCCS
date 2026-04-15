@@ -7,6 +7,7 @@ import com.hbm.inventory.control_panel.nodes.Node;
 import com.leafia.contents.machines.controlpanel.instruments.types.graph.Graph;
 import com.leafia.contents.machines.controlpanel.nodes.NodeBulkQuery;
 import com.leafia.contents.machines.controlpanel.nodes.NodeGraphBounds;
+import com.leafia.contents.machines.controlpanel.nodes.ror.NodeRoRReceiver;
 
 public class NCLeafiaInput implements INodeMenuCreator {
 	@Override
@@ -14,6 +15,7 @@ public class NCLeafiaInput implements INodeMenuCreator {
 		return switch(s) {
 			case "Bulk Query Block" -> new NodeBulkQuery(x,y,editor.currentSystem.parent);
 			case "Graph Bounds" -> new NodeGraphBounds(x,y,editor.currentSystem.parent);
+			case "Receive RoR" -> new NodeRoRReceiver(x,y,editor.currentSystem.parent.panel.parent.getControlWorld());
 			default -> null;
 		};
 	}
@@ -22,5 +24,6 @@ public class NCLeafiaInput implements INodeMenuCreator {
 		list.addItems("Bulk Query Block");
 		if (editor.currentSystem.parent instanceof Graph)
 			list.addItems("Graph Bounds");
+		list.addItems("Receive RoR");
 	}
 }

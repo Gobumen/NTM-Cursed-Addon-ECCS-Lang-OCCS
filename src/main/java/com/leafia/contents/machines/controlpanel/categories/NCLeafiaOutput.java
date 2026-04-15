@@ -7,6 +7,7 @@ import com.hbm.inventory.control_panel.nodes.Node;
 import com.leafia.contents.machines.controlpanel.instruments.types.graph.Graph;
 import com.leafia.contents.machines.controlpanel.nodes.NodeGraphAdd;
 import com.leafia.contents.machines.controlpanel.nodes.NodeSounder;
+import com.leafia.contents.machines.controlpanel.nodes.ror.NodeRoRSender;
 
 public class NCLeafiaOutput implements INodeMenuCreator {
 	@Override
@@ -14,6 +15,7 @@ public class NCLeafiaOutput implements INodeMenuCreator {
 		return switch(s2) {
 			case "Play Sound" -> new NodeSounder(x,y);
 			case "Graph Add" -> new NodeGraphAdd(x,y,editor.currentSystem.parent);
+			case "Transmit RoR" -> new NodeRoRSender(x,y,editor.currentSystem.parent.panel.parent.getControlWorld());
 			default -> null;
 		};
 	}
@@ -22,5 +24,6 @@ public class NCLeafiaOutput implements INodeMenuCreator {
 		list.addItems("Play Sound");
 		if (editor.currentSystem.parent instanceof Graph)
 			list.addItems("Graph Add");
+		list.addItems("Transmit RoR");
 	}
 }

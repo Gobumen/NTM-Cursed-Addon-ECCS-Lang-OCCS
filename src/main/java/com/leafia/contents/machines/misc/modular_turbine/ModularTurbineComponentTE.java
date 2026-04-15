@@ -4,6 +4,7 @@ import com.hbm.blocks.BlockDummyable;
 import com.leafia.contents.machines.misc.modular_turbine.ModularTurbineBlockBase.TurbineComponentType;
 import com.leafia.contents.machines.misc.modular_turbine.core.MTCoreTE;
 import com.leafia.contents.machines.misc.modular_turbine.core.MTCoreTE.TurbineAssembly;
+import net.minecraft.block.Block;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
@@ -15,6 +16,9 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class ModularTurbineComponentTE extends TileEntity implements IMTStageUpgradeContributor, IMTMachineUpgradeContributor {
 	public MTCoreTE core;
 	public TurbineAssembly assembly;
+	public void setBlockType(Block block) {
+		blockType = block;
+	}
 	protected ModularTurbineComponentTE getTEFromShaftPos(BlockPos p,Axis myAxis) {
 		if (world.getBlockState(p).getBlock() instanceof ModularTurbineBlockBase other) {
 			BlockPos core = other.findCore(world,p);

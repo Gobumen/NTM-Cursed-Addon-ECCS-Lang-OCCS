@@ -950,11 +950,17 @@ public class PWRElementTE extends TileEntityInventoryBase implements PWRComponen
 	public Map<String,DataValue> getQueryData() {
 		Map<String,DataValue> map = new HashMap<>();
 		map.put("temperature",new DataValueFloat(20));
+		map.put("meltingPoint",new DataValueFloat(0));
+		map.put("depletion",new DataValueFloat(100));
 		ItemStack stack = inventory.getStackInSlot(0);
-		if (stack.getItem() instanceof LeafiaRodItem) {
+		if (stack.getItem() instanceof LeafiaRodItem rod) {
 			NBTTagCompound tag = stack.getTagCompound();
-			if (tag != null)
+			if (tag != null) {
 				map.put("temperature",new DataValueFloat((float)tag.getDouble("heat")));
+				map.put("meltingPoint",new DataValueFloat((float)rod.meltingPoint));
+				if (rod.life > 0)
+					map.put("depletion",new DataValueFloat((float)(tag.getDouble("depletion")*100/rod.life)));
+			}
 		}
 		return map;
 	}

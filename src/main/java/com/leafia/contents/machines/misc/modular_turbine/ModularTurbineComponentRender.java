@@ -3,11 +3,23 @@ package com.leafia.contents.machines.misc.modular_turbine;
 import com.hbm.render.loader.WaveFrontObjectVAO;
 import com.leafia.AddonBase;
 import com.leafia.contents.machines.misc.modular_turbine.ModularTurbineBlockBase.TurbineComponentType;
+import com.leafia.dev.LeafiaItemRenderer;
+import com.leafia.init.ItemRendererInit;
 import com.leafia.transformer.LeafiaGls;
+import net.minecraft.block.Block;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
+import net.minecraft.item.ItemBlock;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import static com.leafia.AddonBase.getIntegrated;
 import static com.leafia.init.ResourceInit.getVAO;
@@ -16,13 +28,90 @@ public class ModularTurbineComponentRender extends TileEntitySpecialRenderer<Mod
 	static final String basePath = "machines/modular_turbines/";
 	public static final WaveFrontObjectVAO mdl = getVAO(getIntegrated(basePath+"export.obj"));
 	public static final ResourceLocation tex0 = getIntegrated(basePath+"texture0.png");
-	public static final ResourceLocation tex0g = getIntegrated(basePath+"texture0_glass.png");
+	public static final ResourceLocation tex0g = getIntegrated(basePath+"texture0_glass.png");;
+	public static final ResourceLocation tex0s = getIntegrated(basePath+"texture0_smooth.png");
+	public static final ResourceLocation tex0gs = getIntegrated(basePath+"texture0_glass_smooth.png");
 	public static final ResourceLocation tex1 = getIntegrated(basePath+"texture1.png");
 	public static final WaveFrontObjectVAO genMdl = getVAO(getIntegrated(basePath+"gen3x3.obj"));
 	public static final ResourceLocation gen3x3tetx = getIntegrated(basePath+"generator3x3.png");
 	public static final WaveFrontObjectVAO fwMdl = getVAO(getIntegrated(basePath+"flywheel.obj"));
+	public static class ModularTurbineComponentItemRender extends LeafiaItemRenderer {
+		/* what was i thinking
+		static Map<Integer,ModularTurbineComponentItemRender> renderersBySize = new HashMap<>();
+		@SideOnly(Side.CLIENT)
+		public static void registerItemRenderer(Block block) {
+			if (block instanceof ModularTurbineBlockBase turbine) {
+				if (!renderersBySize.containsKey(turbine.shaftHeight()))
+					renderersBySize.put(turbine.shaftHeight(),new ModularTurbineComponentItemRender());
+				ItemRendererInit.register(block,renderersBySize.get(turbine.shaftHeight()));
+			}
+		}*/
+		@Override
+		protected double _sizeReference() {
+			return 1.9;
+		}
+		@Override
+		protected double _itemYoffset() {
+			return 0.24;
+		}
+		@Override
+		protected ResourceLocation __getTexture() {
+			return null;
+		}
+		@Override
+		protected WaveFrontObjectVAO __getModel() {
+			return null;
+		}
+		public void renderItemTurbine(ModularTurbineBlockBase block) {
+			bindTexture(tex1);
+			switch(block.size()) {
+				case 2: case 3:
+					mdl.renderPart("Block2_3");
+					break;
+				case 5:
+					mdl.renderPart("Block5");
+					break;
+				case 7:
+					mdl.renderPart("Block7");
+					break;
+				case 9:
+					mdl.renderPart("Block9");
+					break;
+			}
+		}
+		ModularTurbineComponentRender cloneRenderer = new ModularTurbineComponentRender();
+		Map<Block,ModularTurbineComponentTE> dummyTEMap = new HashMap<>();
+		public ModularTurbineComponentItemRender() {
+			cloneRenderer.setRendererDispatcher(TileEntityRendererDispatcher.instance);
+		}
+		@Override
+		public void renderCommon(ItemStack stack) {
+			GL11.glScaled(0.5, 0.5, 0.5);
+			GlStateManager.shadeModel(GL11.GL_SMOOTH);
+			if (stack.getItem() instanceof ItemBlock ib) {
+				Block block = ib.getBlock();
+				if (block instanceof ModularTurbineBlockBase turbine) {
+					int shaft = turbine.shaftHeight();
+					int size = shaft*2+1;
+					LeafiaGls.scale(1d/size);
+					LeafiaGls.translate(0,-size/2d,0);
+					ModularTurbineComponentTE dummyTE = dummyTEMap.get(block);
+					if (dummyTE == null) {
+						dummyTE = new ModularTurbineComponentTE();
+						dummyTEMap.put(block,dummyTE);
+						dummyTE.setBlockType(block);
+						dummyTE.blockMetadata = EnumFacing.NORTH.getIndex()+10;
+					}
+					cloneRenderer.render(dummyTE,0,0,0,0,0,1);
+				}
+			}
+			GlStateManager.shadeModel(GL11.GL_FLAT);
+		}
+	}
 	@Override
 	public void render(ModularTurbineComponentTE te,double x,double y,double z,float partialTicks,int destroyStage,float alpha) {
+		// CAUTION: WHEN USING te.world/te.getWorld(), DON'T FORGET NULL POINTER CHECK
+		// BECAUSE THIS METHOD IS ALSO USED FOR ITEM RENDERING!
 		LeafiaGls.pushMatrix();
 		LeafiaGls.translate(x+0.5,y,z+0.5);
 		switch(te.getBlockMetadata()-10) {
@@ -88,7 +177,8 @@ public class ModularTurbineComponentRender extends TileEntitySpecialRenderer<Mod
 					}
 					LeafiaGls.color(1,1,1);
 				} else if (block.componentType() == TurbineComponentType.BLADES) {
-					te.local$checkForBlades(te.local$firstRender);
+					if (te.hasWorld())
+						te.local$checkForBlades(te.local$firstRender);
 					te.local$firstRender = false;
 					double diameter = block.size();
 					ModularTurbineComponentTE curBlade = te;
@@ -120,6 +210,10 @@ public class ModularTurbineComponentRender extends TileEntitySpecialRenderer<Mod
 				String name = "Tube"+block.size();
 				if (block.variant().equals("glass"))
 					bindTexture(tex0g);
+				else if (block.variant().equals("smooth"))
+					bindTexture(tex0s);
+				else if (block.variant().equals("glass_smooth"))
+					bindTexture(tex0gs);
 				else
 					bindTexture(tex0);
 				LeafiaGls.disableCull();

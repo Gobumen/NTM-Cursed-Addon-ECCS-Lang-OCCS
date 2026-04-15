@@ -6,6 +6,7 @@ import com.hbm.items.machine.ItemMachineUpgrade.UpgradeType;
 import com.hbm.items.tool.ItemTooling;
 import com.hbm.lib.HBMSoundHandler;
 import com.hbm.lib.InventoryHelper;
+import com.leafia.contents.AddonBlocks.ModularTurbines;
 import com.leafia.contents.machines.misc.modular_turbine.ModularTurbineBlockBase;
 import com.leafia.contents.machines.misc.modular_turbine.core.MTCoreTE.AssemblyReturnCode;
 import com.leafia.contents.machines.misc.modular_turbine.core.MTCoreTE.AssemblyReturnCode.ReturnCodeError;
@@ -36,6 +37,7 @@ import java.util.function.Consumer;
 public class MTCoreBlock extends ModularTurbineBlockBase {
 	public MTCoreBlock(String s) {
 		super(s);
+		ModularTurbines.ALL_COMPONENTS_FOR_RENDER.remove(this);
 	}
 	@Override
 	public int shaftHeight() {

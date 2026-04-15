@@ -9,6 +9,7 @@ import com.hbm.main.MainRegistry;
 import com.hbm.tileentity.IPersistentNBT;
 import com.hbm.util.BobMathUtil;
 import com.hbm.util.I18nUtil;
+import com.leafia.contents.AddonBlocks.ModularTurbines;
 import com.leafia.contents.machines.misc.modular_turbine.core.MTCoreBlock;
 import com.leafia.contents.machines.misc.modular_turbine.core.MTCoreTE;
 import com.leafia.contents.machines.misc.modular_turbine.ports.IMTPortBlock;
@@ -54,8 +55,9 @@ public abstract class ModularTurbineBlockBase extends AddonBlockDummyable implem
 	public ModularTurbineBlockBase(String s) {
 		super(Material.IRON,s);
 		setHardness(5);
-		setResistance(10);
+		setResistance(50);
 		setCreativeTab(MainRegistry.machineTab);
+		ModularTurbines.ALL_COMPONENTS_FOR_RENDER.add(this);
 	}
 	public abstract int shaftHeight();
 	public enum TurbineComponentType {
