@@ -980,11 +980,11 @@ public class MTCoreTE extends TileEntity implements LeafiaPacketReceiver, ITicka
 		needle = (needle+1)%20;
 		generatedPerSec = 0;
 		for (long gen : generateds)
-			generatedPerSec += gen/20d;
+			generatedPerSec += gen;
 	}
 	long[] generateds = new long[20];
 	int needle = 0;
-	double generatedPerSec = 0;
+	long generatedPerSec = 0;
 	@Override
 	public Map<String,DataValue> getQueryData() {
 		Map<String,DataValue> mop = new HashMap<>();

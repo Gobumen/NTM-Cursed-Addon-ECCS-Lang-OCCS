@@ -21,6 +21,7 @@
     "hbm.MixinRenderRBMKControlRod",
     "hbm.MixinRenderRBMKLid",
     "hbm.MixinRenderTorex",
+    "hbm.MixinRenderInfoSystemLegacy",
     "hbm.MixinRrenderControlPanel"
   ],
   "mixins": [
