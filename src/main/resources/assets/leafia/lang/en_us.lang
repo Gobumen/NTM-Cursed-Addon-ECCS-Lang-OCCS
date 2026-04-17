@@ -245,6 +245,7 @@ item.fix_survival.name=Satanic Energy Suppressor
 item.fuzzy_identifier.message=Identifier set to %s
 item.fuzzy_identifier.name=Fuzzy Identifier
 item.grenade_filling.null.name=Null Grenade Charge
+item.grenade_filling.sol.name=Solinium Grenade Charge
 item.ingot_francium.name=Francium Ingot
 item.ingot_potassium.name=Potassium Cube
 item.ingot_rubidium.name=Rubidium Ingot
