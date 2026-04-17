@@ -3,6 +3,7 @@ package com.leafia.overwrite_contents.mixin.mod.hbm;
 import com.hbm.api.energymk2.IEnergyReceiverMK2.ConnectionPriority;
 import com.hbm.blocks.network.FluidPump.TileEntityFluidPump;
 import com.hbm.inventory.control_panel.*;
+import com.hbm.inventory.control_panel.types.*;
 import com.hbm.inventory.fluid.tank.FluidTankNTM;
 import com.hbm.tileentity.TileEntityLoadedBase;
 import net.minecraft.util.math.BlockPos;

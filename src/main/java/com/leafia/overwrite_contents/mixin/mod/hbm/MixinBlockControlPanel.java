@@ -4,7 +4,7 @@ import com.hbm.blocks.generic.BlockControlPanel;
 import com.hbm.handler.threading.PacketThreading;
 import com.hbm.inventory.control_panel.Control;
 import com.hbm.inventory.control_panel.ControlEvent;
-import com.hbm.inventory.control_panel.DataValueFloat;
+import com.hbm.inventory.control_panel.types.DataValueFloat;
 import com.hbm.items.ModItems;
 import com.hbm.main.MainRegistry;
 import com.hbm.packet.toserver.NBTControlPacket;

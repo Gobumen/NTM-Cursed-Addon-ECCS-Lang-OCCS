@@ -2,6 +2,7 @@ package com.leafia.contents.machines.reactors.pwr.blocks.components.control;
 
 import com.custom_hbm.sound.LCEAudioWrapper;
 import com.hbm.inventory.control_panel.*;
+import com.hbm.inventory.control_panel.types.*;
 import com.leafia.AddonBase;
 import com.leafia.contents.AddonBlocks.PWR;
 import com.leafia.contents.machines.reactors.pwr.blocks.components.PWRAssignableEntity;

@@ -1,6 +1,7 @@
 package com.leafia.contents.machines.controlpanel.instruments.types.meters.vertical;
 
 import com.hbm.inventory.control_panel.*;
+import com.hbm.inventory.control_panel.types.*;
 import com.hbm.inventory.control_panel.controls.ControlType;
 import com.hbm.inventory.control_panel.controls.configs.SubElementBaseConfig;
 import com.hbm.render.loader.IModelCustom;
@@ -106,7 +107,7 @@ public class MeterVertical extends Control {
 			if (Math.abs(delta) <= threshold)
 				curAngle = desiredAngle;
 			else {
-				float move = Math.max(Math.abs(delta/5),threshold)*Math.signum(delta);
+				float move = Math.max(Math.abs(delta/2.5f),threshold)*Math.signum(delta);
 				curAngle += move;
 			}
 			BlockPos pos = panel.parent.getControlPos();

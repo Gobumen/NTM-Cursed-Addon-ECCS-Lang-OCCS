@@ -12,6 +12,7 @@ import com.hbm.handler.MultiblockHandlerXR;
 import com.hbm.handler.radiation.ChunkRadiationManager;
 import com.hbm.handler.threading.PacketThreading;
 import com.hbm.inventory.control_panel.*;
+import com.hbm.inventory.control_panel.types.*;
 import com.hbm.inventory.fluid.FluidType;
 import com.hbm.inventory.fluid.Fluids;
 import com.hbm.inventory.fluid.tank.FluidTankNTM;
@@ -139,7 +140,7 @@ public abstract class MixinTileEntityReactorZIRNOX extends TileEntityMachineBase
 	}
 	@Unique
 	double getHeatInSlot(int slot,LeafiaRodItem rod) {
-		return rod.getFlux(inventory.getStackInSlot(slot));
+		return rod.getFlux(inventory.getStackInSlot(slot),true);
 	}
 	@Unique
 	double handleLeafiaFuel(int slot,double cool) {
@@ -259,7 +260,7 @@ public abstract class MixinTileEntityReactorZIRNOX extends TileEntityMachineBase
 			this.pressureLCE = ((carbonDioxide.getFill() * 2) + (this.hulltemp-20)*125 * ((float)this.carbonDioxide.getFill() / (float)this.carbonDioxide.getMaxFill()))/3333;
 			if (valveOpen)
 				drain(carbonDioxide,(int)Math.ceil(Math.pow(Math.max(this.pressureLCE-5,0),3)/30+10),true);
-			stressTimer -= Math.pow(Math.max(pressureLCE-16,0)/14,0.9)*64;
+			stressTimer -= Math.pow(Math.max(pressureLCE-22,0)/6,0.9)*64;
 			if (stressTimer <= 0) {
 				stressTimer = 300; // the audios were lot longer than i thought sooo
 				world.playSound(null,pos.getX()+0.5,pos.getY()+2.5,pos.getZ()+0.5,LeafiaSoundEvents.stressSounds[world.rand.nextInt(7)],SoundCategory.BLOCKS, (float) MathHelper.clampedLerp(0.25,4,Math.pow((pressureLCE-16)/14,4)),1.0F);
@@ -295,7 +296,7 @@ public abstract class MixinTileEntityReactorZIRNOX extends TileEntityMachineBase
 			this.hulltemp += Math.pow(difference,0.25)*sign + cooledSum/24;
 			double steamtemp = steam.getTankType().temperature;
 			double boilBase = Math.pow(Math.max(this.hulltemp-(steamtemp),0),0.25)*Math.pow(steamtemp/100,0.75)*feedwatr;
-			boilBase/=5;
+			boilBase/=3;
 			int boiling = (int)(boilBase*24);
 			this.hulltemp = Math.max(this.hulltemp-boilBase/*-Math.pow(this.hulltemp,0.25)*/,20);
 			switch(compression) {

@@ -366,7 +366,7 @@ public class AddonBlocks {
 
 	public static final Block lightUnlit = new LightBlock(Material.IRON,"light_unlit",false).setHardness(5.0F).setResistance(10.0F).setCreativeTab(MainRegistry.blockTab);
 	public static final Block lightLit = new LightBlock(Material.IRON,"light_lit",true).setHardness(5.0F).setResistance(10.0F).setCreativeTab(MainRegistry.blockTab);
-	public static final Block lightEmitter = new LightEmitter(Material.AIR,"light_emitter");
+	public static final Block lightEmitter = new LightEmitter("light_emitter");
 
 	public static final Block control_torch = new ControlTorchBlock("control_torch",true).setCreativeTab(null).setLightLevel(0.5F);
 	public static final Block control_torch_unlit = new ControlTorchBlock("control_torch_unlit",false);
@@ -467,7 +467,7 @@ public class AddonBlocks {
 
 	public static final Block reactor_door = new ReactorDoorBlock(Material.IRON,AddonDoorDecl.REACTOR_DOOR,true,"reactor_door").setHardness(150.0F).setResistance(13500.0F).setCreativeTab(MainRegistry.machineTab);
 
-	public static final Block brick_concrete_dark = new ConcreteBricks(Material.ROCK,"brick_concrete_dark","brick_dark_concrete"); // :leafeon_facepalm:
+	public static final Block brick_concrete_dark = new ConcreteBricks(Material.ROCK,"brick_concrete_dark","brick_dark_concrete").setHardness(15.0F).setResistance(160.0F); // :leafeon_facepalm:
 
 	public static final Block sellacity_rack = new RackBlock(Material.IRON,"sellacity_rack").setHardness(5.0F).setResistance(10.0F).setCreativeTab(MainRegistry.blockTab);
 

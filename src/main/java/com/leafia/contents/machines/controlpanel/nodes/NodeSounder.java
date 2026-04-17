@@ -1,7 +1,9 @@
 package com.leafia.contents.machines.controlpanel.nodes;
 
 import com.hbm.inventory.control_panel.*;
-import com.hbm.inventory.control_panel.DataValue.DataType;
+import com.hbm.inventory.control_panel.types.*;
+import com.hbm.inventory.control_panel.types.*;
+import com.hbm.inventory.control_panel.types.DataValue.DataType;
 import com.hbm.inventory.control_panel.modular.StockNodesRegister;
 import com.hbm.inventory.control_panel.nodes.NodeOutput;
 import com.hbm.lib.HBMSoundHandler;
@@ -86,7 +88,7 @@ public class NodeSounder extends NodeOutput {
 	}
 
 	@Override
-	public boolean doOutput(IControllable from,Map<String,NodeSystem> sendNodeMap,List<BlockPos> positions) {
+	public boolean doOutput(IControllable from,Map<String,NodeSystem> sendNodeMap,Map<String,BlockPos> positions) {
 		World world = from.getControlWorld();
 
 		SoundEvent evt = snd.evt;

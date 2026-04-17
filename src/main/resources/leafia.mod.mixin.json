@@ -8,7 +8,6 @@
   "client": [
     "hbm.MixinCoriumBlock",
     "hbm.MixinCoriumFinite",
-    "hbm.MixinFolderButton",
     "hbm.MixinFT_HEatable",
     "hbm.MixinGUIDiFurnaceRTG",
     "hbm.MixinItemFluidIcon",
@@ -48,7 +47,6 @@
     "hbm.MixinEntityDebrisBase",
     "hbm.MixinEntityEffectHandler",
     "hbm.MixinEntityFalloutRain",
-    "hbm.MixinEntityGrenadeASchrab",
     "hbm.MixinEntityMeteor",
     "hbm.MixinEntityMissileBaseNT",
     "hbm.MixinEntityNukeExplosionMK3",
@@ -56,6 +54,7 @@
     "hbm.MixinEntityNukeTorex",
     "hbm.MixinEntityThrowableNT",
     "hbm.MixinEnumBatteryPack",
+    "hbm.MixinEnumGrenadeFilling",
     "hbm.MixinExplosionBalefire",
     "hbm.MixinExplosionNukeGeneric",
     "hbm.MixinExplosionSolinium",

@@ -1,7 +1,9 @@
 package com.leafia.contents.machines.controlpanel.nodes;
 
 import com.hbm.inventory.control_panel.*;
-import com.hbm.inventory.control_panel.DataValue.DataType;
+import com.hbm.inventory.control_panel.types.*;
+import com.hbm.inventory.control_panel.types.*;
+import com.hbm.inventory.control_panel.types.DataValue.DataType;
 import com.hbm.inventory.control_panel.modular.StockNodesRegister;
 import com.hbm.inventory.control_panel.nodes.NodeOutput;
 import com.leafia.contents.machines.controlpanel.instruments.types.graph.Graph;
@@ -20,7 +22,7 @@ public class NodeGraphAdd extends NodeOutput {
 		recalcSize();
 	}
 	@Override
-	public boolean doOutput(IControllable iControllable,Map<String,NodeSystem> map,List<BlockPos> list) {
+	public boolean doOutput(IControllable iControllable,Map<String,NodeSystem> map,Map<String,BlockPos> list) {
 		if (inputs.get(0) == null) return false;
 		if (ctrl instanceof Graph graph)
 			graph.pushValue(inputs.get(0).evaluate().getNumber());

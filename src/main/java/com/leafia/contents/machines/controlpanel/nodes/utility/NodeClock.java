@@ -1,8 +1,8 @@
 package com.leafia.contents.machines.controlpanel.nodes.utility;
 
-import com.hbm.inventory.control_panel.DataValue;
-import com.hbm.inventory.control_panel.DataValue.DataType;
-import com.hbm.inventory.control_panel.DataValueFloat;
+import com.hbm.inventory.control_panel.types.DataValue;
+import com.hbm.inventory.control_panel.types.DataValue.DataType;
+import com.hbm.inventory.control_panel.types.DataValueFloat;
 import com.hbm.inventory.control_panel.NodeConnection;
 import com.hbm.inventory.control_panel.NodeSystem;
 import com.hbm.inventory.control_panel.nodes.Node;
@@ -15,8 +15,8 @@ public class NodeClock extends Node {
 	public NodeClock(float x,float y) {
 		super(x,y);
 		this.outputs.add(new NodeConnection("Clock Signal",this,outputs.size(),false,DataType.NUMBER,new DataValueFloat(0)));
-		this.inputs.add(new NodeConnection("Uptime",this,inputs.size(),true,DataType.NUMBER,new DataValueFloat(2)));
-		this.inputs.add(new NodeConnection("Downtime",this,inputs.size(),true,DataType.NUMBER,new DataValueFloat(2)));
+		this.inputs.add(new NodeConnection("Uptime",this,inputs.size(),true,DataType.NUMBER,new DataValueFloat(1)));
+		this.inputs.add(new NodeConnection("Downtime",this,inputs.size(),true,DataType.NUMBER,new DataValueFloat(1)));
 		evalCache = new DataValue[1];
 		recalcSize();
 	}

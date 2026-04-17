@@ -2,6 +2,7 @@ package com.leafia.contents.machines.reactors.pwr.blocks.components.computer;
 
 import com.custom_hbm.util.LCETuple.Triplet;
 import com.hbm.inventory.control_panel.*;
+import com.hbm.inventory.control_panel.types.*;
 import com.leafia.contents.control.fuel.nuclearfuel.LeafiaRodItem;
 import com.leafia.contents.machines.reactors.pwr.PWRData;
 import com.leafia.contents.machines.reactors.pwr.blocks.components.PWRAssignableEntity;

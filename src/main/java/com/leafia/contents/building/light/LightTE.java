@@ -27,7 +27,7 @@ public class LightTE extends TileEntity implements ITickable, IEnergyReceiverMK2
 			if (world.getBlockState(pos).getMaterial() == Material.AIR) {
 				Block block = world.getBlockState(pos).getBlock();
 				if (emit)
-					world.setBlockState(pos,AddonBlocks.lightEmitter.getDefaultState(),2);
+					world.setBlockState(pos,AddonBlocks.lightEmitter.getDefaultState());
 				else if (block == AddonBlocks.lightEmitter)
 					world.setBlockToAir(pos);
 			} else

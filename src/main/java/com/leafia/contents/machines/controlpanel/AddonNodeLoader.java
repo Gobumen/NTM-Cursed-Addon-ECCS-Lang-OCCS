@@ -13,10 +13,7 @@ import com.leafia.contents.machines.controlpanel.nodes.string.NodeAddString;
 import com.leafia.contents.machines.controlpanel.nodes.string.NodeFormat;
 import com.leafia.contents.machines.controlpanel.nodes.string.NodeSIPfx;
 import com.leafia.contents.machines.controlpanel.nodes.string.NodeSubString;
-import com.leafia.contents.machines.controlpanel.nodes.utility.NodeCache;
-import com.leafia.contents.machines.controlpanel.nodes.utility.NodeClock;
-import com.leafia.contents.machines.controlpanel.nodes.utility.NodeParseFloat;
-import com.leafia.contents.machines.controlpanel.nodes.utility.NodeSummarizer;
+import com.leafia.contents.machines.controlpanel.nodes.utility.*;
 import net.minecraft.nbt.NBTTagCompound;
 
 public class AddonNodeLoader implements INodeLoader {
@@ -39,6 +36,8 @@ public class AddonNodeLoader implements INodeLoader {
 			case "leafia_parse_float" -> new NodeParseFloat(0,0);
 			case "leafia_ror_receiver" -> new NodeRoRReceiver(0,0,nodeSystem.parent.panel.parent.getControlWorld());
 			case "leafia_ror_sender" -> new NodeRoRSender(0,0,nodeSystem.parent.panel.parent.getControlWorld());
+			case "leafia_rng" -> new NodeRNG(0,0,nodeSystem.parent.panel.parent.getControlWorld());
+			case "leafia_rng_d" -> new NodeRNGDecimal(0,0,nodeSystem.parent.panel.parent.getControlWorld());
 			default -> null;
 		};
 		return node;

@@ -1,6 +1,7 @@
 package com.leafia.contents.machines.controlpanel.instruments.types.meters.horizontal;
 
 import com.hbm.inventory.control_panel.*;
+import com.hbm.inventory.control_panel.types.*;
 import com.hbm.inventory.control_panel.controls.ControlType;
 import com.hbm.inventory.control_panel.controls.configs.SubElementBaseConfig;
 import com.hbm.render.loader.IModelCustom;
@@ -209,7 +210,7 @@ public class MeterHorizontal extends Control {
 		LeafiaGls.shadeModel(GL11.GL_SMOOTH);
 		LeafiaGls.color(1,1,1);
 		LeafiaGls.pushMatrix();
-		LeafiaGls.translate(posX-length/2d,0,posY-0.5);
+		LeafiaGls.translate(posX-5/2d,0,posY-0.5);
 		LeafiaGls.rotate(90,1,0,0);
 		draw(1,ratio(min,max,vars.get("value").getNumber()));
 		LeafiaGls.popMatrix();

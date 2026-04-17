@@ -4,10 +4,7 @@ import com.hbm.inventory.control_panel.ItemList;
 import com.hbm.inventory.control_panel.SubElementNodeEditor;
 import com.hbm.inventory.control_panel.modular.INodeMenuCreator;
 import com.hbm.inventory.control_panel.nodes.Node;
-import com.leafia.contents.machines.controlpanel.nodes.utility.NodeCache;
-import com.leafia.contents.machines.controlpanel.nodes.utility.NodeClock;
-import com.leafia.contents.machines.controlpanel.nodes.utility.NodeParseFloat;
-import com.leafia.contents.machines.controlpanel.nodes.utility.NodeSummarizer;
+import com.leafia.contents.machines.controlpanel.nodes.utility.*;
 
 public class NCLeafiaUtility implements INodeMenuCreator {
 	@Override
@@ -17,6 +14,8 @@ public class NCLeafiaUtility implements INodeMenuCreator {
 			case "Clock" -> new NodeClock(x,y);
 			case "Summarizer" -> new NodeSummarizer(x,y);
 			case "Text to Number" -> new NodeParseFloat(x,y);
+			case "RNG" -> new NodeRNG(x,y,editor.currentSystem.parent.panel.parent.getControlWorld());
+			case "Decimal RNG" -> new NodeRNGDecimal(x,y,editor.currentSystem.parent.panel.parent.getControlWorld());
 			default -> null;
 		};
 	}
@@ -24,7 +23,9 @@ public class NCLeafiaUtility implements INodeMenuCreator {
 	public void addItems(ItemList itemList,float x,float y,SubElementNodeEditor editor) {
 		itemList.addItems("Cache");
 		itemList.addItems("Clock");
-		itemList.addItems("Text to Number");
+		itemList.addItems("RNG");
+		itemList.addItems("Decimal RNG");
 		itemList.addItems("Summarizer");
+		itemList.addItems("Text to Number");
 	}
 }

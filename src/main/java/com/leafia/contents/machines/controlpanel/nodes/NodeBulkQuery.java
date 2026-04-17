@@ -1,6 +1,8 @@
 package com.leafia.contents.machines.controlpanel.nodes;
 
 import com.hbm.inventory.control_panel.*;
+import com.hbm.inventory.control_panel.types.*;
+import com.hbm.inventory.control_panel.types.*;
 import com.hbm.inventory.control_panel.modular.StockNodesRegister;
 import com.hbm.inventory.control_panel.nodes.Node;
 import net.minecraft.nbt.NBTTagCompound;
@@ -50,7 +52,7 @@ public class NodeBulkQuery extends Node {
 	private void setDataSelector() {
 		dataSelector.list.itemNames.clear();
 		Set<String> alreadyAdded = new HashSet<>();
-		for (BlockPos pos : ctrl.connectedSet) {
+		for (BlockPos pos : ctrl.taggedLinks.values()) {
 			TileEntity tile = ctrl.panel.parent.getControlWorld().getTileEntity(pos);
 			if (tile instanceof IControllable) {
 				IControllable te = (IControllable) tile;
@@ -92,7 +94,7 @@ public class NodeBulkQuery extends Node {
 				value = 1;
 			int total = 0;
 			boolean firstTime = true;
-			for (BlockPos pos : ctrl.connectedSet) {
+			for (BlockPos pos : ctrl.taggedLinks.values()) {
 				TileEntity tile = ctrl.panel.parent.getControlWorld().getTileEntity(pos);
 
 				if (tile instanceof IControllable) {

@@ -1,7 +1,9 @@
 package com.leafia.contents.machines.controlpanel.nodes.string;
 
 import com.hbm.inventory.control_panel.*;
-import com.hbm.inventory.control_panel.DataValue.DataType;
+import com.hbm.inventory.control_panel.types.*;
+import com.hbm.inventory.control_panel.types.*;
+import com.hbm.inventory.control_panel.types.DataValue.DataType;
 import com.hbm.inventory.control_panel.nodes.Node;
 import com.leafia.contents.machines.controlpanel.AddonNodesRegister;
 import com.llib.math.SIPfx;

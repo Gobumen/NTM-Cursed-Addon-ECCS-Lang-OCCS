@@ -3,10 +3,14 @@ package com.leafia.init.recipes;
 import com.hbm.blocks.ModBlocks;
 import com.hbm.inventory.OreDictManager;
 import com.hbm.inventory.OreDictManager.DictFrame;
+import com.hbm.inventory.fluid.Fluids;
 import com.hbm.inventory.material.Mats;
 import com.hbm.items.ItemEnums.EnumCircuitType;
 import com.hbm.items.ModItems;
 import com.hbm.items.machine.ItemBatteryPack.EnumBatteryPack;
+import com.hbm.items.special.ItemCell;
+import com.hbm.items.weapon.grenade.ItemGrenadeFilling.EnumGrenadeFilling;
+import com.hbm.main.CraftingManager;
 import com.leafia.contents.AddonBlocks;
 import com.leafia.contents.AddonBlocks.Elevators;
 import com.leafia.contents.AddonBlocks.LetterSigns;
@@ -131,6 +135,9 @@ public class AddonCraftingRecipes {
 		addRecipeAuto(new ItemStack(Elevators.shaft),"IBI","IBI","IBI",'B',STEEL.block(),'I',new ItemStack(ModBlocks.steel_beam));
 
 		addShapelessAuto(new ItemStack(AddonBlocks.regex_filter),new ItemStack(ModBlocks.pneumatic_tube),new ItemStack(ModItems.circuit,1,EnumCircuitType.BASIC.ordinal()));
+
+		addRecipeAuto(new ItemStack(ModItems.grenade_filling, 4, EnumGrenadeFilling.valueOf("NULL").ordinal()),"A", "G", "A", 'A', ModItems.undefined, 'G', BIGMT.ingot() );
+		addRecipeAuto(new ItemStack(ModItems.grenade_filling, 1, EnumGrenadeFilling.valueOf("SOL").ordinal()),"CUB", "USU", "BUT", 'B', CMB.ingot(), 'C', DictFrame.fromOne(ModItems.circuit, EnumCircuitType.CONTROLLER), 'T', ModItems.solinium_igniter, 'U', ModItems.solinium_propellant, 'S', ModItems.solinium_core );
 
 		hack.getRegistry().register(new PWRDebrisCrafting().setRegistryName(new ResourceLocation("leafia", "lwr_debris_crafting_handler")));
 	}

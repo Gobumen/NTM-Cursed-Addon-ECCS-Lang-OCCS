@@ -1,8 +1,11 @@
 package com.leafia.contents.building.light;
 
+import com.hbm.main.MainRegistry;
+import com.leafia.AddonBase;
 import com.leafia.contents.AddonBlocks;
 import com.leafia.dev.blocks.blockbase.AddonBlockBase;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockAir;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
@@ -17,13 +20,17 @@ import net.minecraft.world.World;
 
 import java.util.Random;
 
-public class LightEmitter extends AddonBlockBase {
-	public LightEmitter(Material m,String s) {
-		super(m,s);
+public class LightEmitter extends BlockAir {
+	public LightEmitter(String s) {
 		setLightLevel(1);
+		this.setTranslationKey(s);
+		this.setRegistryName(AddonBase.MODID, s);
+		this.setHarvestLevel("pickaxe", 0);
+		this.setCreativeTab(MainRegistry.controlTab);
+		AddonBlocks.ALL_BLOCKS.add(this);
 	}
 
-	public static final int lightRange = 5;
+	public static final int lightRange = 8;
 	public void update(World world,BlockPos pos) {
 		BlockPos originalPos = pos;
 		boolean invalid = true;
@@ -43,7 +50,7 @@ public class LightEmitter extends AddonBlockBase {
 			}
 		}
 		if (invalid)
-			world.setBlockState(originalPos,Blocks.AIR.getDefaultState(),2);
+			world.setBlockState(originalPos,Blocks.AIR.getDefaultState());
 	}
 
 	@Override
