@@ -20,7 +20,7 @@ public class AddonConfig {
 	public static int meteorDiverterProtectionRadius = 3;
 	public static boolean enableMeteorCraters = true;
 	public static boolean enableSellacity = LeafiaDebug.isDevEnv;
-	public static boolean enableBarrelSidePorts = false;
+	public static boolean enableBarrelSidePorts = true;
 	public static boolean enableGovernedRPS = true;
 	public static double governedRPS = 60;
 	public static int maxOptimalTurbineLength = 5;
@@ -34,6 +34,9 @@ public class AddonConfig {
 	public static void loadFromConfig(){
 		_ConfigBuilder builder = new _ConfigBuilder("leafia");
 		builder._separator();
+		builder._category("IMPORTANT: The configs will not apply by default! Add ! on start of each lines to apply.");
+		builder._category("Example: !enableBarrelSidePorts: false");
+		builder._pushLine();
 		builder._category("MIXINS");
 		{
 			enableWackySplashes = builder._boolean("enableWackySplashes",true);
@@ -51,8 +54,8 @@ public class AddonConfig {
 			builder._comment("How far DFC components can reach");
 			dfcComponentRange = builder._integer("dfcComponentRange",50);
 
-			builder._comment("Whether the barrels should look ugly or not");
-			enableBarrelSidePorts = builder._boolean("enableBarrelSidePorts",false);
+			builder._comment("Whether the barrels should have side ports or not");
+			enableBarrelSidePorts = builder._boolean("enableBarrelSidePorts",true);
 
 			builder._comment("Replaces item radiations with LCE radiations");
 			enableHealthMod = builder._boolean("enableRadClassification",true);
@@ -94,7 +97,8 @@ public class AddonConfig {
 		public static Map<String,RodInfo> map = new HashMap<>();
 		public static void loadFromConfig() {
 			_ConfigBuilder builder = new _ConfigBuilder("generic_fuels");
-			builder._category("Remove underscore in the file to apply");
+			builder._category("IMPORTANT: The configs will not apply by default! Add ! on start of each lines to apply.");
+			builder._category("Example: !enableBarrelSidePorts: false");
 			builder._separator();
 			builder._autoLineBreak = false;
 			for (Entry<String,LeafiaRodItem> entry : LeafiaRodItem.fromResourceMap.entrySet()) {
@@ -107,7 +111,6 @@ public class AddonConfig {
 					builder._separator();
 				}
 			}
-			builder.changePath("_generic_fuels");
 			builder.saveConfig();
 		}
 	}
