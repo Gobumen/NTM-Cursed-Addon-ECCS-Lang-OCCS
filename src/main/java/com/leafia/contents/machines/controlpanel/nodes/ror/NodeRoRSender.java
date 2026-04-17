@@ -25,7 +25,7 @@ public class NodeRoRSender extends NodeOutput {
 	}
 	@Override
 	public float[] getColor() {
-		return StockNodesRegister.colorInput;
+		return StockNodesRegister.colorOutput;
 	}
 	@Override
 	public String getDisplayName() {
