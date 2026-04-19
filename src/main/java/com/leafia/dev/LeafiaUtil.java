@@ -7,7 +7,6 @@ import com.hbm.lib.ForgeDirection;
 import com.hbm.tileentity.TileEntityProxyBase;
 import com.leafia.contents.network.FFNBT;
 import com.leafia.contents.network.ff_duct.FFDuctTE;
-import com.leafia.contents.network.ff_duct.uninos.IFFConnector;
 import com.leafia.contents.network.ff_duct.uninos.IFFHandler;
 import com.leafia.dev.firestorm.IFirestormBlock;
 import net.minecraft.block.Block;
@@ -21,7 +20,6 @@ import net.minecraft.util.math.*;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
@@ -468,6 +466,30 @@ public class LeafiaUtil {
 					IFirestormBlock.ignite(worldIn,blockpos1);
 				}
 			}
+		}
+	}
+
+	public static class ScrollUtil {
+
+		// underscore means it's about internal scroll value itself, the one without underscore means it's for scroll bar display
+
+		public static int _getScrollOffset(int scrollBarSize,int scrollAreaSize,double relativePosition,int maxScroll) {
+			return (int)(_getScrollRatio(scrollBarSize,scrollAreaSize,relativePosition)*maxScroll);
+		}
+		public static double _getScrollRatio(int scrollBarSize,int scrollAreaSize,double relativePosition) {
+			return MathHelper.clamp((relativePosition+scrollBarSize/2d)/(scrollAreaSize-scrollBarSize),0,1);
+		}
+		public static double _getScrollRatio(int offset,int maxScroll) {
+			return (double)offset/maxScroll;
+		}
+
+		// // // // // // // // // // // // // // // // // // // // // // // // // // // //
+
+		public static int getScrollBarPos(int scrollBarSize,int scrollAreaSize,double ratio) {
+			return (int)getScrollBarPosDouble(scrollBarSize,scrollAreaSize,ratio);
+		}
+		public static double getScrollBarPosDouble(int scrollBarSize,int scrollAreaSize,double ratio) {
+			return ratio*(scrollAreaSize-scrollBarSize);
 		}
 	}
 }

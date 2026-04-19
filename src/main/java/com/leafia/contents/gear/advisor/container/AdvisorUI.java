@@ -5,6 +5,7 @@ import com.leafia.contents.AddonItems;
 import com.leafia.contents.gear.advisor.AdvisorItem;
 import com.leafia.contents.gear.advisor.AdvisorItem.AdvisorPacket;
 import com.leafia.contents.gear.advisor.AdvisorItem.AdvisorSignalType;
+import com.leafia.dev.LeafiaUtil.ScrollUtil;
 import com.leafia.dev.custompacket.LeafiaCustomPacket;
 import com.leafia.dev.gui.FiaUIRect;
 import com.leafia.dev.gui.GuiScreenLeafia;
@@ -174,8 +175,10 @@ public class AdvisorUI extends GuiScreenLeafia implements IAdvisorUI {
 		int scrollBarPos = 0;
 		if (maxScroll > 0) {
 			if (scrollin)
-				scroll = MathHelper.clamp((int)((mouseY-18-7-guiTop)*maxScroll/91f+0.5f),0,maxScroll);
-			scrollBarPos = scroll*91/maxScroll;
+				scroll = ScrollUtil._getScrollOffset(15,106,mouseY-18-guiTop,maxScroll);
+			//scroll = MathHelper.clamp((int)((mouseY-18-7-guiTop)*maxScroll/91f+0.5f),0,maxScroll);
+			scrollBarPos = ScrollUtil.getScrollBarPos(15,106,ScrollUtil._getScrollRatio(scroll,maxScroll));
+			//scrollBarPos = scroll*91/maxScroll;
 		}
 		drawTexturedModalRect(guiLeft+175,guiTop+18+scrollBarPos,(maxScroll > 0) ? 195 : 207,0,12,15);
 
