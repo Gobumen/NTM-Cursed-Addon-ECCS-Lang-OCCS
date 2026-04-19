@@ -7,6 +7,7 @@ import com.leafia.contents.machines.controlpanel.nodes.*;
 import com.leafia.contents.machines.controlpanel.nodes.NodeBulkQuery;
 import com.leafia.contents.machines.controlpanel.nodes.bool.NodePulse;
 import com.leafia.contents.machines.controlpanel.nodes.bool.NodeSRLatch;
+import com.leafia.contents.machines.controlpanel.nodes.pack.NodeIC10;
 import com.leafia.contents.machines.controlpanel.nodes.ror.NodeRoRReceiver;
 import com.leafia.contents.machines.controlpanel.nodes.ror.NodeRoRSender;
 import com.leafia.contents.machines.controlpanel.nodes.string.NodeAddString;
@@ -38,6 +39,7 @@ public class AddonNodeLoader implements INodeLoader {
 			case "leafia_ror_sender" -> new NodeRoRSender(0,0,nodeSystem.parent.panel.parent.getControlWorld());
 			case "leafia_rng" -> new NodeRNG(0,0,nodeSystem.parent.panel.parent.getControlWorld());
 			case "leafia_rng_d" -> new NodeRNGDecimal(0,0,nodeSystem.parent.panel.parent.getControlWorld());
+			case "leafia_ic10" -> new NodeIC10(0,0,nodeSystem.parent);
 			default -> null;
 		};
 		return node;

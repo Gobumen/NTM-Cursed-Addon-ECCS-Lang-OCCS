@@ -3,11 +3,13 @@ package com.leafia.contents.machines.controlpanel.nodes.pack;
 import com.hbm.inventory.control_panel.Control;
 import com.hbm.inventory.control_panel.NodeButton;
 import com.hbm.inventory.control_panel.NodeConnection;
+import com.hbm.inventory.control_panel.NodeSystem;
 import com.hbm.inventory.control_panel.nodes.Node;
 import com.hbm.inventory.control_panel.types.DataValue;
 import com.hbm.inventory.control_panel.types.DataValue.DataType;
 import com.hbm.inventory.control_panel.types.DataValueComposite;
 import com.hbm.inventory.control_panel.types.DataValueString;
+import net.minecraft.nbt.NBTTagCompound;
 
 public class NodeIC10 extends Node {
 	public Control ctrl;
@@ -22,7 +24,10 @@ public class NodeIC10 extends Node {
 	}
 	@Override
 	public DataValue evaluate(int i) {
-		return null;
+		if (i == 0)
+			return new DataValueComposite();
+		else
+			return new DataValueString("WIP");
 	}
 	@Override
 	public float[] getColor() {
@@ -30,6 +35,11 @@ public class NodeIC10 extends Node {
 	}
 	@Override
 	public String getDisplayName() {
-		return "IC10 Sequence";
+		return "IC10 (WIP)";
+	}
+	@Override
+	public NBTTagCompound writeToNBT(NBTTagCompound tag,NodeSystem sys) {
+		tag.setString("nodeType","leafia_ic10");
+		return super.writeToNBT(tag,sys);
 	}
 }

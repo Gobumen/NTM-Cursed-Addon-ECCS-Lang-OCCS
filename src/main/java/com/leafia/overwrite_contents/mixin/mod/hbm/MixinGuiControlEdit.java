@@ -20,6 +20,9 @@ public abstract class MixinGuiControlEdit extends GuiContainer implements IMixin
 	@Shadow(remap = false)
 	protected abstract void pushElement(SubElement e);
 
+	@Shadow(remap = false)
+	protected abstract void popElement();
+
 	public MixinGuiControlEdit(Container inventorySlotsIn) {
 		super(inventorySlotsIn);
 	}
@@ -28,7 +31,7 @@ public abstract class MixinGuiControlEdit extends GuiContainer implements IMixin
 	void onInitGui(CallbackInfo ci) {
 		leafia$ic10Editor = new SubElementIC10Editor((GuiControlEdit)(IMixinGuiControlEdit)this);
 		leafia$ic10Editor.initGui();
-		pushElement(leafia$ic10Editor); // debug
+		//pushElement(leafia$ic10Editor); // debug
 	}
 	@Override
 	public SubElementIC10Editor leafia$ic10Editor() {
@@ -39,5 +42,13 @@ public abstract class MixinGuiControlEdit extends GuiContainer implements IMixin
 		if (leafia$ic10Editor != null)
 			leafia$ic10Editor.handleMouseInput();
 		super.handleMouseInput();
+	}
+	@Override
+	public void leafia$pushElement(SubElement e) {
+		pushElement(e);
+	}
+	@Override
+	public void leafia$popElement() {
+		popElement();
 	}
 }

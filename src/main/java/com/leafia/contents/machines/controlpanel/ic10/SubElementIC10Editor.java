@@ -10,11 +10,13 @@ import com.leafia.contents.machines.controlpanel.ic10.IC10.IC10Type;
 import com.leafia.dev.LeafiaBrush;
 import com.leafia.dev.LeafiaUtil.ScrollUtil;
 import com.leafia.dev.gui.FiaUIRect;
+import com.leafia.overwrite_contents.interfaces.IMixinGuiControlEdit;
 import com.leafia.settings.AddonConfig;
 import com.leafia.transformer.LeafiaGls;
 import com.llib.exceptions.LeafiaDevFlaw;
 import com.llib.math.LeafiaColor;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.util.ResourceLocation;
@@ -114,16 +116,37 @@ public class SubElementIC10Editor extends SubElement {
 			instructions.set(i,formatInstruction(asArrayList(toString(instructions.get(i)))));
 		}
 	}
+	public GuiButton btn_back;
+	public GuiButton btn_funcs;
 	@Override
 	public void initGui() {
+		int cX = gui.width/2;
+		int cY = gui.height/2;
+		btn_back = gui.addButton(new GuiButton(gui.currentButtonId(), gui.getGuiLeft()+7, gui.getGuiTop()+13, 30, 20, "Back"));
+		btn_funcs = gui.addButton(new GuiButton(gui.currentButtonId(), gui.getGuiLeft()+54, gui.getGuiTop()+13, 58, 20, "Functions"));
 		super.initGui();
 		scrollXRect = new FiaUIRect(gui,65,237,178,5);
 		scrollYRect = new FiaUIRect(gui,244,48,5,188);
 	}
-	public static ResourceLocation bgrl = new ResourceLocation("leafia","textures/gui/control_panel/gui_ic10_editor.png");
+	@Override
+	protected void actionPerformed(GuiButton button){
+		IMixinGuiControlEdit mixin = (IMixinGuiControlEdit)gui;
+		if(button == btn_back)
+			mixin.leafia$popElement();
+		//if (button == btn_funcs)
+		//	mixin.leafia$pushElement(gui.variables);
+	}
+	@Override
+	protected void enableButtons(boolean enable){
+		btn_back.enabled = enable;
+		btn_back.visible = enable;
+		btn_funcs.enabled = enable;
+		btn_funcs.visible = enable;
+	}
+	public static ResourceLocation texture = new ResourceLocation("leafia","textures/gui/control_panel/gui_ic10_editor.png");
 	@Override
 	protected void renderBackground(){
-		gui.mc.getTextureManager().bindTexture(bgrl);
+		gui.mc.getTextureManager().bindTexture(texture);
 		gui.drawTexturedModalRect(gui.getGuiLeft(), gui.getGuiTop(), 0, 0, gui.getXSize()-5, gui.getYSize()-5);
 	}
 	// (\w+) = \{(\w+),(\w+),(\w+),(\w+)\};
@@ -586,6 +609,7 @@ public class SubElementIC10Editor extends SubElement {
 		if (dbuf == null)
 			dbuf = GLAllocation.createDirectByteBuffer(16*4).asDoubleBuffer(); // i have no idea how this even works
 
+		gui.mc.getTextureManager().bindTexture(texture);
 		double dt = (System.currentTimeMillis()-lastTimeMillis)/1000d;
 		lastTimeMillis = System.currentTimeMillis();
 		LeafiaGls.disableLighting();
