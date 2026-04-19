@@ -474,10 +474,10 @@ public class LeafiaUtil {
 		// underscore means it's about internal scroll value itself, the one without underscore means it's for scroll bar display
 
 		public static int _getScrollOffset(int scrollBarSize,int scrollAreaSize,double relativePosition,int maxScroll) {
-			return (int)(_getScrollRatio(scrollBarSize,scrollAreaSize,relativePosition)*maxScroll);
+			return MathHelper.clamp((int)(_getScrollRatio(scrollBarSize,scrollAreaSize,relativePosition)*maxScroll+0.5),0,maxScroll);
 		}
 		public static double _getScrollRatio(int scrollBarSize,int scrollAreaSize,double relativePosition) {
-			return MathHelper.clamp((relativePosition+scrollBarSize/2d)/(scrollAreaSize-scrollBarSize),0,1);
+			return MathHelper.clamp((relativePosition-scrollBarSize/2d)/(scrollAreaSize-scrollBarSize),0,1);
 		}
 		public static double _getScrollRatio(int offset,int maxScroll) {
 			return (double)offset/maxScroll;

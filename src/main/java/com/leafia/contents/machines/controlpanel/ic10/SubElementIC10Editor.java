@@ -8,18 +8,24 @@ import com.leafia.contents.machines.controlpanel.ic10.IC10.IC10Argument;
 import com.leafia.contents.machines.controlpanel.ic10.IC10.IC10Instruction;
 import com.leafia.contents.machines.controlpanel.ic10.IC10.IC10Type;
 import com.leafia.dev.LeafiaBrush;
+import com.leafia.dev.LeafiaUtil.ScrollUtil;
+import com.leafia.dev.gui.FiaUIRect;
 import com.leafia.settings.AddonConfig;
 import com.leafia.transformer.LeafiaGls;
 import com.llib.exceptions.LeafiaDevFlaw;
 import com.llib.math.LeafiaColor;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.TextFormatting;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
+import org.lwjgl.opengl.GL11;
 
 import javax.annotation.Nullable;
+import java.nio.DoubleBuffer;
 import java.util.*;
 import java.util.Map.Entry;
 
@@ -111,6 +117,8 @@ public class SubElementIC10Editor extends SubElement {
 	@Override
 	public void initGui() {
 		super.initGui();
+		scrollXRect = new FiaUIRect(gui,65,237,178,5);
+		scrollYRect = new FiaUIRect(gui,244,48,5,188);
 	}
 	public static ResourceLocation bgrl = new ResourceLocation("leafia","textures/gui/control_panel/gui_ic10_editor.png");
 	@Override
@@ -560,20 +568,95 @@ public class SubElementIC10Editor extends SubElement {
 		return list;
 	}
 	public static final float globalScale = 0.5f;
+	public double scrollRatioX = 0;
+	public double scrollRatioY = 0;
+	public boolean scrollingX = false;
+	public boolean scrollingY = false;
+	public FiaUIRect scrollXRect;
+	public FiaUIRect scrollYRect;
+	public int scrollXCount = 1;
+	public int scrollYCount = 1;
+	public int scrollXThing = 1;
+	public int scrollYThing = 1;
+	public static DoubleBuffer dbuf = null;
+	public static final int scrollAreaX = 178;
+	public static final int scrollAreaY = 188;
 	@Override
 	protected void drawScreen() {
+		if (dbuf == null)
+			dbuf = GLAllocation.createDirectByteBuffer(16*4).asDoubleBuffer(); // i have no idea how this even works
+
 		double dt = (System.currentTimeMillis()-lastTimeMillis)/1000d;
 		lastTimeMillis = System.currentTimeMillis();
-		LeafiaGls.pushMatrix();
 		LeafiaGls.disableLighting();
+
+		// DRAWING SCROLLER
+		scrollXCount = 1;
+		for (ArrayList<Object> insn : instructions)
+			scrollXCount = Math.max(scrollXCount,lenString(insn)/2+1);
+		scrollYCount = instructions.size();
+		double scrollXDiv = Math.max(1,scrollXCount)/30d;
+		double scrollYDiv = Math.max(1,scrollYCount)/31d;
+		int scrollBarXSize = (int)MathHelper.clamp(scrollAreaX/scrollXDiv,20,scrollAreaX);
+		int scrollBarYSize = (int)MathHelper.clamp(scrollAreaY/scrollYDiv,20,scrollAreaY);
+		scrollXThing = Math.max(0,scrollXCount-30);
+		scrollYThing = Math.max(0,scrollYCount-31);
+		if (scrollingX)
+			scrollRatioX = ScrollUtil._getScrollRatio(scrollBarXSize,scrollAreaX,mouseX-65);
+		if (scrollingY)
+			scrollRatioY = ScrollUtil._getScrollRatio(scrollBarYSize,scrollAreaY,mouseY-48);
+		{
+			int pos = gui.guiLeft+65+ScrollUtil.getScrollBarPos(scrollBarXSize,scrollAreaX,scrollRatioX);
+			gui.drawTexturedModalRect(pos,gui.guiTop+237,73,251,2,5);
+			gui.drawTexturedModalRect(pos+scrollBarXSize-2,gui.guiTop+237,73+scrollAreaX-2,251,2,5);
+			gui.drawTexturedModalRect(pos+2,gui.guiTop+237,73+2,251,scrollBarXSize-4,5);
+		}
+		{
+			int pos = gui.guiTop+48+ScrollUtil.getScrollBarPos(scrollBarYSize,scrollAreaY,scrollRatioY);
+			gui.drawTexturedModalRect(gui.guiLeft+244,pos,251,63,5,2);
+			gui.drawTexturedModalRect(gui.guiLeft+244,pos+scrollBarYSize-2,251,63+scrollAreaY-2,5,2);
+			gui.drawTexturedModalRect(gui.guiLeft+244,pos+2,251,63+2,5,scrollBarYSize-4);
+		}
+
+		// DRAWING EDITOR
+		LeafiaGls.pushMatrix();
 		LeafiaGls.translate(gui.getGuiLeft()+65,gui.getGuiTop()+48,0);
+		{
+			GL11.glEnable(GL11.GL_CLIP_PLANE2);
+			dbuf.put(new double[]{ 0,1,0,0 });
+			dbuf.rewind();
+			GL11.glClipPlane(GL11.GL_CLIP_PLANE2,dbuf);
+
+			GL11.glEnable(GL11.GL_CLIP_PLANE3);
+			dbuf.put(new double[]{ 0,-1,0,scrollAreaY });
+			dbuf.rewind();
+			GL11.glClipPlane(GL11.GL_CLIP_PLANE3,dbuf);
+		}
+		LeafiaGls.translate(0,-scrollYThing*lineHeight*scrollRatioY*globalScale,0);
+		LeafiaGls.scale(globalScale);
+		for (int i = 0; i < instructions.size(); i++)
+			font.drawString(Integer.toString(i),-2-font.getStringWidth(Integer.toString(i)),i*lineHeight+heightOffset,0xAAAAAA);
+		LeafiaGls.popMatrix();
+
+		LeafiaGls.pushMatrix();
+		LeafiaGls.translate(gui.getGuiLeft()+65,gui.getGuiTop()+48,0);
+		{ // i had to vibecode this shit
+			GL11.glEnable(GL11.GL_CLIP_PLANE0);
+			dbuf.put(new double[]{ 1,0,0,0 });
+			dbuf.rewind();
+			GL11.glClipPlane(GL11.GL_CLIP_PLANE0,dbuf);
+
+			GL11.glEnable(GL11.GL_CLIP_PLANE1);
+			dbuf.put(new double[]{ -1,0,0,scrollAreaX });
+			dbuf.rewind();
+			GL11.glClipPlane(GL11.GL_CLIP_PLANE1,dbuf);
+		}
+		LeafiaGls.translate(-scrollXThing*2*textSpacing*scrollRatioX*globalScale,-scrollYThing*lineHeight*scrollRatioY*globalScale,0);
 		LeafiaGls.scale(globalScale);
 		for (int i = 0; i < instructions.size(); i++)
 			updateDefsForLine(i);
-		for (int i = 0; i < instructions.size(); i++) {
-			font.drawString(Integer.toString(i),-2-font.getStringWidth(Integer.toString(i)),i*lineHeight+heightOffset,0xAAAAAA);
+		for (int i = 0; i < instructions.size(); i++)
 			renderInstruction(i);
-		}
 		if (cursor != null) {
 			if (selStart != null && !posEquals(cursor,selStart)) {
 				Pair<int[],int[]> sorted = getSelectionSorted();
@@ -595,6 +678,10 @@ public class SubElementIC10Editor extends SubElement {
 			int y = cursor[0]*lineHeight;
 			drawRect(x-0.5,y,x+0.5,y+lineHeight,28*flk,79*flk,111*flk,255);
 		}
+		GL11.glDisable(GL11.GL_CLIP_PLANE0);
+		GL11.glDisable(GL11.GL_CLIP_PLANE1);
+		GL11.glDisable(GL11.GL_CLIP_PLANE2);
+		GL11.glDisable(GL11.GL_CLIP_PLANE3);
 		if (cursor != null && typing != null) {
 			int x = cursor[1]*textSpacing+2;
 			int y = (cursor[0]+1)*lineHeight;
@@ -668,12 +755,23 @@ public class SubElementIC10Editor extends SubElement {
 		j -= gui.getGuiTop();
 		mouseX = i;
 		mouseY = j;
+		double delta = -MathHelper.clamp(Mouse.getEventDWheel(),-1,1);
+		if (delta != 0) {
+			if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT))
+				scrollRatioX = MathHelper.clamp(scrollRatioX+delta/Math.max(scrollXThing,1),0,1);
+			else
+				scrollRatioY = MathHelper.clamp(scrollRatioY+delta/Math.max(scrollYThing,1),0,1);
+		}
 	}
 	int[] getPositionFromMouse() {
 		if (mouseX >= 65 && mouseY >= 48 && mouseX <= 65+178 && mouseY <= 48+188) {
-			int line = (int)((mouseY-48)/globalScale)/lineHeight;
+			double offsetMouseX = mouseX;
+			double offsetMouseY = mouseY;
+			offsetMouseX += scrollXThing*2*textSpacing*scrollRatioX*globalScale;
+			offsetMouseY += scrollYThing*lineHeight*scrollRatioY*globalScale;
+			int line = (int)((offsetMouseY-48)/globalScale)/lineHeight;
 			if (line >= 0 && line < instructions.size())
-				return new int[]{line,(int)Math.min(Math.floor((mouseX-65d)/globalScale/textSpacing+0.25),lenString(instructions.get(line)))};
+				return new int[]{line,(int)Math.min(Math.floor((offsetMouseX-65d)/globalScale/textSpacing+0.25),lenString(instructions.get(line)))};
 		}
 		return null;
 	}
@@ -686,12 +784,19 @@ public class SubElementIC10Editor extends SubElement {
 			if (cursor != null)
 				preservePosition = cursor[1];
 			selStart = cursor;
+			if (scrollXRect.isMouseIn(mouseX,mouseY))
+				scrollingX = true;
+			if (scrollYRect.isMouseIn(mouseX,mouseY))
+				scrollingY = true;
 		}
 	}
 	@Override
 	protected void mouseReleased(int mouseX,int mouseY,int state) {
-		if (state == 0)
+		if (state == 0) {
 			LMBdown = false;
+			scrollingX = false;
+			scrollingY = false;
+		}
 	}
 	void addUndo(UndoData data) {
 		if (undoCurrent+1 < undoHistory.size())
