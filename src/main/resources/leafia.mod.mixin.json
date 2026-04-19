@@ -9,6 +9,7 @@
     "hbm.MixinCoriumBlock",
     "hbm.MixinCoriumFinite",
     "hbm.MixinFT_HEatable",
+    "hbm.MixinGuiControlEdit",
     "hbm.MixinGUIDiFurnaceRTG",
     "hbm.MixinItemFluidIcon",
     "hbm.MixinItemRenderLaserDetonator",
@@ -18,10 +19,10 @@
     "hbm.MixinRenderBatterySocket",
     "hbm.MixinRenderChemicalPlant",
     "hbm.MixinRenderControlPanel",
+    "hbm.MixinRenderInfoSystemLegacy",
     "hbm.MixinRenderRBMKControlRod",
     "hbm.MixinRenderRBMKLid",
     "hbm.MixinRenderTorex",
-    "hbm.MixinRenderInfoSystemLegacy",
     "hbm.MixinRrenderControlPanel"
   ],
   "mixins": [

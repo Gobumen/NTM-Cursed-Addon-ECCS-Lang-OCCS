@@ -25,6 +25,8 @@ public class AddonConfig {
 	public static double governedRPS = 60;
 	public static int maxOptimalTurbineLength = 5;
 	public static double surgeTurbulenceMultiplier = 1;
+	public static int ic10maxstack = 512;
+	public static int ic10maxregisters = 64;
 	public static class ConfigOverrides {
 		public static boolean blockReplacement = true;
 		public static void applyGeneralConfig() {
@@ -78,6 +80,12 @@ public class AddonConfig {
 			maxOptimalTurbineLength = builder._integer("maxOptimalTurbineLength",5);
 			builder._comment("Multiplier of steam input surge turbulence for modular turbines");
 			surgeTurbulenceMultiplier = builder._double("surgeTurbulenceMultiplier",1);
+
+			builder._comment("IC10 nodes will throw StackOverflow when stack count exceeds this number");
+			ic10maxstack = builder._integer("ic10maxstack",512);
+
+			builder._comment("IC10 nodes will throw OutOfRegisterBounds when register index exceeds this number");
+			ic10maxregisters = builder._integer("ic10maxregisters",64);
 		}
 		builder._separator();
 		builder._category("CLIENT");
