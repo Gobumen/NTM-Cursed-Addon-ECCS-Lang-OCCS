@@ -20,13 +20,13 @@ import java.util.List;
 
 public class GraphCSE extends SubElementBaseConfig {
 	private static final int[] TRANSFORM = { 60,172-5,44,44 };
-	float width = 6;
-	float height = 4;
+	double width = 6;
+	double height = 4;
 	int verticalLineSpan = 1;
 	int horizontalLineDivision = 10;
 	int segments = 40;
 	int decimalLength = 2;
-	float textOffset = 0.5f;
+	double textOffset = 0.5f;
 	float red = 0;
 	float green = 255;
 	float blue = 0;
@@ -78,9 +78,9 @@ public class GraphCSE extends SubElementBaseConfig {
 		putFloatConfig(configs,"verticalLineSpan",verticalLineSpan);
 		putFloatConfig(configs,"horizontalLineDivision",horizontalLineDivision);
 		putFloatConfig(configs,"decimalLength",decimalLength);
-		putFloatConfig(configs,"textOffset",textOffset);
-		putFloatConfig(configs,"width",width);
-		putFloatConfig(configs,"height",height);
+		putFloatConfig(configs,"textOffset",(float)textOffset);
+		putFloatConfig(configs,"width",(float)width);
+		putFloatConfig(configs,"height",(float)height);
 	}
 
 	public GraphCSE(GuiControlEdit gui,Map<String,DataValue> map) {
@@ -93,9 +93,9 @@ public class GraphCSE extends SubElementBaseConfig {
 		verticalLineSpan = (int)map.get("verticalLineSpan").getNumber();
 		horizontalLineDivision = (int)map.get("horizontalLineDivision").getNumber();
 		decimalLength = (int)map.get("decimalLength").getNumber();
-		textOffset = map.get("textOffset").getNumber();
-		width = map.get("width").getNumber();
-		height = map.get("height").getNumber();
+		textOffset = Math.round(map.get("textOffset").getNumber()*10)/10d;
+		width = Math.round(map.get("width").getNumber()*10)/10d;
+		height = Math.round(map.get("height").getNumber()*10)/10d;
 	}
 
 	List<GuiButton> buttons = new ArrayList<>();
