@@ -359,7 +359,7 @@ public class Graph extends Control {
 			LeafiaGls.translate(0,0.001,0);
 			LeafiaColor gridColor = new LeafiaColor(skin.gridColor);
 			LeafiaGls.color(gridColor.getRed(),gridColor.getGreen(),gridColor.getBlue());
-			double thickness = 0.02;
+			double thickness = 0.01;
 			brush.startDrawingQuads();
 			for (int i = 0; i < values.length; i+=verticalLineSpan) {
 				double x = i/(values.length-1d);

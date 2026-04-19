@@ -40,8 +40,12 @@ public class NodeRoRSender extends NodeOutput {
 	public boolean doOutput(IControllable from,Map<String,NodeSystem> sendNodeMap,Map<String,BlockPos> positions) {
 		DataValue freq = inputs.get(0).evaluate();
 		DataValue signal = inputs.get(1).evaluate();
-		if (signal != null && freq != null && world != null)
-			RTTYSystem.broadcast(world,freq.toString(),signal.toString());
+		if (signal != null && freq != null && world != null) {
+			String s = signal.toString();
+			if (signal instanceof DataValueFloat f)
+				s = Integer.toString((int)f.getNumber());
+			RTTYSystem.broadcast(world,freq.toString(),s);
+		}
 		return false;
 	}
 }
