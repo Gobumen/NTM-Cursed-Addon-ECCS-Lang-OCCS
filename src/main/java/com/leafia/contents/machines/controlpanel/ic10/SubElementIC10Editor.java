@@ -116,7 +116,7 @@ public class SubElementIC10Editor extends SubElement {
 	@Override
 	protected void renderBackground(){
 		gui.mc.getTextureManager().bindTexture(bgrl);
-		gui.drawTexturedModalRect(gui.getGuiLeft(), gui.getGuiTop(), 0, 0, gui.getXSize(), gui.getYSize());
+		gui.drawTexturedModalRect(gui.getGuiLeft(), gui.getGuiTop(), 0, 0, gui.getXSize()-5, gui.getYSize()-5);
 	}
 	// (\w+) = \{(\w+),(\w+),(\w+),(\w+)\};
 	// public static final LeafiaColor $1 = new LeafiaColor($2/255d,$3/255d,$4/255d,$5/255d);
@@ -570,8 +570,10 @@ public class SubElementIC10Editor extends SubElement {
 		LeafiaGls.scale(globalScale);
 		for (int i = 0; i < instructions.size(); i++)
 			updateDefsForLine(i);
-		for (int i = 0; i < instructions.size(); i++)
+		for (int i = 0; i < instructions.size(); i++) {
+			font.drawString(Integer.toString(i),-2-font.getStringWidth(Integer.toString(i)),i*lineHeight+heightOffset,0xAAAAAA);
 			renderInstruction(i);
+		}
 		if (cursor != null) {
 			if (selStart != null && !posEquals(cursor,selStart)) {
 				Pair<int[],int[]> sorted = getSelectionSorted();
@@ -642,7 +644,8 @@ public class SubElementIC10Editor extends SubElement {
 							for (IC10Argument arg : instruction.args)
 								args.append(" ").append(arg.name).append("<").append(arg.type.name().toLowerCase()).append(">");
 							List<String> list = new ArrayList<>();
-							list.add(TextFormatting.DARK_GRAY+args.substring(1));
+							if (!args.isEmpty())
+								list.add(TextFormatting.DARK_GRAY+args.substring(1));
 							list.addAll(Arrays.asList(instruction.desc));
 							LeafiaGls.pushMatrix();
 							LeafiaGls.translate(x-10,y,0);
@@ -667,7 +670,7 @@ public class SubElementIC10Editor extends SubElement {
 		mouseY = j;
 	}
 	int[] getPositionFromMouse() {
-		if (mouseX >= 65 && mouseY >= 48 && mouseX <= 65+176 && mouseY <= 48+186) {
+		if (mouseX >= 65 && mouseY >= 48 && mouseX <= 65+178 && mouseY <= 48+188) {
 			int line = (int)((mouseY-48)/globalScale)/lineHeight;
 			if (line >= 0 && line < instructions.size())
 				return new int[]{line,(int)Math.min(Math.floor((mouseX-65d)/globalScale/textSpacing+0.25),lenString(instructions.get(line)))};
