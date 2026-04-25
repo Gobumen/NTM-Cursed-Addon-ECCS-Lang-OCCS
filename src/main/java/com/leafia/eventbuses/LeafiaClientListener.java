@@ -30,6 +30,7 @@ import com.leafia.init.ResourceInit;
 import com.leafia.passive.LeafiaPassiveLocal;
 import com.leafia.passive.effects.LeafiaShakecam;
 import com.leafia.passive.rendering.TopRender;
+import com.leafia.settings.AddonConfig;
 import com.leafia.shit.leafiashader.BigBruh;
 import com.leafia.transformer.LeafiaGls;
 import com.leafia.unsorted.IEntityCustomCollision;
@@ -475,33 +476,36 @@ public class LeafiaClientListener {
 		int lastH = 0;
 		public HandlerClient() {
 			LeafiaShakecam.noise = new NoiseGeneratorPerlin(new Random(),1);
-			this.addShader("tom",new ResourceLocation("leafia:shaders/help/tom_desat.json"));
-			this.addShader("nuclear",new ResourceLocation("leafia:shaders/help/nuclear.json"));
-			this.addShader("drx",new ResourceLocation("leafia:shaders/help/digamma.json"));
+			if (!AddonConfig.disableLCAShaders) {
+				this.addShader("tom",new ResourceLocation("leafia:shaders/help/tom_desat.json"));
+				this.addShader("nuclear",new ResourceLocation("leafia:shaders/help/nuclear.json"));
+				this.addShader("drx",new ResourceLocation("leafia:shaders/help/digamma.json"));
+			}
 		}
 		@SubscribeEvent
 		public void renderTick(RenderTickEvent e){
 			EntityPlayer player = Minecraft.getMinecraft().player;
 			if (player != null) {
 				if (e.phase == Phase.END) {
-					boolean needsUpdate = false;
-					for (BigBruh shaderGroup : shaderGroups.values()) {
-						LeafiaGls.matrixMode(5890);
-						LeafiaGls.pushMatrix();
-						LeafiaGls.loadIdentity();
-						Minecraft mc = Minecraft.getMinecraft();
-						Framebuffer mainCanvas = mc.getFramebuffer();
-						if (shaderGroup != null)
-						{
-							if (lastW != mainCanvas.framebufferWidth || lastH != mainCanvas.framebufferHeight || needsUpdate) {
-								lastW = mc.getFramebuffer().framebufferWidth;
-								lastH = mc.getFramebuffer().framebufferHeight;
-								shaderGroup.createBindFramebuffers(mainCanvas.framebufferWidth,mainCanvas.framebufferHeight);
-								needsUpdate = true;
+					if (!AddonConfig.disableLCAShaders) {
+						boolean needsUpdate = false;
+						for (BigBruh shaderGroup : shaderGroups.values()) {
+							LeafiaGls.matrixMode(5890);
+							LeafiaGls.pushMatrix();
+							LeafiaGls.loadIdentity();
+							Minecraft mc = Minecraft.getMinecraft();
+							Framebuffer mainCanvas = mc.getFramebuffer();
+							if (shaderGroup != null) {
+								if (lastW != mainCanvas.framebufferWidth || lastH != mainCanvas.framebufferHeight || needsUpdate) {
+									lastW = mc.getFramebuffer().framebufferWidth;
+									lastH = mc.getFramebuffer().framebufferHeight;
+									shaderGroup.createBindFramebuffers(mainCanvas.framebufferWidth,mainCanvas.framebufferHeight);
+									needsUpdate = true;
+								}
+								shaderGroup.render(e.renderTickTime);
 							}
-							shaderGroup.render(e.renderTickTime);
+							LeafiaGls.popMatrix();
 						}
-						LeafiaGls.popMatrix();
 					}
 				/*
 				//LeafiaGls.color(1.0F, 1.0F, 1.0F, 1.0F);

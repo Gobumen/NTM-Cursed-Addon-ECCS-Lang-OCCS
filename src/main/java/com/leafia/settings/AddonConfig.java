@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 public class AddonConfig {
+	public static boolean disableLCAShaders = false;
 	public static boolean useLeafiaTorex = true;
 	public static boolean enableHealthMod = true;
     public static int dfcComponentRange = 50;
@@ -36,8 +37,8 @@ public class AddonConfig {
 	public static void loadFromConfig(){
 		_ConfigBuilder builder = new _ConfigBuilder("leafia");
 		builder._separator();
-		builder._category("IMPORTANT: The configs will not apply by default! Add ! on start of each lines to apply.");
-		builder._category("Example: !enableBarrelSidePorts: false");
+		builder._category("IMPORTANT: The configs will not apply by default! Add ! on start of each configs to apply.");
+		builder._category("Example: enableBarrelSidePorts: true -> !enableBarrelSidePorts: false");
 		builder._pushLine();
 		builder._category("MIXINS");
 		{
@@ -90,7 +91,8 @@ public class AddonConfig {
 		builder._separator();
 		builder._category("CLIENT");
 		{
-
+			builder._comment("Disables shaders used by this addon. This may make it compatible with Vivecraft");
+			disableLCAShaders = builder._boolean("disableLCAShaders",false);
 		}
 		builder._separator();
 		builder.saveConfig();

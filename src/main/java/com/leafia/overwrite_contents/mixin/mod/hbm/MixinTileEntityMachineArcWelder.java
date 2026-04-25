@@ -11,7 +11,9 @@ import com.leafia.dev.LeafiaUtil;
 import com.leafia.dev.optimization.LeafiaParticlePacket.FiaSpark;
 import com.leafia.dev.optimization.LeafiaParticlePacket.FlashParticle;
 import com.leafia.init.LeafiaSoundEvents;
+import com.leafia.unsorted.ParticleArcWelder;
 import net.minecraft.block.material.Material;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -92,11 +94,17 @@ public abstract class MixinTileEntityMachineArcWelder extends TileEntityMachineB
 				}
 				if (world.getTotalWorldTime()%2 == 0 || world.rand.nextInt(3) == 0) {
 					FlashParticle flash = new FlashParticle();
-					flash.scale = world.rand.nextFloat()*0.02f+0.2f;
+					flash.scale = world.rand.nextFloat()*0.015f+0.15f;
 					flash.ticksIn = 2;
 					flash.ticksOut = world.rand.nextInt(2)+2;
 					flash.emitLocal(vec,up);
 				}
+				int amt = world.rand.nextInt(2)+1;
+				for (int i = 0; i < amt; i++) {
+					ParticleArcWelder smoke = new ParticleArcWelder(world,vec.x,vec.y,vec.z);
+					Minecraft.getMinecraft().effectRenderer.addEffect(smoke);
+				}
+
 			} else if (leafia$client_sfx != null) {
 				leafia$client_sfx.stopSound();
 				leafia$client_sfx = null;

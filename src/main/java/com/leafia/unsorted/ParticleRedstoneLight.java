@@ -5,6 +5,7 @@ import com.leafia.transformer.LeafiaGls;
 import net.minecraft.client.particle.ParticleRedstone;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.GlStateManager.DestFactor;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
@@ -45,6 +46,7 @@ public class ParticleRedstoneLight extends ParticleRedstone {
         super.renderParticle(buffer,entityIn,partialTicks,rotationX,rotationZ,rotationYZ,rotationXY,rotationXZ);
         tes.draw();
         GlStateManager.depthMask(prevDepth);
+        GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
         if (!prevBlend) GlStateManager.disableBlend();
         if (prevLighting) GlStateManager.enableLighting();
         GlStateManager.popMatrix();

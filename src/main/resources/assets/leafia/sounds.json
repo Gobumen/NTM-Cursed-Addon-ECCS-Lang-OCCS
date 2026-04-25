@@ -18,7 +18,7 @@
     {"name": "leafia:external/pipestress17", "stream": false}
   ]},
 
-  "external.arc_welder": {"subtitle": "subtitles.block.arc_welder", "category": "block", "sounds": [{"name": "leafia:external/stationeers_welder_dualmix", "stream": false}]},
+  "external.arc_welder": {"subtitle": "subtitles.block.arc_welder", "category": "block", "sounds": [{"name": "leafia:external/stationeers_welder_dualmix_2", "stream": false}]},
   "external.arc_welder_start": {"subtitle": "subtitles.block.arc_welder_start", "category": "block", "sounds": [{"name": "leafia:external/stationeers_welder_arc_start", "stream": false}]},
   "external.arc_welder_stop": {"subtitle": "subtitles.block.arc_welder_stop", "category": "block", "sounds": [{"name": "leafia:external/stationeers_welder_arc_stop", "stream": false}]},
 
