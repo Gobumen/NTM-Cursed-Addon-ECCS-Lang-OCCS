@@ -121,7 +121,7 @@ public class AmatDuctBakedModel extends AbstractWavefrontBakedModel {
 	}
 
 	private List<BakedQuad> bakeWithOverlay(Set<String> parts, float roll, float pitch, float yaw, boolean centerToBlock) {
-		List<FaceGeometry> geometry = buildGeometry(parts, roll, pitch, yaw, false, centerToBlock);
+		List<FaceGeometry> geometry = buildGeometry(parts, roll, pitch, yaw, true, centerToBlock);
 		List<BakedQuad> quads = new ArrayList<>(geometry.size() * 2);
 		for (FaceGeometry geo : geometry) {
 			quads.add(geo.buildQuad(baseSprite, -1));

@@ -27,7 +27,7 @@ public class CatwalkRailingBakedModel extends AbstractWavefrontBakedModel {
 		return map.getOrDefault(entry,null);
 	}
 	protected CatwalkRailingBakedModel(String entry,CatwalkRailingBase railing,HFRWavefrontObject model,TextureAtlasSprite sprite,boolean forBlock,float baseScale,float tx,float ty,float tz,float itemYaw) {
-		super(model,forBlock ? DefaultVertexFormats.BLOCK : DefaultVertexFormats.ITEM,baseScale,tx,ty,tz,BakedModelTransforms.pipeItem());
+		super(true,model,forBlock ? DefaultVertexFormats.BLOCK : DefaultVertexFormats.ITEM,baseScale,tx,ty,tz,BakedModelTransforms.pipeItem());
 		this.registeredSprite = sprite;
 		this.forBlock = forBlock;
 		this.itemYaw = itemYaw;
@@ -40,7 +40,7 @@ public class CatwalkRailingBakedModel extends AbstractWavefrontBakedModel {
 		for (FaceGeometry geo : geometry)
 			quads.add(geo.buildQuad(registeredSprite, -1));
 		return quads;*/
-		return bakeSimpleQuads(parts,roll,pitch,yaw,false,centerToBlock,registeredSprite);
+		return bakeSimpleQuads(parts,roll,pitch,yaw,true,centerToBlock,registeredSprite,-1,0,-0.5f,0);
 	}
 	boolean getBooleanSafely(IBlockState state,PropertyBool property) {
 		if (state.getPropertyKeys().contains(property))

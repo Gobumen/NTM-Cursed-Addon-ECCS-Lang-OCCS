@@ -124,7 +124,7 @@ public class CoreCEmitterGUI extends GuiInfoContainer {
         }
         try {
             if (lastFocused != -1 && focused != lastFocused)
-                LeafiaPacket._start(emitter).__write(lastFocused + 1, (long) SIPfx.parse(fields[lastFocused].getText())).__sendToServer();
+                LeafiaPacket._start(emitter).__write(lastFocused + 1, (long)SIPfx.parse(fields[lastFocused].getText())).__sendToServer();
         } catch (NumberFormatException ignored) {
         }
         drawTexturedModalRect(guiLeft + 61, guiTop + 17 + 14 * emitter.selecting, 194, 9, 10, 13);
