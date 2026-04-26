@@ -52,7 +52,8 @@ public class CoreCEmitterGUI extends GuiInfoContainer {
 
     public void syncTextField() {
         for (int z = 0; z < 4; z++)
-            fields[z].setText(SIPfx.custom((x, s) -> x.longValue() + s.substring(1), emitter.joulesT[z], false));
+            if (!fields[z].isFocused())
+                fields[z].setText(SIPfx.custom((x, s) -> x.longValue() + s.substring(1), emitter.joulesT[z], false));
     }
 
     @Override

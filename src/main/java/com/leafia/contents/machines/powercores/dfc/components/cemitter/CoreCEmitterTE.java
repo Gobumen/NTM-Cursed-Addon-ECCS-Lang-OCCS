@@ -156,8 +156,11 @@ public class CoreCEmitterTE extends TileEntityCoreEmitter implements IMixinTileE
         if (key == 3) {
             selecting = (int) value;
         } else if (key >= 4 && key <= 7) {
-            joulesT[key - 4] = (long) value;
-            changed = true;
+            long v = (long) value;
+            if (joulesT[key - 4] != v) {
+                joulesT[key - 4] = v;
+                changed = true;
+            }
         }
         IMixinTileEntityCoreEmitter.super.onReceivePacketLocal(key, value);
     }
