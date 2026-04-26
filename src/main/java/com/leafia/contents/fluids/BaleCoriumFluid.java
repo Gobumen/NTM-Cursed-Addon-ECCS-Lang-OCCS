@@ -1,6 +1,8 @@
 package com.leafia.contents.fluids;
 
+import com.hbm.blocks.ModBlocks;
 import com.hbm.blocks.fluid.CoriumFinite;
+import com.leafia.contents.AddonBlocks;
 import com.leafia.unsorted.ParticleBalefireLava;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -26,6 +28,8 @@ public class BaleCoriumFluid extends Fluid {
 		public BaleCoriumFluidBlock(Fluid fluid,Material material,String s) {
 			super(fluid,material,s);
 			tickRate = 15;
+			ModBlocks.ALL_BLOCKS.remove(this);
+			AddonBlocks.ALL_BLOCKS.add(this);
 		}
 		private final Random rand = new Random();
 		@Override

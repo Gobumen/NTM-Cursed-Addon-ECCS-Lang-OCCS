@@ -1,9 +1,7 @@
 package com.leafia.contents.fluids;
 
-import com.hbm.blocks.ModBlocks;
 import com.hbm.blocks.fluid.IFluidFog;
-import com.hbm.handler.radiation.ChunkRadiationManager;
-import com.hbm.lib.ModDamageSource;
+import com.leafia.contents.AddonBlocks;
 import com.hbm.util.ContaminationUtil;
 import com.hbm.util.ContaminationUtil.ContaminationType;
 import com.hbm.util.ContaminationUtil.HazardType;
@@ -40,7 +38,7 @@ public class OsmiridiumFluid extends Fluid {
 			this.setTickRandomly(true);
 			displacements.put(this, false);
 
-			ModBlocks.ALL_BLOCKS.add(this);
+			AddonBlocks.ALL_BLOCKS.add(this);
 		}
 
 		@Override
