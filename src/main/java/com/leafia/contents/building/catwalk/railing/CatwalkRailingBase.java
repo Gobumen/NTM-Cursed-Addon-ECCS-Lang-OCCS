@@ -3,6 +3,7 @@ package com.leafia.contents.building.catwalk.railing;
 import com.hbm.items.IDynamicModels;
 import com.hbm.render.loader.HFRWavefrontObject;
 import com.leafia.dev.blocks.blockbase.AddonBlockBase;
+import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyBool;
@@ -12,11 +13,17 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
+import net.minecraft.client.renderer.block.statemap.StateMapperBase;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.Item;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.World;
 import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.relauncher.Side;
@@ -111,6 +118,52 @@ public abstract class CatwalkRailingBase extends AddonBlockBase implements IDyna
 		if (state.getValue(NEG_X)) meta += 0b100;
 		if (state.getValue(NEG_Z)) meta += 0b1000;
 		return meta;
+	}
+
+	@Override
+	public IBlockState getActualState(IBlockState state,IBlockAccess world,BlockPos pos) {
+		return state
+				.withProperty(POS_X_NZ,hasArm(world,pos.add( 0,0,-1),POS_X))
+				.withProperty(POS_X_PZ,hasArm(world,pos.add( 0,0, 1),POS_X))
+				.withProperty(POS_Z_NX,hasArm(world,pos.add(-1,0, 0),POS_Z))
+				.withProperty(POS_Z_PX,hasArm(world,pos.add( 1,0, 0),POS_Z))
+				.withProperty(NEG_X_NZ,hasArm(world,pos.add( 0,0,-1),NEG_X))
+				.withProperty(NEG_X_PZ,hasArm(world,pos.add( 0,0, 1),NEG_X))
+				.withProperty(NEG_Z_NX,hasArm(world,pos.add(-1,0, 0),NEG_Z))
+				.withProperty(NEG_Z_PX,hasArm(world,pos.add( 1,0, 0),NEG_Z));
+	}
+
+	private static boolean hasArm(IBlockAccess world,BlockPos pos,PropertyBool arm) {
+		IBlockState s = world.getBlockState(pos);
+		if (!(s.getBlock() instanceof CatwalkRailingBase)) return false;
+		return s.getValue(arm);
+	}
+
+	@Override
+	public void neighborChanged(IBlockState state,World worldIn,BlockPos pos,Block blockIn,BlockPos fromPos) {
+		super.neighborChanged(state,worldIn,pos,blockIn,fromPos);
+		if (worldIn.isRemote)
+			worldIn.markBlockRangeForRenderUpdate(pos,pos);
+	}
+
+	@Override
+	public IBlockState getStateForPlacement(World world,BlockPos pos,EnumFacing facing,float hitX,float hitY,float hitZ,int meta,EntityLivingBase placer,EnumHand hand) {
+		return getDefaultState()
+				.withProperty(POS_X,true)
+				.withProperty(POS_Z,true)
+				.withProperty(NEG_X,true)
+				.withProperty(NEG_Z,true);
+	}
+
+	@SideOnly(Side.CLIENT)
+	@Override
+	public StateMapperBase getStateMapper(ResourceLocation loc) {
+		return new StateMapperBase() {
+			@Override
+			protected ModelResourceLocation getModelResourceLocation(IBlockState state) {
+				return new ModelResourceLocation(loc,"normal");
+			}
+		};
 	}
 
 	@SideOnly(Side.CLIENT)
