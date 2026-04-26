@@ -2,6 +2,7 @@ package com.leafia.overwrite_contents.mixin.mod.hbm;
 
 import com.hbm.api.energymk2.IEnergyProviderMK2;
 import com.hbm.api.fluid.IFluidStandardReceiver;
+import com.hbm.api.fluidmk2.IFluidStandardSenderMK2;
 import com.hbm.blocks.ModBlocks;
 import com.hbm.explosion.ExplosionLarge;
 import com.hbm.interfaces.ILaserable;
@@ -49,6 +50,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.jetbrains.annotations.NotNull;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
@@ -62,7 +64,7 @@ import java.util.*;
 
 @Optional.InterfaceList({@Optional.Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "opencomputers")})
 @Mixin(value = TileEntityCoreReceiver.class)
-public abstract class MixinTileEntityCoreReceiver extends TileEntityMachineBase implements ITickable, IMixinTileEntityCoreReceiver, IEnergyProviderMK2, ILaserable, IFluidStandardReceiver, IGUIProvider, IControllable, SimpleComponent {
+public abstract class MixinTileEntityCoreReceiver extends TileEntityMachineBase implements ITickable, IMixinTileEntityCoreReceiver, IEnergyProviderMK2, ILaserable, IFluidStandardReceiver, IGUIProvider, IControllable, SimpleComponent, IFluidStandardSenderMK2 {
 	@Shadow(remap = false) public long joules;
 
 	@Shadow(remap = false) public long prevJoules;
@@ -233,6 +235,9 @@ public abstract class MixinTileEntityCoreReceiver extends TileEntityMachineBase 
 				}
 			}
 
+			for (EnumFacing face : EnumFacing.values())
+				tryProvide(leafia$output,world,pos.offset(face),ForgeDirection.getOrientation(face));
+
 			syncJoules = joules;
 
 			joules = 0;
@@ -249,6 +254,20 @@ public abstract class MixinTileEntityCoreReceiver extends TileEntityMachineBase 
 				joulesPerSec += Math.max(0,tickJoule-syncSpk)/20d;
 			fanAngle += Math.floorMod(720/20,360);
 		}
+	}
+
+	/**
+	 * @author ntmleafia
+	 * @reason fuck you
+	 */
+	@Overwrite(remap = false)
+	public @NotNull FluidTankNTM[] getAllTanks() {
+		return new FluidTankNTM[]{ tank,leafia$output };
+	}
+
+	@Override
+	public @NotNull FluidTankNTM[] getSendingTanks() {
+		return new FluidTankNTM[]{ leafia$output };
 	}
 
 	@Inject(method = "readFromNBT",at = @At("HEAD"),require = 1)

@@ -2,6 +2,7 @@ package com.leafia.overwrite_contents.mixin.mod.hbm;
 
 import com.hbm.api.energymk2.IEnergyReceiverMK2;
 import com.hbm.api.fluid.IFluidStandardReceiver;
+import com.hbm.api.fluidmk2.IFluidStandardSenderMK2;
 import com.hbm.interfaces.ILaserable;
 import com.hbm.inventory.control_panel.*;
 import com.hbm.inventory.control_panel.types.*;
@@ -33,6 +34,7 @@ import net.minecraft.init.Blocks;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
@@ -42,6 +44,7 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.Optional;
+import org.jetbrains.annotations.NotNull;
 import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -55,7 +58,7 @@ import java.util.Map;
 
 @Optional.InterfaceList({@Optional.Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "opencomputers")})
 @Mixin(value = TileEntityCoreEmitter.class, remap = false)
-public abstract class MixinTileEntityCoreEmitter extends TileEntityMachineBase implements ITickable, IMixinTileEntityCoreEmitter, IEnergyReceiverMK2, ILaserable, IFluidStandardReceiver, IControllable, SimpleComponent {
+public abstract class MixinTileEntityCoreEmitter extends TileEntityMachineBase implements ITickable, IMixinTileEntityCoreEmitter, IEnergyReceiverMK2, ILaserable, IFluidStandardReceiver, IControllable, SimpleComponent, IFluidStandardSenderMK2 {
     public MixinTileEntityCoreEmitter(int scount) {
         super(scount);
     }
@@ -169,6 +172,9 @@ public abstract class MixinTileEntityCoreEmitter extends TileEntityMachineBase i
 
             this.markDirty();
 
+            for (EnumFacing face : EnumFacing.values())
+                tryProvide(leafia$output,world,pos.offset(face),ForgeDirection.getOrientation(face));
+
             NBTTagCompound compound = new NBTTagCompound();
             tank.writeToNBT(compound,"t");
             leafia$output.writeToNBT(compound,"o");
@@ -192,6 +198,20 @@ public abstract class MixinTileEntityCoreEmitter extends TileEntityMachineBase i
         } else if (isOn) {
             leafia$lastRaycast = leafia$raycast(0);
         }
+    }
+
+    /**
+     * @author ntmleafia
+     * @reason fuck you
+     */
+    @Overwrite
+    public @NotNull FluidTankNTM[] getAllTanks() {
+        return new FluidTankNTM[]{ tank,leafia$output };
+    }
+
+    @Override
+    public @NotNull FluidTankNTM[] getSendingTanks() {
+        return new FluidTankNTM[]{ leafia$output };
     }
 
     @Unique
