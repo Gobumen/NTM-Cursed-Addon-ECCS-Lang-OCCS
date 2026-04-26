@@ -126,6 +126,8 @@ public class LeafiaClientProxy extends LeafiaServerProxy {
 		{
 			ModelLoader.setCustomStateMapper(AddonBlocks.door_fuckoff,new StateMap.Builder().ignore(BlockDoor.POWERED).build());
 			ModelLoader.setCustomStateMapper(AddonBlocks.fluid_fluoride,new StateMap.Builder().ignore(BlockFluidClassic.LEVEL).build());
+			ModelLoader.setCustomStateMapper(AddonBlocks.fluid_balecorium,new StateMap.Builder().ignore(BlockFluidClassic.LEVEL).build());
+			ModelLoader.setCustomStateMapper(AddonBlocks.fluid_osmiridium,new StateMap.Builder().ignore(BlockFluidClassic.LEVEL).build());
 			ModelLoader.setCustomStateMapper(PWR.element,new StateMap.Builder().ignore(PWRElementBlock.stacked).build());
 			ModelLoader.setCustomStateMapper(PWR.element_old,new StateMap.Builder().ignore(PWRElementBlock.stacked).build());
 			ModelLoader.setCustomStateMapper(PWR.element_old_blank,new StateMap.Builder().ignore(PWRElementBlock.stacked).build());

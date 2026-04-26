@@ -133,6 +133,7 @@ public abstract class MixinTileEntityCoreReceiver extends TileEntityMachineBase 
 	}
 	@Override
 	public void explode() {
+		if (world.isRemote) return;
 		world.setBlockToAir(pos);
 		for (int i = 0; i < 3; i++) spawnShrapnel(DebrisType.BEAM);
 		for (int i = 0; i < 2; i++) spawnShrapnel(DebrisType.CORNER);

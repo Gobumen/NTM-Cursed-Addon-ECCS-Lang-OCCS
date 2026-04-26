@@ -33,7 +33,10 @@ import com.leafia.contents.debug.ff_test.source.DebugSourceBlock;
 import com.leafia.contents.debug.ff_test.tank.DebugTankBlock;
 import com.leafia.contents.debug.fluid_voider.VoiderBlock;
 import com.leafia.contents.debug.rbmk_jet.DebugRBMKJetEmitter;
+import com.leafia.contents.fluids.BaleCoriumFluid;
+import com.leafia.contents.fluids.BaleCoriumFluid.BaleCoriumFluidBlock;
 import com.leafia.contents.fluids.FluorideFluid.FluorideFluidBlock;
+import com.leafia.contents.fluids.OsmiridiumFluid.OsmiridiumFluidBlock;
 import com.leafia.contents.machines.elevators.EvBuffer;
 import com.leafia.contents.machines.elevators.EvPulley;
 import com.leafia.contents.machines.elevators.EvShaftNeo;
@@ -601,7 +604,11 @@ public class AddonBlocks {
 		registerFluidBlocks();
 	}
 	public static Block fluid_fluoride = new FluorideFluidBlock(AddonFF.fluoride, Material.LAVA, "fluoride_fluid");
+	public static Block fluid_balecorium = new BaleCoriumFluidBlock(AddonFF.balecorium, ModBlocks.fluidcorium, "balecorium_fluid");
+	public static Block fluid_osmiridium = new OsmiridiumFluidBlock(AddonFF.osmiridium, Material.LAVA, "osmiridium_fluid");
 	private static void registerFluidBlocks() {
 		AddonFF.fluoride.setBlock(fluid_fluoride);
+		AddonFF.balecorium.setBlock(fluid_balecorium);
+		AddonFF.osmiridium.setBlock(fluid_osmiridium);
 	}
 }
