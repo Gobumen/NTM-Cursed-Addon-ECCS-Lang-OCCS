@@ -168,6 +168,7 @@ hbmpseudofluid.u235f6=六フッ化ウラニウム235
 hbmpseudofluid.leu235f6=低濃縮六フッ化ウラニウム235
 hbmpseudofluid.meu235f6=中濃縮六フッ化ウラニウム235
 hbmpseudofluid.heu235f6=高濃縮六フッ化ウラニウム235
+info.dfc.cooling=クリオジェルかペルフルオロメチルしか$対応していません
 info.leafiarod.empty=Empty
 info.leafiarod.jei.decay=汎用燃料棒の増殖
 info.leafiarod.jei.name=汎用燃料棒の分解

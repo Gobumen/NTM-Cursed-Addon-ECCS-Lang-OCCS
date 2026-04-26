@@ -236,7 +236,10 @@ public abstract class MixinTileEntityCoreReceiver extends TileEntityMachineBase 
 			syncJoules = joules;
 
 			joules = 0;
-			LeafiaPacket._start(this).__write(2,leafia$level)/*.__write(3,power)*/.__write(4,/*totalTransfer+*/cableTransfer).__sendToAffectedClients(); // fuick fuck fuck fuck fuck
+			NBTTagCompound compound = new NBTTagCompound();
+			tank.writeToNBT(compound,"t");
+			leafia$output.writeToNBT(compound,"o");
+			LeafiaPacket._start(this).__write(2,leafia$level)/*.__write(3,power)*/.__write(4,/*totalTransfer+*/cableTransfer).__write(5,compound).__sendToAffectedClients(); // fuick fuck fuck fuck fuck
 			cableTransfer = 0;
 		} else {
 			tickJoules[needle] = joules;
@@ -298,7 +301,6 @@ public abstract class MixinTileEntityCoreReceiver extends TileEntityMachineBase 
 				.__write(0,syncJoules)
 				.__write(1,power)
 				.__write(2,leafia$level)
-				.__write(5,tank.getFill())
 				.__sendToClient(player);
 	}
 
@@ -309,8 +311,11 @@ public abstract class MixinTileEntityCoreReceiver extends TileEntityMachineBase 
 			case 0: joules = (long)value; break;
 			case 1: power = (long)value; break;
 			case 2: leafia$level = (double)value; break;
-			case 5: tank.setFill((int)value); tank.setTankType(Fluids.CRYOGEL);
-			break;
+			case 5:
+				NBTTagCompound tag = (NBTTagCompound)value;
+				tank.readFromNBT(tag,"t");
+				leafia$output.readFromNBT(tag,"o");
+				break;
 			case 4: syncSpk = (long)value; break;
 		}
 	}

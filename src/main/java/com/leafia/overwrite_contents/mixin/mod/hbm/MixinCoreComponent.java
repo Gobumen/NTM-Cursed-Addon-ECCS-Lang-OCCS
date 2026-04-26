@@ -176,12 +176,12 @@ public abstract class MixinCoreComponent extends BlockContainer implements ILook
 			IMixinTileEntityCoreEmitter mixin = (IMixinTileEntityCoreEmitter)emitter;
 			text.add(TextFormatting.GREEN+"-> "+TextFormatting.RESET+emitter.tank.getTankType().getLocalizedName()+": "+emitter.tank.getFill()+"/"+emitter.tank.getMaxFill()+"mB");
 			text.add(TextFormatting.RED+"<- "+TextFormatting.RESET+mixin.leafia$getOutputTank().getTankType().getLocalizedName()+": "+mixin.leafia$getOutputTank().getFill()+"/"+mixin.leafia$getOutputTank().getMaxFill()+"mB");
-			text.add(I18nUtil.resolveKey("info.dfc.cooling"));
+			text.addAll(Arrays.asList(I18nUtil.resolveKey("info.dfc.cooling").split("\\$")));
 		} else if(te instanceof TileEntityCoreReceiver receiver) {
 			IMixinTileEntityCoreReceiver mixin = (IMixinTileEntityCoreReceiver)receiver;
 			text.add(TextFormatting.GREEN+"-> "+TextFormatting.RESET+receiver.tank.getTankType().getLocalizedName()+": "+receiver.tank.getFill()+"/"+receiver.tank.getMaxFill()+"mB");
 			text.add(TextFormatting.RED+"<- "+TextFormatting.RESET+mixin.leafia$getOutputTank().getTankType().getLocalizedName()+": "+mixin.leafia$getOutputTank().getFill()+"/"+mixin.leafia$getOutputTank().getMaxFill()+"mB");
-			text.add(I18nUtil.resolveKey("info.dfc.cooling"));
+			text.addAll(Arrays.asList(I18nUtil.resolveKey("info.dfc.cooling").split("\\$")));
 		}
 		if (!text.isEmpty())
 			ILookOverlay.printGeneric(event, I18nUtil.resolveKey(getTranslationKey() + ".name"), 0xffff00, 0x404000, text);

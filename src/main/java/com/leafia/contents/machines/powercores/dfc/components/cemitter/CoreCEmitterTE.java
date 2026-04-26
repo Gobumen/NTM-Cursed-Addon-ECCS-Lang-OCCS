@@ -1,9 +1,11 @@
 package com.leafia.contents.machines.powercores.dfc.components.cemitter;
 
+import com.hbm.inventory.fluid.tank.FluidTankNTM;
 import com.hbm.lib.internal.MethodHandleHelper;
 import com.hbm.tileentity.machine.TileEntityCore;
 import com.hbm.tileentity.machine.TileEntityCoreEmitter;
 import com.leafia.AddonBase;
+import com.leafia.contents.AddonFluids;
 import com.leafia.dev.container_utility.LeafiaPacket;
 import com.leafia.overwrite_contents.interfaces.IMixinTileEntityCoreEmitter;
 import net.minecraft.client.gui.GuiScreen;
@@ -220,6 +222,12 @@ public class CoreCEmitterTE extends TileEntityCoreEmitter implements IMixinTileE
     @Override
     public RayTraceResult leafia$lastRaycast() {
         return mhGetLastRaycast();
+    }
+
+    FluidTankNTM bleh = new FluidTankNTM(AddonFluids.PYROGEL,64000);
+    @Override
+    public FluidTankNTM leafia$getOutputTank() {
+        return bleh;
     }
 
     @Override

@@ -169,12 +169,15 @@ public abstract class MixinTileEntityCoreEmitter extends TileEntityMachineBase i
 
             this.markDirty();
 
+            NBTTagCompound compound = new NBTTagCompound();
+            tank.writeToNBT(compound,"t");
+            leafia$output.writeToNBT(compound,"o");
             LeafiaPacket packet = LeafiaPacket._start(this)
                                               .__write(0, isOn)
                                               .__write(1, watts)
                                               .__write(2, prev)
                                               .__write(3,leafia$isActive)
-                                              .__write(4, tank.getFill())
+                                              .__write(4, compound)
                                               .__write(5,power);
             //if (watts != prevWatts)
             //	packet.__write(1,watts);
@@ -319,8 +322,9 @@ public abstract class MixinTileEntityCoreEmitter extends TileEntityMachineBase i
                 leafia$isActive = (boolean) value;
                 break;
             case 4:
-                tank.setFill((int)value);
-                tank.setTankType(Fluids.CRYOGEL);
+                NBTTagCompound tag = (NBTTagCompound)value;
+                tank.readFromNBT(tag,"t");
+                leafia$output.readFromNBT(tag,"o");
                 break;
             case 5:
                 power = (long)value;
