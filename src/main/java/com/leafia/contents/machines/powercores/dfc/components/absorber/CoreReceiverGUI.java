@@ -1,6 +1,5 @@
 package com.leafia.contents.machines.powercores.dfc.components.absorber;
 
-import com.hbm.inventory.container.ContainerCoreReceiver;
 import com.hbm.inventory.gui.GuiInfoContainer;
 import com.hbm.lib.Library;
 import com.hbm.tileentity.machine.TileEntityCoreReceiver;
@@ -36,7 +35,7 @@ public class CoreReceiverGUI extends GuiInfoContainer {
 		this.field.setDisabledTextColour(0x499500);
 		this.field.setEnableBackgroundDrawing(false);
 		this.field.setMaxStringLength(3);
-		this.field.setText(String.valueOf(mixin.getLevel()*100));
+		this.field.setText(String.valueOf(mixin.leafia$getLevel()*100));
 	}
 
 	public CoreReceiverGUI(EntityPlayer invPlayer,TileEntityCoreReceiver tedf) {
@@ -84,10 +83,10 @@ public class CoreReceiverGUI extends GuiInfoContainer {
 		String sparks = Library.getShortNumber(receiver.joules) + "SPK";
 		this.fontRenderer.drawString(sparks, 161+29-this.fontRenderer.getStringWidth(sparks), 21, 0x4EB3DB);
 		this.fontRenderer.drawString("Relaying:", /*54+29*/98-this.fontRenderer.getStringWidth("Relaying:")/2+5, 21+20, 4210752);
-		String relayin = Library.getShortNumber(mixin.syncSpk()) + "SPK";
+		String relayin = Library.getShortNumber(mixin.leafia$syncSpk()) + "SPK";
 		this.fontRenderer.drawString(relayin, 161+29-this.fontRenderer.getStringWidth(relayin), 21+20, 0x4EB3DB);
 		this.fontRenderer.drawString("Output:", /*54+29*/98-this.fontRenderer.getStringWidth("Output:")/2, 21+20*2, 4210752);
-		String power = Library.getShortNumber((long)mixin.joulesPerSec()*5000*20) + "HE/s";
+		String power = Library.getShortNumber((long)mixin.leafia$joulesPerSec()*5000*20) + "HE/s";
 		this.fontRenderer.drawString(power, 161+29-this.fontRenderer.getStringWidth(power), 21+20*2, 0xD84EDB);
 
 		String inventory = I18n.format("container.inventory");
@@ -102,7 +101,7 @@ public class CoreReceiverGUI extends GuiInfoContainer {
 		Minecraft.getMinecraft().getTextureManager().bindTexture(texture);
 		drawTexturedModalRect(guiLeft, guiTop, 0, 0, xSize, ySize);
 
-		int px = (int)Math.round(35*mixin.getLevel());
+		int px = (int)Math.round(35*mixin.leafia$getLevel());
 		drawTexturedModalRect(guiLeft+192-px,guiTop+9,256-px,32,px,4);
 
 		if (field.isFocused())

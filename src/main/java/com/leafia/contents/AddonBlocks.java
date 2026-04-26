@@ -560,7 +560,7 @@ public class AddonBlocks {
 	}
 
 	private static void modifyBlockParams() {
-		ModBlocks.dfc_core.setResistance(65000000);
+		ModBlocks.dfc_core.setResistance(108333334);
 		ModBlocks.dfc_emitter.setResistance(50);
 		ModBlocks.dfc_receiver.setResistance(50);
 		ModBlocks.dfc_injector.setResistance(50);

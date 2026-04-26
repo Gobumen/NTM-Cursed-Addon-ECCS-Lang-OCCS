@@ -420,6 +420,7 @@ public class AddonItems {
 				.setSpecialRodModel().setBaseItem(ModItems.egg_balefire)
 				.setDecayProduct("blazingbalefire")
 				.setEmission(8).setReactivity(1/6d)
+				.setCorium(AddonBlocks.fluid_balecorium)
 				.addRad(ItemRads.balefire)
 				.setCreativeTab(MainRegistry.controlTab);
 		public static final Item
@@ -428,6 +429,7 @@ public class AddonItems {
 				.setSpecialRodModel()
 				.setDecayProduct("balefire")
 				.setEmission(12).setReactivity(1/9d)
+				.setCorium(AddonBlocks.fluid_balecorium)
 				.addRad(ItemRads.balefire.multiply(2))
 				.setCreativeTab(MainRegistry.controlTab);
 		// new stuff

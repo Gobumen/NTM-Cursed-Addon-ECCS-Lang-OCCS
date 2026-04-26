@@ -1,7 +1,5 @@
 package com.leafia.contents.machines.powercores.dfc.components.injector;
 
-import com.hbm.forgefluid.FFUtils;
-import com.hbm.inventory.container.ContainerCoreInjector;
 import com.hbm.inventory.gui.GuiInfoContainer;
 
 import com.hbm.tileentity.machine.TileEntityCore;
@@ -52,8 +50,8 @@ public class CoreInjectorGUI extends GuiInfoContainer {
 		drawTexturedModalRect(guiLeft, guiTop, 0, 0, xSize, ySize);
 
 		IMixinTileEntityInjector mixin = (IMixinTileEntityInjector)injector;
-		if (mixin.lastGetCore() != null) {
-			TileEntityCore core = mixin.lastGetCore();
+		if (mixin.leafia$lastGetCore() != null) {
+			TileEntityCore core = mixin.leafia$lastGetCore();
 			IMixinTileEntityCore mixin1 = (IMixinTileEntityCore)core;
 			if (mixin1.getDFCTemperature() >= 1500)
 				drawTexturedModalRect(guiLeft+53,guiTop+15,176,87,70,70);

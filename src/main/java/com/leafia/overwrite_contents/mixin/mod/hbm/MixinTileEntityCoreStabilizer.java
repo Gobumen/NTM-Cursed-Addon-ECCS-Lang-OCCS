@@ -25,7 +25,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import org.jetbrains.annotations.NotNull;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
@@ -151,7 +150,7 @@ public abstract class MixinTileEntityCoreStabilizer extends TileEntityMachineBas
 
 	@Unique
 	private TileEntityCore getCore() {
-		return IMixinTileEntityCoreStabilizer.super.getCore(AddonConfig.dfcComponentRange);
+		return IMixinTileEntityCoreStabilizer.super.leafia$getCore(AddonConfig.dfcComponentRange);
 	}
 
 	@Override
@@ -178,7 +177,7 @@ public abstract class MixinTileEntityCoreStabilizer extends TileEntityMachineBas
 
 	@Inject(method = "readFromNBT",at = @At("HEAD"),require = 1)
 	public void onReadFromNBT(NBTTagCompound compound,CallbackInfo ci) {
-		readTargetPos(compound);
+		leafia$readTargetPos(compound);
 		//bandaid shitfix
 		this.power = compound.getLong("power");
 		this.watts = compound.getInteger("watts");
@@ -187,7 +186,7 @@ public abstract class MixinTileEntityCoreStabilizer extends TileEntityMachineBas
 
 	@Inject(method = "writeToNBT",at = @At("HEAD"),require = 1)
 	public void onWriteToNBT(NBTTagCompound compound,CallbackInfoReturnable<NBTTagCompound> cir) {
-		writeTargetPos(compound);
+		leafia$writeTargetPos(compound);
 		//bandaid shitfix
 		compound.setLong("power", this.power);
 		compound.setInteger("watts", this.watts);
@@ -195,22 +194,22 @@ public abstract class MixinTileEntityCoreStabilizer extends TileEntityMachineBas
 	}
 
 	@Override
-	public TileEntityCore lastGetCore() {
+	public TileEntityCore leafia$lastGetCore() {
 		return lastGetCore;
 	}
 
 	@Override
-	public void lastGetCore(TileEntityCore core) {
+	public void leafia$lastGetCore(TileEntityCore core) {
 		this.lastGetCore = core;
 	}
 
 	@Override
-	public BlockPos getTargetPosition() {
+	public BlockPos leafia$getTargetPosition() {
 		return targetPosition;
 	}
 
 	@Override
-	public void targetPosition(BlockPos pos) {
+	public void leafia$targetPosition(BlockPos pos) {
 		this.targetPosition = pos;
 	}
 

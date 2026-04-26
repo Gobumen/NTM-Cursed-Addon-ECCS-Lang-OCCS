@@ -1,18 +1,26 @@
 package com.leafia.overwrite_contents.mixin.mod.hbm;
 
 import com.hbm.api.item.IDesignatorItem;
+import com.hbm.blocks.ILookOverlay;
 import com.hbm.blocks.ModBlocks;
 import com.hbm.blocks.machine.CoreComponent;
+import com.hbm.inventory.fluid.FluidType;
+import com.hbm.inventory.fluid.Fluids;
+import com.hbm.items.machine.IItemFluidIdentifier;
 import com.hbm.lib.HBMSoundHandler;
 import com.hbm.lib.InventoryHelper;
+import com.hbm.tileentity.machine.TileEntityCoreEmitter;
 import com.hbm.tileentity.machine.TileEntityCoreReceiver;
 import com.hbm.util.I18nUtil;
 import com.leafia.contents.AddonBlocks;
+import com.leafia.contents.AddonFluids;
 import com.leafia.contents.machines.powercores.dfc.IDFCBase;
 import com.leafia.contents.machines.powercores.dfc.components.cemitter.CoreCEmitterTE;
 import com.leafia.contents.machines.powercores.dfc.components.exchanger.CoreExchangerTE;
 import com.leafia.dev.LeafiaDebug;
 import com.leafia.dev.machine.MachineTooltip;
+import com.leafia.overwrite_contents.interfaces.IMixinTileEntityCoreEmitter;
+import com.leafia.overwrite_contents.interfaces.IMixinTileEntityCoreReceiver;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -26,22 +34,27 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.Style;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
+import net.minecraftforge.client.event.RenderGameOverlayEvent.Pre;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.At.Shift;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 @Mixin(CoreComponent.class)
-public abstract class MixinCoreComponent extends BlockContainer {
+public abstract class MixinCoreComponent extends BlockContainer implements ILookOverlay {
 	protected MixinCoreComponent(Material materialIn) {
 		super(materialIn);
 	}
@@ -51,7 +64,6 @@ public abstract class MixinCoreComponent extends BlockContainer {
 		if (!player.getHeldItem(hand).isEmpty()) {
 			TileEntity te = world.getTileEntity(pos);
 			NBTTagCompound nbt = player.getHeldItem(hand).getTagCompound();
-			LeafiaDebug.debugLog(world,"Interacted!");
 			if (player.getHeldItem(hand).getItem() instanceof IDesignatorItem && te instanceof IDFCBase && nbt != null) {
 				BlockPos target =
 						new BlockPos(nbt.getInteger("xCoord"), nbt.getInteger("yCoord"), nbt.getInteger("zCoord"));
@@ -61,10 +73,49 @@ public abstract class MixinCoreComponent extends BlockContainer {
 					cir.cancel();
 					return;
 				}
-				((IDFCBase)te).setTargetPosition(target);
+				((IDFCBase)te).leafia$setTargetPosition(target);
 				world.playSound(null, pos, HBMSoundHandler.buttonYes, SoundCategory.BLOCKS, 1, 1);
 				cir.setReturnValue(true);
 				cir.cancel();
+			} else if (player.getHeldItem(hand).getItem() instanceof IItemFluidIdentifier identifier) {
+				FluidType fluid = identifier.getType(world,pos.getX(),pos.getY(),pos.getZ(),player.getHeldItem(hand));
+				if (fluid == Fluids.CRYOGEL) {
+					if (te instanceof TileEntityCoreEmitter emitter) {
+						if (emitter.tank.getTankType() == fluid) return;
+						IMixinTileEntityCoreEmitter mixin = (IMixinTileEntityCoreEmitter)emitter;
+						emitter.tank.setTankType(Fluids.CRYOGEL);
+						mixin.leafia$getOutputTank().setTankType(AddonFluids.PYROGEL);
+						cir.setReturnValue(true);
+						cir.cancel();
+						player.sendMessage(new TextComponentString("Changed type to ").setStyle(new Style().setColor(TextFormatting.YELLOW)).appendSibling(new TextComponentTranslation(fluid.getConditionalName())).appendSibling(new TextComponentString("!")));
+					} else if (te instanceof TileEntityCoreReceiver receiver) {
+						if (receiver.tank.getTankType() == fluid) return;
+						IMixinTileEntityCoreReceiver mixin = (IMixinTileEntityCoreReceiver)receiver;
+						receiver.tank.setTankType(Fluids.CRYOGEL);
+						mixin.leafia$getOutputTank().setTankType(AddonFluids.PYROGEL);
+						cir.setReturnValue(true);
+						cir.cancel();
+						player.sendMessage(new TextComponentString("Changed type to ").setStyle(new Style().setColor(TextFormatting.YELLOW)).appendSibling(new TextComponentTranslation(fluid.getConditionalName())).appendSibling(new TextComponentString("!")));
+					}
+				} else if (fluid == Fluids.PERFLUOROMETHYL_COLD) {
+					if (te instanceof TileEntityCoreEmitter emitter) {
+						if (emitter.tank.getTankType() == fluid) return;
+						IMixinTileEntityCoreEmitter mixin = (IMixinTileEntityCoreEmitter)emitter;
+						emitter.tank.setTankType(Fluids.PERFLUOROMETHYL_COLD);
+						mixin.leafia$getOutputTank().setTankType(Fluids.PERFLUOROMETHYL_HOT);
+						cir.setReturnValue(true);
+						cir.cancel();
+						player.sendMessage(new TextComponentString("Changed type to ").setStyle(new Style().setColor(TextFormatting.YELLOW)).appendSibling(new TextComponentTranslation(fluid.getConditionalName())).appendSibling(new TextComponentString("!")));
+					} else if (te instanceof TileEntityCoreReceiver receiver) {
+						if (receiver.tank.getTankType() == fluid) return;
+						IMixinTileEntityCoreReceiver mixin = (IMixinTileEntityCoreReceiver)receiver;
+						receiver.tank.setTankType(Fluids.PERFLUOROMETHYL_COLD);
+						mixin.leafia$getOutputTank().setTankType(Fluids.PERFLUOROMETHYL_HOT);
+						cir.setReturnValue(true);
+						cir.cancel();
+						player.sendMessage(new TextComponentString("Changed type to ").setStyle(new Style().setColor(TextFormatting.YELLOW)).appendSibling(new TextComponentTranslation(fluid.getConditionalName())).appendSibling(new TextComponentString("!")));
+					}
+				}
 			}
 		}
 	}
@@ -78,7 +129,7 @@ public abstract class MixinCoreComponent extends BlockContainer {
 		super.onBlockPlacedBy(worldIn,pos,state,placer,stack);
 		TileEntity te = worldIn.getTileEntity(pos);
 		if (te instanceof IDFCBase base)
-			base.setTargetPosition(pos.offset(EnumFacing.getDirectionFromEntityLiving(pos, placer)));
+			base.leafia$setTargetPosition(pos.offset(EnumFacing.getDirectionFromEntityLiving(pos, placer)));
 	}
 
 	@SideOnly(Side.CLIENT)
@@ -113,5 +164,26 @@ public abstract class MixinCoreComponent extends BlockContainer {
 	public void breakBlock(World worldIn,BlockPos pos,IBlockState state) {
 		InventoryHelper.dropInventoryItems(worldIn, pos, worldIn.getTileEntity(pos));
 		super.breakBlock(worldIn,pos,state);
+	}
+
+	@SideOnly(Side.CLIENT)
+	@Override
+	public void printHook(Pre event,World world,BlockPos pos) {
+		TileEntity te = world.getTileEntity(pos);
+
+		List<String> text = new ArrayList<>();
+		if(te instanceof TileEntityCoreEmitter emitter) {
+			IMixinTileEntityCoreEmitter mixin = (IMixinTileEntityCoreEmitter)emitter;
+			text.add(TextFormatting.GREEN+"-> "+TextFormatting.RESET+emitter.tank.getTankType().getLocalizedName()+": "+emitter.tank.getFill()+"/"+emitter.tank.getMaxFill()+"mB");
+			text.add(TextFormatting.RED+"<- "+TextFormatting.RESET+mixin.leafia$getOutputTank().getTankType().getLocalizedName()+": "+mixin.leafia$getOutputTank().getFill()+"/"+mixin.leafia$getOutputTank().getMaxFill()+"mB");
+			text.add(I18nUtil.resolveKey("info.dfc.cooling"));
+		} else if(te instanceof TileEntityCoreReceiver receiver) {
+			IMixinTileEntityCoreReceiver mixin = (IMixinTileEntityCoreReceiver)receiver;
+			text.add(TextFormatting.GREEN+"-> "+TextFormatting.RESET+receiver.tank.getTankType().getLocalizedName()+": "+receiver.tank.getFill()+"/"+receiver.tank.getMaxFill()+"mB");
+			text.add(TextFormatting.RED+"<- "+TextFormatting.RESET+mixin.leafia$getOutputTank().getTankType().getLocalizedName()+": "+mixin.leafia$getOutputTank().getFill()+"/"+mixin.leafia$getOutputTank().getMaxFill()+"mB");
+			text.add(I18nUtil.resolveKey("info.dfc.cooling"));
+		}
+		if (!text.isEmpty())
+			ILookOverlay.printGeneric(event, I18nUtil.resolveKey(getTranslationKey() + ".name"), 0xffff00, 0x404000, text);
 	}
 }

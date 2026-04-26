@@ -53,6 +53,7 @@ public class AddonFluidTraits {
 		Fluids.BALEFIRE.addTraits(new FT_DFCFuel(2.4F));
 		Fluids.STELLAR_FLUX.addTraits(new FT_DFCFuel(2.65F),MAGNETIC);
 		AddonFluids.N2O.addTraits(new FT_DFCFuel(1.4F));
+		AddonFluids.PYROGEL.addTraits(new FT_DFCFuel(2.0F));
 
 		Fluids.COOLANT_HOT.addTraits(new FT_Heatable().setEff(HeatingType.BOILER, 1.0D).setEff(HeatingType.HEATEXCHANGER, 1.0D).addStep(700, 1, AddonFluids.COOLANT_MAL, 1));
 		AddonFluids.COOLANT_MAL.addTraits(new FT_Coolable(Fluids.COOLANT_HOT, 1, 1, 700).setEff(CoolingType.HEATEXCHANGER, 1.0D));

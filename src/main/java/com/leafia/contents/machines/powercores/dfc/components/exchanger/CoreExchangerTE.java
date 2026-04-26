@@ -120,7 +120,7 @@ public class CoreExchangerTE extends LCETileEntityMachineBase implements IDFCBas
 
 	@Override
 	public NBTTagCompound writeToNBT(NBTTagCompound compound) {
-		writeTargetPos(compound);
+		leafia$writeTargetPos(compound);
 		input.writeToNBT(compound,"tankI");
 		output.writeToNBT(compound,"tankO");
 		compound.setInteger("amount",amountToHeat);
@@ -130,7 +130,7 @@ public class CoreExchangerTE extends LCETileEntityMachineBase implements IDFCBas
 	}
 	@Override
 	public void readFromNBT(NBTTagCompound compound) {
-		readTargetPos(compound);
+		leafia$readTargetPos(compound);
 		super.readFromNBT(compound);
 		if (compound.hasKey("amount"))
 			amountToHeat = compound.getInteger("amount");
@@ -153,7 +153,7 @@ public class CoreExchangerTE extends LCETileEntityMachineBase implements IDFCBas
 
     @Override
     public void update() {
-        TileEntityCore core = getCore(AddonConfig.dfcComponentRange);
+        TileEntityCore core = leafia$getCore(AddonConfig.dfcComponentRange);
         if (!world.isRemote) {
             LeafiaPacket._start(this).__write(31, targetPosition).__sendToAffectedClients();
             timer++;
@@ -219,22 +219,22 @@ public class CoreExchangerTE extends LCETileEntityMachineBase implements IDFCBas
 	public TileEntityCore lastGetCore = null;
 
 	@Override
-	public TileEntityCore lastGetCore() {
+	public TileEntityCore leafia$lastGetCore() {
 		return lastGetCore;
 	}
 
 	@Override
-	public void lastGetCore(TileEntityCore core) {
+	public void leafia$lastGetCore(TileEntityCore core) {
 		lastGetCore = core;
 	}
 
 	@Override
-	public BlockPos getTargetPosition() {
+	public BlockPos leafia$getTargetPosition() {
 		return targetPosition;
 	}
 
 	@Override
-	public void targetPosition(BlockPos pos) {
+	public void leafia$targetPosition(BlockPos pos) {
 		targetPosition = pos;
 	}
 

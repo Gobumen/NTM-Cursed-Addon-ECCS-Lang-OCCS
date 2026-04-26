@@ -57,7 +57,7 @@ public abstract class MixinTileEntityCoreInjector extends TileEntityMachineBase 
 	@Override
 	@Overwrite
 	public void update() {
-		TileEntityCore core = getCore(AddonConfig.dfcComponentRange);
+		TileEntityCore core = leafia$getCore(AddonConfig.dfcComponentRange);
 		if (!world.isRemote) {
 			this.subscribeToAllAround(this.tanks[0].getTankType(), this);
 			this.subscribeToAllAround(this.tanks[1].getTankType(), this);
@@ -89,33 +89,33 @@ public abstract class MixinTileEntityCoreInjector extends TileEntityMachineBase 
 	}
 
 	@Override
-	public TileEntityCore lastGetCore() {
+	public TileEntityCore leafia$lastGetCore() {
 		return lastGetCore;
 	}
 
 	@Override
-	public void lastGetCore(TileEntityCore core) {
+	public void leafia$lastGetCore(TileEntityCore core) {
 		this.lastGetCore = core;
 	}
 
 	@Override
-	public BlockPos getTargetPosition() {
+	public BlockPos leafia$getTargetPosition() {
 		return targetPosition;
 	}
 
 	@Override
-	public void targetPosition(BlockPos pos) {
+	public void leafia$targetPosition(BlockPos pos) {
 		this.targetPosition = pos;
 	}
 
 	@Inject(method = "readFromNBT",at = @At("HEAD"),require = 1)
 	public void onReadFromNBT(NBTTagCompound compound,CallbackInfo ci) {
-		readTargetPos(compound);
+		leafia$readTargetPos(compound);
 	}
 
 	@Inject(method = "writeToNBT",at = @At("HEAD"),require = 1)
 	public void onWriteToNBT(NBTTagCompound compound,CallbackInfoReturnable<NBTTagCompound> cir) {
-		writeTargetPos(compound);
+		leafia$writeTargetPos(compound);
 	}
 
 	@Override

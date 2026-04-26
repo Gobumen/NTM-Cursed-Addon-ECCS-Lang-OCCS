@@ -27,7 +27,7 @@ public class BaleCoriumFluid extends Fluid {
 	public static class BaleCoriumFluidBlock extends CoriumFinite {
 		public BaleCoriumFluidBlock(Fluid fluid,Material material,String s) {
 			super(fluid,material,s);
-			tickRate = 15;
+			tickRate = 20;
 			ModBlocks.ALL_BLOCKS.remove(this);
 			AddonBlocks.ALL_BLOCKS.add(this);
 		}

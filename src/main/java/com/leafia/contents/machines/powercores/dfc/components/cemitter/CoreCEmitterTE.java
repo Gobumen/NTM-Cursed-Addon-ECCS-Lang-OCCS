@@ -183,42 +183,42 @@ public class CoreCEmitterTE extends TileEntityCoreEmitter implements IMixinTileE
     }
 
     @Override
-    public TileEntityCore lastGetCore() {
+    public TileEntityCore leafia$lastGetCore() {
         return mhGetLastCore();
     }
 
     @Override
-    public void lastGetCore(TileEntityCore core) {
+    public void leafia$lastGetCore(TileEntityCore core) {
         mhSetLastCore(core);
     }
 
     @Override
-    public BlockPos getTargetPosition() {
+    public BlockPos leafia$getTargetPosition() {
         return mhGetTargetPos();
     }
 
     @Override
-    public void targetPosition(BlockPos pos) {
+    public void leafia$targetPosition(BlockPos pos) {
         mhSetTargetPos(pos);
     }
 
     @Override
-    public RayTraceResult raycast(long out) {
+    public RayTraceResult leafia$raycast(long out) {
         return mhSuperRaycast(out);
     }
 
     @Override
-    public boolean isActive() {
+    public boolean leafia$isActive() {
         return mhGetIsActive();
     }
 
     @Override
-    public void isActive(boolean active) {
+    public void leafia$isActive(boolean active) {
         mhSetIsActive(active);
     }
 
     @Override
-    public RayTraceResult lastRaycast() {
+    public RayTraceResult leafia$lastRaycast() {
         return mhGetLastRaycast();
     }
 

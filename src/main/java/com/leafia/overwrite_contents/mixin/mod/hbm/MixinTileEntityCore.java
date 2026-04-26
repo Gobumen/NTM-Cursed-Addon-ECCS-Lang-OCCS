@@ -321,7 +321,7 @@ public abstract class MixinTileEntityCore extends TileEntityMachineBase implemen
 //                Tracker._tracePosition(this, pos.down(4), "deltaEnergy: ", deltaEnergy);
 
 				double absorbDiv = 0.001;
-				for (TileEntityCoreReceiver absorber : absorbers) absorbDiv += ((IMixinTileEntityCoreReceiver)absorber).getLevel();
+				for (TileEntityCoreReceiver absorber : absorbers) absorbDiv += ((IMixinTileEntityCoreReceiver)absorber).leafia$getLevel();
 
 				double collapseAddition = Math.pow(collapsing,2)*500_000;
 				containedEnergy += Math.max(collapseAddition-addition0-addition1,0);
@@ -333,13 +333,13 @@ public abstract class MixinTileEntityCore extends TileEntityMachineBase implemen
 				double transferred = 0;
 				for (TileEntityCoreReceiver absorber : absorbers) {
 					if (finalPhase) {
-						((IMixinTileEntityCoreReceiver)absorber).explode();
+						((IMixinTileEntityCoreReceiver)absorber).leafia$explode();
 						continue;
 					}
-					long absorb = (long) (absorbed / absorbDiv * ((IMixinTileEntityCoreReceiver)absorber).getLevel() * 1000_000);
+					long absorb = (long) (absorbed / absorbDiv * ((IMixinTileEntityCoreReceiver)absorber).leafia$getLevel() * 1000_000);
 					containedEnergy -= absorb / 1000_000.0d;
 					transferred += absorb / 1000_000.0d;
-					double val = (catalystPower * Math.pow(tempRatio, 0.1) + incomingSpk * 2000_000) / absorbDiv * ((IMixinTileEntityCoreReceiver)absorber).getLevel();
+					double val = (catalystPower * Math.pow(tempRatio, 0.1) + incomingSpk * 2000_000) / absorbDiv * ((IMixinTileEntityCoreReceiver)absorber).leafia$getLevel();
 					val = Math.min(val, Long.MAX_VALUE);
 					absorber.joules += absorb + (long) val;
 				}

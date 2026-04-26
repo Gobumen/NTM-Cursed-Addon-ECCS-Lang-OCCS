@@ -1,7 +1,6 @@
 package com.leafia.contents.machines.powercores.dfc.render;
 
 import com.hbm.blocks.ModBlocks;
-import com.hbm.main.ResourceManager;
 import com.hbm.render.NTMRenderHelper;
 import com.hbm.render.item.ItemRenderBase;
 import com.hbm.render.loader.WaveFrontObjectVAO;
@@ -207,7 +206,7 @@ public class DFCComponentRender extends TileEntitySpecialRenderer<TileEntityMach
 
 		//GL11.glRotatef(90, 0F, 1F, 0F); What is this for bruh
 		IDFCBase base = (IDFCBase)te;
-		Vec3i relative = base.getTargetPosition().subtract(te.getPos());
+		Vec3i relative = base.leafia$getTargetPosition().subtract(te.getPos());
 		Vec3d unit = new Vec3d(relative).normalize();
 		double yaw = Math.toDegrees(Math.atan2(-relative.getX(), -relative.getZ()));
 		double pitch = Math.toDegrees(Math.atan2(relative.getY(), Math.sqrt(relative.getX() * relative.getX() + relative.getZ() * relative.getZ())));
@@ -217,7 +216,7 @@ public class DFCComponentRender extends TileEntitySpecialRenderer<TileEntityMach
 		if (mdl == dfc_reinforced_mdl) {
 			LeafiaGls.pushMatrix();
 			assert te instanceof TileEntityCoreReceiver;
-			LeafiaGls.rotate(-((IMixinTileEntityCoreReceiver)te).fanAngle()-partialTicks*720,0,0,1);
+			LeafiaGls.rotate(-((IMixinTileEntityCoreReceiver)te).leafia$fanAngle()-partialTicks*720,0,0,1);
 			mdl.renderPart("Fan");
 			LeafiaGls.popMatrix();
 		}
@@ -244,8 +243,8 @@ public class DFCComponentRender extends TileEntitySpecialRenderer<TileEntityMach
 		//GL11.glTranslated(0, 0.5, 0);
 
 		double range = 0;
-		if (base.lastGetCore() != null)
-			range = new Vec3d(te.getPos()).add(0.5, 0.5, 0.5).distanceTo(new Vec3d(base.lastGetCore().getPos()).add(0.5, 0.5, 0.5));
+		if (base.leafia$lastGetCore() != null)
+			range = new Vec3d(te.getPos()).add(0.5, 0.5, 0.5).distanceTo(new Vec3d(base.leafia$lastGetCore().getPos()).add(0.5, 0.5, 0.5));
 		if (te instanceof TileEntityCoreStabilizer) {
 			TileEntityCoreStabilizer stabilizer = (TileEntityCoreStabilizer) te;
 			IMixinTileEntityCoreStabilizer mixin = (IMixinTileEntityCoreStabilizer)te;
@@ -281,10 +280,10 @@ public class DFCComponentRender extends TileEntitySpecialRenderer<TileEntityMach
 
 		if (te instanceof TileEntityCoreEmitter) {
 			//int range = ((TileEntityCoreEmitter)tileEntity).beam;
-			RayTraceResult result = ((IMixinTileEntityCoreEmitter) te).lastRaycast();
+			RayTraceResult result = ((IMixinTileEntityCoreEmitter) te).leafia$lastRaycast();
 			if (result != null) {
 				range = new Vec3d(te.getPos()).add(0.5, 0.5, 0.5).distanceTo(result.hitVec);
-				if (((IMixinTileEntityCoreEmitter) te).isActive()) {
+				if (((IMixinTileEntityCoreEmitter) te).leafia$isActive()) {
 					OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 240F, 240F);
 					float width = (float) Math.max(1, Math.log10(((TileEntityCoreEmitter) te).prev) - 6) / 8F;
 					int colorA = 0x401500;
@@ -322,12 +321,12 @@ public class DFCComponentRender extends TileEntitySpecialRenderer<TileEntityMach
 		if (te instanceof TileEntityCoreReceiver) {
 			TileEntityCoreReceiver absorber = (TileEntityCoreReceiver) te;
 			IMixinTileEntityCoreReceiver mixin = (IMixinTileEntityCoreReceiver)te;
-			if (mixin.getCore() != null) {
-				IMixinTileEntityCore core = (IMixinTileEntityCore)mixin.getCore();
-				double mspk = core.getDFCExpellingSpk() * 20 / core.getDFCAbsorbers().size() * mixin.getLevel();// /10;
+			if (mixin.leafia$getCore() != null) {
+				IMixinTileEntityCore core = (IMixinTileEntityCore)mixin.leafia$getCore();
+				double mspk = core.getDFCExpellingSpk() * 20 / core.getDFCAbsorbers().size() * mixin.leafia$getLevel();// /10;
 				mspk *= (getWorld().rand.nextDouble() * 99 + 1); // What the fuck why is it not
 				mspk = Math.min(100000, mspk);
-				int distance = (int) Math.round(Math.sqrt(absorber.getPos().distanceSq(mixin.getCore().getPos())));
+				int distance = (int) Math.round(Math.sqrt(absorber.getPos().distanceSq(mixin.leafia$getCore().getPos())));
 				GL11.glTranslated(0, 0, -distance);
 				if (mspk > 0) {
 					bindTexture(AddonBase.solid_e);

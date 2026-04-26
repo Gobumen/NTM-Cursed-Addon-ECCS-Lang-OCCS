@@ -36,7 +36,7 @@ public class CoreReceiverContainer extends Container {
 	@Override
 	public void addListener(IContainerListener listener) {
 		super.addListener(listener);
-		((IMixinTileEntityCoreReceiver)te).sendToPlayer(player);
+		((IMixinTileEntityCoreReceiver)te).leafia$sendToPlayer(player);
 	}
 
 	int joules;
@@ -44,7 +44,7 @@ public class CoreReceiverContainer extends Container {
 
 	@Override
 	public void detectAndSendChanges() {
-		((IMixinTileEntityCoreReceiver)te).sendToPlayer(player);
+		((IMixinTileEntityCoreReceiver)te).leafia$sendToPlayer(player);
 		super.detectAndSendChanges();
 	}
 

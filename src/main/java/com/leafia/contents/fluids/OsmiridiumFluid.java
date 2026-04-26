@@ -73,10 +73,9 @@ public class OsmiridiumFluid extends Fluid {
 			if (entity instanceof EntityPlayerMP playerMP && (playerMP.isSpectator() || playerMP.isCreative())) return;
 			entity.setInWeb();
 			entity.setFire(3);
-			// mlbv: 1.7 has a very low damage here(2F radiation damage and 1F contamination), looks weird, so I used the value in the old CoriumBlock
 			entity.attackEntityFrom(DamageSource.IN_FIRE, 4F);
 			if (entity instanceof EntityLivingBase) {
-				ContaminationUtil.contaminate((EntityLivingBase) entity, HazardType.DIGAMMA, ContaminationType.CREATIVE, 1F);
+				ContaminationUtil.contaminate((EntityLivingBase) entity, HazardType.DIGAMMA, ContaminationType.CREATIVE, 1F/200);
 			}
 		}
 
@@ -86,11 +85,6 @@ public class OsmiridiumFluid extends Fluid {
 			ContaminationUtil.radiate(world,pos.getX()+0.5f,pos.getY()+0.5f,pos.getZ()+0.5f,60,0,85,0);
 			if (!world.isRemote && random.nextInt(10) == 0)
 				world.setBlockToAir(pos);
-		}
-
-		@Override
-		public boolean isReplaceable(@NotNull IBlockAccess world, @NotNull BlockPos pos) {
-			return false;
 		}
 
 		@Override
