@@ -8,6 +8,7 @@ import com.hbm.lib.HBMSoundHandler;
 import com.hbm.util.ContaminationUtil;
 import com.hbm.util.ContaminationUtil.ContaminationType;
 import com.hbm.util.ContaminationUtil.HazardType;
+import com.leafia.contents.AddonItems;
 import com.leafia.contents.machines.reactors.pwr.PWRDiagnosis;
 import com.leafia.contents.potion.LeafiaPotion;
 import com.leafia.contents.worldgen.biomes.effects.HasAcidicRain;
@@ -24,10 +25,12 @@ import com.llib.group.LeafiaMap;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.MobEffects;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.SoundCategory;
@@ -46,6 +49,7 @@ import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
 import net.minecraftforge.event.world.GetCollisionBoxesEvent;
 import net.minecraftforge.event.world.WorldEvent.Load;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 import net.minecraftforge.fml.common.gameevent.TickEvent.WorldTickEvent;
 
@@ -56,6 +60,17 @@ import java.util.Random;
 
 public class LeafiaServerListener {
 	public static class HandlerServer {
+		@SubscribeEvent
+		public void onPlayerLogin(PlayerLoggedInEvent evt) {
+			if (evt.player instanceof EntityPlayerMP player) {
+				NBTTagCompound tag = player.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG);
+				if (!tag.hasKey("receivedAdvisor") || !tag.getBoolean("receivedAdvisor")) {
+					tag.setBoolean("receivedAdvisor",true);
+					player.inventory.addItemStackToInventory(new ItemStack(AddonItems.advisor));
+					player.inventoryContainer.detectAndSendChanges();
+				}
+			}
+		}
 		@SubscribeEvent
 		public void onEntityDied(LivingDeathEvent evt) {
 			if (evt.getEntity() instanceof EntityPlayer plr) {

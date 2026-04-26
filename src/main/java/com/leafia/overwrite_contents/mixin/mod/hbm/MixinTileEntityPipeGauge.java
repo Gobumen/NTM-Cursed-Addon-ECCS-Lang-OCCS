@@ -19,7 +19,7 @@ public class MixinTileEntityPipeGauge extends TileEntity implements IControllabl
 	@Shadow(remap = false)
 	private long deltaTick;
 	@Shadow(remap = false)
-	private long deltaLastSecond;
+	private long lastSecond;
 	@Override
 	public BlockPos getControlPos() {
 		return getPos();
@@ -32,7 +32,7 @@ public class MixinTileEntityPipeGauge extends TileEntity implements IControllabl
 	public Map<String,DataValue> getQueryData() {
 		Map<String,DataValue> map = new HashMap<>();
 		map.put("perTick",new DataValueFloat(deltaTick));
-		map.put("perSecond",new DataValueFloat(deltaLastSecond));
+		map.put("perSecond",new DataValueFloat(lastSecond));
 		return map;
 	}
 	@Override

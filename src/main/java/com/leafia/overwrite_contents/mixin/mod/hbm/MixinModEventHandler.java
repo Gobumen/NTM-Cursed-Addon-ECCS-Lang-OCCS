@@ -19,9 +19,9 @@ public class MixinModEventHandler {
 	public void onCraftingRegister(Register<IRecipe> e,CallbackInfo ci) {
 		AddonCraftingRecipes.craftingRegister();
 	}
-	@Inject(method = "onPlayerLogin",at = @At(value = "INVOKE", target = "Lcom/hbm/capability/HbmCapability$IHBMData;setReceivedBook(Z)V",remap = false),require = 1,remap = false)
+	/*@Inject(method = "onPlayerLogin",at = @At(value = "INVOKE", target = "Lcom/hbm/capability/HbmCapability$IHBMData;setReceivedBook(Z)V",remap = false),require = 1,remap = false)
 	public void onOnPlayerLogin(PlayerLoggedInEvent event,CallbackInfo ci) {
 		event.player.inventory.addItemStackToInventory(new ItemStack(AddonItems.advisor));
 		event.player.inventoryContainer.detectAndSendChanges();
-	}
+	}*/ // bruh
 }

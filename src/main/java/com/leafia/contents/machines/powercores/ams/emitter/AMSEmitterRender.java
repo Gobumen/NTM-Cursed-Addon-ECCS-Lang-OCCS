@@ -5,6 +5,7 @@ import com.hbm.render.NTMRenderHelper;
 import com.hbm.render.loader.WaveFrontObjectVAO;
 import com.leafia.contents.machines.powercores.ams.base.AMSBaseTE;
 import com.leafia.dev.LeafiaItemRenderer;
+import com.leafia.unsorted.NTMRenderHelperWrapper;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
@@ -109,25 +110,25 @@ public class AMSEmitterRender extends TileEntitySpecialRenderer<AMSEmitterTE> {
 
 					for(int j = 1; j <= layers; j++) {
 
-						NTMRenderHelper.addVertexColor(lastPosX + (radius * j), i, lastPosZ + (radius * j), 1, 0.5F, 0, 1f);
-						NTMRenderHelper.addVertexColor(lastPosX + (radius * j), i, lastPosZ - (radius * j), 1, 0.5F, 0, 1f);
-						NTMRenderHelper.addVertexColor(posX + (radius * j), i - distance, posZ - (radius * j), 1, 0.5F, 0, 1f);
-						NTMRenderHelper.addVertexColor(posX + (radius * j), i - distance, posZ + (radius * j), 1, 0.5F, 0, 1f);
+						NTMRenderHelperWrapper.addVertexColor(lastPosX + (radius * j), i, lastPosZ + (radius * j), 1, 0.5F, 0, 1f);
+						NTMRenderHelperWrapper.addVertexColor(lastPosX + (radius * j), i, lastPosZ - (radius * j), 1, 0.5F, 0, 1f);
+						NTMRenderHelperWrapper.addVertexColor(posX + (radius * j), i - distance, posZ - (radius * j), 1, 0.5F, 0, 1f);
+						NTMRenderHelperWrapper.addVertexColor(posX + (radius * j), i - distance, posZ + (radius * j), 1, 0.5F, 0, 1f);
 
-						NTMRenderHelper.addVertexColor(lastPosX - (radius * j), i, lastPosZ + (radius * j), 1, 0.5F, 0, 1f);
-						NTMRenderHelper.addVertexColor(lastPosX - (radius * j), i, lastPosZ - (radius * j), 1, 0.5F, 0, 1f);
-						NTMRenderHelper.addVertexColor(posX - (radius * j), i - distance, posZ - (radius * j), 1, 0.5F, 0, 1f);
-						NTMRenderHelper.addVertexColor(posX - (radius * j), i - distance, posZ + (radius * j), 1, 0.5F, 0, 1f);
+						NTMRenderHelperWrapper.addVertexColor(lastPosX - (radius * j), i, lastPosZ + (radius * j), 1, 0.5F, 0, 1f);
+						NTMRenderHelperWrapper.addVertexColor(lastPosX - (radius * j), i, lastPosZ - (radius * j), 1, 0.5F, 0, 1f);
+						NTMRenderHelperWrapper.addVertexColor(posX - (radius * j), i - distance, posZ - (radius * j), 1, 0.5F, 0, 1f);
+						NTMRenderHelperWrapper.addVertexColor(posX - (radius * j), i - distance, posZ + (radius * j), 1, 0.5F, 0, 1f);
 
-						NTMRenderHelper.addVertexColor(lastPosX + (radius * j), i, lastPosZ + (radius * j), 1, 0.5F, 0, 1f);
-						NTMRenderHelper.addVertexColor(lastPosX - (radius * j), i, lastPosZ + (radius * j), 1, 0.5F, 0, 1f);
-						NTMRenderHelper.addVertexColor(posX - (radius * j), i - distance, posZ + (radius * j), 1, 0.5F, 0, 1f);
-						NTMRenderHelper.addVertexColor(posX + (radius * j), i - distance, posZ + (radius * j), 1, 0.5F, 0, 1f);
+						NTMRenderHelperWrapper.addVertexColor(lastPosX + (radius * j), i, lastPosZ + (radius * j), 1, 0.5F, 0, 1f);
+						NTMRenderHelperWrapper.addVertexColor(lastPosX - (radius * j), i, lastPosZ + (radius * j), 1, 0.5F, 0, 1f);
+						NTMRenderHelperWrapper.addVertexColor(posX - (radius * j), i - distance, posZ + (radius * j), 1, 0.5F, 0, 1f);
+						NTMRenderHelperWrapper.addVertexColor(posX + (radius * j), i - distance, posZ + (radius * j), 1, 0.5F, 0, 1f);
 
-						NTMRenderHelper.addVertexColor(lastPosX + (radius * j), i, lastPosZ - (radius * j), 1, 0.5F, 0, 1f);
-						NTMRenderHelper.addVertexColor(lastPosX - (radius * j), i, lastPosZ - (radius * j), 1, 0.5F, 0, 1f);
-						NTMRenderHelper.addVertexColor(posX - (radius * j), i - distance, posZ - (radius * j), 1, 0.5F, 0, 1f);
-						NTMRenderHelper.addVertexColor(posX + (radius * j), i - distance, posZ - (radius * j), 1, 0.5F, 0, 1f);
+						NTMRenderHelperWrapper.addVertexColor(lastPosX + (radius * j), i, lastPosZ - (radius * j), 1, 0.5F, 0, 1f);
+						NTMRenderHelperWrapper.addVertexColor(lastPosX - (radius * j), i, lastPosZ - (radius * j), 1, 0.5F, 0, 1f);
+						NTMRenderHelperWrapper.addVertexColor(posX - (radius * j), i - distance, posZ - (radius * j), 1, 0.5F, 0, 1f);
+						NTMRenderHelperWrapper.addVertexColor(posX + (radius * j), i - distance, posZ - (radius * j), 1, 0.5F, 0, 1f);
 					}
 
 					lastPosX = posX;

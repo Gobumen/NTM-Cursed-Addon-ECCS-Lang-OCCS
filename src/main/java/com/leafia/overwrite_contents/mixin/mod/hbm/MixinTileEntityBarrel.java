@@ -58,7 +58,7 @@ public abstract class MixinTileEntityBarrel extends TileEntityMachineBase implem
 	 * @reason only accept top and bottom
 	 */
 	@Overwrite(remap = false)
-	protected DirPos[] getConPos() {
+	public DirPos[] getConPos() {
 		if (AddonConfig.enableBarrelSidePorts) {
 			return new DirPos[]{
 					new DirPos(pos.getX() + 1, pos.getY(), pos.getZ(), Library.POS_X),

@@ -10,7 +10,6 @@ import com.hbm.lib.ForgeDirection;
 import com.hbm.lib.Library;
 import com.hbm.main.MainRegistry;
 import com.hbm.packet.PacketDispatcher;
-import com.hbm.packet.toclient.LoopedSoundPacket;
 import com.hbm.sound.AudioWrapper;
 import com.hbm.tileentity.TileEntityMachineBase;
 import com.hbm.tileentity.machine.TileEntityCore;
@@ -79,6 +78,9 @@ public abstract class MixinTileEntityFEL extends TileEntityMachineBase implement
 	@Final
 	public static long maxPower;
 
+	@Shadow(remap = false)
+	private int prevDistance;
+
 	public MixinTileEntityFEL(int scount) {
 		super(scount);
 	}
@@ -112,7 +114,7 @@ public abstract class MixinTileEntityFEL extends TileEntityMachineBase implement
 			double yCoord = pos.getY();
 			double zCoord = pos.getZ();
 			if(this.isOn &&  this.mode != EnumWavelengths.NULL) {
-				if(this.power < powerReq* Math.pow(4, mode.ordinal())){
+				if(this.power < powerReq * Math.pow(4, mode.ordinal())){
 					this.mode = EnumWavelengths.NULL;
 					this.power = 0;
 				} else {
@@ -265,12 +267,16 @@ public abstract class MixinTileEntityFEL extends TileEntityMachineBase implement
 								break;
 						}
 					}
-					PacketDispatcher.wrapper.sendToAll(new LoopedSoundPacket(pos.getX(), pos.getY(), pos.getZ()));
 				}
 			}
 
 			networkPackNT(250);
 		} else {
+
+			if(prevDistance != distance) {
+				prevDistance = distance;
+				world.markBlockRangeForRenderUpdate(pos, pos);
+			}
 
 			if(power > powerReq * Math.pow(2, mode.ordinal()) && isOn && !(mode == EnumWavelengths.NULL) && distance - 3 > 0) {
 				audioDuration += 2;

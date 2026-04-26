@@ -19,7 +19,6 @@
     "hbm.MixinRenderBatterySocket",
     "hbm.MixinRenderChemicalPlant",
     "hbm.MixinRenderControlPanel",
-    "hbm.MixinRenderInfoSystemLegacy",
     "hbm.MixinRenderRBMKControlRod",
     "hbm.MixinRenderRBMKLid",
     "hbm.MixinRenderTorex",
