@@ -2,7 +2,10 @@ package com.leafia.contents.building.catwalk.railing;
 
 import com.hbm.items.IDynamicModels;
 import com.hbm.render.loader.HFRWavefrontObject;
+import com.leafia.dev.ICacheInvalidator;
 import com.leafia.dev.blocks.blockbase.AddonBlockBase;
+import com.leafia.eventbuses.LeafiaServerListener;
+import com.leafia.eventbuses.LeafiaServerListener.Unsorted;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
@@ -30,7 +33,10 @@ import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public abstract class CatwalkRailingBase extends AddonBlockBase implements IDynamicModels {
+import java.util.HashMap;
+import java.util.Map;
+
+public abstract class CatwalkRailingBase extends AddonBlockBase implements IDynamicModels, ICacheInvalidator {
 	public String basePath = "_integrated/decoration/catwalks/railings/";
 	public String spritePath = "";
 	public String modelPath = "";
@@ -122,16 +128,28 @@ public abstract class CatwalkRailingBase extends AddonBlockBase implements IDyna
 	}
 
 	@Override
+	public void invalidateCache(World world,BlockPos pos,Map<Long,IBlockState> cache) {
+		for (int x = -1; x <= 1; x++) {
+			for (int z = -1; z <= 1; z++)
+				cache.remove(pos.add(x,0,z).toLong());
+		}
+	}
+	@Override
 	public IBlockState getActualState(IBlockState state,IBlockAccess world,BlockPos pos) {
-		return state
-				.withProperty(POS_X_NZ,hasArm(world,pos.add( 0,0,-1),POS_X))
-				.withProperty(POS_X_PZ,hasArm(world,pos.add( 0,0, 1),POS_X))
-				.withProperty(POS_Z_NX,hasArm(world,pos.add(-1,0, 0),POS_Z))
-				.withProperty(POS_Z_PX,hasArm(world,pos.add( 1,0, 0),POS_Z))
-				.withProperty(NEG_X_NZ,hasArm(world,pos.add( 0,0,-1),NEG_X))
-				.withProperty(NEG_X_PZ,hasArm(world,pos.add( 0,0, 1),NEG_X))
-				.withProperty(NEG_Z_NX,hasArm(world,pos.add(-1,0, 0),NEG_Z))
-				.withProperty(NEG_Z_PX,hasArm(world,pos.add( 1,0, 0),NEG_Z));
+		if (Unsorted.getStateCache(pos,this) == null) {
+			Unsorted.stateCache.put(
+					pos.toLong(),state
+					.withProperty(POS_X_NZ,hasArm(world,pos.add( 0,0,-1),POS_X) || hasArm(world,pos.add( 1,0,-1),NEG_X))
+					.withProperty(POS_X_PZ,hasArm(world,pos.add( 0,0, 1),POS_X) || hasArm(world,pos.add( 1,0, 1),NEG_X))
+					.withProperty(POS_Z_NX,hasArm(world,pos.add(-1,0, 0),POS_Z) || hasArm(world,pos.add(-1,0, 1),NEG_Z))
+					.withProperty(POS_Z_PX,hasArm(world,pos.add( 1,0, 0),POS_Z) || hasArm(world,pos.add( 1,0, 1),NEG_Z))
+					.withProperty(NEG_X_NZ,hasArm(world,pos.add( 0,0,-1),NEG_X) || hasArm(world,pos.add(-1,0,-1),POS_X))
+					.withProperty(NEG_X_PZ,hasArm(world,pos.add( 0,0, 1),NEG_X) || hasArm(world,pos.add(-1,0, 1),POS_X))
+					.withProperty(NEG_Z_NX,hasArm(world,pos.add(-1,0, 0),NEG_Z) || hasArm(world,pos.add(-1,0,-1),POS_Z))
+					.withProperty(NEG_Z_PX,hasArm(world,pos.add( 1,0, 0),NEG_Z) || hasArm(world,pos.add( 1,0,-1),POS_Z))
+			);
+		}
+		return Unsorted.stateCache.get(pos.toLong());
 	}
 
 	private static boolean hasArm(IBlockAccess world,BlockPos pos,PropertyBool arm) {

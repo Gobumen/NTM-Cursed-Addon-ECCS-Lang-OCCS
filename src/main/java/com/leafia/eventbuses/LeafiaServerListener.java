@@ -13,6 +13,7 @@ import com.leafia.contents.machines.reactors.pwr.PWRDiagnosis;
 import com.leafia.contents.machines.reactors.pwr.blocks.components.element.PWRElementTE;
 import com.leafia.contents.potion.LeafiaPotion;
 import com.leafia.contents.worldgen.biomes.effects.HasAcidicRain;
+import com.leafia.dev.ICacheInvalidator;
 import com.leafia.dev.optimization.LeafiaParticlePacket;
 import com.leafia.dev.optimization.LeafiaParticlePacket.Sweat;
 import com.leafia.init.LeafiaDamageSource;
@@ -24,6 +25,9 @@ import com.leafia.savedata.PlayerDeathsSavedData;
 import com.leafia.unsorted.IEntityCustomCollision;
 import com.llib.group.LeafiaMap;
 import com.llib.group.LeafiaSet;
+import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
+import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -56,11 +60,8 @@ import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 import net.minecraftforge.fml.common.gameevent.TickEvent.WorldTickEvent;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Random;
 
 public class LeafiaServerListener {
 	public static class HandlerServer {
@@ -139,6 +140,14 @@ public class LeafiaServerListener {
 		}
 	}
 	public static class Unsorted {
+		public static Map<Long,IBlockState> stateCache = new Long2ObjectOpenHashMap<>();
+		public static IBlockState getStateCache(BlockPos pos,Block filter) {
+			if (stateCache.containsKey(pos.toLong())) {
+				if (filter.equals(stateCache.get(pos.toLong()).getBlock()))
+					return stateCache.get(pos.toLong());
+			}
+			return null;
+		}
 		public void handleAcidRain(EntityLivingBase entity) {
 			int ix = (int)MathHelper.floor(entity.posX);
 			int iy = (int)MathHelper.floor(entity.posY);
@@ -200,6 +209,13 @@ public class LeafiaServerListener {
 					if (entry.getValue().contains(evt.getPos()))
 						entry.getKey().rebuildMap();
 				}*/
+				IBlockState cache = stateCache.get(evt.getPos().toLong());
+				if (cache != null) {
+					if (cache.getBlock() instanceof ICacheInvalidator invalidator)
+						invalidator.invalidateCache(evt.getWorld(),evt.getPos(),stateCache);
+					else
+						stateCache.remove(evt.getPos().toLong());
+				}
 			}
 		}
 		@SubscribeEvent

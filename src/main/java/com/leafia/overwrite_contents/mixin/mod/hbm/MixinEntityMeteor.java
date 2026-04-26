@@ -77,7 +77,7 @@ public abstract class MixinEntityMeteor extends Entity implements IMixinEntityMe
 					world.provider.getDimension(),
 					oldPos,2000
 			);*/
-			if (world.getTotalWorldTime()%5 == 0) {
+			if (world.getTotalWorldTime()%5 == 0 && !safe) {
 				PacketThreading.createSendToAllTrackingThreadedPacket(
 						new CommandLeaf.ShakecamPacket(new String[]{
 								"type=smooth",
@@ -102,7 +102,7 @@ public abstract class MixinEntityMeteor extends Entity implements IMixinEntityMe
 	@Redirect(method = "onUpdate",at = @At(value = "FIELD", target = "Lcom/hbm/config/GeneralConfig;enableMeteorTails:Z",ordinal = 0,remap = false),require = 1)
 	private boolean leafia$onOnUpdate() {
 		if (!AddonConfig.enableMeteorCraters) return GeneralConfig.enableMeteorTails;
-		if (GeneralConfig.enableMeteorTails) {
+		if (GeneralConfig.enableMeteorTails && !safe) {
 			// for some reason its both Z axis in original code
 			DebugBoomBlock.createMeteorExplosionEffect(world,posX+(this.motionZ*4),posY,posZ+(this.motionZ*4));
 			DebugBoomBlock.createMeteorCrater(world,new BlockPos(posX+(this.motionZ*4),posY,posZ+(this.motionZ*4)));
