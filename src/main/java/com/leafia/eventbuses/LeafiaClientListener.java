@@ -12,6 +12,7 @@ import com.hbm.render.item.TEISRBase;
 import com.hbm.util.I18nUtil;
 import com.leafia.contents.AddonBlocks;
 import com.leafia.contents.AddonItems;
+import com.leafia.contents.building.catwalk.railing.CatwalkRailingBase;
 import com.leafia.contents.control.fuel.nuclearfuel.LeafiaRodItem;
 import com.leafia.contents.effects.folkvangr.EntityNukeFolkvangr;
 import com.leafia.contents.gear.IADSWeapon;
@@ -64,7 +65,10 @@ import net.minecraftforge.client.event.*;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
+import net.minecraftforge.event.world.ChunkEvent;
 import net.minecraftforge.event.world.GetCollisionBoxesEvent;
+import net.minecraftforge.event.world.WorldEvent.Load;
+import net.minecraftforge.event.world.WorldEvent.Unload;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.ClientTickEvent;
@@ -614,6 +618,24 @@ public class LeafiaClientListener {
         }
 	}
 	public static class Unsorted {
+        @SubscribeEvent
+        public void worldInit(Load evt) {
+            if (evt.getWorld().isRemote)
+                CatwalkRailingBase.initRenderMaskCache(evt.getWorld());
+        }
+
+        @SubscribeEvent
+        public void worldUnload(Unload evt) {
+            if (evt.getWorld().isRemote)
+                CatwalkRailingBase.clearRenderMaskCache(evt.getWorld());
+        }
+
+        @SubscribeEvent
+        public void chunkUnload(ChunkEvent.Unload evt) {
+            if (evt.getWorld().isRemote)
+                CatwalkRailingBase.invalidateRenderMaskCacheChunk(evt.getWorld(),evt.getChunk().x,evt.getChunk().z);
+        }
+
 		/**
 		 * Thank you forge for naming it like this
 		 * <p>Yes, {@link RenderGameOverlayEvent.Text} is the event solely for debug screen, despite the radically confusing name just "Text".
