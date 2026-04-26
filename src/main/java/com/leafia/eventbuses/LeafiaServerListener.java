@@ -10,6 +10,7 @@ import com.hbm.util.ContaminationUtil.ContaminationType;
 import com.hbm.util.ContaminationUtil.HazardType;
 import com.leafia.contents.AddonItems;
 import com.leafia.contents.machines.reactors.pwr.PWRDiagnosis;
+import com.leafia.contents.machines.reactors.pwr.blocks.components.element.PWRElementTE;
 import com.leafia.contents.potion.LeafiaPotion;
 import com.leafia.contents.worldgen.biomes.effects.HasAcidicRain;
 import com.leafia.dev.optimization.LeafiaParticlePacket;
@@ -22,6 +23,7 @@ import com.leafia.passive.LeafiaPassiveServer;
 import com.leafia.savedata.PlayerDeathsSavedData;
 import com.leafia.unsorted.IEntityCustomCollision;
 import com.llib.group.LeafiaMap;
+import com.llib.group.LeafiaSet;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -46,6 +48,7 @@ import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.event.entity.living.LivingKnockBackEvent;
 import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
+import net.minecraftforge.event.world.BlockEvent.NeighborNotifyEvent;
 import net.minecraftforge.event.world.GetCollisionBoxesEvent;
 import net.minecraftforge.event.world.WorldEvent.Load;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -56,6 +59,7 @@ import net.minecraftforge.fml.common.gameevent.TickEvent.WorldTickEvent;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.Random;
 
 public class LeafiaServerListener {
@@ -176,11 +180,10 @@ public class LeafiaServerListener {
 				}
 			}
 		}
-		/*
 		@SubscribeEvent
 		public void onBlockNotify(NeighborNotifyEvent evt) {
 			if (!evt.getWorld().isRemote) {
-				LeafiaDebug.debugPos(evt.getWorld(),evt.getPos(),3,0xFF0000,"NeighborNotifyEvent");
+				//LeafiaDebug.debugPos(evt.getWorld(),evt.getPos(),3,0xFF0000,"NeighborNotifyEvent");
 				for (Entry<PWRElementTE,LeafiaSet<BlockPos>> entry : PWRElementTE.listeners.entrySet()) {
 					if (entry.getKey().isInvalid()) {
 						PWRElementTE.listeners.remove(entry.getKey());
@@ -189,16 +192,16 @@ public class LeafiaServerListener {
 					if (entry.getValue().contains(evt.getPos()))
 						entry.getKey().updateObstacleMappings();
 				}
-				for (Entry<PWRVentInletTE,LeafiaSet<BlockPos>> entry : PWRVentInletTE.listeners.entrySet()) {
+				/*for (Entry<PWRVentInletTE,LeafiaSet<BlockPos>> entry : PWRVentInletTE.listeners.entrySet()) {
 					if (entry.getKey().isInvalid()) {
 						PWRVentInletTE.listeners.remove(entry.getKey());
 						continue;
 					}
 					if (entry.getValue().contains(evt.getPos()))
 						entry.getKey().rebuildMap();
-				}
+				}*/
 			}
-		}*/
+		}
 		@SubscribeEvent
 		public void worldInit(Load evt) {
 			List<ATEntry> entries = new ArrayList<>(EntityNukeExplosionMK3.at.keySet());

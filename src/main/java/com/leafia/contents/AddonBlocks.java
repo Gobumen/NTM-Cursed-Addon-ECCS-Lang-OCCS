@@ -15,6 +15,7 @@ import com.leafia.contents.AddonFluids.AddonFF;
 import com.leafia.contents.bomb.balefire.AshBalefire;
 import com.leafia.contents.bomb.balefire.BaleoniteBlock;
 import com.leafia.contents.bomb.digamma.DigammititeBlock;
+import com.leafia.contents.building.catwalk.railing.types.CatwalkRailingCurved;
 import com.leafia.contents.building.storage.broof.BroofBlock;
 import com.leafia.contents.building.doors.AddonDoorDecl;
 import com.leafia.contents.building.doors.special.reactor_door.ReactorDoorBlock;
@@ -535,6 +536,13 @@ public class AddonBlocks {
 		public static final Block flywheel9x9 = new MTFlywheel9x9("modular_turbine_9x9_flywheel");
 
 		public static final Block generator3x3 = new MTGenerator3x3("modular_turbine_3x3_generator");
+	}
+
+	static boolean railings_dummy = Railings.dummy;
+	public static class Railings {
+		static boolean dummy = false;
+
+		public static final Block curved = new CatwalkRailingCurved("catwalk_railing_curved");
 	}
 
 	static {
