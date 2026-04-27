@@ -1,9 +1,14 @@
 package com.leafia.contents.building.catwalk.railing;
 
+import com.hbm.blocks.ICustomBlockHighlight;
 import com.hbm.blocks.network.SimpleUnlistedProperty;
 import com.hbm.items.IDynamicModels;
 import com.hbm.render.loader.HFRWavefrontObject;
+import com.leafia.dev.LeafiaDebug;
+import com.leafia.dev.LeafiaUtil;
+import com.leafia.dev.blocks.ICustomItemBlockProvider;
 import com.leafia.dev.blocks.blockbase.AddonBlockBase;
+import com.leafia.dev.math.FiaBB;
 import it.unimi.dsi.fastutil.longs.Long2IntOpenHashMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import net.minecraft.block.Block;
@@ -15,20 +20,25 @@ import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.RenderGlobal;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.block.statemap.StateMapperBase;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.ChunkPos;
+import net.minecraft.item.ItemBlock;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.*;
+import net.minecraft.util.EnumFacing.Axis;
+import net.minecraft.util.math.*;
+import net.minecraft.util.math.RayTraceResult.Type;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.client.event.DrawBlockHighlightEvent;
 import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.common.property.ExtendedBlockState;
@@ -36,11 +46,14 @@ import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.common.property.IUnlistedProperty;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.IdentityHashMap;
+import java.util.List;
 import java.util.Map;
 
-public abstract class CatwalkRailingBase extends AddonBlockBase implements IDynamicModels {
+public abstract class CatwalkRailingBase extends AddonBlockBase implements IDynamicModels, ICustomItemBlockProvider, ICustomBlockHighlight {
 	public String basePath = "_integrated/decoration/catwalks/railings/";
 	public String spritePath = "";
 	public String modelPath = "";
@@ -67,6 +80,173 @@ public abstract class CatwalkRailingBase extends AddonBlockBase implements IDyna
 	public static final int MASK_NEG_Z_NX = 0b1000000_00000000;
 	public static final int MASK_NEG_Z_PX = 0b10000000_00000000;
 	private static final int NO_RENDER_MASK = Integer.MIN_VALUE;
+
+	@Override
+	public ItemBlock provideItem() {
+		return new CatwalkRailingItem(this);
+	}
+	public static class CatwalkRailingItem extends ItemBlock {
+		public CatwalkRailingItem(Block block) {
+			super(block);
+		}
+		public EnumActionResult onItemUse(EntityPlayer player,World world,BlockPos pos,EnumHand hand,EnumFacing facing,float hitX,float hitY,float hitZ) {
+			IBlockState state = world.getBlockState(pos);
+			if (state.getBlock() instanceof CatwalkRailingBase base && hitX > 0 && hitX < 1 && hitZ > 0 && hitZ < 1 && facing.getAxis().isHorizontal()) {
+				ItemStack stack = player.getHeldItem(hand);
+				if (!stack.isEmpty() && player.canPlayerEdit(pos, facing, stack)) {
+					Axis axis = facing.getAxis();
+					if (axis == Axis.X) {
+						hitX = 1-hitX;
+						if (Math.abs(hitZ-0.5f) > 0.15f)
+							hitX = 0.5f;
+					} else if (axis == Axis.Z) {
+						hitZ = 1-hitZ;
+						if (Math.abs(hitX-0.5f) > 0.15f)
+							hitZ = 0.5f;
+					}
+					if (base.tryAddRailing(world,pos,hitX,hitZ)) {
+						stack.shrink(1);
+						SoundType soundtype = state.getBlock().getSoundType(state,world,pos,player);
+						world.playSound(player,pos,soundtype.getPlaceSound(),SoundCategory.BLOCKS,(soundtype.getVolume()+1.0F)/2.0F,soundtype.getPitch()*0.8F);
+						return EnumActionResult.SUCCESS;
+					}
+				}
+			} else
+				return super.onItemUse(player,world,pos,hand,facing,hitX,hitY,hitZ);
+			return EnumActionResult.FAIL;
+		}
+	}
+
+	public boolean tryAddRailing(World world,BlockPos pos,float hitX,float hitZ) {
+		IBlockState state = world.getBlockState(pos);
+		hitX -= 0.5f;
+		hitZ -= 0.5f;
+		if (state.getBlock() instanceof CatwalkRailingBase) {
+			if (Math.abs(hitX) >= Math.abs(hitZ)) {
+				if (hitX >= 0) {
+					if (!state.getValue(POS_X)) {
+						world.setBlockState(pos,state.withProperty(POS_X,true));
+						return true;
+					}
+				} else {
+					if (!state.getValue(NEG_X)) {
+						world.setBlockState(pos,state.withProperty(NEG_X,true));
+						return true;
+					}
+				}
+			} else {
+				if (hitZ >= 0) {
+					if (!state.getValue(POS_Z)) {
+						world.setBlockState(pos,state.withProperty(POS_Z,true));
+						return true;
+					}
+				} else {
+					if (!state.getValue(NEG_Z)) {
+						world.setBlockState(pos,state.withProperty(NEG_Z,true));
+						return true;
+					}
+				}
+			}
+		}
+		return false;
+	}
+
+	@Override
+	public void addCollisionBoxToList(IBlockState state,World worldIn,BlockPos pos,AxisAlignedBB entityBox,List<AxisAlignedBB> collidingBoxes,@Nullable Entity entityIn,boolean isActualState) {
+		if (state.getBlock().getMetaFromState(state) == 0)
+			super.addCollisionBoxToList(state,worldIn,pos,entityBox,collidingBoxes,entityIn,isActualState);
+		for (EnumFacing face : EnumFacing.HORIZONTALS) {
+			boolean enabled = switch(face) {
+				case NORTH -> state.getValue(NEG_Z);
+				case SOUTH -> state.getValue(POS_Z);
+				case WEST -> state.getValue(NEG_X);
+				case EAST -> state.getValue(POS_X);
+				default -> false;
+			};
+			if (enabled) {
+				AxisAlignedBB aabb = LeafiaUtil.createAABBLayer(face,0.5/16,0,1).offset(pos);
+				if (aabb.intersects(entityBox))
+					collidingBoxes.add(aabb);
+			}
+		}
+	}
+
+	@Deprecated
+	@Nullable
+	public RayTraceResult collisionRayTrace(IBlockState state,World world,BlockPos pos,Vec3d start,Vec3d end) {
+		RayTraceResult finalResult = null;
+		double distance = 50;
+		for (EnumFacing face : EnumFacing.HORIZONTALS) {
+			boolean enabled = switch(face) {
+				case NORTH -> state.getValue(NEG_Z);
+				case SOUTH -> state.getValue(POS_Z);
+				case WEST -> state.getValue(NEG_X);
+				case EAST -> state.getValue(POS_X);
+				default -> false;
+			};
+			if (enabled) {
+				AxisAlignedBB aabb = LeafiaUtil.createAABBLayer(face,0.5/16,0,1).offset(pos);
+				RayTraceResult result = aabb.calculateIntercept(start,end);
+				if (result != null && result.typeOfHit != Type.MISS) {
+					// find the closest BB hit
+					double d = result.hitVec.distanceTo(start);
+					if (d < distance) {
+						distance = d;
+						finalResult = result;
+					}
+				}
+			}
+		}
+		if (finalResult != null)
+			finalResult = new RayTraceResult(finalResult.hitVec,finalResult.sideHit,pos);
+		return finalResult;
+	}
+
+	@Override
+	public boolean shouldDrawHighlight(World world,BlockPos blockPos) {
+		IBlockState state = world.getBlockState(blockPos);
+		if (!(state.getBlock() instanceof CatwalkRailingBase))
+			return false;
+		if (getMetaFromState(state) == 0)
+			return false;
+		return true;
+	}
+
+	@Override
+	public void drawHighlight(DrawBlockHighlightEvent event, World world, BlockPos pos) {
+		IBlockState state = world.getBlockState(pos);
+		if (state.getBlock() != this) return;
+
+		final float exp = 0.002F;
+		double dx = event.getPlayer().lastTickPosX + (event.getPlayer().posX - event.getPlayer().lastTickPosX) * event.getPartialTicks();
+		double dy = event.getPlayer().lastTickPosY + (event.getPlayer().posY - event.getPlayer().lastTickPosY) * event.getPartialTicks();
+		double dz = event.getPlayer().lastTickPosZ + (event.getPlayer().posZ - event.getPlayer().lastTickPosZ) * event.getPartialTicks();
+
+		List<AxisAlignedBB> boxes = new ArrayList<>();
+		for (EnumFacing face : EnumFacing.HORIZONTALS) {
+			boolean enabled = switch(face) {
+				case NORTH -> state.getValue(NEG_Z);
+				case SOUTH -> state.getValue(POS_Z);
+				case WEST -> state.getValue(NEG_X);
+				case EAST -> state.getValue(POS_X);
+				default -> false;
+			};
+			if (enabled)
+				boxes.add(LeafiaUtil.createAABBLayer(face,0.5/16,0,1));
+		}
+
+		ICustomBlockHighlight.setup();
+		for (AxisAlignedBB local : boxes) {
+			AxisAlignedBB bb = local.expand(exp, exp, exp).offset(pos).offset(-dx, -dy, -dz);
+			RenderGlobal.drawSelectionBoundingBox(bb, 0, 0, 0, 1.0F);
+		}
+		ICustomBlockHighlight.cleanup();
+	}
+
+	@Override
+	public IBlockState getStateForPlacement(World worldIn,BlockPos pos,EnumFacing facing,float hitX,float hitY,float hitZ,int meta,EntityLivingBase placer) {
+		return super.getStateForPlacement(worldIn,pos,facing,hitX,hitY,hitZ,meta,placer);
+	}
 
 	public static final IUnlistedProperty<Integer> RENDER_MASK = new SimpleUnlistedProperty<>("render_mask",Integer.class);
 	private static final Map<World,WorldStateCache> renderMaskCaches = new IdentityHashMap<>();

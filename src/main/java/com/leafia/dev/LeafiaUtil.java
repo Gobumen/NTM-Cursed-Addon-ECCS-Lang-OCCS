@@ -492,4 +492,23 @@ public class LeafiaUtil {
 			return ratio*(scrollAreaSize-scrollBarSize);
 		}
 	}
+
+	/**
+	 *
+	 * @param direction Self-explanatory.
+	 * @param thickness Thickness of the layer.
+	 * @param minY Min Y for horizontal directions. Ignored for UP and DOWN.
+	 * @param maxY Max Y for horizontal directions. Ignored for UP and DOWN.
+	 * @return Resulting AABB
+	 */
+	public static AxisAlignedBB createAABBLayer(EnumFacing direction,double thickness,double minY,double maxY) {
+		return switch(direction) {
+			case UP -> new AxisAlignedBB(0,1-thickness,0,1,1,1);
+			case DOWN -> new AxisAlignedBB(0,0,0,1,thickness,1);
+			case NORTH -> new AxisAlignedBB(0,minY,0,1,maxY,thickness);
+			case SOUTH -> new AxisAlignedBB(0,minY,1-thickness,1,maxY,1);
+			case WEST -> new AxisAlignedBB(0,minY,0,thickness,maxY,1);
+			case EAST -> new AxisAlignedBB(1-thickness,minY,0,1,maxY,1);
+		};
+	}
 }
