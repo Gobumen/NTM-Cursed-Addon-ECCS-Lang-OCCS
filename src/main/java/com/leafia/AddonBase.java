@@ -188,6 +188,8 @@ public class AddonBase {
 		AddonDFCRecipes.register();
 		AddonSmeltingRecipes.register();
 		AddonSolderingRecipes.register();
+		AddonMixerRecipes.register();
+		AddonCompressorRecipes.register();
 	}
 
 	@EventHandler

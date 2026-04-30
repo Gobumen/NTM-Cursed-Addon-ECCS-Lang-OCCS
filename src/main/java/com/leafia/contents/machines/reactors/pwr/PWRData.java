@@ -746,7 +746,13 @@ public class PWRData implements ITickable, LeafiaPacketReceiver {
 				if (block instanceof PWRElementBlock) {
 					//world.newExplosion(null,member.getX()+0.5,member.getY()+0.5,member.getZ()+0.5,11,true,true);
 					//if (tankTypes[1].hasTrait(FT_Gaseous.class))
-						world.setBlockState(member,ModBlocks.corium_block.getDefaultState());
+					if (world.getTileEntity(member) instanceof PWRElementTE te) {
+						ItemStack stack = te.inventory.getStackInSlot(0);
+						if (!stack.isEmpty()) {
+							if (stack.getItem() instanceof LeafiaRodItem rod)
+								world.setBlockState(member,rod.corium.getDefaultState());
+						}
+					}
 					//else
 					//	world.setBlockState(member,ModBlocks.gas_meltdown.getDefaultState());
 					continue;

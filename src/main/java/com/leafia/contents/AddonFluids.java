@@ -74,6 +74,7 @@ public class AddonFluids {
 	public static FluidType N2O; // will you stop begging me
 	public static FluidType FLUORINE; // oh boy fluorine don't exists
 	public static FluidType PYROGEL;
+	public static FluidType CRYOINTER;
 	public static void init() {
 		Function<FluidTrait,Boolean> rejectBoiling = (trait)->{
 			if (trait instanceof FT_Heatable) return false;
@@ -97,5 +98,6 @@ public class AddonFluids {
 		} else
 			FLUORINE = new AddonFluidType("FLUORINE",0xc5b055,4,0,4,EnumSymbol.NOWATER).addTraits(GASEOUS);
 		PYROGEL = new AddonFluidType("PYROGEL",0xffa53b,5,0,0,EnumSymbol.NOWATER).setTemp(2250).addTraits(LIQUID,VISCOUS);
+		CRYOINTER = new AddonFluidType("CRYOINTER",0x92cabe,2,0,0,EnumSymbol.CROYGENIC).setTemp(-90).addTraits(LIQUID);
 	}
 }

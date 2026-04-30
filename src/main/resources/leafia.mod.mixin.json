@@ -14,6 +14,7 @@
     "hbm.MixinItemFluidIcon",
     "hbm.MixinItemRenderLaserDetonator",
     "hbm.MixinModEventHandlerClient",
+    "hbm.MixinParticleCoolingTower",
     "hbm.MixinParticleGasFlame",
     "hbm.MixinParticleRBMKMush",
     "hbm.MixinRenderBatterySocket",
@@ -22,8 +23,8 @@
     "hbm.MixinRenderRBMKControlRod",
     "hbm.MixinRenderRBMKLid",
     "hbm.MixinRenderTorex",
-    "hbm.MixinSubElementNodeEditor",
-    "hbm.MixinRrenderControlPanel"
+    "hbm.MixinRrenderControlPanel",
+    "hbm.MixinSubElementNodeEditor"
   ],
   "mixins": [
     "hbm.MixinBalefire",

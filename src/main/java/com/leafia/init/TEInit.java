@@ -10,6 +10,7 @@ import com.leafia.contents.debug.blackhole_test.DebugBHTE;
 import com.leafia.contents.debug.ff_test.source.DebugSourceTE;
 import com.leafia.contents.debug.ff_test.tank.DebugTankTE;
 import com.leafia.contents.debug.fluid_voider.VoiderTE;
+import com.leafia.contents.debug.render_test.DebugRenderTestTE;
 import com.leafia.contents.machines.elevators.EvBufferTE;
 import com.leafia.contents.machines.elevators.EvPulleyTE;
 import com.leafia.contents.machines.elevators.EvShaftTE;
@@ -132,6 +133,7 @@ public class TEInit {
 		register(MTFlywheelTE.class,"mt_flywheel_te");
 		register(VoiderTE.class,"debug_voider_te");
 		register(Reserved6TE.class,"reserved6_te");
+		register(DebugRenderTestTE.class,"debug_render_te");
 	}
 	private static void register(Class<? extends TileEntity> clazz,String res) {
 		GameRegistry.registerTileEntity(clazz,new ResourceLocation(AddonBase.MODID,res));

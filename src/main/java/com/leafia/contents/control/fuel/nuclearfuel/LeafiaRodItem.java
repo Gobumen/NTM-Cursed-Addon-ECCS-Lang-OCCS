@@ -325,6 +325,8 @@ public class LeafiaRodItem extends AddonItemHazardBase implements IHasCustomMode
 		String n = "0";
 		double tempx = heat-20;
 		double y = 0; // x = 20+~~
+		// Most are Rational
+		// Balefire is Polynomial n=3
 		switch(functionId) {
 			// DEPLETED
 			case "depleteduranium": case "depletedmox":

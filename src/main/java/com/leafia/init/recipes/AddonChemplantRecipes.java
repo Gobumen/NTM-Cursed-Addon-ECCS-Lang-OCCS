@@ -91,5 +91,18 @@ public class AddonChemplantRecipes {
 						new FluidStack(Fluids.PERFLUOROMETHYL_HOT,16_000)
 				)
 		);
+		INSTANCE.register(new GenericRecipe("chem.leafia.cryointer").setup(90,500)
+				.inputItems(
+						new ComparableStack(ModItems.pellet_charged,1)
+				)
+				.inputFluids(
+						new FluidStack(Fluids.COOLANT,2000),
+						new FluidStack(Fluids.PERFLUOROMETHYL_COLD,1800)
+				)
+				.outputFluids(
+						new FluidStack(AddonFluids.CRYOINTER,2000),
+						new FluidStack(Fluids.PERFLUOROMETHYL,1800)
+				)
+		);
 	}
 }

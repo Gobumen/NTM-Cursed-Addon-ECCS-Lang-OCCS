@@ -139,6 +139,8 @@ public class AddonCraftingRecipes {
 		addRecipeAuto(new ItemStack(ModItems.grenade_filling, 4, EnumGrenadeFilling.valueOf("NULL").ordinal()),"A", "G", "A", 'A', ModItems.undefined, 'G', BIGMT.ingot() );
 		addRecipeAuto(new ItemStack(ModItems.grenade_filling, 1, EnumGrenadeFilling.valueOf("SOL").ordinal()),"CUB", "USU", "BUT", 'B', CMB.ingot(), 'C', DictFrame.fromOne(ModItems.circuit, EnumCircuitType.CONTROLLER), 'T', ModItems.solinium_igniter, 'U', ModItems.solinium_propellant, 'S', ModItems.solinium_core );
 
+		removeRecipesForItem(reg,ModItems.powder_ice);
+
 		hack.getRegistry().register(new PWRDebrisCrafting().setRegistryName(new ResourceLocation("leafia", "lwr_debris_crafting_handler")));
 	}
 	static void removeRecipesForItem(ForgeRegistry<IRecipe> reg,Item item) {

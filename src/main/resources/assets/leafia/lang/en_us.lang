@@ -149,6 +149,7 @@ gui.recipe.inputMix=Input Mixture
 hbmfluid.balecorium=Balefire Corium
 hbmfluid.coolant_mal=§cBoiling Coolant§r
 hbmfluid.corecomponent=Molten DFC Component
+hbmfluid.cryointer=Interstage Cryogel
 hbmfluid.deathsteam=§cExtreme Steam§r
 hbmfluid.flibe=Liquid Fluoride
 hbmfluid.fluorine=Fluorine

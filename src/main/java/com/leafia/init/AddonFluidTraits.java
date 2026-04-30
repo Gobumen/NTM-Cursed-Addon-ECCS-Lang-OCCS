@@ -10,6 +10,7 @@ import com.hbm.inventory.fluid.trait.FluidTrait;
 import com.leafia.contents.AddonFluids;
 import com.leafia.contents.fluids.AddonFluidType;
 import com.leafia.contents.fluids.traits.FT_DFCFuel;
+import com.leafia.contents.fluids.traits.FT_Description;
 import com.leafia.contents.fluids.traits.FT_LFTRCoolant;
 import com.leafia.contents.fluids.traits.FT_Magnetic;
 import com.leafia.contents.machines.misc.modular_turbine.core.MTCoreTE;
@@ -24,6 +25,7 @@ import static com.hbm.inventory.fluid.trait.FluidTrait.traitNameMap;
 public class AddonFluidTraits {
 	static {
 		registerTrait("dfceff",FT_DFCFuel.class);
+		registerTrait("desc",FT_Description.class);
 		registerTrait("lftrcoolant",FT_LFTRCoolant.class);
 		registerTrait("magnetic",FT_Magnetic.class);
 	}
@@ -81,6 +83,10 @@ public class AddonFluidTraits {
 		ES    UDS    SDS     DS        S
 		1B -> 10B -> 100B -> 1,000B -> 10,000B
 		 */
+
+		AddonFluids.N2O.addTraits(new FT_Description("Will you stop begging me?",false));
+		AddonFluids.CRYOINTER.addTraits(new FT_Heatable().setEff(HeatingType.PA,2.5).setEff(HeatingType.BOILER,1).addStep(750,1,Fluids.COOLANT,1));
+		Fluids.CRYOGEL.addTraits(new FT_Description("Lord bob asked me to$change his horrendous snowball recipe",false));
 
 		for (Entry<AddonFluidType,FluidType> entry : copyTraits.entrySet()) {
 			if (entry.getKey().copyFunction != null)

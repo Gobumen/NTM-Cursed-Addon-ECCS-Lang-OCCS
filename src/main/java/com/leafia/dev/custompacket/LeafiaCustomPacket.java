@@ -31,6 +31,8 @@ import com.leafia.dev.optimization.diagnosis.RecordablePacket;
 import com.leafia.overwrite_contents.interfaces.IMixinEntityMeteor;
 import com.leafia.overwrite_contents.interfaces.IMixinEntityMeteor.MeteorSyncPacket;
 import com.leafia.overwrite_contents.interfaces.IMixinTileEntityCore.DFCShockPacket;
+import com.leafia.passive.Wind;
+import com.leafia.passive.Wind.WindSyncPacket;
 import com.llib.exceptions.LeafiaDevFlaw;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
@@ -77,6 +79,7 @@ public class LeafiaCustomPacket extends RecordablePacket {
 		CCP_GRAPH_SYNC(new CCPGraphSyncPacket()),
 		CCP_METER_V_SYNC(new CCPMeterVerticalSyncPacket()),
 		CCP_LEVER_SYNC(new CCPLeverSyncPacket()),
+		WIND_SYNC(new WindSyncPacket()),
 		;
 		final LeafiaCustomPacketEncoder encoder;
 		CustomPacketType() { encoder = null; }

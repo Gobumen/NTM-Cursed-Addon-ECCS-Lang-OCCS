@@ -30,6 +30,8 @@ import com.leafia.contents.control.fuel.nuclearfuel.LeafiaRodItem;
 import com.leafia.contents.control.fuel.nuclearfuel.LeafiaRodRender;
 import com.leafia.contents.debug.blackhole_test.DebugBHRender;
 import com.leafia.contents.debug.blackhole_test.DebugBHTE;
+import com.leafia.contents.debug.render_test.DebugRenderTestRender;
+import com.leafia.contents.debug.render_test.DebugRenderTestTE;
 import com.leafia.contents.effects.folkvangr.visual.LCERenderCloudFleija;
 import com.leafia.contents.effects.folkvangr.visual.LCERenderCloudRainbow;
 import com.leafia.contents.machines.elevators.*;
@@ -208,6 +210,8 @@ public class LeafiaClientProxy extends LeafiaServerProxy {
 			ClientRegistry.bindTileEntitySpecialRenderer(MTCoreTE.class,new MTCoreRender());
 
 			ClientRegistry.bindTileEntitySpecialRenderer(Reserved6TE.class,new Reserved6Render());
+
+			ClientRegistry.bindTileEntitySpecialRenderer(DebugRenderTestTE.class,new DebugRenderTestRender());
 		}
 		AddonJars.initJars();
 	}

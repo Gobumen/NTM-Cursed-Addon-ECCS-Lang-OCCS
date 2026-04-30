@@ -37,7 +37,7 @@ public class CatwalkRailingBakedModel extends AbstractWavefrontBakedModel {
 	}
 
 	private List<BakedQuad> bake(Set<String> parts,float roll,float pitch,float yaw,boolean centerToBlock) {
-		return bakeSimpleQuads(parts,roll,pitch,yaw,true,centerToBlock,registeredSprite,-1,0,-0.5f,0);
+		return bakeSimpleQuads(parts,roll,pitch,yaw,true,centerToBlock,registeredSprite,-1,0,forBlock ? -0.5f : -0.75f,0);
 	}
 
 	private static boolean hasMask(int mask,int bit) {

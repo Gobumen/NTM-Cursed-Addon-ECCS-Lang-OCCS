@@ -93,7 +93,7 @@ public abstract class CatwalkRailingBase extends AddonBlockBase implements IDyna
 			IBlockState state = world.getBlockState(pos);
 			if (state.getBlock() instanceof CatwalkRailingBase base && hitX > 0 && hitX < 1 && hitZ > 0 && hitZ < 1 && facing.getAxis().isHorizontal()) {
 				ItemStack stack = player.getHeldItem(hand);
-				if (!stack.isEmpty() && player.canPlayerEdit(pos, facing, stack)) {
+				if (!stack.isEmpty() && player.capabilities.allowEdit && stack.canEditBlocks()) {
 					Axis axis = facing.getAxis();
 					if (axis == Axis.X) {
 						hitX = 1-hitX;
