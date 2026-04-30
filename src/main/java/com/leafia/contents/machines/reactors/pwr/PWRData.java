@@ -48,6 +48,7 @@ import com.llib.exceptions.LeafiaDevFlaw;
 import com.llib.exceptions.messages.TextWarningLeafia;
 import com.llib.group.LeafiaMap;
 import com.llib.group.LeafiaSet;
+import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -746,13 +747,11 @@ public class PWRData implements ITickable, LeafiaPacketReceiver {
 				if (block instanceof PWRElementBlock) {
 					//world.newExplosion(null,member.getX()+0.5,member.getY()+0.5,member.getZ()+0.5,11,true,true);
 					//if (tankTypes[1].hasTrait(FT_Gaseous.class))
-					if (world.getTileEntity(member) instanceof PWRElementTE te) {
-						ItemStack stack = te.inventory.getStackInSlot(0);
-						if (!stack.isEmpty()) {
-							if (stack.getItem() instanceof LeafiaRodItem rod)
-								world.setBlockState(member,rod.corium.getDefaultState());
-						}
-					}
+					Block corium = coriumTypes.get(member.toLong());
+					if (corium != null)
+						world.setBlockState(member,corium.getDefaultState());
+					else
+						world.setBlockToAir(member);
 					//else
 					//	world.setBlockState(member,ModBlocks.gas_meltdown.getDefaultState());
 					continue;
@@ -1061,6 +1060,8 @@ public class PWRData implements ITickable, LeafiaPacketReceiver {
 		}
 	}
 
+	Long2ObjectOpenHashMap<Block> coriumTypes = new Long2ObjectOpenHashMap<>();
+
 	public void explode(World world, @Nullable ItemStack prevStack,@Nullable LeafiaRodItem doNuke,int forceLevel) {
 		if (exploded) return;
 		exploded = true;
@@ -1090,6 +1091,14 @@ public class PWRData implements ITickable, LeafiaPacketReceiver {
 							if (entity instanceof PWRElementTE) {
 								PWRElementTE element = (PWRElementTE) entity;
 								if (element.inventory != null) {
+									ItemStack stack = element.inventory.getStackInSlot(0);
+									if (!stack.isEmpty()) {
+										if (stack.getItem() instanceof LeafiaRodItem rod) {
+											int height = element.getHeight();
+											for (int i = 0; i < height; i++)
+												coriumTypes.put(member.down(i).toLong(),rod.corium);
+										}
+									}
 									prevStack = LeafiaRodItem.comparePriority(element.inventory.getStackInSlot(0), prevStack);
 									element.inventory.setStackInSlot(0,ItemStack.EMPTY);
 								}
