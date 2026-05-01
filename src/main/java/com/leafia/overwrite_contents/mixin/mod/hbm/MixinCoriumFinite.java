@@ -200,7 +200,7 @@ public class MixinCoriumFinite extends BlockFluidFinite {
 				world.setBlockToAir(pos);
 				world.playSound(null,pos.getX()+0.5,pos.getY()+0.5,pos.getZ()+0.5,SoundEvents.ENTITY_GENERIC_EXPLODE,SoundCategory.BLOCKS,4,(1+(world.rand.nextFloat()-world.rand.nextFloat())*0.2F)*0.7F);
 				world.playSound(null,pos.getX()+0.5,pos.getY()+0.5,pos.getZ()+0.5,SoundEvents.ENTITY_GENERIC_EXTINGUISH_FIRE,SoundCategory.BLOCKS,9,(1+(world.rand.nextFloat()-world.rand.nextFloat())*0.2F)*0.7F);
-				ExplosionVNT vnt = new ExplosionVNT(world,pos,count/80f+2);
+				ExplosionVNT vnt = new ExplosionVNT(world,pos,count/40f+12);
 				vnt.setBlockAllocator(new BlockAllocatorSteamExplosion(32));
 				vnt.setBlockProcessor(new BlockProcessorStandard().withBlockEffect(new BlockMutatorCollapse()));
 				vnt.setEntityProcessor(new EntityProcessorCrossSmooth(0.5, 50 ).setupPiercing(5F, 0.2F));

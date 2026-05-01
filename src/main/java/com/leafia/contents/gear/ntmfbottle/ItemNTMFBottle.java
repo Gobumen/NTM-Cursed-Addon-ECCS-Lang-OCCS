@@ -8,6 +8,9 @@ import com.hbm.inventory.fluid.FluidType;
 import com.hbm.inventory.fluid.Fluids;
 import com.hbm.inventory.fluid.trait.FT_Corrosive;
 import com.hbm.inventory.fluid.trait.FT_Polluting;
+import com.hbm.inventory.fluid.trait.FT_Toxin;
+import com.hbm.inventory.fluid.trait.FT_Toxin.ToxinEffects;
+import com.hbm.inventory.fluid.trait.FT_Toxin.ToxinEntry;
 import com.hbm.inventory.fluid.trait.FT_VentRadiation;
 import com.hbm.inventory.fluid.trait.FluidTraitSimple.FT_Amat;
 import com.hbm.inventory.fluid.trait.FluidTraitSimple.FT_Delicious;
@@ -140,6 +143,18 @@ public class ItemNTMFBottle extends AddonItemBaked {
 				// FREEZING
 				float damage = -(fluid.temperature+20)/200f*20;
 				entity.attackEntityFrom(LeafiaDamageSource.drinkcryo,damage);
+			}
+			{
+				// EFFECTS
+				if (fluid.hasTrait(FT_Toxin.class)) {
+					FT_Toxin toxin = fluid.getTrait(FT_Toxin.class);
+					for (ToxinEntry entry : toxin.entries) {
+						if (entry instanceof ToxinEffects eff) {
+							for(PotionEffect effect : eff.effects)
+								entity.addPotionEffect(new PotionEffect(effect.getPotion(),effect.getDuration(),effect.getAmplifier()));
+						}
+					}
+				}
 			}
 			if (fluid.hasTrait(FT_Corrosive.class)) {
 				// ACID
