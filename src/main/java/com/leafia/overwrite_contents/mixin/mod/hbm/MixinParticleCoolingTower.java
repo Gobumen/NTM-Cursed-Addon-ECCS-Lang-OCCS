@@ -13,7 +13,7 @@ public class MixinParticleCoolingTower extends Particle {
 	protected MixinParticleCoolingTower(World worldIn,double posXIn,double posYIn,double posZIn) {
 		super(worldIn,posXIn,posYIn,posZIn);
 	}
-	@Redirect(method = "onUpdate",at = @At(value = "FIELD", target = "Lcom/hbm/particle/ParticleCoolingTower;windDir:Z"),require = 1,remap = false)
+	@Redirect(method = "onUpdate",at = @At(value = "FIELD", target = "Lcom/hbm/particle/ParticleCoolingTower;windDir:Z",remap = false),require = 1)
 	boolean leafia$onOnUpdate(ParticleCoolingTower instance) {
 		double multiplier = Wind.dimensionWindMultiplier.getOrDefault(world.provider.getDimension(),0d);
 		if (multiplier > 0) {

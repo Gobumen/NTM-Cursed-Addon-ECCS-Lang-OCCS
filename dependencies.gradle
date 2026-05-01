@@ -40,9 +40,9 @@
 dependencies {
     compileOnly('appeng:ae2-uel:v0.56.7') { transitive false } // or CE won't compile
 
-    //implementation 'com.hbm:ntm-ce-java25:2.5.0.0'
+    implementation 'com.hbm:ntm-ce-java25:2.5.0.0'
 
-    implementation rfg.deobf("curse.maven:hbm-nuclear-tech-mod-community-edition-1312314:8020429") // 2.5.0.0
+    //implementation rfg.deobf("curse.maven:hbm-nuclear-tech-mod-community-edition-1312314:8020429") // 2.5.0.0
 
     implementation rfg.deobf("curse.maven:opencomputers-223008:6608365")
     implementation files("libs/Computronics-1.12.2-1.6.6-deobf.jar")
