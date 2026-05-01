@@ -5,7 +5,9 @@ import com.custom_hbm.GuiBackupsWarning;
 import com.google.gson.JsonSyntaxException;
 import com.hbm.capability.HbmLivingProps;
 import com.hbm.interfaces.IHasCustomModel;
+import com.hbm.inventory.control_panel.IControllable;
 import com.hbm.items.IDynamicModels;
+import com.hbm.items.ModItems;
 import com.hbm.render.GuiCTMWarning;
 import com.custom_hbm.util.LCETuple.*;
 import com.hbm.render.item.TEISRBase;
@@ -316,9 +318,20 @@ public class LeafiaClientListener {
 				RayTraceResult mop = mc.objectMouseOver;
 
 				if (mop != null && mop.typeOfHit == mop.typeOfHit.BLOCK) {
+					Chunk chunk = world.getChunk(mop.getBlockPos());
+					TileEntity entity = chunk.getTileEntity(mop.getBlockPos(),Chunk.EnumCreateEntityType.CHECK);
+					if (mc.player.getHeldItemMainhand().getItem() == ModItems.detonator_multi) {
+						if (entity instanceof IControllable) {
+							String s = "Custom Control Panel compatible";
+							mc.fontRenderer.drawString(
+									s,
+									event.getResolution().getScaledWidth()/2-mc.fontRenderer.getStringWidth(s)/2,
+									event.getResolution().getScaledHeight()/5,
+									0x00FF00
+							);
+						}
+					}
 					if (mc.player.getHeldItemOffhand().getItem() == AddonItems.wand_v) {
-						Chunk chunk = world.getChunk(mop.getBlockPos());
-						TileEntity entity = chunk.getTileEntity(mop.getBlockPos(),Chunk.EnumCreateEntityType.CHECK);
 						if (entity != null) {
 							NBTTagCompound nbt = new NBTTagCompound();
 							entity.writeToNBT(nbt);
