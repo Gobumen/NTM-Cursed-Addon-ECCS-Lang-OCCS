@@ -81,8 +81,10 @@ public abstract class MixinTileEntityBarrel extends TileEntityMachineBase implem
 
 	@Override
 	public boolean canConnect(FluidType type,ForgeDirection dir) {
-		if (dir != ForgeDirection.UP && dir != ForgeDirection.DOWN)
-			return false;
+		if (AddonConfig.enableBarrelSidePorts) {
+			if (dir != ForgeDirection.UP && dir != ForgeDirection.DOWN)
+				return false;
+		}
 		return IFluidStandardTransceiverMK2.super.canConnect(type,dir);
 	}
 
