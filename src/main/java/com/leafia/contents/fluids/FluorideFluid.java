@@ -1,7 +1,7 @@
 package com.leafia.contents.fluids;
 
-import com.leafia.AddonBase;
 import com.leafia.contents.AddonBlocks;
+import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
@@ -23,9 +23,10 @@ public class FluorideFluid extends Fluid {
 
 		public FluorideFluidBlock(Fluid fluid,Material material,String s) {
 			super(fluid, material);
-			this.setTranslationKey(s);
+            //mlbv: the cast here must not be removed, bug within RetroFuturaGradle reobfuscation
+			((Block)this).setTranslationKey(s);
 			this.setRegistryName(s);
-			this.setCreativeTab(null);
+			((Block)this).setCreativeTab(null);
 			//this.setQuantaPerBlock(4);
 			this.damageSource = DamageSource.ON_FIRE;
 			this.displacements.put(this, false);
