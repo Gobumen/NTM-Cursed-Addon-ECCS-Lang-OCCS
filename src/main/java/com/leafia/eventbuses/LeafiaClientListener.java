@@ -3,6 +3,7 @@ package com.leafia.eventbuses;
 import com.custom_hbm.GuiAssentialWarning;
 import com.custom_hbm.GuiBackupsWarning;
 import com.google.gson.JsonSyntaxException;
+import com.hbm.blocks.BlockDummyable;
 import com.hbm.capability.HbmLivingProps;
 import com.hbm.interfaces.IHasCustomModel;
 import com.hbm.inventory.control_panel.IControllable;
@@ -318,20 +319,29 @@ public class LeafiaClientListener {
 				RayTraceResult mop = mc.objectMouseOver;
 
 				if (mop != null && mop.typeOfHit == mop.typeOfHit.BLOCK) {
-					Chunk chunk = world.getChunk(mop.getBlockPos());
-					TileEntity entity = chunk.getTileEntity(mop.getBlockPos(),Chunk.EnumCreateEntityType.CHECK);
 					if (mc.player.getHeldItemMainhand().getItem() == ModItems.detonator_multi) {
-						if (entity instanceof IControllable) {
-							String s = "Custom Control Panel compatible";
-							mc.fontRenderer.drawString(
-									s,
-									event.getResolution().getScaledWidth()/2-mc.fontRenderer.getStringWidth(s)/2,
-									event.getResolution().getScaledHeight()/5,
-									0x00FF00
-							);
+						BlockPos core = mop.getBlockPos();
+						if (world.getBlockState(mop.getBlockPos()).getBlock() instanceof BlockDummyable dummyable)
+							core = dummyable.findCore(world,mop.getBlockPos());
+						if (core != null) {
+							Chunk chunk = world.getChunk(core);
+							TileEntity entity = chunk.getTileEntity(core,Chunk.EnumCreateEntityType.CHECK);
+							if (entity instanceof IControllable) {
+								String s = "Custom Control Panel compatible";
+								mc.fontRenderer.drawString(
+										s,
+										event.getResolution().getScaledWidth()/2f-mc.fontRenderer.getStringWidth(s)/2f,
+										event.getResolution().getScaledHeight()/6f*2,
+										0x55FF55,
+										true
+								);
+								LeafiaGls.color(1,1,1);
+							}
 						}
 					}
 					if (mc.player.getHeldItemOffhand().getItem() == AddonItems.wand_v) {
+						Chunk chunk = world.getChunk(mop.getBlockPos());
+						TileEntity entity = chunk.getTileEntity(mop.getBlockPos(),Chunk.EnumCreateEntityType.CHECK);
 						if (entity != null) {
 							NBTTagCompound nbt = new NBTTagCompound();
 							entity.writeToNBT(nbt);

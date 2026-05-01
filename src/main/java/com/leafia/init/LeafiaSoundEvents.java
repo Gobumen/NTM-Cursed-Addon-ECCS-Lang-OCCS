@@ -177,9 +177,9 @@ public class LeafiaSoundEvents {
 				HBMSoundHandler.geiger4,
 				HBMSoundHandler.geiger5,
 				HBMSoundHandler.geiger6,
-				geiger7, // unused, sounds like shit
-				geiger8, // unused, sounds like shit
-				geiger9  // unused, sounds like shit
+				geiger7,
+				geiger8,
+				geiger9
 		};
 
 		reactor_door_handle = register("external.reactor_door_handle");
