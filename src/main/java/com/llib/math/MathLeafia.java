@@ -1,5 +1,8 @@
 package com.llib.math;
 
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
+
 public class MathLeafia {
 	public static short getTime32s() {
 		return (short)(Math.floorMod(System.currentTimeMillis(),32_767));
@@ -27,5 +30,12 @@ public class MathLeafia {
 			return Math.sin(2*( x - (0.5+smoothingStartOffset) )*initialInclination)*waveHeight + (1-waveHeight);
 		else
 			return (x-0.5)*initialInclination/peak + 0.5;
+	}
+	// fuck you mojang
+	public static float positiveModulo(float numerator, float denominator) {
+		return (numerator % denominator + denominator) % denominator;
+	}
+	public static double positiveModulo(double numerator, double denominator) {
+		return (numerator % denominator + denominator) % denominator;
 	}
 }

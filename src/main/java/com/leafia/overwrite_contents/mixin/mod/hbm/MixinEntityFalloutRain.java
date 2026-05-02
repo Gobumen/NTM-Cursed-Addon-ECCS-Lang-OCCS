@@ -9,6 +9,8 @@ import com.hbm.lib.Library;
 import com.leafia.dev.LeafiaUtil;
 import com.leafia.init.FalloutConfigInit;
 import com.leafia.overwrite_contents.interfaces.IMixinEntityFalloutRain;
+import com.leafia.savedata.FalloutSavedData;
+import com.leafia.savedata.FalloutSavedData.FalloutData;
 import com.llamalad7.mixinextras.sugar.Local;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import net.minecraft.block.Block;
@@ -18,8 +20,11 @@ import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos.MutableBlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.Chunk;
@@ -46,10 +51,53 @@ public abstract class MixinEntityFalloutRain extends EntityExplosionChunkloading
 	@Final
 	private static ThreadLocal<MutableBlockPos> TL_POS;
 
+	/*@Unique
+	int leafia$rainTimer = 0;
+	@Inject(method = "onUpdate",at = @At(value = "HEAD"),require = 1)
+	void leafia$onOnUpdate(CallbackInfo ci) {
+		if (finished == 1) {
+			leafia$rainTimer++;
+			if (leafia$rainTimer >= 24000)
+				setDead();
+		}
+	}
+
+	@Override
+	public AxisAlignedBB getRenderBoundingBox() { // why does ts no work
+		return TileEntity.INFINITE_EXTENT_AABB;
+	}
+
+	@Redirect(method = "startWorkersIfNeeded",at = @At(value = "INVOKE", target = "Lcom/hbm/entity/effect/EntityFalloutRain;setDead()V",remap = true),require = 1,remap = false)
+	void leafia$onStartWorkersIfNeeded(EntityFalloutRain instance) {
+		// do nothing lmao
+	}
+
+	@Redirect(method = "secondPassAndFinish",at = @At(value = "INVOKE", target = "Lcom/hbm/entity/effect/EntityFalloutRain;setDead()V",remap = true),require = 1,remap = false)
+	void leafia$onSecondPassAndFinish(EntityFalloutRain instance) {
+		// do nothing lmao
+	}*/ // forget it
+
+	@Inject(method = "setDead",at = @At(value = "HEAD"),require = 1)
+	void leafia$onSetDead(CallbackInfo ci) {
+		if (finished == 1 && !world.isRemote) {
+			double radius = getScale();
+			FalloutSavedData saved = FalloutSavedData.forWorld(world);
+			saved.syncTimer = 0;
+			saved.falloutMap.add(new FalloutData(new Vec3d(posX,0,posZ),radius));
+			saved.markDirty();
+		}
+	}
+
 	@Shadow(remap = false)
 	protected static Biome getBiomeChange(double distPercent,int scale,Biome original) {
 		return null;
 	}
+
+	@Shadow(remap = false)
+	private volatile int finished;
+
+	@Shadow(remap = false)
+	public abstract int getScale();
 
 	public MixinEntityFalloutRain(World world) {
 		super(world);

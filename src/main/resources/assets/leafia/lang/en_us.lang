@@ -527,6 +527,7 @@ tile.regex_filter.gui.main.edit=Edit
 tile.regex_filter.gui.main.whitelist=Whitelist
 tile.regex_filter.name=Pneumatic Tube RegEx Filter
 tile.salt_separator.name=Salt Fuel Separation Plant
+tile.scorched_earth.name=Scorched Grass
 tile.slop_reactor.desc=Create a 5x5x5 cube made of reactor glass$with frames made of reactor casing$$Fueled with natural uranium,$cooled with snowballs$(Snowball is idea by bob himself)$$Made in 4 hours
 tile.slop_reactor.name=Average "Nuclear Reactor" in Modern Mods
 tile.slop_reactor_casing.name=Average "Nuclear Reactor" in Modern Mods Casing

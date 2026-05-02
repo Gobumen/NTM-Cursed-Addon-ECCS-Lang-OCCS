@@ -19,6 +19,8 @@ import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -76,40 +78,44 @@ public abstract class MixinTileEntityMachineArcWelder extends TileEntityMachineB
 					leafia$client_sfx = AddonBase.proxy.getLoopedSoundStartStop(world,LeafiaSoundEvents.arc_welder,LeafiaSoundEvents.arc_welder_start,LeafiaSoundEvents.arc_welder_stop,SoundCategory.BLOCKS,pos.getX()+0.5f,pos.getY()+0.5f,pos.getZ()+0.5f,1.4f,1);
 					leafia$client_sfx.startSound();
 				}
-				ForgeDirection dir = ForgeDirection.getOrientation(this.getBlockMetadata()-10);
-				Vec3d vec = new Vec3d(
-						pos.getX() + 0.5 - dir.offsetX * 0.5,
-						pos.getY() + 1.25,
-						pos.getZ() + 0.5 - dir.offsetZ * 0.5
-				);
-				Vec3d up = new Vec3d(0,1,0);
-				if(world.getTotalWorldTime() % 2 == world.rand.nextInt(2)) {
-					FiaSpark spark = new FiaSpark();
-					spark.color = 0xFFEE80;
-					spark.count = world.rand.nextInt(3)+1;
-					spark.thickness = 0.014f;
-					spark.speedMin = 0.25f;
-					spark.speedMax = 0.5f;
-					spark.emitLocal(vec,up);
-				}
-				if (world.getTotalWorldTime()%2 == 0 || world.rand.nextInt(3) == 0) {
-					FlashParticle flash = new FlashParticle();
-					flash.scale = world.rand.nextFloat()*0.015f+0.15f;
-					flash.ticksIn = 2;
-					flash.ticksOut = world.rand.nextInt(2)+2;
-					flash.emitLocal(vec,up);
-				}
-				int amt = world.rand.nextInt(2)+1;
-				for (int i = 0; i < amt; i++) {
-					ParticleArcWelder smoke = new ParticleArcWelder(world,vec.x,vec.y,vec.z);
-					Minecraft.getMinecraft().effectRenderer.addEffect(smoke);
-				}
-
+				leafia$spawnParticles();
 			} else if (leafia$client_sfx != null) {
 				leafia$client_sfx.stopSound();
 				leafia$client_sfx = null;
 			}
 			leafia$client_looptimer = progress > 0;
+		}
+	}
+	@SideOnly(Side.CLIENT)
+	@Unique
+	void leafia$spawnParticles() {
+		ForgeDirection dir = ForgeDirection.getOrientation(this.getBlockMetadata()-10);
+		Vec3d vec = new Vec3d(
+				pos.getX() + 0.5 - dir.offsetX * 0.5,
+				pos.getY() + 1.25,
+				pos.getZ() + 0.5 - dir.offsetZ * 0.5
+		);
+		Vec3d up = new Vec3d(0,1,0);
+		if(world.getTotalWorldTime() % 2 == world.rand.nextInt(2)) {
+			FiaSpark spark = new FiaSpark();
+			spark.color = 0xFFEE80;
+			spark.count = world.rand.nextInt(3)+1;
+			spark.thickness = 0.014f;
+			spark.speedMin = 0.25f;
+			spark.speedMax = 0.5f;
+			spark.emitLocal(vec,up);
+		}
+		if (world.getTotalWorldTime()%2 == 0 || world.rand.nextInt(3) == 0) {
+			FlashParticle flash = new FlashParticle();
+			flash.scale = world.rand.nextFloat()*0.015f+0.15f;
+			flash.ticksIn = 2;
+			flash.ticksOut = world.rand.nextInt(2)+2;
+			flash.emitLocal(vec,up);
+		}
+		int amt = world.rand.nextInt(2)+1;
+		for (int i = 0; i < amt; i++) {
+			ParticleArcWelder smoke = new ParticleArcWelder(world,vec.x,vec.y,vec.z);
+			Minecraft.getMinecraft().effectRenderer.addEffect(smoke);
 		}
 	}
 	@Override

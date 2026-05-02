@@ -5,6 +5,7 @@ import com.leafia.contents.AddonItems;
 import com.leafia.contents.machines.reactors.pwr.PWRDiagnosis;
 import com.leafia.contents.machines.reactors.pwr.blocks.wreckage.PWRMeshedWreck;
 import com.leafia.dev.LeafiaDebug.Tracker;
+import com.leafia.savedata.FalloutSavedData;
 import net.minecraft.world.World;
 
 import java.util.ArrayList;
@@ -26,6 +27,7 @@ public class LeafiaPassiveServer {
 	public static final Set<Node> tickedNodes = new HashSet<>();
 	public static void priorTick(World world) {
 		tickedNodes.clear();
+		FalloutSavedData.forWorld(world).tick();
 		//if (ModItems.wand_leaf.darnit != null)
 		//	ModItems.wand_leaf.darnit.run();
 		Tracker.preTick(world);

@@ -11,6 +11,8 @@ import com.hbm.items.IDynamicModels;
 import com.hbm.items.ModItems;
 import com.hbm.render.GuiCTMWarning;
 import com.custom_hbm.util.LCETuple.*;
+import com.hbm.render.NTMRenderHelper;
+import com.hbm.render.entity.RenderFallout;
 import com.hbm.render.item.TEISRBase;
 import com.hbm.tileentity.machine.TileEntityControlPanel;
 import com.hbm.util.I18nUtil;
@@ -34,6 +36,7 @@ import com.leafia.dev.container_utility.LeafiaPacketReceiver;
 import com.leafia.init.ResourceInit;
 import com.leafia.passive.LeafiaPassiveLocal;
 import com.leafia.passive.effects.LeafiaShakecam;
+import com.leafia.passive.rendering.FalloutRender;
 import com.leafia.passive.rendering.TopRender;
 import com.leafia.settings.AddonConfig;
 import com.leafia.shit.leafiashader.BigBruh;
@@ -44,10 +47,12 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.ScaledResolution;
-import net.minecraft.client.renderer.ActiveRenderInfo;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.OpenGlHelper;
+import net.minecraft.client.multiplayer.WorldClient;
+import net.minecraft.client.renderer.*;
+import net.minecraft.client.renderer.GlStateManager.DestFactor;
+import net.minecraft.client.renderer.GlStateManager.SourceFactor;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.shader.Framebuffer;
 import net.minecraft.client.shader.ShaderLinkHelper;
 import net.minecraft.entity.Entity;
@@ -60,6 +65,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumHandSide;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.*;
+import net.minecraft.util.math.BlockPos.MutableBlockPos;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
@@ -310,6 +316,7 @@ public class LeafiaClientListener {
 		}
 		@SubscribeEvent(priority = EventPriority.LOWEST)
 		public void renderWorld(RenderWorldLastEvent evt) {
+			FalloutRender.INSTANCE.render(evt.getPartialTicks());
 			TopRender.main(evt);
 		}
 		@SubscribeEvent

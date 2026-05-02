@@ -4,8 +4,8 @@ import com.leafia.dev.LeafiaDebug;
 import com.leafia.dev.custompacket.LeafiaCustomPacket;
 import com.leafia.dev.custompacket.LeafiaCustomPacketEncoder;
 import com.leafia.dev.optimization.bitbyte.LeafiaBuf;
+import com.llib.math.MathLeafia;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import net.minecraft.world.storage.WorldSavedData;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
@@ -124,8 +124,8 @@ public class Wind {
 			if (randomAngleCounter > randomAngleLength) {
 				randomAngleCounter = 0;
 				randomAngleLength = 180+rand.nextInt(40);
-				lastAngle = MathHelper.positiveModulo(lastAngle,360);
-				angle = MathHelper.positiveModulo(angle,360);
+				lastAngle = MathLeafia.positiveModulo(lastAngle,360);
+				angle = MathLeafia.positiveModulo(angle,360);
 				startAngle = angle;
 				endAngle = angle+rand.nextDouble(45*2)-45;
 			}

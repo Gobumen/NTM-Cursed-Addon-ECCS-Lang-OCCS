@@ -4,6 +4,8 @@ import com.leafia.contents.gear.advisor.AdvisorItem.Warns;
 import com.leafia.dev.optimization.diagnosis.RecordablePacket;
 import com.leafia.eventbuses.LeafiaClientListener.Digamma;
 import com.leafia.overwrite_contents.interfaces.IMixinTileEntityCore;
+import com.leafia.passive.rendering.FalloutRender;
+import com.leafia.savedata.FalloutSavedData;
 import com.llib.group.LeafiaSet;
 import com.llib.math.MathLeafia;
 import net.minecraft.client.Minecraft;
@@ -33,6 +35,10 @@ public class LeafiaPassiveLocal {
 		}
 	}
 	public static void priorTick(World world) {
+		if (!Minecraft.getMinecraft().isGamePaused()) {
+			FalloutRender.INSTANCE.rendererUpdateCount++;
+			FalloutSavedData.forWorld(world).tick();
+		}
 		RecordablePacket.previousByteUsage = RecordablePacket.bytesUsage;
 		RecordablePacket.bytesUsage = 0;
 		short t1 = MathLeafia.getTime32s();

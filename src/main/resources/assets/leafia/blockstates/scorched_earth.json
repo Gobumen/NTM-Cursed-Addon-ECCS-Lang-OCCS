@@ -1,0 +1,10 @@
+{
+	"variants": {
+		"normal": { "model": "hbm:scorched_earth_2" },
+		"meta=2": { "model": "hbm:scorched_earth_2" },
+		"meta=3": { "model": "hbm:scorched_earth_3" },
+		"meta=4": { "model": "hbm:scorched_earth_4" },
+		"meta=5": { "model": "hbm:scorched_earth_5" },
+		"meta=6": { "model": "hbm:scorched_earth_6" }
+	}
+}

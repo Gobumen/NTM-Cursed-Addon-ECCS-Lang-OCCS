@@ -2,7 +2,6 @@ package com.leafia.dev.custompacket;
 
 import com.custom_hbm.explosion.LCEExplosionNT.ExplosionNTSyncPacket;
 import com.hbm.handler.threading.PacketThreading;
-import com.hbm.packet.PacketDispatcher;
 import com.hbm.packet.threading.ThreadedPacket;
 import com.leafia.contents.gear.advisor.AdvisorItem;
 import com.leafia.contents.gear.advisor.AdvisorItem.AdvisorPacket;
@@ -12,27 +11,21 @@ import com.leafia.contents.gear.wands.ItemWandLoading.WandStructurePacket;
 import com.leafia.contents.gear.wands.ItemWandSaving.HighlightSavingWandProduct;
 import com.leafia.contents.gear.wands.ItemWandSaving.HighlightSavingWandRemove;
 import com.leafia.contents.gear.wands.ItemWandSaving.HighlightSavingWandSave;
-import com.leafia.contents.machines.controlpanel.instruments.types.graph.Graph;
 import com.leafia.contents.machines.controlpanel.instruments.types.graph.Graph.CCPGraphSyncPacket;
-import com.leafia.contents.machines.controlpanel.instruments.types.lever.LeverBase;
 import com.leafia.contents.machines.controlpanel.instruments.types.lever.LeverBase.CCPLeverSyncPacket;
-import com.leafia.contents.machines.controlpanel.instruments.types.meters.vertical.MeterVertical;
 import com.leafia.contents.machines.controlpanel.instruments.types.meters.vertical.MeterVertical.CCPMeterVerticalSyncPacket;
-import com.leafia.contents.machines.controlpanel.instruments.types.starbound.LargeSwitch;
 import com.leafia.contents.machines.controlpanel.instruments.types.starbound.LargeSwitch.CCPLargeSwitchSyncPacket;
-import com.leafia.contents.machines.controlpanel.instruments.types.textindicator.TextIndicator;
 import com.leafia.contents.machines.controlpanel.instruments.types.textindicator.TextIndicator.CCPTextIndicatorSyncPacket;
 import com.leafia.contents.machines.elevators.car.ElevatorEntity.*;
-import com.leafia.contents.machines.misc.modular_turbine.core.MTCoreBlock;
 import com.leafia.contents.machines.misc.modular_turbine.core.MTCoreBlock.TurbineErrorHighlight;
 import com.leafia.dev.LeafiaDebug.Tracker.VisualizerPacket;
 import com.leafia.dev.optimization.bitbyte.LeafiaBuf;
 import com.leafia.dev.optimization.diagnosis.RecordablePacket;
-import com.leafia.overwrite_contents.interfaces.IMixinEntityMeteor;
 import com.leafia.overwrite_contents.interfaces.IMixinEntityMeteor.MeteorSyncPacket;
 import com.leafia.overwrite_contents.interfaces.IMixinTileEntityCore.DFCShockPacket;
-import com.leafia.passive.Wind;
 import com.leafia.passive.Wind.WindSyncPacket;
+import com.leafia.savedata.FalloutSavedData;
+import com.leafia.savedata.FalloutSavedData.FalloutSyncPacket;
 import com.llib.exceptions.LeafiaDevFlaw;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
@@ -80,6 +73,7 @@ public class LeafiaCustomPacket extends RecordablePacket {
 		CCP_METER_V_SYNC(new CCPMeterVerticalSyncPacket()),
 		CCP_LEVER_SYNC(new CCPLeverSyncPacket()),
 		WIND_SYNC(new WindSyncPacket()),
+		FALLOUT_SYNC(new FalloutSyncPacket()),
 		;
 		final LeafiaCustomPacketEncoder encoder;
 		CustomPacketType() { encoder = null; }
@@ -108,7 +102,8 @@ public class LeafiaCustomPacket extends RecordablePacket {
 	public void __sendToAllAround(int dim,Vec3d pos,double range) {
 		PacketThreading.createSendToAllTrackingThreadedPacket(this,new TargetPoint(dim,pos.x,pos.y,pos.z,range));
 	}
-	@Deprecated
+	//@Deprecated
+	// why is this deprecated
 	public void __sendToAllInDimension(int dimension) {
 		PacketThreading.createSendToDimensionThreadedPacket(this,dimension);
 	}
