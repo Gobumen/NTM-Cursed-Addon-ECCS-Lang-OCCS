@@ -68,8 +68,9 @@ public class FuzzyIdentifierItem extends AddonItemBase implements IItemFluidIden
 			list.add(TextFormatting.RED+I18nUtil.resolveKey("desc.leafia.fuzzy.unset"));
 	}
 	static int index = 0;
+
 	@Override
-	public EnumActionResult onItemUse(EntityPlayer player,World worldIn,BlockPos pos,EnumHand hand,EnumFacing facing,float hitX,float hitY,float hitZ) {
+	public EnumActionResult onItemUseFirst(EntityPlayer player,World worldIn,BlockPos pos,EnumFacing facing,float hitX,float hitY,float hitZ,EnumHand hand) {
 		if (!player.getHeldItem(hand).isEmpty() && player.getHeldItem(hand).getItem() instanceof FuzzyIdentifierItem) {
 			ItemStack stack = player.getHeldItem(hand);
 			TileEntity te = worldIn.getTileEntity(pos);
@@ -123,6 +124,7 @@ public class FuzzyIdentifierItem extends AddonItemBase implements IItemFluidIden
 							worldIn.playSound(null,player.getPosition(),HBMSoundHandler.techBleep,SoundCategory.PLAYERS,1,1);
 						else
 							Minecraft.getMinecraft().player.sendMessage(new TextComponentTranslation("item.fuzzy_identifier.message",fluid.getLocalizedName()).setStyle(new Style().setColor(TextFormatting.YELLOW)));
+						return EnumActionResult.SUCCESS;
 					} else if (te instanceof IFluidStandardSenderMK2 mk2) {
 						if (!worldIn.isRemote) {
 							FluidTankNTM[] sending = mk2.getSendingTanks();
@@ -140,6 +142,7 @@ public class FuzzyIdentifierItem extends AddonItemBase implements IItemFluidIden
 							response.id = fluid.getID();
 							LeafiaCustomPacket.__start(response).__sendToClient(player);
 						}
+						return EnumActionResult.SUCCESS;
 					}
 				}
 			}

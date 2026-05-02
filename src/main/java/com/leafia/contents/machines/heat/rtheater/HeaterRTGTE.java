@@ -1,6 +1,10 @@
 package com.leafia.contents.machines.heat.rtheater;
 
 import com.hbm.api.tile.IHeatSource;
+import com.hbm.inventory.control_panel.ControlEventSystem;
+import com.hbm.inventory.control_panel.IControllable;
+import com.hbm.inventory.control_panel.types.DataValue;
+import com.hbm.inventory.control_panel.types.DataValueFloat;
 import com.hbm.tileentity.IGUIProvider;
 import com.hbm.tileentity.TileEntityMachineBase;
 import com.hbm.util.RTGUtil;
@@ -16,14 +20,17 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
+import java.util.HashMap;
+import java.util.Map;
 
-public class HeaterRTGTE extends TileEntityMachineBase implements IHeatSource, ITickable, IGUIProvider {
+public class HeaterRTGTE extends TileEntityMachineBase implements IHeatSource, ITickable, IGUIProvider, IControllable {
 
     public int heatGen;
     public int heatEnergy;
@@ -181,5 +188,31 @@ public class HeaterRTGTE extends TileEntityMachineBase implements IHeatSource, I
 
     public int getHeatScaled(int i){
         return (heatEnergy * i) / maxHeatEnergy;
+    }
+
+    @Override
+    public Map<String,DataValue> getQueryData() {
+        Map<String,DataValue> map = new HashMap<>();
+        map.put("heat",new DataValueFloat(heatEnergy));
+        map.put("maxHeat",new DataValueFloat(maxHeatEnergy));
+        return map;
+    }
+    @Override
+    public BlockPos getControlPos() {
+        return getPos();
+    }
+    @Override
+    public World getControlWorld() {
+        return getWorld();
+    }
+    @Override
+    public void validate() {
+        super.validate();
+        ControlEventSystem.get(world).addControllable(this);
+    }
+    @Override
+    public void invalidate() {
+        ControlEventSystem.get(world).removeControllable(this);
+        super.invalidate();
     }
 }

@@ -12,6 +12,7 @@ import com.hbm.items.ModItems;
 import com.hbm.render.GuiCTMWarning;
 import com.custom_hbm.util.LCETuple.*;
 import com.hbm.render.item.TEISRBase;
+import com.hbm.tileentity.machine.TileEntityControlPanel;
 import com.hbm.util.I18nUtil;
 import com.leafia.contents.AddonBlocks;
 import com.leafia.contents.AddonItems;
@@ -326,7 +327,7 @@ public class LeafiaClientListener {
 						if (core != null) {
 							Chunk chunk = world.getChunk(core);
 							TileEntity entity = chunk.getTileEntity(core,Chunk.EnumCreateEntityType.CHECK);
-							if (entity instanceof IControllable) {
+							if (entity instanceof IControllable && !(entity instanceof TileEntityControlPanel)) {
 								String s = "Custom Control Panel compatible";
 								mc.fontRenderer.drawString(
 										s,
