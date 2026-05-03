@@ -6,6 +6,7 @@ import com.hbm.config.FalloutConfigJSON.LookupResult;
 import com.hbm.entity.effect.EntityFalloutRain;
 import com.hbm.entity.logic.EntityExplosionChunkloading;
 import com.hbm.lib.Library;
+import com.leafia.contents.worldgen.AddonBiomes;
 import com.leafia.dev.LeafiaUtil;
 import com.leafia.init.FalloutConfigInit;
 import com.leafia.overwrite_contents.interfaces.IMixinEntityFalloutRain;
@@ -79,7 +80,7 @@ public abstract class MixinEntityFalloutRain extends EntityExplosionChunkloading
 
 	@Inject(method = "setDead",at = @At(value = "HEAD"),require = 1)
 	void leafia$onSetDead(CallbackInfo ci) {
-		if (finished == 1 && !world.isRemote) {
+		if (finished == 1 && !world.isRemote && !digammaFallout) {
 			double radius = getScale();
 			FalloutSavedData saved = FalloutSavedData.forWorld(world);
 			saved.syncTimer = 0;
@@ -256,7 +257,7 @@ public abstract class MixinEntityFalloutRain extends EntityExplosionChunkloading
 	@Redirect(method = "processChunkOffThread",at = @At(value = "INVOKE", target = "Lcom/hbm/entity/effect/EntityFalloutRain;getBiomeChange(DILnet/minecraft/world/biome/Biome;)Lnet/minecraft/world/biome/Biome;"),require = 1,remap = false)
 	private Biome leafia$onProcessChunkOffThread(double distPercent,int scale,Biome original) {
 		if (digammaFallout)
-			return null;
+			return AddonBiomes.digamma;
 		return getBiomeChange(distPercent,scale,original);
 	}
 }

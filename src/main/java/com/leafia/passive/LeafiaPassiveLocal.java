@@ -4,7 +4,7 @@ import com.leafia.contents.gear.advisor.AdvisorItem.Warns;
 import com.leafia.dev.optimization.diagnosis.RecordablePacket;
 import com.leafia.eventbuses.LeafiaClientListener.Digamma;
 import com.leafia.overwrite_contents.interfaces.IMixinTileEntityCore;
-import com.leafia.passive.rendering.FalloutRender;
+import com.leafia.passive.rendering.AddonRainRender;
 import com.leafia.savedata.FalloutSavedData;
 import com.llib.group.LeafiaSet;
 import com.llib.math.MathLeafia;
@@ -24,7 +24,7 @@ public class LeafiaPassiveLocal {
 	public static LeafiaSet<IMixinTileEntityCore> trackingCores = new LeafiaSet<>();
 
 	public static void onTick(World world) {
-		Digamma.update();
+		Digamma.update(world);
 		for (Runnable callback : queue)
 			callback.run();
 		LeafiaPassiveServer.queue.clear(); // prevent memory leaks
@@ -36,7 +36,7 @@ public class LeafiaPassiveLocal {
 	}
 	public static void priorTick(World world) {
 		if (!Minecraft.getMinecraft().isGamePaused()) {
-			FalloutRender.INSTANCE.rendererUpdateCount++;
+			AddonRainRender.INSTANCE.update();
 			FalloutSavedData.forWorld(world).tick();
 		}
 		RecordablePacket.previousByteUsage = RecordablePacket.bytesUsage;

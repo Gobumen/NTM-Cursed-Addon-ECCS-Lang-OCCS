@@ -138,7 +138,8 @@
     "hbm.MixinTileEntityTurretJeremy",
     "hbm.MixinTileEntityWasteDrum",
     "hbm.MixinWasteEarth",
-    "hbm.MixinWasteGrassTall"
+    "hbm.MixinWasteGrassTall",
+    "hbm.MixinWorldProviderNTM"
   ],
   "server": [
   ],

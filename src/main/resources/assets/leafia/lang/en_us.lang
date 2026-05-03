@@ -230,6 +230,7 @@ item.battery_pack.battery_spk.name=Spark Battery
 item.battery_pack.battery_electro.name=Electronium Battery
 item.billet_kys.name=Kysmium-3000 Billet
 item.detonator_laser.desc2=Also can be used to indicate on multiplayer.
+item.door_fuckoff.name=Pink Door
 item.ev_chip_s6.desc=Standard elevator chip$for cozy rides
 item.ev_chip_s6.name=Series 6 Chip
 item.ev_chip_skylift.desc=Lightning speed for insane skyscrapers$May crash and explode

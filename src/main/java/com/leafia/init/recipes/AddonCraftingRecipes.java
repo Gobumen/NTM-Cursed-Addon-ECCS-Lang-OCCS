@@ -140,6 +140,7 @@ public class AddonCraftingRecipes {
 		addRecipeAuto(new ItemStack(ModItems.grenade_filling, 1, EnumGrenadeFilling.valueOf("SOL").ordinal()),"CUB", "USU", "BUT", 'B', CMB.ingot(), 'C', DictFrame.fromOne(ModItems.circuit, EnumCircuitType.CONTROLLER), 'T', ModItems.solinium_igniter, 'U', ModItems.solinium_propellant, 'S', ModItems.solinium_core );
 
 		removeRecipesForItem(reg,ModItems.powder_ice);
+		addRecipeAuto(new ItemStack(AddonItems.door_fuckoff, 3), "WW", "WW", "WW", 'W', ModBlocks.pink_planks);
 
 		hack.getRegistry().register(new PWRDebrisCrafting().setRegistryName(new ResourceLocation("leafia", "lwr_debris_crafting_handler")));
 	}

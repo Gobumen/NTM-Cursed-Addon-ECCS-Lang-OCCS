@@ -48,7 +48,7 @@
   "block.kfc.vs": {"category": "block", "sounds": [{"subtitle": "subtitles.block.kfc.vs", "name": "leafia:external/forcefield_loop", "stream": false}]},
   "block.kfc.tw": {"category": "block", "sounds": [{"subtitle": "subtitles.block.kfc.tw", "name": "leafia:external/charge_full_hold1", "stream": false}]},
   "block.kfc.eoh": {"category": "block", "sounds": [{"subtitle": "subtitles.block.kfc.eoh", "name": "leafia:external/avactron_loop", "stream": false}]},
-  "block.kfc.meltdown": {"category": "block", "sounds": [{"subtitle": "subtitles.block.kfc.meltdown", "name": "leafia:leafia/dfcstress", "stream": false}]},
+  "block.kfc.meltdown": {"category": "block", "sounds": [{"subtitle": "subtitles.block.kfc.meltdown", "name": "leafia:leafia/dfcstress", "stream": true}]},
   "block.kfc.explode": {"category": "block", "sounds": [{"subtitle": "subtitles.block.kfc.explode", "name": "leafia:leafia/dfcexplode", "stream": false}]},
 
   "music.422fgame": {"category": "music", "sounds": [{"name": "leafia:music/422fgame", "stream": false}]},
@@ -93,5 +93,10 @@
 
   "external.reactor_door_handle": { "subtitle": "subtitles.block.reactor_door_handle", "category": "block", "sounds": ["leafia:external/reactordoor_handle"]},
   "external.reactor_door_open": { "subtitle": "subtitles.block.reactor_door_open", "category": "block", "sounds": ["leafia:external/reactordoor_open"]},
-  "external.reactor_door_close": { "subtitle": "subtitles.block.reactor_door_close", "category": "block", "sounds": ["leafia:external/reactordoor_close"]}
+  "external.reactor_door_close": { "subtitle": "subtitles.block.reactor_door_close", "category": "block", "sounds": ["leafia:external/reactordoor_close"]},
+
+  "external.sbesrottenrain": { "subtitle": "subtitles.weather.rain", "category": "weather", "sounds": ["leafia:external/rottenrain1","leafia:external/rottenrain2","leafia:external/rottenrain3"] },
+  "external.sbesrottenrain.above": { "subtitle": "subtitles.weather.rain", "category": "weather", "sounds": ["leafia:external/rottenrain_filtered1","leafia:external/rottenrain_filtered2","leafia:external/rottenrain_filtered3"] },
+
+  "external.sbmoon_surface": { "category": "ambient", "sounds": [{ "name": "leafia:external/moon_surface", "stream": true }] }
 }

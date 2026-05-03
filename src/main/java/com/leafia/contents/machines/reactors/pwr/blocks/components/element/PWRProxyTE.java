@@ -11,7 +11,7 @@ public class PWRProxyTE extends TileEntityProxyInventory {
 		for (int i = pos.getY()+1; i < 256; i++) {
 			BlockPos newPos = new BlockPos(pos.getX(),i,pos.getZ());
 			IBlockState state = world.getBlockState(newPos);
-			if (state.getBlock() == getBlockType()) {
+			if (state.getBlock() instanceof PWRElementBlock) {
 				if (!state.getValue(PWRElementBlock.stacked))
 					return world.getTileEntity(newPos);
 			} else break;

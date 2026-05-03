@@ -12,6 +12,7 @@ import com.leafia.contents.AddonItems;
 import com.leafia.contents.machines.reactors.pwr.PWRDiagnosis;
 import com.leafia.contents.machines.reactors.pwr.blocks.components.element.PWRElementTE;
 import com.leafia.contents.potion.LeafiaPotion;
+import com.leafia.contents.worldgen.biomes.artificial.DigammaCrater;
 import com.leafia.contents.worldgen.biomes.effects.HasAcidicRain;
 import com.leafia.dev.optimization.LeafiaParticlePacket;
 import com.leafia.dev.optimization.LeafiaParticlePacket.Sweat;
@@ -24,8 +25,6 @@ import com.leafia.savedata.PlayerDeathsSavedData;
 import com.leafia.unsorted.IEntityCustomCollision;
 import com.llib.group.LeafiaMap;
 import com.llib.group.LeafiaSet;
-import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -43,6 +42,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.biome.Biome;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
@@ -138,11 +138,14 @@ public class LeafiaServerListener {
 		}
 	}
 	public static class Unsorted {
-		public void handleAcidRain(EntityLivingBase entity) {
+		static int digammaRainCounter = 0;
+		public void handleRains(EntityLivingBase entity) {
 			int ix = (int)MathHelper.floor(entity.posX);
 			int iy = (int)MathHelper.floor(entity.posY);
 			int iz = (int)MathHelper.floor(entity.posZ);
-			if (entity.world.getBiome(new BlockPos(ix,iy,iz)) instanceof HasAcidicRain) {
+			Biome biome = entity.world.getBiome(new BlockPos(ix,iy,iz));
+			digammaRainCounter = (digammaRainCounter+1)%90;
+			if (biome instanceof HasAcidicRain) {
 				if (entity.world.isRainingAt(new BlockPos(ix,iy,iz))) {
 					boolean active = false;
 					PotionEffect effect = entity.getActivePotionEffect(MobEffects.POISON);
@@ -154,11 +157,14 @@ public class LeafiaServerListener {
 						entity.addPotionEffect(new PotionEffect(MobEffects.POISON,35,1,false,false));
 					ContaminationUtil.contaminate(entity,HazardType.RADIATION,ContaminationType.CREATIVE,0.5);
 				}
+			} else if (biome instanceof DigammaCrater) {
+				if (entity.world.canSeeSky(new BlockPos(ix,iy,iz)) && digammaRainCounter == 0)
+					ContaminationUtil.contaminate(entity,HazardType.DIGAMMA,ContaminationType.CREATIVE,0.005F);
 			}
 		}
 		@SubscribeEvent
 		public void onLivingUpdate(LivingUpdateEvent evt) {
-			handleAcidRain(evt.getEntityLiving());
+			handleRains(evt.getEntityLiving());
 		}
 		@SubscribeEvent
 		public void onGetEntityCollision(GetCollisionBoxesEvent evt) {

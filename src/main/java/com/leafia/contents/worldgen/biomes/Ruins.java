@@ -198,10 +198,10 @@ public class Ruins extends AddonBiome implements HasAcidicRain {
 	}
 	@Override
 	public float getFogDensity(float original) { return Math.max(original,0.75f); }
-	@Override
+	/*@Override
 	public float getFogStart(float original) { return original*-0.01f; }
 	@Override
-	public float getFogEnd(float original) { return original*0.35f; }
+	public float getFogEnd(float original) { return original*0.35f; }*/
 	@Override
 	public int getGrassColorAtPos(BlockPos pos) {
 		return 0x0a0909;

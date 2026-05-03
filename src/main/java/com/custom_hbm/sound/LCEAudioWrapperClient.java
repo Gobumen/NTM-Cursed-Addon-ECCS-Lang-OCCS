@@ -21,7 +21,7 @@ public class LCEAudioWrapperClient extends LCEAudioWrapper {
     private boolean looped = true;
     private ISound.AttenuationType attenuationType = ISound.AttenuationType.LINEAR;
     private BiFunction<Float, Double, Double> attenuationFunction = null;
-	protected LCEAudioDynamic sound;
+	public LCEAudioDynamic sound;
 	
 	public LCEAudioWrapperClient(SoundEvent source,SoundCategory cat) {
         this.source = source;

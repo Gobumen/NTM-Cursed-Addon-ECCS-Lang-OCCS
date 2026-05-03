@@ -2,6 +2,7 @@ package com.leafia.eventbuses;
 
 import com.custom_hbm.GuiAssentialWarning;
 import com.custom_hbm.GuiBackupsWarning;
+import com.custom_hbm.sound.LCEAudioWrapperClientStartStop;
 import com.google.gson.JsonSyntaxException;
 import com.hbm.blocks.BlockDummyable;
 import com.hbm.capability.HbmLivingProps;
@@ -11,8 +12,6 @@ import com.hbm.items.IDynamicModels;
 import com.hbm.items.ModItems;
 import com.hbm.render.GuiCTMWarning;
 import com.custom_hbm.util.LCETuple.*;
-import com.hbm.render.NTMRenderHelper;
-import com.hbm.render.entity.RenderFallout;
 import com.hbm.render.item.TEISRBase;
 import com.hbm.tileentity.machine.TileEntityControlPanel;
 import com.hbm.util.I18nUtil;
@@ -30,13 +29,15 @@ import com.leafia.contents.machines.reactors.pwr.blocks.components.PWRComponentB
 import com.leafia.contents.network.ff_duct.FFDuctStandard;
 import com.leafia.contents.network.pipe_amat.AmatDuctStandard;
 import com.leafia.contents.worldgen.AddonBiome;
+import com.leafia.contents.worldgen.biomes.artificial.DigammaCrater;
 import com.leafia.dev.LeafiaUtil;
 import com.leafia.dev.container_utility.LeafiaPacket;
 import com.leafia.dev.container_utility.LeafiaPacketReceiver;
+import com.leafia.init.LeafiaSoundEvents;
 import com.leafia.init.ResourceInit;
 import com.leafia.passive.LeafiaPassiveLocal;
 import com.leafia.passive.effects.LeafiaShakecam;
-import com.leafia.passive.rendering.FalloutRender;
+import com.leafia.passive.rendering.AddonRainRender;
 import com.leafia.passive.rendering.TopRender;
 import com.leafia.settings.AddonConfig;
 import com.leafia.shit.leafiashader.BigBruh;
@@ -45,14 +46,12 @@ import com.leafia.unsorted.IEntityCustomCollision;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.audio.MusicTicker;
+import net.minecraft.client.audio.MusicTicker.MusicType;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.ScaledResolution;
-import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.client.renderer.*;
-import net.minecraft.client.renderer.GlStateManager.DestFactor;
-import net.minecraft.client.renderer.GlStateManager.SourceFactor;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.shader.Framebuffer;
 import net.minecraft.client.shader.ShaderLinkHelper;
 import net.minecraft.entity.Entity;
@@ -64,13 +63,14 @@ import net.minecraft.nbt.*;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumHandSide;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.*;
-import net.minecraft.util.math.BlockPos.MutableBlockPos;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.gen.NoiseGeneratorPerlin;
+import net.minecraftforge.client.EnumHelperClient;
 import net.minecraftforge.client.event.*;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
 import net.minecraftforge.client.model.ModelLoader;
@@ -91,9 +91,16 @@ import org.lwjgl.opengl.GL11;
 import java.io.IOException;
 import java.util.*;
 import java.util.Map.Entry;
+import java.util.function.BiFunction;
 
 public class LeafiaClientListener {
 	public static class Digamma {
+		public static MusicTicker.MusicType silence;
+
+		public Digamma() {
+			silence = EnumHelperClient.addMusicType("LEAFIA_SILENCE", LeafiaSoundEvents.literally_nothing, 12000, 24000);
+		}
+
 		public static float digammaDose = 1;
 		static Random rand = new Random();
 		static List<DigammaText> texts = new ArrayList<>();
@@ -141,8 +148,43 @@ public class LeafiaClientListener {
 		static float timer = 0;
 		static float timerMax = 5;
 		public static int messageVariants = 10;
-		public static void update() {
-			digammaDose = (float)Math.pow(HbmLivingProps.getDigamma(Minecraft.getMinecraft().player)/10,0.666);
+		public static LCEAudioWrapperClientStartStop ambience;
+		public static double ambienceVolume = 0;
+		static BiFunction<Float,Double,Double> nope = (intended,dist)->ambienceVolume;
+		public static void update(World world) {
+			if (ambience != null) {
+				if (ambience.world != world) {
+					ambience.stopSound();
+					ambience = null;
+				}
+			}
+			if (ambience != null) {
+				if (!Minecraft.getMinecraft().getSoundHandler().isSoundPlaying(ambience.sound)) {
+					ambience.stopSound();
+					ambience = null;
+				}
+			}
+			EntityPlayer player = Minecraft.getMinecraft().player;
+			if (world.getBiome(new BlockPos(player.posX,player.posY,player.posZ)) instanceof DigammaCrater) {
+				ambienceVolume = Math.min(ambienceVolume+0.01,1);
+				if (ambience == null) {
+					ambience = new LCEAudioWrapperClientStartStop(world,LeafiaSoundEvents.sbmoon_surface,null,null,0.01f,SoundCategory.AMBIENT);
+					ambience.setCustomAttenuation(nope);
+					ambience.setLooped(true);
+					Minecraft.getMinecraft().getSoundHandler().playSound(ambience.sound);
+				}
+				ambience.updateVolume((float)ambienceVolume/2);
+			} else {
+				ambienceVolume = Math.max(ambienceVolume-0.01,0);
+				if (ambience != null) {
+					ambience.updateVolume((float)ambienceVolume/2);
+					if (ambienceVolume <= 0) {
+						Minecraft.getMinecraft().getSoundHandler().stopSound(ambience.sound);
+						ambience = null;
+					}
+				}
+			}
+			digammaDose = (float)Math.pow(HbmLivingProps.getDigamma(player)/10,0.666);
 			int needle = 0;
 			while (needle < texts.size()) {
 				DigammaText text = texts.get(needle);
@@ -228,12 +270,12 @@ public class LeafiaClientListener {
 				}
 			}
 			//density = (float)Math.max(Math.pow(IdkWhereThisShitBelongs.darkness*(IdkWhereThisShitBelongs.dustDisplayTicks/30f),0.1)*4,density);
-			/*if (density != ogDensity)
+			if (density != ogDensity)
 				LeafiaGls.setFogDensity(start);
 			if (start != ogStart)
 				LeafiaGls.setFogStart(start);
 			if (end != ogEnd)
-				LeafiaGls.setFogEnd(end);*/ // annoying as hell
+				LeafiaGls.setFogEnd(end);
 		}
 		@SubscribeEvent
 		public void setFogColor(EntityViewRenderEvent.FogColors event) {
@@ -316,7 +358,7 @@ public class LeafiaClientListener {
 		}
 		@SubscribeEvent(priority = EventPriority.LOWEST)
 		public void renderWorld(RenderWorldLastEvent evt) {
-			FalloutRender.INSTANCE.render(evt.getPartialTicks());
+			AddonRainRender.INSTANCE.render(evt.getPartialTicks());
 			TopRender.main(evt);
 		}
 		@SubscribeEvent
