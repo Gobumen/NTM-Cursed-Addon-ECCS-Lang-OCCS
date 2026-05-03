@@ -98,5 +98,9 @@
   "external.sbesrottenrain": { "subtitle": "subtitles.weather.rain", "category": "weather", "sounds": ["leafia:external/rottenrain1","leafia:external/rottenrain2","leafia:external/rottenrain3"] },
   "external.sbesrottenrain.above": { "subtitle": "subtitles.weather.rain", "category": "weather", "sounds": ["leafia:external/rottenrain_filtered1","leafia:external/rottenrain_filtered2","leafia:external/rottenrain_filtered3"] },
 
-  "external.sbmoon_surface": { "category": "ambient", "sounds": [{ "name": "leafia:external/moon_surface", "stream": true }] }
+  "external.sbmoon_surface": { "category": "ambient", "sounds": [{ "name": "leafia:external/moon_surface", "stream": true }] },
+
+  "external.eversionsong7cut": { "category": "block", "sounds": ["leafia:external/song7_cut"]},
+
+  "music.wtf": { "category": "record", "sounds": [{ "name": "leafia:leafia/untitled", "stream": true }] }
 }

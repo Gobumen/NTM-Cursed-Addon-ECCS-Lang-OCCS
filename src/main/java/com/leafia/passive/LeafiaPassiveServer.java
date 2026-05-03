@@ -5,6 +5,7 @@ import com.leafia.contents.AddonItems;
 import com.leafia.contents.machines.reactors.pwr.PWRDiagnosis;
 import com.leafia.contents.machines.reactors.pwr.blocks.wreckage.PWRMeshedWreck;
 import com.leafia.dev.LeafiaDebug.Tracker;
+import com.leafia.eventbuses.LeafiaServerListener.Unsorted;
 import com.leafia.savedata.FalloutSavedData;
 import net.minecraft.world.World;
 
@@ -23,6 +24,7 @@ public class LeafiaPassiveServer {
 		PWRDiagnosis.preventScan.clear();
 		Tracker.postTick(world);
 		PWRMeshedWreck.rmCache.clear();
+		Unsorted.digammaRainCounter = (Unsorted.digammaRainCounter+1)%90;
 	}
 	public static final Set<Node> tickedNodes = new HashSet<>();
 	public static void priorTick(World world) {

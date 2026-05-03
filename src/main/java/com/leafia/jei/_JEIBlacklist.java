@@ -35,5 +35,6 @@ public class _JEIBlacklist {
 		blacklist.addIngredientToBlacklist(new ItemStack(AddonItems.billet_kys));
 		blacklist.addIngredientToBlacklist(new ItemStack(LeafiaRods.leafRodKys));
 		blacklist.addIngredientToBlacklist(new ItemStack(Elevators.light));
+		blacklist.addIngredientToBlacklist(new ItemStack(AddonItems.digammaRecord));
 	}
 }

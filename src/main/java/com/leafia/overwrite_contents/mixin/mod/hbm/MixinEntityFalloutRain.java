@@ -143,6 +143,9 @@ public abstract class MixinEntityFalloutRain extends EntityExplosionChunkloading
 	                                                Long2ObjectOpenHashMap<IBlockState> spawnFalling,
 	                                                ThreadLocalRandom rand) {
 
+		distPercent*=5;
+		if (distPercent > 100) return;
+
 		int solidDepth = 0;
 		List<FalloutEntry> entries = FalloutConfigInit.digammaEntries;
 		boolean useOreDict = leafia$hasOreDictMatchers(entries);

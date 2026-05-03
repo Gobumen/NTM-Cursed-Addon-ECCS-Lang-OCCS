@@ -32,6 +32,7 @@ import com.leafia.dev.blocks.ICustomItemBlockProvider;
 import com.leafia.dev.blocks.blockbase.meta.IMetaPlacable;
 import com.leafia.dev.blocks.blockbase.meta.MetaPlacableItemBlock;
 import com.leafia.dev.items.itembase.AddonItemHazardBaked;
+import com.leafia.init.LeafiaSoundEvents;
 import com.leafia.init.hazards.ItemRads;
 import com.leafia.dev.items.itembase.AddonItemBaked;
 import com.leafia.settings.AddonConfig;
@@ -40,7 +41,10 @@ import net.minecraft.block.Block;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
+import net.minecraft.item.ItemRecord;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.SoundEvent;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.fml.relauncher.Side;
@@ -580,6 +584,20 @@ public class AddonItems {
 	public static class DepletedFuels {
 		public static final Item waste_u238 = new AddonDepletedFuelItem("waste_u238","hbm","waste_uranium");
 	}
+
+	public static class DigammaRecord extends ItemRecord {
+		private DigammaRecord(String recordName,SoundEvent soundIn) {
+			super(recordName,soundIn);
+			setRegistryName("record_"+recordName);
+			AddonItems.ALL_ITEMS.add(this);
+			setCreativeTab(null);
+		}
+		@Override
+		public String getRecordNameLocal() {
+			return TextFormatting.OBFUSCATED+"digma balls"+TextFormatting.RESET;
+		}
+	}
+	public static ItemRecord digammaRecord = new DigammaRecord("digamma",LeafiaSoundEvents.digamma_record);
 
 	private static void modifyItemParams() {
 		ModItems.pwr_fuel.setCreativeTab(null);

@@ -96,6 +96,8 @@ public class LeafiaSoundEvents {
 	public static SoundEvent sbesrottenrain_above;
 
 	public static SoundEvent sbmoon_surface;
+	public static SoundEvent eversionsong7_cut;
+	public static SoundEvent digamma_record;
 
 	public static void init() {
 		// this is so retarded
@@ -208,6 +210,8 @@ public class LeafiaSoundEvents {
 		sbesrottenrain_above = register("external.sbesrottenrain.above");
 
 		sbmoon_surface = register("external.sbmoon_surface");
+		eversionsong7_cut = register("external.eversionsong7cut");
+		digamma_record = register("music.wtf");
 	}
 
 	public static SoundEvent register(String name) {

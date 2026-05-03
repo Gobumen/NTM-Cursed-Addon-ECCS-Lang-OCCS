@@ -24,17 +24,17 @@ import java.lang.invoke.MethodType;
 
 public class CoreCEmitterTE extends TileEntityCoreEmitter implements IMixinTileEntityCoreEmitter {
 
-    private static final MethodHandle IS_ACTIVE_GETTER = MethodHandleHelper.findGetter(TileEntityCoreEmitter.class, "isActive", boolean.class);
-    private static final MethodHandle IS_ACTIVE_SETTER = MethodHandleHelper.findSetter(TileEntityCoreEmitter.class, "isActive", boolean.class);
-    private static final MethodHandle TARGET_POS_GETTER = MethodHandleHelper.findGetter(TileEntityCoreEmitter.class, "targetPosition", BlockPos.class);
-    private static final MethodHandle TARGET_POS_SETTER = MethodHandleHelper.findSetter(TileEntityCoreEmitter.class, "targetPosition", BlockPos.class);
-    private static final MethodHandle LAST_RAYCAST_GETTER = MethodHandleHelper.findGetter(TileEntityCoreEmitter.class, "lastRaycast", RayTraceResult.class);
-    private static final MethodHandle LAST_RAYCAST_SETTER = MethodHandleHelper.findSetter(TileEntityCoreEmitter.class, "lastRaycast", RayTraceResult.class);
-    private static final MethodHandle LAST_CORE_GETTER = MethodHandleHelper.findGetter(TileEntityCoreEmitter.class, "lastGetCore", TileEntityCore.class);
-    private static final MethodHandle LAST_CORE_SETTER = MethodHandleHelper.findSetter(TileEntityCoreEmitter.class, "lastGetCore", TileEntityCore.class);
+    private static final MethodHandle IS_ACTIVE_GETTER = MethodHandleHelper.findGetter(TileEntityCoreEmitter.class, "leafia$isActive", boolean.class);
+    private static final MethodHandle IS_ACTIVE_SETTER = MethodHandleHelper.findSetter(TileEntityCoreEmitter.class, "leafia$isActive", boolean.class);
+    private static final MethodHandle TARGET_POS_GETTER = MethodHandleHelper.findGetter(TileEntityCoreEmitter.class, "leafia$targetPosition", BlockPos.class);
+    private static final MethodHandle TARGET_POS_SETTER = MethodHandleHelper.findSetter(TileEntityCoreEmitter.class, "leafia$targetPosition", BlockPos.class);
+    private static final MethodHandle LAST_RAYCAST_GETTER = MethodHandleHelper.findGetter(TileEntityCoreEmitter.class, "leafia$lastRaycast", RayTraceResult.class);
+    private static final MethodHandle LAST_RAYCAST_SETTER = MethodHandleHelper.findSetter(TileEntityCoreEmitter.class, "leafia$lastRaycast", RayTraceResult.class);
+    private static final MethodHandle LAST_CORE_GETTER = MethodHandleHelper.findGetter(TileEntityCoreEmitter.class, "leafia$lastGetCore", TileEntityCore.class);
+    private static final MethodHandle LAST_CORE_SETTER = MethodHandleHelper.findSetter(TileEntityCoreEmitter.class, "leafia$lastGetCore", TileEntityCore.class);
     private static final MethodHandle JOULES_GETTER = MethodHandleHelper.findGetter(TileEntityCoreEmitter.class, "joules", long.class);
     private static final MethodHandle JOULES_SETTER = MethodHandleHelper.findSetter(TileEntityCoreEmitter.class, "joules", long.class);
-    private static final MethodHandle SUPER_RAYCAST = MethodHandleHelper.findSpecial(TileEntityCoreEmitter.class, TileEntityCoreEmitter.class, "raycast", MethodType.methodType(RayTraceResult.class, long.class));
+    private static final MethodHandle SUPER_RAYCAST = MethodHandleHelper.findSpecial(TileEntityCoreEmitter.class, TileEntityCoreEmitter.class, "leafia$raycast", MethodType.methodType(RayTraceResult.class, long.class));
 
     private final MethodHandle isActiveGetter;
     private final MethodHandle isActiveSetter;

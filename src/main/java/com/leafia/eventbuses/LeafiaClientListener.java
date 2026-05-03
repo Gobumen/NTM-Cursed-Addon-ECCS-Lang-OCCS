@@ -15,6 +15,7 @@ import com.custom_hbm.util.LCETuple.*;
 import com.hbm.render.item.TEISRBase;
 import com.hbm.tileentity.machine.TileEntityControlPanel;
 import com.hbm.util.I18nUtil;
+import com.leafia.Tags;
 import com.leafia.contents.AddonBlocks;
 import com.leafia.contents.AddonItems;
 import com.leafia.contents.building.catwalk.railing.CatwalkRailingBase;
@@ -30,6 +31,8 @@ import com.leafia.contents.network.ff_duct.FFDuctStandard;
 import com.leafia.contents.network.pipe_amat.AmatDuctStandard;
 import com.leafia.contents.worldgen.AddonBiome;
 import com.leafia.contents.worldgen.biomes.artificial.DigammaCrater;
+import com.leafia.dev.LeafiaBrush;
+import com.leafia.dev.LeafiaBrush.BrushMode;
 import com.leafia.dev.LeafiaUtil;
 import com.leafia.dev.container_utility.LeafiaPacket;
 import com.leafia.dev.container_utility.LeafiaPacketReceiver;
@@ -48,22 +51,28 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.MusicTicker;
 import net.minecraft.client.audio.MusicTicker.MusicType;
+import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.*;
+import net.minecraft.client.renderer.GlStateManager.DestFactor;
+import net.minecraft.client.renderer.GlStateManager.SourceFactor;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.shader.Framebuffer;
 import net.minecraft.client.shader.ShaderLinkHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
+import net.minecraft.item.ItemRecord;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.*;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumHandSide;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.*;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
@@ -99,6 +108,28 @@ public class LeafiaClientListener {
 
 		public Digamma() {
 			silence = EnumHelperClient.addMusicType("LEAFIA_SILENCE", LeafiaSoundEvents.literally_nothing, 12000, 24000);
+		}
+
+		public static ResourceLocation vg = new ResourceLocation(Tags.MODID,"textures/vignette.png");
+		static int vgTicks = 0;
+		static final int vgMaxTicks = 10;
+		public static void drawVignette(ScaledResolution resolution,float partialTicks) {
+			if (vgTicks <= 0) return;
+			LeafiaBrush brush = LeafiaBrush.instance;
+			Minecraft.getMinecraft().renderEngine.bindTexture(vg);
+			float ratio = (vgTicks-partialTicks)/vgMaxTicks;
+			LeafiaGls.disableAlpha();
+			LeafiaGls.color(1,1,1,(float)Math.sin(ratio*Math.PI)/2.5f);
+			LeafiaGls.enableBlend();
+			LeafiaGls.blendFunc(SourceFactor.SRC_ALPHA,DestFactor.ONE_MINUS_SRC_ALPHA);
+			brush.startDrawing(BrushMode.QUADS,DefaultVertexFormats.POSITION_TEX);
+			brush.addVertexWithUV(0,resolution.getScaledHeight_double(),0,0,1);
+			brush.addVertexWithUV(resolution.getScaledWidth_double(),resolution.getScaledHeight_double(),0,1,1);
+			brush.addVertexWithUV(resolution.getScaledWidth_double(),0,0,1,0);
+			brush.addVertexWithUV(0,0,0,0,0);
+			brush.draw();
+			//LeafiaGls.disableBlend();
+			LeafiaGls.enableAlpha();
 		}
 
 		public static float digammaDose = 1;
@@ -151,6 +182,7 @@ public class LeafiaClientListener {
 		public static LCEAudioWrapperClientStartStop ambience;
 		public static double ambienceVolume = 0;
 		static BiFunction<Float,Double,Double> nope = (intended,dist)->ambienceVolume;
+		static int beatTimer = 0;
 		public static void update(World world) {
 			if (ambience != null) {
 				if (ambience.world != world) {
@@ -164,20 +196,28 @@ public class LeafiaClientListener {
 					ambience = null;
 				}
 			}
+			if (vgTicks > 0)
+				vgTicks--;
 			EntityPlayer player = Minecraft.getMinecraft().player;
 			if (world.getBiome(new BlockPos(player.posX,player.posY,player.posZ)) instanceof DigammaCrater) {
 				ambienceVolume = Math.min(ambienceVolume+0.01,1);
+				beatTimer++;
+				if (beatTimer >= 17) {
+					beatTimer = 0;
+					vgTicks = vgMaxTicks;
+					Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(LeafiaSoundEvents.eversionsong7_cut,1));
+				}
 				if (ambience == null) {
 					ambience = new LCEAudioWrapperClientStartStop(world,LeafiaSoundEvents.sbmoon_surface,null,null,0.01f,SoundCategory.AMBIENT);
 					ambience.setCustomAttenuation(nope);
 					ambience.setLooped(true);
 					Minecraft.getMinecraft().getSoundHandler().playSound(ambience.sound);
 				}
-				ambience.updateVolume((float)ambienceVolume/2);
+				ambience.updateVolume((float)ambienceVolume/1.5f);
 			} else {
 				ambienceVolume = Math.max(ambienceVolume-0.01,0);
 				if (ambience != null) {
-					ambience.updateVolume((float)ambienceVolume/2);
+					ambience.updateVolume((float)ambienceVolume/1.5f);
 					if (ambienceVolume <= 0) {
 						Minecraft.getMinecraft().getSoundHandler().stopSound(ambience.sound);
 						ambience = null;
@@ -360,6 +400,11 @@ public class LeafiaClientListener {
 		public void renderWorld(RenderWorldLastEvent evt) {
 			AddonRainRender.INSTANCE.render(evt.getPartialTicks());
 			TopRender.main(evt);
+		}
+		@SubscribeEvent
+		public void onOverlayRenderPost(RenderGameOverlayEvent.Post evt) {
+			if(evt.getType() == ElementType.ALL)
+				Digamma.drawVignette(evt.getResolution(),evt.getPartialTicks());
 		}
 		@SubscribeEvent
 		public void onOverlayRender(RenderGameOverlayEvent.Pre event) {

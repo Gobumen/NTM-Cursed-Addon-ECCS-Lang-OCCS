@@ -138,13 +138,12 @@ public class LeafiaServerListener {
 		}
 	}
 	public static class Unsorted {
-		static int digammaRainCounter = 0;
+		public static int digammaRainCounter = 0;
 		public void handleRains(EntityLivingBase entity) {
-			int ix = (int)MathHelper.floor(entity.posX);
-			int iy = (int)MathHelper.floor(entity.posY);
-			int iz = (int)MathHelper.floor(entity.posZ);
+			int ix = (int)MathHelper.floor(entity.posX+0.5);
+			int iy = (int)MathHelper.floor(entity.posY+entity.height-0.1);
+			int iz = (int)MathHelper.floor(entity.posZ+0.5);
 			Biome biome = entity.world.getBiome(new BlockPos(ix,iy,iz));
-			digammaRainCounter = (digammaRainCounter+1)%90;
 			if (biome instanceof HasAcidicRain) {
 				if (entity.world.isRainingAt(new BlockPos(ix,iy,iz))) {
 					boolean active = false;
