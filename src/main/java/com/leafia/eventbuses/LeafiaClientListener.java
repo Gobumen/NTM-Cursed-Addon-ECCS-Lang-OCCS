@@ -13,6 +13,7 @@ import com.hbm.interfaces.IHasCustomModel;
 import com.hbm.inventory.control_panel.IControllable;
 import com.hbm.items.IDynamicModels;
 import com.hbm.items.ModItems;
+import com.hbm.lib.ModDamageSource;
 import com.hbm.main.ResourceManager;
 import com.hbm.render.GuiCTMWarning;
 import com.custom_hbm.util.LCETuple.*;
@@ -69,6 +70,7 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.shader.Framebuffer;
 import net.minecraft.client.shader.ShaderLinkHelper;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
@@ -76,10 +78,7 @@ import net.minecraft.item.ItemRecord;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.*;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumHandSide;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvent;
+import net.minecraft.util.*;
 import net.minecraft.util.math.*;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
@@ -112,6 +111,32 @@ import java.util.function.BiFunction;
 public class LeafiaClientListener {
 	public static class Digamma {
 		public static MusicTicker.MusicType silence;
+		public static void backstab(EntityPlayer player) {
+			float strength = 0.4f;
+			float yaw = player.rotationYaw+player.world.rand.nextFloat()*90-45;
+			float xRatio = (float)-(-Math.sin(yaw/180*Math.PI));
+			float zRatio = (float)-(Math.cos(yaw/180*Math.PI));
+			if (player.world.rand.nextDouble() >= player.getEntityAttribute(SharedMonsterAttributes.KNOCKBACK_RESISTANCE).getAttributeValue())
+			{
+				player.isAirBorne = true;
+				float f = MathHelper.sqrt(xRatio * xRatio + zRatio * zRatio);
+				player.motionX /= 2.0D;
+				player.motionZ /= 2.0D;
+				player.motionX -= xRatio / (double)f * (double)strength;
+				player.motionZ -= zRatio / (double)f * (double)strength;
+
+				if (player.onGround)
+				{
+					player.motionY /= 2.0D;
+					player.motionY += (double)strength;
+
+					if (player.motionY > 0.4000000059604645D)
+					{
+						player.motionY = 0.4000000059604645D;
+					}
+				}
+			}
+		}
 
 		public Digamma() {
 			silence = EnumHelperClient.addMusicType("LEAFIA_SILENCE", LeafiaSoundEvents.literally_nothing, 12000, 24000);

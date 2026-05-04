@@ -1,8 +1,13 @@
 package com.leafia.contents.worldgen.biomes.artificial;
 
+import com.hbm.lib.ModDamageSource;
 import com.hbm.util.RenderUtil;
 import com.leafia.Tags;
 import com.leafia.contents.worldgen.AddonBiome;
+import com.leafia.dev.custompacket.LeafiaCustomPacket;
+import com.leafia.dev.custompacket.LeafiaCustomPacketEncoder;
+import com.leafia.dev.optimization.bitbyte.LeafiaBuf;
+import com.leafia.eventbuses.LeafiaClientListener.Digamma;
 import com.leafia.passive.LeafiaPassiveLocal;
 import com.leafia.settings.AddonConfig;
 import com.leafia.transformer.LeafiaGls;
@@ -25,8 +30,12 @@ import net.minecraft.world.biome.Biome;
 import net.minecraftforge.common.BiomeDictionary;
 import net.minecraftforge.common.BiomeDictionary.Type;
 import net.minecraftforge.fml.client.registry.IRenderFactory;
+import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.function.Consumer;
 
 public class DigammaCrater extends AddonBiome {
 	public static boolean isDigammaBiome(Biome biome) {
@@ -67,6 +76,7 @@ public class DigammaCrater extends AddonBiome {
 	}
 
 	public static class NullEntity extends EntityLiving {
+		int timer = 0;
 		public static class EntityAIWatchForever extends EntityAIBase {
 			final EntityLiving self;
 			public EntityAIWatchForever(EntityLiving self) {
@@ -119,6 +129,11 @@ public class DigammaCrater extends AddonBiome {
 				setDead();
 			if (world.isRemote)
 				check();
+			else {
+				timer++;
+				if (timer >= 20) // failsafe
+					this.setDead();
+			}
 		}
 	}
 	public static class NullRender extends RenderBiped<NullEntity> {
@@ -161,6 +176,26 @@ public class DigammaCrater extends AddonBiome {
 		@Override
 		protected ResourceLocation getEntityTexture(NullEntity entity) {
 			return renderOnlyEyes ? eyes : texture;
+		}
+	}
+	public static class DigammaBackstabPacket implements LeafiaCustomPacketEncoder {
+		@SideOnly(Side.CLIENT)
+		void handleLocal() {
+			Digamma.backstab(Minecraft.getMinecraft().player);
+		}
+		@Override
+		public void encode(LeafiaBuf buf) { }
+		@Override
+		public @Nullable Consumer<MessageContext> decode(LeafiaBuf buf) {
+			return (ctx)->{
+				if (ctx.side == Side.SERVER) {
+					EntityPlayer player = ctx.getServerHandler().player;
+					player.attackEntityFrom(ModDamageSource.digamma,4);
+					player.velocityChanged = false;
+					LeafiaCustomPacket.__start(new DigammaBackstabPacket()).__sendToClient(player);
+				} else
+					handleLocal();
+			};
 		}
 	}
 }

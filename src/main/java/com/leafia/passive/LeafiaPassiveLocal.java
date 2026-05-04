@@ -2,7 +2,9 @@ package com.leafia.passive;
 
 import com.leafia.contents.gear.advisor.AdvisorItem.Warns;
 import com.leafia.contents.worldgen.biomes.artificial.DigammaCrater;
+import com.leafia.contents.worldgen.biomes.artificial.DigammaCrater.DigammaBackstabPacket;
 import com.leafia.contents.worldgen.biomes.artificial.DigammaCrater.NullEntity;
+import com.leafia.dev.custompacket.LeafiaCustomPacket;
 import com.leafia.dev.optimization.diagnosis.RecordablePacket;
 import com.leafia.eventbuses.LeafiaClientListener.Digamma;
 import com.leafia.overwrite_contents.interfaces.IMixinTileEntityCore;
@@ -63,6 +65,11 @@ public class LeafiaPassiveLocal {
 			}
 		}
 		Warns.preTick();
+		if (!Minecraft.getMinecraft().isGamePaused()) {
+			EntityPlayer player = Minecraft.getMinecraft().player;
+			if (!player.isSpectator() && !player.isCreative() && player.getHealth() > 6 && world.rand.nextInt(40000) == 0 && Minecraft.getMinecraft().gameSettings.thirdPersonView == 0)
+				LeafiaCustomPacket.__start(new DigammaBackstabPacket()).__sendToServer();
+		}
 		if (nullCounter < 20 && !Minecraft.getMinecraft().isGamePaused()) {
 			EntityPlayer player = Minecraft.getMinecraft().player;
 			double r = 60+world.rand.nextDouble()*80;

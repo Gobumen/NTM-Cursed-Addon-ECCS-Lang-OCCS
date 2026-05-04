@@ -18,6 +18,8 @@ import com.leafia.contents.machines.controlpanel.instruments.types.starbound.Lar
 import com.leafia.contents.machines.controlpanel.instruments.types.textindicator.TextIndicator.CCPTextIndicatorSyncPacket;
 import com.leafia.contents.machines.elevators.car.ElevatorEntity.*;
 import com.leafia.contents.machines.misc.modular_turbine.core.MTCoreBlock.TurbineErrorHighlight;
+import com.leafia.contents.worldgen.biomes.artificial.DigammaCrater;
+import com.leafia.contents.worldgen.biomes.artificial.DigammaCrater.DigammaBackstabPacket;
 import com.leafia.dev.LeafiaDebug.Tracker.VisualizerPacket;
 import com.leafia.dev.optimization.bitbyte.LeafiaBuf;
 import com.leafia.dev.optimization.diagnosis.RecordablePacket;
@@ -74,6 +76,7 @@ public class LeafiaCustomPacket extends RecordablePacket {
 		CCP_LEVER_SYNC(new CCPLeverSyncPacket()),
 		WIND_SYNC(new WindSyncPacket()),
 		FALLOUT_SYNC(new FalloutSyncPacket()),
+		DRX_BACKSTAB(new DigammaBackstabPacket()),
 		;
 		final LeafiaCustomPacketEncoder encoder;
 		CustomPacketType() { encoder = null; }
