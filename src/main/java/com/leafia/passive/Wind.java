@@ -114,10 +114,14 @@ public class Wind {
 			outPower = basePower+range;
 		return outPower;
 	}
-	public static void update(World world) {
-		// server only
+	static Random rand = new Random();
+	public static void updateWorld(World world) {
 		if (world.isRemote) return;
-		Random rand = world.rand;
+		LeafiaCustomPacket.__start(new WindSyncPacket()).__sendToAll();
+		WindSavedData.forWorld(world).markDirty();
+	}
+	public static void update() {
+		// server only
 		lastAngle = angle;
 		if (rand.nextBoolean()) {
 			randomAngleCounter++;
@@ -145,10 +149,6 @@ public class Wind {
 			endPower = calculateTargetPower(rand);
 		}
 		power = lerp(startPower,endPower,(double)randomShortWindCounter/randomShortWindLength);
-		LeafiaCustomPacket.__start(new WindSyncPacket()).__sendToAll();
-		//LeafiaDebug.debugLog(world,"ANGLE: "+angle);
-		//LeafiaDebug.debugLog(world,"POWER: "+power);
-		WindSavedData.forWorld(world).markDirty();
 	}
 	static double lerp(double a,double b,double t) {
 		return a+(b-a)*t;

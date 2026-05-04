@@ -88,6 +88,8 @@ import com.leafia.contents.network.spk_cable.SPKCableTE;
 import com.leafia.contents.nonmachines.storage.fluid.fftank.FFTankRender;
 import com.leafia.contents.nonmachines.storage.fluid.fftank.FFTankTE;
 import com.leafia.contents.nonmachines.storage.items.CrateLabelRender;
+import com.leafia.contents.worldgen.biomes.artificial.DigammaCrater.NullEntity;
+import com.leafia.contents.worldgen.biomes.artificial.DigammaCrater.NullRender;
 import com.leafia.eventbuses.LeafiaClientListener;
 import com.leafia.eventbuses.LeafiaClientListener.HandlerClient;
 import com.leafia.init.ItemRendererInit;
@@ -145,6 +147,8 @@ public class LeafiaClientProxy extends LeafiaServerProxy {
 
 			RenderingRegistry.registerEntityRenderingHandler(ElevatorEntity.class,ElevatorRender.FACTORY);
 			RenderingRegistry.registerEntityRenderingHandler(EvWeightEntity.class,EvWeightRender.FACTORY);
+
+			RenderingRegistry.registerEntityRenderingHandler(NullEntity.class,NullRender.FACTORY);
 		}
 		{
 			LCERenderSpinnyLight spinnyLightRender = new LCERenderSpinnyLight();

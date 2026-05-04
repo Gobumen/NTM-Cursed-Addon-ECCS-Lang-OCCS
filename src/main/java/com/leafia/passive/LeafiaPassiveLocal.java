@@ -1,6 +1,8 @@
 package com.leafia.passive;
 
 import com.leafia.contents.gear.advisor.AdvisorItem.Warns;
+import com.leafia.contents.worldgen.biomes.artificial.DigammaCrater;
+import com.leafia.contents.worldgen.biomes.artificial.DigammaCrater.NullEntity;
 import com.leafia.dev.optimization.diagnosis.RecordablePacket;
 import com.leafia.eventbuses.LeafiaClientListener.Digamma;
 import com.leafia.overwrite_contents.interfaces.IMixinTileEntityCore;
@@ -9,6 +11,9 @@ import com.leafia.savedata.FalloutSavedData;
 import com.llib.group.LeafiaSet;
 import com.llib.math.MathLeafia;
 import net.minecraft.client.Minecraft;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 
 import java.util.ArrayList;
@@ -34,6 +39,7 @@ public class LeafiaPassiveLocal {
 				core.setDFCExplosionClock(System.currentTimeMillis());
 		}
 	}
+	public static int nullCounter = 0;
 	public static void priorTick(World world) {
 		if (!Minecraft.getMinecraft().isGamePaused()) {
 			AddonRainRender.INSTANCE.update();
@@ -57,6 +63,22 @@ public class LeafiaPassiveLocal {
 			}
 		}
 		Warns.preTick();
+		if (nullCounter < 20 && !Minecraft.getMinecraft().isGamePaused()) {
+			EntityPlayer player = Minecraft.getMinecraft().player;
+			double r = 60+world.rand.nextDouble()*80;
+			double theta = world.rand.nextDouble()*2*Math.PI;
+			int x = MathHelper.floor(player.posX+Math.cos(theta)*r);
+			int z = MathHelper.floor(player.posZ+Math.sin(theta)*r);
+			BlockPos p = new BlockPos(x,world.getHeight(x,z),z);
+			if (world.getBlockState(p.down()).getMaterial().isSolid()) { // stop spawning on oceans
+				if (DigammaCrater.isDigammaBiome(world.getBiome(p))) {
+					NullEntity entity = new NullEntity(world);
+					entity.setPosition(p.getX()+0.5,p.getY(),p.getZ()+0.5);
+					world.spawnEntity(entity);
+				}
+			}
+		}
+		nullCounter = 0;
 	}
 	public static void queueFunctionPost(Runnable callback) {
 		queue.add(callback);

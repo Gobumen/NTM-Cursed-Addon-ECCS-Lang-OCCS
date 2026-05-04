@@ -19,7 +19,7 @@ public class MixinWorldProviderNTM extends WorldProviderSurface {
 	@SideOnly(Side.CLIENT)
 	public @Nullable MusicTicker.MusicType getMusicType() {
 		EntityPlayer player = Minecraft.getMinecraft().player;
-		if (world.getBiome(new BlockPos(player.posX,player.posY,player.posZ)) instanceof DigammaCrater)
+		if (DigammaCrater.isDigammaBiome(world.getBiome(new BlockPos(player.posX,player.posY,player.posZ))))
 			return Digamma.silence;
 		return super.getMusicType();
 	}

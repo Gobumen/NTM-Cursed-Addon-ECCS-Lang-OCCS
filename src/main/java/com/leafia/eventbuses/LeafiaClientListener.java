@@ -6,15 +6,20 @@ import com.custom_hbm.sound.LCEAudioWrapperClientStartStop;
 import com.google.gson.JsonSyntaxException;
 import com.hbm.blocks.BlockDummyable;
 import com.hbm.capability.HbmLivingProps;
+import com.hbm.config.ClientConfig;
+import com.hbm.config.GeneralConfig;
+import com.hbm.config.MobConfig;
 import com.hbm.interfaces.IHasCustomModel;
 import com.hbm.inventory.control_panel.IControllable;
 import com.hbm.items.IDynamicModels;
 import com.hbm.items.ModItems;
+import com.hbm.main.ResourceManager;
 import com.hbm.render.GuiCTMWarning;
 import com.custom_hbm.util.LCETuple.*;
 import com.hbm.render.item.TEISRBase;
 import com.hbm.tileentity.machine.TileEntityControlPanel;
 import com.hbm.util.I18nUtil;
+import com.leafia.AddonBase;
 import com.leafia.Tags;
 import com.leafia.contents.AddonBlocks;
 import com.leafia.contents.AddonItems;
@@ -30,6 +35,7 @@ import com.leafia.contents.machines.reactors.pwr.blocks.components.PWRComponentB
 import com.leafia.contents.network.ff_duct.FFDuctStandard;
 import com.leafia.contents.network.pipe_amat.AmatDuctStandard;
 import com.leafia.contents.worldgen.AddonBiome;
+import com.leafia.contents.worldgen.AddonBiomes;
 import com.leafia.contents.worldgen.biomes.artificial.DigammaCrater;
 import com.leafia.dev.LeafiaBrush;
 import com.leafia.dev.LeafiaBrush.BrushMode;
@@ -53,6 +59,7 @@ import net.minecraft.client.audio.MusicTicker;
 import net.minecraft.client.audio.MusicTicker.MusicType;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.GlStateManager.DestFactor;
@@ -199,7 +206,7 @@ public class LeafiaClientListener {
 			if (vgTicks > 0)
 				vgTicks--;
 			EntityPlayer player = Minecraft.getMinecraft().player;
-			if (world.getBiome(new BlockPos(player.posX,player.posY,player.posZ)) instanceof DigammaCrater) {
+			if (DigammaCrater.isDigammaBiome(world.getBiome(new BlockPos(player.posX,player.posY,player.posZ)))) {
 				ambienceVolume = Math.min(ambienceVolume+0.01,1);
 				beatTimer++;
 				if (beatTimer >= 17) {
@@ -268,7 +275,6 @@ public class LeafiaClientListener {
 		}
 	}
 	public static class HandlerClient {
-
 		Map<AddonBiome,Float> getBiomeRatios(Entity entity) {
 			World world = entity.world;
 			int mops = 0;
@@ -279,6 +285,8 @@ public class LeafiaClientListener {
 					Biome biome = world.getBiome(pos.add(ox*5,0,oz*5));
 					if (biome instanceof AddonBiome)
 						mop.put((AddonBiome)biome,mop.getOrDefault((AddonBiome)biome,0)+1);
+					else if (AddonConfig.schizoMode)
+						mop.put(AddonBiomes.digamma,mop.getOrDefault(AddonBiomes.digamma,0)+1);
 					mops++;
 				}
 			}
@@ -398,6 +406,15 @@ public class LeafiaClientListener {
 		}
 		@SubscribeEvent(priority = EventPriority.LOWEST)
 		public void renderWorld(RenderWorldLastEvent evt) {
+			if (AddonConfig.schizoMode) { // fuck the sky
+				Minecraft.getMinecraft().renderEngine.bindTexture(AddonBase.solid);
+				LeafiaGls.color(0,0,0);
+				LeafiaGls.pushMatrix();
+				LeafiaGls.scale(-1000);
+				ResourceManager.sphere_ruv.renderAll();
+				LeafiaGls.popMatrix();
+				LeafiaGls.color(1,1,1);
+			}
 			AddonRainRender.INSTANCE.render(evt.getPartialTicks());
 			TopRender.main(evt);
 		}
@@ -406,8 +423,56 @@ public class LeafiaClientListener {
 			if(evt.getType() == ElementType.ALL)
 				Digamma.drawVignette(evt.getResolution(),evt.getPartialTicks());
 		}
+		public static final ResourceLocation addonBadges = new ResourceLocation("leafia","textures/badges.png");
+		public static void renderBadges(ScaledResolution res, Gui gui) {
+
+			GL11.glPushMatrix();
+
+			Minecraft.getMinecraft().entityRenderer.setupOverlayRendering();
+
+			GlStateManager.enableBlend();
+			GlStateManager.disableLighting();
+			GlStateManager.disableCull();
+			GlStateManager.disableDepth();
+			GlStateManager.depthMask(false);
+			GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+
+			OpenGlHelper.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, 1, 0);
+
+			GlStateManager.disableAlpha();
+
+			Minecraft.getMinecraft().renderEngine.bindTexture(addonBadges);
+
+			int offsetX = 2;
+			int offsetY = 2;
+			int width = 26;
+
+			boolean true528 = GeneralConfig.true528();
+			boolean trueExp = GeneralConfig.trueExp();
+			boolean trueRam = MobConfig.trueRam();
+			boolean true328 = true528 && trueExp && trueRam;
+
+			if(true528) { offsetX += width; }
+			if(trueExp) { offsetX += width; }
+			if(trueRam) { offsetX += width; }
+			if(true328) { offsetX += width; }
+			if(AddonConfig.schizoMode) { gui.drawTexturedModalRect(offsetX, offsetY, 0, 0, 24, 8); offsetX += width; }
+
+			Minecraft.getMinecraft().renderEngine.bindTexture(Gui.ICONS);
+			OpenGlHelper.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, 1, 0);
+			GlStateManager.enableAlpha();
+			GlStateManager.disableBlend();
+			GlStateManager.enableCull();
+			GlStateManager.enableDepth();
+			GlStateManager.depthMask(true);
+			GlStateManager.color(1F, 1F, 1F, 1F);
+			GlStateManager.popMatrix();
+		}
 		@SubscribeEvent
 		public void onOverlayRender(RenderGameOverlayEvent.Pre event) {
+			if(event.getType() == RenderGameOverlayEvent.ElementType.TEXT) {
+				if(ClientConfig.BADGES_HUD.get()) renderBadges(event.getResolution(), Minecraft.getMinecraft().ingameGUI);
+			}
 			if(event.getType() == ElementType.CROSSHAIRS) {
 				Minecraft mc = Minecraft.getMinecraft();
 				World world = mc.world;

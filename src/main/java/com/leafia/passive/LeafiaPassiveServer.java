@@ -18,23 +18,23 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 public class LeafiaPassiveServer {
 	/// NOTE TO MY DUMBASS: basically ArrayList but thread safe
 	static final ConcurrentLinkedQueue<Runnable> queue = new ConcurrentLinkedQueue<>();
-	public static void onTick(World world) {
+	public static void onTick() {
 		if (AddonItems.wand_leaf.darnit != null)
 			AddonItems.wand_leaf.darnit.run();
 		PWRDiagnosis.preventScan.clear();
-		Tracker.postTick(world);
 		PWRMeshedWreck.rmCache.clear();
-		Unsorted.digammaRainCounter = (Unsorted.digammaRainCounter+1)%90;
+		Unsorted.digammaRainCounter = (Unsorted.digammaRainCounter+1)%70;
+	}
+	public static void onTickWorld(World world) {
+		Tracker.postTick(world);
 	}
 	public static final Set<Node> tickedNodes = new HashSet<>();
-	public static void priorTick(World world) {
+	public static void priorTick() {
 		tickedNodes.clear();
-		FalloutSavedData.forWorld(world).tick();
 		//if (ModItems.wand_leaf.darnit != null)
 		//	ModItems.wand_leaf.darnit.run();
-		Tracker.preTick(world);
-		Wind.update(world);
 		//LeafiaServerListener.SharpEdges.damageCache.clear();
+		Wind.update();
 		List<Runnable> running = new ArrayList<>(queue);
 		queue.clear();
 		for (Runnable callback : running) {
@@ -47,6 +47,11 @@ public class LeafiaPassiveServer {
 				callback.run();
 		}
 		//WorldServerLeafia.violatedPositions.clear();
+	}
+	public static void priorTickWorld(World world) {
+		FalloutSavedData.forWorld(world).tick();
+		Tracker.preTick(world);
+		Wind.updateWorld(world);
 	}
 	public static void queueFunction(Runnable callback) {
 		queue.add(callback);

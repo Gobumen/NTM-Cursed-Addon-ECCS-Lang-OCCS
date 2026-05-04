@@ -9,6 +9,7 @@ import com.leafia.contents.machines.elevators.weight.EvWeightEntity;
 import com.leafia.contents.machines.elevators.weight.EvWeightRender;
 import com.leafia.contents.machines.powercores.dfc.debris.AbsorberShrapnelEntity;
 import com.leafia.contents.machines.reactors.pwr.debris.PWRDebrisEntity;
+import com.leafia.contents.worldgen.biomes.artificial.DigammaCrater.NullEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
 
@@ -22,5 +23,6 @@ public class EntityInit {
 		EntityRegistry.registerModEntity(new ResourceLocation("leafia", "entity_missile_customnuke"), CustomNukeMissileEntity.class, "entity_missile_customnuke", i++, AddonBase.instance, 1000, 1, true);
 		EntityRegistry.registerModEntity(new ResourceLocation("leafia","entity_elevator"),ElevatorEntity.class,"entity_elevator",i++,AddonBase.instance,1000,1,true);
 		EntityRegistry.registerModEntity(new ResourceLocation("leafia","entity_counterweight"),EvWeightEntity.class,"entity_counterweight",i++,AddonBase.instance,1000,1,true);
+		EntityRegistry.registerModEntity(new ResourceLocation("leafia","entity_omfg_its_null_minecraft"),NullEntity.class,"entity_omfg_its_null_minecraft",i++,AddonBase.instance,1000,1,true);
 	}
 }

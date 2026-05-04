@@ -127,7 +127,7 @@ public class AddonRainRender {
 				BlockPos blockpos2 = blockpos1.down();
 				IBlockState iblockstate = world.getBlockState(blockpos2);
 
-				if (blockpos1.getY() <= blockpos.getY() + 10 && blockpos1.getY() >= blockpos.getY() - 10 && biome instanceof DigammaCrater)
+				if (blockpos1.getY() <= blockpos.getY() + 10 && blockpos1.getY() >= blockpos.getY() - 10 && DigammaCrater.isDigammaBiome(biome))
 				{
 					double d3 = this.random.nextDouble();
 					double d4 = this.random.nextDouble();
@@ -234,7 +234,7 @@ public class AddonRainRender {
 					pos.setPos(i1, 50, l);
 					Biome biomegenbase = worldclient.getBiomeForCoordsBody(pos);
 
-					if (biomegenbase instanceof DigammaCrater) {
+					if (DigammaCrater.isDigammaBiome(biomegenbase)) {
 						int k1 = worldclient.getPrecipitationHeight(pos).getY();
 						int l1 = l2 - b0;
 						int i2 = l2 + b0;

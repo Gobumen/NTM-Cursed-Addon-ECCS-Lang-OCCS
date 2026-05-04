@@ -28,7 +28,7 @@ public abstract class MixinWorld {
     void leafia$onPlayEvent(@Nullable EntityPlayer player,int type,BlockPos pos,int data,CallbackInfo ci) {
         World world = (World)(Object)this;
         int digamma = Item.getIdFromItem(AddonItems.digammaRecord);
-        if (type == 1010 && world.getBiome(pos) instanceof DigammaCrater && data != 0 && data != digamma) {
+        if (type == 1010 && DigammaCrater.isDigammaBiome(world.getBiome(pos)) && data != 0 && data != digamma) {
             ci.cancel();
             //world.playRecord(pos,LeafiaSoundEvents.digamma_record);
             world.playEvent(1010,pos,digamma);

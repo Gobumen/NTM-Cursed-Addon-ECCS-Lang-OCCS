@@ -56,6 +56,7 @@ import net.minecraftforge.event.world.WorldEvent.Load;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
+import net.minecraftforge.fml.common.gameevent.TickEvent.ServerTickEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.WorldTickEvent;
 
 import java.util.*;
@@ -120,15 +121,22 @@ public class LeafiaServerListener {
             ((IMixinEntityItem) evt.getItem()).leafia$setWasPickedUp(true);
 		}
 		@SubscribeEvent
+		public void tick(ServerTickEvent evt) {
+			if (evt.phase == Phase.START)
+				LeafiaPassiveServer.priorTick();
+			if (evt.phase == Phase.END)
+				LeafiaPassiveServer.onTick();
+		}
+		@SubscribeEvent
 		public void worldTick(WorldTickEvent evt) {
 			if (evt.world != null && !evt.world.isRemote) {
 				if (evt.phase == Phase.START)
-					LeafiaPassiveServer.priorTick(evt.world);
+					LeafiaPassiveServer.priorTickWorld(evt.world);
 				if(evt.world.getTotalWorldTime() % 100 == 97) {
 					PWRDiagnosis.cleanup();
 				}
 				if (evt.phase == Phase.END)
-					LeafiaPassiveServer.onTick(evt.world);
+					LeafiaPassiveServer.onTickWorld(evt.world);
 			}
 		}
 		@SubscribeEvent
@@ -156,9 +164,9 @@ public class LeafiaServerListener {
 						entity.addPotionEffect(new PotionEffect(MobEffects.POISON,35,1,false,false));
 					ContaminationUtil.contaminate(entity,HazardType.RADIATION,ContaminationType.CREATIVE,0.5);
 				}
-			} else if (biome instanceof DigammaCrater) {
+			} else if (DigammaCrater.isDigammaBiome(biome)) {
 				if (entity.world.canSeeSky(new BlockPos(ix,iy,iz)) && digammaRainCounter == 0)
-					ContaminationUtil.contaminate(entity,HazardType.DIGAMMA,ContaminationType.CREATIVE,0.005F);
+					ContaminationUtil.contaminate(entity,HazardType.DIGAMMA,ContaminationType.CREATIVE,0.01F+entity.world.rand.nextFloat()*0.02f);
 			}
 		}
 		@SubscribeEvent

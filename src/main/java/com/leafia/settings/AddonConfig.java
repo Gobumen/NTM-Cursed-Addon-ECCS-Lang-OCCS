@@ -28,6 +28,7 @@ public class AddonConfig {
 	public static double surgeTurbulenceMultiplier = 1;
 	public static int ic10maxstack = 512;
 	public static int ic10maxregisters = 64;
+	public static boolean schizoMode = false;
 	public static class ConfigOverrides {
 		public static boolean blockReplacement = true;
 		public static void applyGeneralConfig() {
@@ -81,6 +82,9 @@ public class AddonConfig {
 			maxOptimalTurbineLength = builder._integer("maxOptimalTurbineLength",5);
 			builder._comment("Multiplier of steam input surge turbulence for modular turbines");
 			surgeTurbulenceMultiplier = builder._double("surgeTurbulenceMultiplier",1);
+
+			builder._comment("Every biome acts like the digamma crater biome");
+			schizoMode = builder._boolean("enableSchizoMode",false);
 
 			builder._comment("IC10 nodes will throw StackOverflow when stack count exceeds this number");
 			ic10maxstack = builder._integer("ic10maxstack",512);
