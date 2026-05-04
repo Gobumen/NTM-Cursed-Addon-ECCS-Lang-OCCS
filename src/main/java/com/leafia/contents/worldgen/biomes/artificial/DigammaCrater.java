@@ -7,7 +7,7 @@ import net.minecraftforge.common.BiomeDictionary.Type;
 
 public class DigammaCrater extends AddonBiome {
 	public DigammaCrater(String resource) {
-		super(resource,new BiomeProperties("DigammaCrater")
+		super(resource,new BiomeProperties("Digamma Crater")
 				.setRainfall(0).setRainDisabled()
 				.setWaterColor(0xFF0000)
 		);
