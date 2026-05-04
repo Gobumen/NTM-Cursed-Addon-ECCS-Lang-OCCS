@@ -67,7 +67,7 @@ public class LeafiaPassiveLocal {
 		Warns.preTick();
 		if (!Minecraft.getMinecraft().isGamePaused()) {
 			EntityPlayer player = Minecraft.getMinecraft().player;
-			if (!player.isSpectator() && !player.isCreative() && player.getHealth() > 6 && world.rand.nextInt(40000) == 0 && Minecraft.getMinecraft().gameSettings.thirdPersonView == 0)
+			if (!player.isSpectator() && !player.isCreative() && DigammaCrater.isDigammaBiome(world.getBiome(new BlockPos(player.posX,player.posY,player.posZ))) && player.getHealth() > 6 && world.rand.nextInt(40000) == 0 && Minecraft.getMinecraft().gameSettings.thirdPersonView == 0)
 				LeafiaCustomPacket.__start(new DigammaBackstabPacket()).__sendToServer();
 		}
 		if (nullCounter < 20 && !Minecraft.getMinecraft().isGamePaused()) {
