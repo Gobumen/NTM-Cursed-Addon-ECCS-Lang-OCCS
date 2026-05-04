@@ -116,7 +116,7 @@ public class LeafiaClientListener {
 			float yaw = player.rotationYaw+player.world.rand.nextFloat()*90-45;
 			float xRatio = (float)-(-Math.sin(yaw/180*Math.PI));
 			float zRatio = (float)-(Math.cos(yaw/180*Math.PI));
-			if (player.world.rand.nextDouble() >= player.getEntityAttribute(SharedMonsterAttributes.KNOCKBACK_RESISTANCE).getAttributeValue())
+			if (true) // nop cuz fuc u player.world.rand.nextDouble() >= player.getEntityAttribute(SharedMonsterAttributes.KNOCKBACK_RESISTANCE).getAttributeValue())
 			{
 				player.isAirBorne = true;
 				float f = MathHelper.sqrt(xRatio * xRatio + zRatio * zRatio);
