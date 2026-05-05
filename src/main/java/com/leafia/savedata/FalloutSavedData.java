@@ -14,6 +14,8 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraft.world.storage.WorldSavedData;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -159,6 +161,15 @@ public class FalloutSavedData extends WorldSavedData {
 				buf.writeInt(data.timeElapsed);
 			}
 		}
+		@SideOnly(Side.CLIENT)
+		void loadBullshit(List<FalloutData> newMap) {
+			World world = Minecraft.getMinecraft().world;
+			FalloutSavedData saved = forWorld(world);
+			LeafiaPassiveLocal.queueFunctionPost(()->{
+				saved.falloutMap.clear();
+				saved.falloutMap.addAll(newMap);
+			});
+		}
 		@Override
 		public @org.jetbrains.annotations.Nullable Consumer<MessageContext> decode(LeafiaBuf buf) {
 			List<FalloutData> newMap = new ArrayList<>();
@@ -168,14 +179,7 @@ public class FalloutSavedData extends WorldSavedData {
 				data.timeElapsed = buf.readInt();
 				newMap.add(data);
 			}
-			return (ctx)->{
-				World world = Minecraft.getMinecraft().world;
-				FalloutSavedData saved = forWorld(world);
-				LeafiaPassiveLocal.queueFunctionPost(()->{
-					saved.falloutMap.clear();
-					saved.falloutMap.addAll(newMap);
-				});
-			};
+			return (ctx)->loadBullshit(newMap);
 		}
 	}
 	@Override
