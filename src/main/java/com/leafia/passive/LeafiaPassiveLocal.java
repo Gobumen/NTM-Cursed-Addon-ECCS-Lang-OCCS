@@ -72,16 +72,18 @@ public class LeafiaPassiveLocal {
 		}
 		if (nullCounter < 20 && !Minecraft.getMinecraft().isGamePaused()) {
 			EntityPlayer player = Minecraft.getMinecraft().player;
-			double r = 60+world.rand.nextDouble()*80;
-			double theta = world.rand.nextDouble()*2*Math.PI;
-			int x = MathHelper.floor(player.posX+Math.cos(theta)*r);
-			int z = MathHelper.floor(player.posZ+Math.sin(theta)*r);
-			BlockPos p = new BlockPos(x,world.getHeight(x,z),z);
-			if (world.getBlockState(p.down()).getMaterial().isSolid()) { // stop spawning on oceans
-				if (DigammaCrater.isDigammaBiome(world.getBiome(p))) {
-					NullEntity entity = new NullEntity(world);
-					entity.setPosition(p.getX()+0.5,p.getY(),p.getZ()+0.5);
-					world.spawnEntity(entity);
+			if (DigammaCrater.isDigammaBiome(world.getBiome(new BlockPos(player.posX,player.posY,player.posZ)))) {
+				double r = 60+world.rand.nextDouble()*80;
+				double theta = world.rand.nextDouble()*2*Math.PI;
+				int x = MathHelper.floor(player.posX+Math.cos(theta)*r);
+				int z = MathHelper.floor(player.posZ+Math.sin(theta)*r);
+				BlockPos p = new BlockPos(x,world.getHeight(x,z),z);
+				if (world.getBlockState(p.down()).getMaterial().isSolid()) { // stop spawning on oceans
+					if (DigammaCrater.isDigammaBiome(world.getBiome(p))) {
+						NullEntity entity = new NullEntity(world);
+						entity.setPosition(p.getX()+0.5,p.getY(),p.getZ()+0.5);
+						world.spawnEntity(entity);
+					}
 				}
 			}
 		}

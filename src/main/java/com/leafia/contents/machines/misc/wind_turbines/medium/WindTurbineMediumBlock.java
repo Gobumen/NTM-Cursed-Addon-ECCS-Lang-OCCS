@@ -1,15 +1,18 @@
 package com.leafia.contents.machines.misc.wind_turbines.medium;
 
 import com.hbm.blocks.ILookOverlay;
+import com.hbm.blocks.ITooltipProvider;
 import com.hbm.inventory.fluid.tank.FluidTankNTM;
 import com.hbm.inventory.fluid.tank.IFluidLoadingHandler;
 import com.hbm.util.BobMathUtil;
 import com.hbm.util.I18nUtil;
 import com.leafia.contents.machines.misc.wind_turbines.WindTurbineTEBase;
 import com.leafia.dev.blocks.blockbase.AddonBlockDummyable;
+import com.leafia.dev.machine.MachineTooltip;
 import com.llib.math.SIPfx;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -26,7 +29,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class WindTurbineMediumBlock extends AddonBlockDummyable implements ILookOverlay {
+public class WindTurbineMediumBlock extends AddonBlockDummyable implements ILookOverlay, ITooltipProvider {
 	public WindTurbineMediumBlock(Material m,String s) {
 		super(m,s);
 	}
@@ -45,10 +48,20 @@ public class WindTurbineMediumBlock extends AddonBlockDummyable implements ILook
 		return null;
 	}
 	@Override
+	public void addInformation(ItemStack stack,@Nullable World worldIn,List<String> tooltip,ITooltipFlag flagIn) {
+		MachineTooltip.addGenerator(tooltip);
+		addStandardInfo(tooltip);
+		super.addInformation(stack,worldIn,tooltip,flagIn);
+	}
+	@Override
 	public boolean canPlaceBlockAt(World worldIn,BlockPos pos) {
-		for (TileEntity te : worldIn.getChunk(pos).getTileEntityMap().values()) {
-			if (te instanceof WindTurbineTEBase)
-				return false;
+		for (int x = -1; x <= 1; x++) {
+			for (int z = -1; z <= 1; z++) {
+				for (TileEntity te : worldIn.getChunk(pos.add(x*16,0,z*16)).getTileEntityMap().values()) {
+					if (te instanceof WindTurbineTEBase)
+						return false;
+				}
+			}
 		}
 		return super.canPlaceBlockAt(worldIn,pos);
 	}

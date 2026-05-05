@@ -117,6 +117,10 @@ public class DigammaCrater extends AddonBiome {
 		void check() {
 			updateEntityActionState();
 			EntityPlayer player = Minecraft.getMinecraft().player;
+			if (!isDigammaBiome(world.getBiome(new BlockPos(player.posX,player.posY,player.posZ)))) {
+				setDead();
+				return;
+			}
 			double dist = new Vec3d(player.posX,player.posY,player.posZ).distanceTo(new Vec3d(posX,posY,posZ));
 			if (dist < 20 || dist > 200)
 				setDead();

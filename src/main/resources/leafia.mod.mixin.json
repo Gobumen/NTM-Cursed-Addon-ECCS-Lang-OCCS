@@ -38,6 +38,7 @@
     "hbm.MixinBlockSpeedy",
     "hbm.MixinBlockStorageCrate",
     "hbm.MixinBossSpawnHandler",
+    "hbm.MixinBunkerComponents$PowerRoom",
     "hbm.MixinContainerDiFurnaceRTG",
     "hbm.MixinContaminationUtil",
     "hbm.MixinControlEvent",
@@ -93,6 +94,7 @@
     "hbm.MixinOreDictManager",
     "hbm.MixinRBMKColumn$ControlColumn",
     "hbm.MixinSerializableRecipe",
+    "hbm.MixinSpaceship",
     "hbm.MixinSubElementItemConfig",
     "hbm.MixinTileEntityBarrel",
     "hbm.MixinTileEntityBatterySocket",
@@ -143,6 +145,7 @@
     "hbm.MixinTileEntityWasteDrum",
     "hbm.MixinWasteEarth",
     "hbm.MixinWasteGrassTall",
+    "hbm.MixinWeightedRandomChestContentFrom1710",
     "hbm.MixinWorldProviderNTM"
   ],
   "server": [

@@ -47,7 +47,7 @@ public class MachineTooltip {
 
 				// GENERATORS
 				case "machine_turbine":
-				case "machine_large_turbine":
+				case "machine_industrial_turbine":
 				case "machine_chungus":
 				case "machine_generator":
 				case "machine_diesel":

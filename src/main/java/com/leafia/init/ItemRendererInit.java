@@ -30,6 +30,8 @@ import com.leafia.contents.machines.heat.rtheater.HeaterRTGRender;
 import com.leafia.contents.machines.misc.heatex.CoolantHeatexRender;
 import com.leafia.contents.machines.misc.modular_turbine.ModularTurbineBlockBase;
 import com.leafia.contents.machines.misc.modular_turbine.ModularTurbineComponentRender.ModularTurbineComponentItemRender;
+import com.leafia.contents.machines.misc.wind_turbines.medium.WindTurbineMediumRender;
+import com.leafia.contents.machines.misc.wind_turbines.medium.WindTurbineMediumRender.WindTurbineMediumItemRender;
 import com.leafia.contents.machines.powercores.ams.base.AMSBaseRender.AMSBaseItemRender;
 import com.leafia.contents.machines.powercores.ams.emitter.AMSEmitterRender.AMSEmitterItemRender;
 import com.leafia.contents.machines.powercores.ams.stabilizer.AMSStabilizerRender.AMSStabilizerItemRender;
@@ -123,6 +125,8 @@ public class ItemRendererInit {
 		register(AddonBlocks.reactor_door,new ReactorDoorItemRender());
 
 		register(AddonBlocks.sellacity_rack,new RackItemRender());
+
+		register(AddonBlocks.wind_turbine_medium,new WindTurbineMediumItemRender());
 
 		//for (ModularTurbineBlockBase component : ModularTurbines.ALL_COMPONENTS_FOR_RENDER)
 		//	ModularTurbineComponentItemRender.registerItemRenderer(component);

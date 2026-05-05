@@ -536,6 +536,7 @@ tile.slop_reactor_glass.name=Average "Nuclear Reactor" in Modern Mods Glass
 tile.spk_cable.name=DFC Redirection Cable
 tile.wind_turbine.obstructed=! ! ! OBSTRUCTED ! ! !
 tile.wind_turbine_medium.name=Medium Wind Turbine
+tile.wind_turbine_medium.desc=Needs a spacing of at least 2 chunks$Requires engine lubricant for optimal power generation
 trait._hazardfluid.dfcFuel.desc=§dPower Output §5%s%%
 trait._hazardfluid.dfcFuel=DFC Fuel
 trait._hazarditem.hydro=Alkaline / Hydroreactive

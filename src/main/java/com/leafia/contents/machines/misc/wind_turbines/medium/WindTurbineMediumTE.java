@@ -16,9 +16,9 @@ public class WindTurbineMediumTE extends WindTurbineTEBase {
 					pos.getX()-1,
 					pos.getY()-1,
 					pos.getZ()-1,
-					pos.getX()+1,
+					pos.getX()+2,
 					pos.getY()+8,
-					pos.getX()+1
+					pos.getX()+2
 			);
 		}
 		return aabb;
