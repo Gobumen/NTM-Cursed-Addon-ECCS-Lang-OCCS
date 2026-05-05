@@ -190,6 +190,7 @@ public class AddonBase {
 		AddonSolderingRecipes.register();
 		AddonMixerRecipes.register();
 		AddonCompressorRecipes.register();
+		AddonPlasmaForgeRecipes.register();
 	}
 
 	@EventHandler
