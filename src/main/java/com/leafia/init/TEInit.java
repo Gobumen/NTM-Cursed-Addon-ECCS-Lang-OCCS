@@ -23,6 +23,7 @@ import com.leafia.contents.machines.misc.modular_turbine.core.MTCoreTE;
 import com.leafia.contents.machines.misc.modular_turbine.flywheel.MTFlywheelTE;
 import com.leafia.contents.machines.misc.modular_turbine.ports.MTComponentPortTE;
 import com.leafia.contents.machines.misc.modular_turbine.power_port.MTPowerPortTE;
+import com.leafia.contents.machines.misc.wind_turbines.medium.WindTurbineMediumTE;
 import com.leafia.contents.machines.panel.controltorch.ControlTorchTE;
 import com.leafia.contents.machines.powercores.ams.base.AMSBaseTE;
 import com.leafia.contents.machines.powercores.ams.emitter.AMSEmitterTE;
@@ -134,6 +135,7 @@ public class TEInit {
 		register(VoiderTE.class,"debug_voider_te");
 		register(Reserved6TE.class,"reserved6_te");
 		register(DebugRenderTestTE.class,"debug_render_te");
+		register(WindTurbineMediumTE.class,"wind_turbine_medium_te");
 	}
 	private static void register(Class<? extends TileEntity> clazz,String res) {
 		GameRegistry.registerTileEntity(clazz,new ResourceLocation(AddonBase.MODID,res));

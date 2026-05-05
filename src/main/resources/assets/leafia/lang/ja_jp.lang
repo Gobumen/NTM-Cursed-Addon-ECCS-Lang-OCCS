@@ -534,6 +534,8 @@ tile.slop_reactor.name=Average "Nuclear Reactor" in Modern Mods
 tile.slop_reactor_casing.name=Average "Nuclear Reactor" in Modern Mods Casing
 tile.slop_reactor_glass.name=Average "Nuclear Reactor" in Modern Mods Glasstrait.leafia.magnetic=磁気性
 tile.spk_cable.name=DFCリルートケーブル
+tile.wind_turbine.obstructed=! ! ! 塞がれています ! ! !
+tile.wind_turbine_medium.name=中型風力タービン
 trait._hazardfluid.dfcFuel.desc=§dパワー出力 §5%s%%
 trait._hazardfluid.dfcFuel=DFC燃料
 trait._hazarditem.hydro=アルカリ性

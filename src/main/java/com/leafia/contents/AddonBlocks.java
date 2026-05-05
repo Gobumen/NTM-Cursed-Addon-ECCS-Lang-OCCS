@@ -58,6 +58,7 @@ import com.leafia.contents.machines.misc.modular_turbine.separator.MTSeparator3x
 import com.leafia.contents.machines.misc.modular_turbine.separator.MTSeparator5x5;
 import com.leafia.contents.machines.misc.modular_turbine.separator.MTSeparator7x7;
 import com.leafia.contents.machines.misc.modular_turbine.separator.MTSeparator9x9;
+import com.leafia.contents.machines.misc.wind_turbines.medium.WindTurbineMediumBlock;
 import com.leafia.contents.machines.panel.controltorch.ControlTorchBlock;
 import com.leafia.contents.machines.powercores.ams.base.AMSBaseBlock;
 import com.leafia.contents.machines.powercores.ams.emitter.AMSEmitterBlock;
@@ -550,6 +551,8 @@ public class AddonBlocks {
 
 		public static final Block curved = new CatwalkRailingCurved("catwalk_railing_curved");
 	}
+
+	public static final Block wind_turbine_medium = new WindTurbineMediumBlock(Material.IRON,"wind_turbine_medium").setHardness(5.0F).setResistance(10.0F).setCreativeTab(MainRegistry.machineTab);
 
 	static {
 		if (Loader.isModLoaded("opencomputers")) {
