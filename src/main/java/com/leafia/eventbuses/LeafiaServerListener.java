@@ -13,6 +13,7 @@ import com.leafia.contents.machines.reactors.pwr.PWRDiagnosis;
 import com.leafia.contents.machines.reactors.pwr.blocks.components.element.PWRElementTE;
 import com.leafia.contents.potion.LeafiaPotion;
 import com.leafia.contents.worldgen.biomes.artificial.DigammaCrater;
+import com.leafia.contents.worldgen.biomes.artificial.DigammaCrater.NullEntity;
 import com.leafia.contents.worldgen.biomes.effects.HasAcidicRain;
 import com.leafia.dev.optimization.LeafiaParticlePacket;
 import com.leafia.dev.optimization.LeafiaParticlePacket.Sweat;
@@ -165,7 +166,7 @@ public class LeafiaServerListener {
 					ContaminationUtil.contaminate(entity,HazardType.RADIATION,ContaminationType.CREATIVE,0.5);
 				}
 			} else if (DigammaCrater.isDigammaBiome(biome)) {
-				if (entity.world.canSeeSky(new BlockPos(ix,iy,iz)) && digammaRainCounter == 0)
+				if (entity.world.canSeeSky(new BlockPos(ix,iy,iz)) && digammaRainCounter == 0 && !(entity instanceof NullEntity))
 					ContaminationUtil.contaminate(entity,HazardType.DIGAMMA,ContaminationType.CREATIVE,0.01F+entity.world.rand.nextFloat()*0.02f);
 			}
 		}
