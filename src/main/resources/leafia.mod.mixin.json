@@ -131,6 +131,7 @@
     "hbm.MixinTileEntityMachineSiren",
     "hbm.MixinTileEntityMachineSolderingStation",
     "hbm.MixinTileEntityMachineTurbine",
+    "hbm.MixinTileEntityMachineTurbofan",
     "hbm.MixinTileEntityPipeGauge",
     "hbm.MixinTileEntityRBMKBase",
     "hbm.MixinTileEntityRBMKConsole",
