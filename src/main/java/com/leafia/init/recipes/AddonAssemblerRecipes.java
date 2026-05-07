@@ -323,6 +323,15 @@ public class AddonAssemblerRecipes {
 							new OreDictStack(STEEL.plate(),2)
 					)
 			);
+			INSTANCE.register(new GenericRecipe("ass.leafia.windtb.medium").setup(200,100)
+					.outputItems(new ItemStack(AddonBlocks.wind_turbine_medium))
+					.inputItems(
+							new ComparableStack(ModBlocks.steel_beam,5),
+							new OreDictStack(DURA.pipe(),4),
+							new ComparableStack(ModItems.motor),
+							new ComparableStack(ModItems.coil_gold_torus)
+					)
+			);
 		}
 	}
 	public static void makeRecipe(String s,ComparableStack out, AStack[] in, int duration) {

@@ -1,6 +1,7 @@
 package com.leafia.contents.machines.controlpanel.instruments.types.nixie;
 
 import com.hbm.inventory.control_panel.*;
+import com.hbm.inventory.control_panel.types.*;
 import com.hbm.inventory.control_panel.controls.ControlType;
 import com.hbm.inventory.control_panel.controls.configs.SubElementBaseConfig;
 import com.hbm.main.ResourceManager;
@@ -192,11 +193,6 @@ public class NixieDisplay extends Control {
 			LeafiaGls.pushMatrix();
 			LeafiaGls.color(0.1F,0.1F,0.1F);
 			LeafiaGls.translate(posX+i,0,posY);
-
-			String s = "";
-			if (i < text.length())
-				s = text.substring(i,i+1);
-
 			mdl.renderPart("Border");
 			if (i == 0)
 				mdl.renderPart("BorderLeft");
@@ -225,6 +221,17 @@ public class NixieDisplay extends Control {
 				mdl.renderPart("InsideLeft");
 				LeafiaGls.popMatrix();
 			}
+			LeafiaGls.popMatrix();
+		}
+		for (int i = 0; i < length; i++) {
+			LeafiaGls.pushMatrix();
+			LeafiaGls.color(0.1F,0.1F,0.1F);
+			LeafiaGls.translate(posX+i,0,posY);
+
+			String s = "";
+			if (i < text.length())
+				s = text.substring(i,i+1);
+
 			LeafiaGls.blendFunc(SourceFactor.SRC_ALPHA,DestFactor.ONE);
 			{
 				OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit,240,240);

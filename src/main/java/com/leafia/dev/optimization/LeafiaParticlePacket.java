@@ -4,6 +4,7 @@ import com.custom_hbm.effectNT.EffectNT;
 import com.hbm.handler.threading.PacketThreading;
 import com.hbm.main.MainRegistry;
 import com.hbm.particle.ParticleRBMKMush;
+import com.leafia.contents.machines.misc.modular_turbine.ParticleMTSteam;
 import com.leafia.contents.machines.powercores.dfc.particles.ParticleDFC;
 import com.leafia.contents.machines.reactors.rbmk.effects.ParticleJumpingRBMK;
 import com.leafia.contents.machines.reactors.rbmk.effects.ParticleRBMKJet;
@@ -459,6 +460,36 @@ public class LeafiaParticlePacket extends RecordablePacket {
 		protected void emit(NBTTagCompound nbt) {
 			World world = Minecraft.getMinecraft().world;
 			Minecraft.getMinecraft().effectRenderer.addEffect(new ParticleJumpingRBMK(world,rbmkPos));
+		}
+	}
+	public static class MTSteamParticle extends LeafiaParticle {
+		int travelDistance;
+		public MTSteamParticle() { }
+		public MTSteamParticle(int travelDistance) {
+			this.travelDistance = travelDistance;
+		}
+		@Override
+		protected LeafiaParticle fromBits(LeafiaBuf buf,NBTTagCompound nbt) {
+			return new MTSteamParticle(travelDistance);
+		}
+		@Override
+		protected void toBits(LeafiaBuf buf) {
+			buf.writeInt(travelDistance);
+		}
+		@Override
+		@SideOnly(Side.CLIENT)
+		protected void emit(NBTTagCompound nbt) {
+			World world = Minecraft.getMinecraft().world;
+			Minecraft.getMinecraft().effectRenderer.addEffect(new ParticleMTSteam(
+					world,
+					nbt.getDouble("posX"),
+					nbt.getDouble("posY"),
+					nbt.getDouble("posZ"),
+					nbt.getDouble("mX"),
+					nbt.getDouble("mY"),
+					nbt.getDouble("mZ"),
+					travelDistance
+			));
 		}
 	}
 

@@ -27,7 +27,7 @@ public class MixinExplosionNukeGeneric {
 
 	@Inject(method = "solinium",at = @At(value = "INVOKE", target = "Lnet/minecraft/block/state/IBlockState;getMaterial()Lnet/minecraft/block/material/Material;",remap = true,shift = Shift.AFTER),remap = false,require = 1,cancellable = true)
 	private static void leafia$onSolinium(World world,BlockPos pos,CallbackInfo ci,@Local(type = IBlockState.class) IBlockState state) {
-		if (state.getBlock() == LegacyBlocks.waste_dirt) {
+		if (state.getBlock() == LegacyBlocks.waste_dirt || state.getBlock() == LegacyBlocks.scorched_earth) {
 			if (random.nextInt(5) < 2) world.setBlockState(pos, Blocks.DIRT.getStateFromMeta(1));
 			else world.setBlockState(pos, Blocks.DIRT.getDefaultState());
 			ci.cancel();

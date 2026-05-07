@@ -6,7 +6,9 @@ import com.hbm.items.machine.ItemPWRFuel.EnumPWRFuel;
 import com.leafia.contents.AddonBlocks.Elevators;
 import com.leafia.contents.AddonItems;
 import com.leafia.contents.AddonItems.LeafiaRods;
+import com.leafia.unsorted.ateupd.Reserved6TE;
 import mezz.jei.api.ingredients.IIngredientBlacklist;
+import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 
 public class _JEIBlacklist {
@@ -17,6 +19,8 @@ public class _JEIBlacklist {
 			blacklist.addIngredientToBlacklist(new ItemStack(ModItems.pwr_fuel_hot,1,i));
 			blacklist.addIngredientToBlacklist(new ItemStack(ModItems.pwr_fuel_depleted,1,i));
 		}
+		for (Block block : Reserved6TE.ateupd)
+			blacklist.addIngredientToBlacklist(new ItemStack(block));
 		blacklist.addIngredientToBlacklist(new ItemStack(ModBlocks.pwr_block));
 		blacklist.addIngredientToBlacklist(new ItemStack(ModBlocks.pwr_casing));
 		blacklist.addIngredientToBlacklist(new ItemStack(ModBlocks.pwr_channel));
@@ -31,5 +35,6 @@ public class _JEIBlacklist {
 		blacklist.addIngredientToBlacklist(new ItemStack(AddonItems.billet_kys));
 		blacklist.addIngredientToBlacklist(new ItemStack(LeafiaRods.leafRodKys));
 		blacklist.addIngredientToBlacklist(new ItemStack(Elevators.light));
+		blacklist.addIngredientToBlacklist(new ItemStack(AddonItems.digammaRecord));
 	}
 }

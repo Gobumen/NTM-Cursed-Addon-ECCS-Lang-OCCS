@@ -8,8 +8,12 @@ import com.hbm.lib.HBMSoundHandler;
 import com.hbm.util.ContaminationUtil;
 import com.hbm.util.ContaminationUtil.ContaminationType;
 import com.hbm.util.ContaminationUtil.HazardType;
+import com.leafia.contents.AddonItems;
 import com.leafia.contents.machines.reactors.pwr.PWRDiagnosis;
+import com.leafia.contents.machines.reactors.pwr.blocks.components.element.PWRElementTE;
 import com.leafia.contents.potion.LeafiaPotion;
+import com.leafia.contents.worldgen.biomes.artificial.DigammaCrater;
+import com.leafia.contents.worldgen.biomes.artificial.DigammaCrater.NullEntity;
 import com.leafia.contents.worldgen.biomes.effects.HasAcidicRain;
 import com.leafia.dev.optimization.LeafiaParticlePacket;
 import com.leafia.dev.optimization.LeafiaParticlePacket.Sweat;
@@ -21,13 +25,16 @@ import com.leafia.passive.LeafiaPassiveServer;
 import com.leafia.savedata.PlayerDeathsSavedData;
 import com.leafia.unsorted.IEntityCustomCollision;
 import com.llib.group.LeafiaMap;
+import com.llib.group.LeafiaSet;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.MobEffects;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.SoundCategory;
@@ -36,6 +43,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.biome.Biome;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
@@ -43,19 +51,31 @@ import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.event.entity.living.LivingKnockBackEvent;
 import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
+import net.minecraftforge.event.world.BlockEvent.NeighborNotifyEvent;
 import net.minecraftforge.event.world.GetCollisionBoxesEvent;
 import net.minecraftforge.event.world.WorldEvent.Load;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
+import net.minecraftforge.fml.common.gameevent.TickEvent.ServerTickEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.WorldTickEvent;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
+import java.util.Map.Entry;
 
 public class LeafiaServerListener {
 	public static class HandlerServer {
+		@SubscribeEvent
+		public void onPlayerLogin(PlayerLoggedInEvent evt) {
+			if (evt.player instanceof EntityPlayerMP player) {
+				NBTTagCompound tag = player.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG);
+				if (!tag.hasKey("receivedAdvisor") || !tag.getBoolean("receivedAdvisor")) {
+					tag.setBoolean("receivedAdvisor",true);
+					player.inventory.addItemStackToInventory(new ItemStack(AddonItems.advisor));
+					player.inventoryContainer.detectAndSendChanges();
+				}
+			}
+		}
 		@SubscribeEvent
 		public void onEntityDied(LivingDeathEvent evt) {
 			if (evt.getEntity() instanceof EntityPlayer plr) {
@@ -102,15 +122,22 @@ public class LeafiaServerListener {
             ((IMixinEntityItem) evt.getItem()).leafia$setWasPickedUp(true);
 		}
 		@SubscribeEvent
+		public void tick(ServerTickEvent evt) {
+			if (evt.phase == Phase.START)
+				LeafiaPassiveServer.priorTick();
+			if (evt.phase == Phase.END)
+				LeafiaPassiveServer.onTick();
+		}
+		@SubscribeEvent
 		public void worldTick(WorldTickEvent evt) {
 			if (evt.world != null && !evt.world.isRemote) {
 				if (evt.phase == Phase.START)
-					LeafiaPassiveServer.priorTick(evt.world);
+					LeafiaPassiveServer.priorTickWorld(evt.world);
 				if(evt.world.getTotalWorldTime() % 100 == 97) {
 					PWRDiagnosis.cleanup();
 				}
 				if (evt.phase == Phase.END)
-					LeafiaPassiveServer.onTick(evt.world);
+					LeafiaPassiveServer.onTickWorld(evt.world);
 			}
 		}
 		@SubscribeEvent
@@ -120,11 +147,13 @@ public class LeafiaServerListener {
 		}
 	}
 	public static class Unsorted {
-		public void handleAcidRain(EntityLivingBase entity) {
-			int ix = (int)MathHelper.floor(entity.posX);
-			int iy = (int)MathHelper.floor(entity.posY);
-			int iz = (int)MathHelper.floor(entity.posZ);
-			if (entity.world.getBiome(new BlockPos(ix,iy,iz)) instanceof HasAcidicRain) {
+		public static int digammaRainCounter = 0;
+		public void handleRains(EntityLivingBase entity) {
+			int ix = (int)MathHelper.floor(entity.posX+0.5);
+			int iy = (int)MathHelper.floor(entity.posY+entity.height-0.1);
+			int iz = (int)MathHelper.floor(entity.posZ+0.5);
+			Biome biome = entity.world.getBiome(new BlockPos(ix,iy,iz));
+			if (biome instanceof HasAcidicRain) {
 				if (entity.world.isRainingAt(new BlockPos(ix,iy,iz))) {
 					boolean active = false;
 					PotionEffect effect = entity.getActivePotionEffect(MobEffects.POISON);
@@ -136,11 +165,14 @@ public class LeafiaServerListener {
 						entity.addPotionEffect(new PotionEffect(MobEffects.POISON,35,1,false,false));
 					ContaminationUtil.contaminate(entity,HazardType.RADIATION,ContaminationType.CREATIVE,0.5);
 				}
+			} else if (DigammaCrater.isDigammaBiome(biome)) {
+				if (entity.world.canSeeSky(new BlockPos(ix,iy,iz)) && digammaRainCounter == 0 && !(entity instanceof NullEntity))
+					ContaminationUtil.contaminate(entity,HazardType.DIGAMMA,ContaminationType.CREATIVE,0.01F+entity.world.rand.nextFloat()*0.02f);
 			}
 		}
 		@SubscribeEvent
 		public void onLivingUpdate(LivingUpdateEvent evt) {
-			handleAcidRain(evt.getEntityLiving());
+			handleRains(evt.getEntityLiving());
 		}
 		@SubscribeEvent
 		public void onGetEntityCollision(GetCollisionBoxesEvent evt) {
@@ -161,11 +193,10 @@ public class LeafiaServerListener {
 				}
 			}
 		}
-		/*
 		@SubscribeEvent
 		public void onBlockNotify(NeighborNotifyEvent evt) {
 			if (!evt.getWorld().isRemote) {
-				LeafiaDebug.debugPos(evt.getWorld(),evt.getPos(),3,0xFF0000,"NeighborNotifyEvent");
+				//LeafiaDebug.debugPos(evt.getWorld(),evt.getPos(),3,0xFF0000,"NeighborNotifyEvent");
 				for (Entry<PWRElementTE,LeafiaSet<BlockPos>> entry : PWRElementTE.listeners.entrySet()) {
 					if (entry.getKey().isInvalid()) {
 						PWRElementTE.listeners.remove(entry.getKey());
@@ -174,16 +205,16 @@ public class LeafiaServerListener {
 					if (entry.getValue().contains(evt.getPos()))
 						entry.getKey().updateObstacleMappings();
 				}
-				for (Entry<PWRVentInletTE,LeafiaSet<BlockPos>> entry : PWRVentInletTE.listeners.entrySet()) {
+				/*for (Entry<PWRVentInletTE,LeafiaSet<BlockPos>> entry : PWRVentInletTE.listeners.entrySet()) {
 					if (entry.getKey().isInvalid()) {
 						PWRVentInletTE.listeners.remove(entry.getKey());
 						continue;
 					}
 					if (entry.getValue().contains(evt.getPos()))
 						entry.getKey().rebuildMap();
-				}
+				}*/
 			}
-		}*/
+		}
 		@SubscribeEvent
 		public void worldInit(Load evt) {
 			List<ATEntry> entries = new ArrayList<>(EntityNukeExplosionMK3.at.keySet());

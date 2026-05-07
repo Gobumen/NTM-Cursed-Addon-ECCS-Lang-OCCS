@@ -15,7 +15,7 @@ public class AbsorberShrapnelRender extends Render<AbsorberShrapnelEntity> {
 	public static final IRenderFactory<AbsorberShrapnelEntity> FACTORY = man -> new AbsorberShrapnelRender(man);
 
 	static final WaveFrontObjectVAO core = new HFRWavefrontObject(
-			new ResourceLocation("leafia", "models/leafia/dfc_receiver_shrapnels/core.obj")).asVBO();
+			new ResourceLocation("leafia", "models/leafia/dfc_receiver_shrapnels/core.obj")).asColoredVAO();
 	static final WaveFrontObjectVAO framebeam = new HFRWavefrontObject(
 			new ResourceLocation("leafia", "models/leafia/dfc_receiver_shrapnels/framebeam.obj")).asVBO();
 	static final WaveFrontObjectVAO framecable = new HFRWavefrontObject(

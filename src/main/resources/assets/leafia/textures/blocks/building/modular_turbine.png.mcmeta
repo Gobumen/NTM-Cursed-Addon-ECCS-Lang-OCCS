@@ -4,6 +4,12 @@
         "type":"CTM",
         "textures":[
             "leafia:blocks/building/modular_turbine_ctm"
-        ]
+        ],
+        "extra": {
+            "connect_to": [
+                { "block": "leafia:deco_turbine" },
+                { "block": "leafia:modular_turbine_port" }
+            ]
+        }
     }
 }

@@ -143,11 +143,13 @@ public class ItemWandSaving extends AddonItemBaked {
 		@Nullable
 		@Override
 		public Consumer<MessageContext> decode(LeafiaBuf buf) {
-			if (buf.readBoolean()) {
-				min = buf.readPos();
-				max = buf.readPos();
-			}
 			return (ctx)->{
+				BlockPos min = null;
+				BlockPos max = null;
+				if (buf.readBoolean()) {
+					min = buf.readPos();
+					max = buf.readPos();
+				}
 				Highlight high = AddonItems.wand_leaf.savingHighlight;
 				if (min != null) {
 					high.center = new Vec3d(min).scale(0.5).add(new Vec3d(max).scale(0.5)).add(0.5,0.5,0.5);
@@ -254,7 +256,7 @@ public class ItemWandSaving extends AddonItemBaked {
 			HighlightSavingWandSave packet = new HighlightSavingWandSave();
 			packet.min = start;
 			packet.max = start.add(size);
-			LeafiaCustomPacket.__start(packet).__sendToAll();
+			LeafiaCustomPacket.__start(packet).__sendToClient(player);
 			Runnable callback = ()->{
 				darnit = null;
 				World world = player.world;

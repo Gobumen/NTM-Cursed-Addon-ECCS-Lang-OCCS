@@ -86,5 +86,6 @@ public class LeafiaGeneralLocal {
 		//splashes.add("Extra information on F3 debug screen!");
 		splashes.add("This addon sends string characters in just 5 bits!");
 		splashes.add("Core game community nowadays is really toxic!");
+		splashes.add("OWO MEOW, MEOWMEOWMEOW, OWOOWOOWOOWO, MEOWMEOWMEOW, MEOWMEOWMEOW, MEOW MEOW MEOW MEOWMEOWMEOWM");
 	}
 }

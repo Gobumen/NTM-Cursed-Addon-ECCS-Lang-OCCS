@@ -2,8 +2,8 @@ package com.leafia.overwrite_contents.mixin.mod.hbm;
 
 import com.hbm.blocks.network.FluidDuctGauge.TileEntityPipeGauge;
 import com.hbm.inventory.control_panel.ControlEventSystem;
-import com.hbm.inventory.control_panel.DataValue;
-import com.hbm.inventory.control_panel.DataValueFloat;
+import com.hbm.inventory.control_panel.types.DataValue;
+import com.hbm.inventory.control_panel.types.DataValueFloat;
 import com.hbm.inventory.control_panel.IControllable;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
@@ -19,7 +19,7 @@ public class MixinTileEntityPipeGauge extends TileEntity implements IControllabl
 	@Shadow(remap = false)
 	private long deltaTick;
 	@Shadow(remap = false)
-	private long deltaLastSecond;
+	private long lastSecond;
 	@Override
 	public BlockPos getControlPos() {
 		return getPos();
@@ -32,7 +32,7 @@ public class MixinTileEntityPipeGauge extends TileEntity implements IControllabl
 	public Map<String,DataValue> getQueryData() {
 		Map<String,DataValue> map = new HashMap<>();
 		map.put("perTick",new DataValueFloat(deltaTick));
-		map.put("perSecond",new DataValueFloat(deltaLastSecond));
+		map.put("perSecond",new DataValueFloat(lastSecond));
 		return map;
 	}
 	@Override

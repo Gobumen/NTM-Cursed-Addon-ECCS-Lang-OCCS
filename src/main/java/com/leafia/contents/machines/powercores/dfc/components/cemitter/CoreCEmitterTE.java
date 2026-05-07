@@ -1,9 +1,11 @@
 package com.leafia.contents.machines.powercores.dfc.components.cemitter;
 
+import com.hbm.inventory.fluid.tank.FluidTankNTM;
 import com.hbm.lib.internal.MethodHandleHelper;
 import com.hbm.tileentity.machine.TileEntityCore;
 import com.hbm.tileentity.machine.TileEntityCoreEmitter;
 import com.leafia.AddonBase;
+import com.leafia.contents.AddonFluids;
 import com.leafia.dev.container_utility.LeafiaPacket;
 import com.leafia.overwrite_contents.interfaces.IMixinTileEntityCoreEmitter;
 import net.minecraft.client.gui.GuiScreen;
@@ -22,17 +24,17 @@ import java.lang.invoke.MethodType;
 
 public class CoreCEmitterTE extends TileEntityCoreEmitter implements IMixinTileEntityCoreEmitter {
 
-    private static final MethodHandle IS_ACTIVE_GETTER = MethodHandleHelper.findGetter(TileEntityCoreEmitter.class, "isActive", boolean.class);
-    private static final MethodHandle IS_ACTIVE_SETTER = MethodHandleHelper.findSetter(TileEntityCoreEmitter.class, "isActive", boolean.class);
-    private static final MethodHandle TARGET_POS_GETTER = MethodHandleHelper.findGetter(TileEntityCoreEmitter.class, "targetPosition", BlockPos.class);
-    private static final MethodHandle TARGET_POS_SETTER = MethodHandleHelper.findSetter(TileEntityCoreEmitter.class, "targetPosition", BlockPos.class);
-    private static final MethodHandle LAST_RAYCAST_GETTER = MethodHandleHelper.findGetter(TileEntityCoreEmitter.class, "lastRaycast", RayTraceResult.class);
-    private static final MethodHandle LAST_RAYCAST_SETTER = MethodHandleHelper.findSetter(TileEntityCoreEmitter.class, "lastRaycast", RayTraceResult.class);
-    private static final MethodHandle LAST_CORE_GETTER = MethodHandleHelper.findGetter(TileEntityCoreEmitter.class, "lastGetCore", TileEntityCore.class);
-    private static final MethodHandle LAST_CORE_SETTER = MethodHandleHelper.findSetter(TileEntityCoreEmitter.class, "lastGetCore", TileEntityCore.class);
+    private static final MethodHandle IS_ACTIVE_GETTER = MethodHandleHelper.findGetter(TileEntityCoreEmitter.class, "leafia$isActive", boolean.class);
+    private static final MethodHandle IS_ACTIVE_SETTER = MethodHandleHelper.findSetter(TileEntityCoreEmitter.class, "leafia$isActive", boolean.class);
+    private static final MethodHandle TARGET_POS_GETTER = MethodHandleHelper.findGetter(TileEntityCoreEmitter.class, "leafia$targetPosition", BlockPos.class);
+    private static final MethodHandle TARGET_POS_SETTER = MethodHandleHelper.findSetter(TileEntityCoreEmitter.class, "leafia$targetPosition", BlockPos.class);
+    private static final MethodHandle LAST_RAYCAST_GETTER = MethodHandleHelper.findGetter(TileEntityCoreEmitter.class, "leafia$lastRaycast", RayTraceResult.class);
+    private static final MethodHandle LAST_RAYCAST_SETTER = MethodHandleHelper.findSetter(TileEntityCoreEmitter.class, "leafia$lastRaycast", RayTraceResult.class);
+    private static final MethodHandle LAST_CORE_GETTER = MethodHandleHelper.findGetter(TileEntityCoreEmitter.class, "leafia$lastGetCore", TileEntityCore.class);
+    private static final MethodHandle LAST_CORE_SETTER = MethodHandleHelper.findSetter(TileEntityCoreEmitter.class, "leafia$lastGetCore", TileEntityCore.class);
     private static final MethodHandle JOULES_GETTER = MethodHandleHelper.findGetter(TileEntityCoreEmitter.class, "joules", long.class);
     private static final MethodHandle JOULES_SETTER = MethodHandleHelper.findSetter(TileEntityCoreEmitter.class, "joules", long.class);
-    private static final MethodHandle SUPER_RAYCAST = MethodHandleHelper.findSpecial(TileEntityCoreEmitter.class, TileEntityCoreEmitter.class, "raycast", MethodType.methodType(RayTraceResult.class, long.class));
+    private static final MethodHandle SUPER_RAYCAST = MethodHandleHelper.findSpecial(TileEntityCoreEmitter.class, TileEntityCoreEmitter.class, "leafia$raycast", MethodType.methodType(RayTraceResult.class, long.class));
 
     private final MethodHandle isActiveGetter;
     private final MethodHandle isActiveSetter;
@@ -156,8 +158,11 @@ public class CoreCEmitterTE extends TileEntityCoreEmitter implements IMixinTileE
         if (key == 3) {
             selecting = (int) value;
         } else if (key >= 4 && key <= 7) {
-            joulesT[key - 4] = (long) value;
-            changed = true;
+            long v = (long) value;
+            if (joulesT[key - 4] != v) {
+                joulesT[key - 4] = v;
+                changed = true;
+            }
         }
         IMixinTileEntityCoreEmitter.super.onReceivePacketLocal(key, value);
     }
@@ -180,43 +185,49 @@ public class CoreCEmitterTE extends TileEntityCoreEmitter implements IMixinTileE
     }
 
     @Override
-    public TileEntityCore lastGetCore() {
+    public TileEntityCore leafia$lastGetCore() {
         return mhGetLastCore();
     }
 
     @Override
-    public void lastGetCore(TileEntityCore core) {
+    public void leafia$lastGetCore(TileEntityCore core) {
         mhSetLastCore(core);
     }
 
     @Override
-    public BlockPos getTargetPosition() {
+    public BlockPos leafia$getTargetPosition() {
         return mhGetTargetPos();
     }
 
     @Override
-    public void targetPosition(BlockPos pos) {
+    public void leafia$targetPosition(BlockPos pos) {
         mhSetTargetPos(pos);
     }
 
     @Override
-    public RayTraceResult raycast(long out) {
+    public RayTraceResult leafia$raycast(long out) {
         return mhSuperRaycast(out);
     }
 
     @Override
-    public boolean isActive() {
+    public boolean leafia$isActive() {
         return mhGetIsActive();
     }
 
     @Override
-    public void isActive(boolean active) {
+    public void leafia$isActive(boolean active) {
         mhSetIsActive(active);
     }
 
     @Override
-    public RayTraceResult lastRaycast() {
+    public RayTraceResult leafia$lastRaycast() {
         return mhGetLastRaycast();
+    }
+
+    FluidTankNTM bleh = new FluidTankNTM(AddonFluids.PYROGEL,64000);
+    @Override
+    public FluidTankNTM leafia$getOutputTank() {
+        return bleh;
     }
 
     @Override

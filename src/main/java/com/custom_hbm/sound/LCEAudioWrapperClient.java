@@ -12,16 +12,16 @@ import java.util.function.BiFunction;
 public class LCEAudioWrapperClient extends LCEAudioWrapper {
 
     private final SoundEvent source;
-    private final SoundCategory category;
-    private float x;
-    private float y;
-    private float z;
-    private float volume = 1;
-    private float pitch = 1;
+    protected final SoundCategory category;
+    protected float x;
+    protected float y;
+    protected float z;
+    protected float volume = 1;
+    protected float pitch = 1;
     private boolean looped = true;
-    private ISound.AttenuationType attenuationType = ISound.AttenuationType.NONE;
-    private BiFunction<Float, Double, Double> attentuationFunction = null;
-	LCEAudioDynamic sound;
+    private ISound.AttenuationType attenuationType = ISound.AttenuationType.LINEAR;
+    private BiFunction<Float, Double, Double> attenuationFunction = null;
+	public LCEAudioDynamic sound;
 	
 	public LCEAudioWrapperClient(SoundEvent source,SoundCategory cat) {
         this.source = source;
@@ -39,14 +39,14 @@ public class LCEAudioWrapperClient extends LCEAudioWrapper {
         sound.setVolume(volume);
         sound.setPitch(pitch);
         sound.setLooped(looped);
-        sound.setAttenuation(attenuationType);
-        if (attentuationFunction != null)
-            sound.setCustomAttenuation(attentuationFunction);
+        sound.setAttenuation(attenuationFunction == null ? attenuationType : ISound.AttenuationType.NONE);
+        if (attenuationFunction != null)
+            sound.setCustomAttenuation(attenuationFunction);
     }
 
     public void setAttenuation(ISound.AttenuationType attenuationType) {
         this.attenuationType = attenuationType;
-        if (sound != null)
+        if (sound != null && attenuationFunction == null)
             sound.setAttenuation(attenuationType);
 	}
 	
@@ -108,9 +108,10 @@ public class LCEAudioWrapperClient extends LCEAudioWrapper {
 	}
 
 	@Override
-	public LCEAudioWrapperClient setCustomAttentuation(BiFunction<Float,Double,Double> attentuationFunction) {
-        this.attentuationFunction = attentuationFunction;
+	public LCEAudioWrapperClient setCustomAttenuation(BiFunction<Float,Double,Double> attentuationFunction) {
+        this.attenuationFunction = attentuationFunction;
 		sound.setCustomAttenuation(attentuationFunction);
+        sound.setAttenuation(attentuationFunction == null ? attenuationType : ISound.AttenuationType.NONE);
 		return this;
 	}
 }

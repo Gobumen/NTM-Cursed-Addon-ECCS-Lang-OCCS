@@ -3,15 +3,27 @@ package com.leafia.contents.machines.misc.modular_turbine.blades;
 import com.hbm.handler.MultiblockHandlerXR;
 import com.hbm.lib.ForgeDirection;
 import com.hbm.tileentity.TileEntityProxyCombo;
+import com.hbm.util.I18nUtil;
 import com.leafia.contents.machines.misc.modular_turbine.ModularTurbineBlockBase;
 import com.leafia.contents.machines.misc.modular_turbine.ModularTurbineComponentTE;
+import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Arrays;
+import java.util.List;
+
 public class MTBlades2x2 extends ModularTurbineBlockBase {
-	public MTBlades2x2(String s) {
+	public MTBlades2x2(String s,String variant) {
 		super(s);
+		this.variant = variant;
+	}
+	String variant;
+	@Override
+	public String variant() {
+		return variant;
 	}
 	@Override
 	public int shaftHeight() {

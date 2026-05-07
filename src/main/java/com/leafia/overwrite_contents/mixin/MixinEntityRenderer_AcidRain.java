@@ -1,7 +1,6 @@
 package com.leafia.overwrite_contents.mixin;
 
 import com.leafia.contents.worldgen.biomes.effects.HasAcidicRain;
-import com.leafia.settings.AddonConfig;
 import com.leafia.transformer.LeafiaGeneralLocal;
 import com.llamalad7.mixinextras.sugar.Local;
 import net.minecraft.block.state.IBlockState;
@@ -19,7 +18,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
 @Mixin(EntityRenderer.class)
-public class MixinEntityRenderer {
+public class MixinEntityRenderer_AcidRain {
 
     @Redirect(method = "addRainParticles", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/multiplayer/WorldClient;spawnParticle(Lnet/minecraft/util/EnumParticleTypes;DDDDDD[I)V", ordinal = 0))
     private void leafia$spawnAcidRainParticles(WorldClient world, EnumParticleTypes particleType, double x, double y,
@@ -30,7 +29,7 @@ public class MixinEntityRenderer {
                                                @Local(name = "blockpos2") BlockPos down, @Local(name = "d3") double rx,
                                                @Local(name = "d4") double rz,
                                                @Local(name = "axisalignedbb") AxisAlignedBB boundingBox) {
-        if (!AddonConfig.enableAcidRainRender || LeafiaGeneralLocal.acidRainParticles(entity, biome, state, down, rx,
+        if (LeafiaGeneralLocal.acidRainParticles(entity, biome, state, down, rx,
                 rz, boundingBox)) {
             world.spawnParticle(particleType, x, y, z, xSpeed, ySpeed, zSpeed, parameters);
         }
@@ -39,7 +38,7 @@ public class MixinEntityRenderer {
     @Redirect(method = "renderRainSnow", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/texture/TextureManager;bindTexture(Lnet/minecraft/util/ResourceLocation;)V", ordinal = 0))
     private void leafia$bindAcidRainTexture(TextureManager textureManager, ResourceLocation texture,
                                             @Local(name = "biome") Biome biome) {
-        if (AddonConfig.enableAcidRainRender && biome instanceof HasAcidicRain) {
+        if (biome instanceof HasAcidicRain) {
             textureManager.bindTexture(LeafiaGeneralLocal.acidRain);
             return;
         }

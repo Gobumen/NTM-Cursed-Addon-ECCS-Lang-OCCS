@@ -4,8 +4,11 @@ import com.hbm.explosion.ExplosionNukeGeneric;
 import com.hbm.explosion.ExplosionSolinium;
 import com.hbm.world.WorldUtil;
 import com.hbm.world.biome.BiomeGenCraterBase;
+import com.leafia.savedata.FalloutSavedData;
+import com.leafia.savedata.FalloutSavedData.FalloutData;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockPos.MutableBlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.Chunk;
@@ -43,6 +46,10 @@ public class MixinExplosionSolinium {
 	@Overwrite
 	private void breakColumn(int x,int z)
 	{
+		for (FalloutData map : FalloutSavedData.forWorld(worldObj).falloutMap) {
+			if (map.pos.distanceTo(new Vec3d(posX,0,posZ)) <= map.radius)
+				map.expire();
+		}
 		MutableBlockPos pos = new BlockPos.MutableBlockPos();
 		int dist = this.radius2 - (x * x + z * z);
 		if (dist > 0)

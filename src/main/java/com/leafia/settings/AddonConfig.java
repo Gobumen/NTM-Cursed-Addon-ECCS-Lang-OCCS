@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 public class AddonConfig {
+	public static boolean disableLCAShaders = false;
 	public static boolean useLeafiaTorex = true;
 	public static boolean enableHealthMod = true;
     public static int dfcComponentRange = 50;
@@ -20,7 +21,14 @@ public class AddonConfig {
 	public static int meteorDiverterProtectionRadius = 3;
 	public static boolean enableMeteorCraters = true;
 	public static boolean enableSellacity = LeafiaDebug.isDevEnv;
-	public static boolean enableBarrelSidePorts = false;
+	public static boolean enableBarrelSidePorts = true;
+	public static boolean enableGovernedRPS = true;
+	public static double governedRPS = 60;
+	public static int maxOptimalTurbineLength = 5;
+	public static double surgeTurbulenceMultiplier = 1;
+	public static int ic10maxstack = 512;
+	public static int ic10maxregisters = 64;
+	public static boolean schizoMode = false;
 	public static class ConfigOverrides {
 		public static boolean blockReplacement = true;
 		public static void applyGeneralConfig() {
@@ -30,10 +38,13 @@ public class AddonConfig {
 	public static void loadFromConfig(){
 		_ConfigBuilder builder = new _ConfigBuilder("leafia");
 		builder._separator();
+		builder._category("IMPORTANT: The configs will not apply by default! Add ! on start of each configs to apply.");
+		builder._category("Example: enableBarrelSidePorts: true -> !enableBarrelSidePorts: false");
+		builder._pushLine();
 		builder._category("MIXINS");
 		{
 			enableWackySplashes = builder._boolean("enableWackySplashes",true);
-			//enableAcidRainRender = builder._boolean("enableAcidRainRender",true); there's no point in this anymore
+			//enableAcidRainRender = builder._boolean("enableAcidRainRender",true); yeah no point
 		}
 		builder._separator();
 		builder._category("OVERRIDE");
@@ -47,8 +58,8 @@ public class AddonConfig {
 			builder._comment("How far DFC components can reach");
 			dfcComponentRange = builder._integer("dfcComponentRange",50);
 
-			builder._comment("Whether the barrels should look ugly or not");
-			enableBarrelSidePorts = builder._boolean("enableBarrelSidePorts",false);
+			builder._comment("Whether the barrels should have side ports or not");
+			enableBarrelSidePorts = builder._boolean("enableBarrelSidePorts",true);
 
 			builder._comment("Replaces item radiations with LCE radiations");
 			enableHealthMod = builder._boolean("enableRadClassification",true);
@@ -63,11 +74,29 @@ public class AddonConfig {
 
 			builder._comment("Whether meteors should create custom craters or not");
 			enableMeteorCraters = builder._boolean("enableMeteorCraters",true);
+
+			builder._comment("Whether the modular turbine RPS should be capped or not");
+			enableGovernedRPS = builder._boolean("enableGovernedRPS",true); builder._popLine();
+			governedRPS = builder._double("minimumGovernedRPS",60);
+			builder._comment("How many blades there can be per side until turbulence skyrockets");
+			maxOptimalTurbineLength = builder._integer("maxOptimalTurbineLength",5);
+			builder._comment("Multiplier of steam input surge turbulence for modular turbines");
+			surgeTurbulenceMultiplier = builder._double("surgeTurbulenceMultiplier",1);
+
+			builder._comment("Every biome acts like the digamma crater biome");
+			schizoMode = builder._boolean("enableSchizoMode",false);
+
+			builder._comment("IC10 nodes will throw StackOverflow when stack count exceeds this number");
+			ic10maxstack = builder._integer("ic10maxstack",512);
+
+			builder._comment("IC10 nodes will throw OutOfRegisterBounds when register index exceeds this number");
+			ic10maxregisters = builder._integer("ic10maxregisters",64);
 		}
 		builder._separator();
 		builder._category("CLIENT");
 		{
-
+			builder._comment("Disables shaders used by this addon. This may make it compatible with Vivecraft");
+			disableLCAShaders = builder._boolean("disableLCAShaders",false);
 		}
 		builder._separator();
 		builder.saveConfig();
@@ -82,7 +111,8 @@ public class AddonConfig {
 		public static Map<String,RodInfo> map = new HashMap<>();
 		public static void loadFromConfig() {
 			_ConfigBuilder builder = new _ConfigBuilder("generic_fuels");
-			builder._category("Remove underscore in the file to apply");
+			builder._category("IMPORTANT: The configs will not apply by default! Add ! on start of each lines to apply.");
+			builder._category("Example: !enableBarrelSidePorts: false");
 			builder._separator();
 			builder._autoLineBreak = false;
 			for (Entry<String,LeafiaRodItem> entry : LeafiaRodItem.fromResourceMap.entrySet()) {
@@ -95,7 +125,6 @@ public class AddonConfig {
 					builder._separator();
 				}
 			}
-			builder.changePath("_generic_fuels");
 			builder.saveConfig();
 		}
 	}

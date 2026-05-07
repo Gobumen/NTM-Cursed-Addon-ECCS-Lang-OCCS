@@ -9,7 +9,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
-public class MTFlywheel9x9 extends ModularTurbineBlockBase {
+public class MTFlywheel9x9 extends MTFlywheelBase {
 	public MTFlywheel9x9(String s) {
 		super(s);
 	}
@@ -31,7 +31,7 @@ public class MTFlywheel9x9 extends ModularTurbineBlockBase {
 	}
 	@Override
 	public double weight() {
-		return 320;
+		return 640;
 	}
 	@Override
 	public int[] getDimensions() {
@@ -40,12 +40,6 @@ public class MTFlywheel9x9 extends ModularTurbineBlockBase {
 	@Override
 	public int getOffset() {
 		return 0;
-	}
-	@Override
-	public @Nullable TileEntity createNewTileEntity(World worldIn,int meta) {
-		if (meta >= 12) return new ModularTurbineComponentTE();
-		if (meta >= extra) return new TileEntityProxyCombo(false,false,true);
-		return null;
 	}
 	@Override
 	protected void fillSpace(World world,int x,int y,int z,ForgeDirection dir,int o) {

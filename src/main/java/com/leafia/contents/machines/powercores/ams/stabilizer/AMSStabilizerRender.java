@@ -5,6 +5,7 @@ import com.hbm.render.NTMRenderHelper;
 import com.hbm.render.loader.WaveFrontObjectVAO;
 import com.leafia.contents.machines.powercores.ams.base.AMSBaseTE;
 import com.leafia.dev.LeafiaItemRenderer;
+import com.leafia.unsorted.NTMRenderHelperWrapper;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
@@ -161,25 +162,25 @@ public class AMSStabilizerRender extends TileEntitySpecialRenderer<AMSStabilizer
 
 			NTMRenderHelper.startDrawingColored(GL11.GL_QUADS);
 
-			NTMRenderHelper.addVertexColor(posX + length, posY - radius, posZ - radius, 0.408F - 0.175F, 0.686F - 0.175F, 0.686F - 0.175F, 0f);
-			NTMRenderHelper.addVertexColor(posX + length, posY - radius, posZ + radius, 0.408F - 0.175F, 0.686F - 0.175F, 0.686F - 0.175F, 0f);
-			NTMRenderHelper.addVertexColor(posX, posY - radius, posZ + radius, 0.408F - 0.175F, 0.686F - 0.175F, 0.686F - 0.175F, 1);
-			NTMRenderHelper.addVertexColor(posX, posY - radius, posZ - radius, 0.408F - 0.175F, 0.686F - 0.175F, 0.686F - 0.175F, 1);
+			NTMRenderHelperWrapper.addVertexColor(posX + length, posY - radius, posZ - radius, 0.408F - 0.175F, 0.686F - 0.175F, 0.686F - 0.175F, 0f);
+			NTMRenderHelperWrapper.addVertexColor(posX + length, posY - radius, posZ + radius, 0.408F - 0.175F, 0.686F - 0.175F, 0.686F - 0.175F, 0f);
+			NTMRenderHelperWrapper.addVertexColor(posX, posY - radius, posZ + radius, 0.408F - 0.175F, 0.686F - 0.175F, 0.686F - 0.175F, 1);
+			NTMRenderHelperWrapper.addVertexColor(posX, posY - radius, posZ - radius, 0.408F - 0.175F, 0.686F - 0.175F, 0.686F - 0.175F, 1);
 
-			NTMRenderHelper.addVertexColor(posX + length, posY + radius, posZ + radius, 0.408F - 0.175F, 0.686F - 0.175F, 0.686F - 0.175F, 0f);
-			NTMRenderHelper.addVertexColor(posX + length, posY + radius, posZ - radius, 0.408F - 0.175F, 0.686F - 0.175F, 0.686F - 0.175F, 0f);
-			NTMRenderHelper.addVertexColor(posX, posY + radius, posZ - radius, 0.408F - 0.175F, 0.686F - 0.175F, 0.686F - 0.175F, 1);
-			NTMRenderHelper.addVertexColor(posX, posY + radius, posZ + radius, 0.408F - 0.175F, 0.686F - 0.175F, 0.686F - 0.175F, 1);
+			NTMRenderHelperWrapper.addVertexColor(posX + length, posY + radius, posZ + radius, 0.408F - 0.175F, 0.686F - 0.175F, 0.686F - 0.175F, 0f);
+			NTMRenderHelperWrapper.addVertexColor(posX + length, posY + radius, posZ - radius, 0.408F - 0.175F, 0.686F - 0.175F, 0.686F - 0.175F, 0f);
+			NTMRenderHelperWrapper.addVertexColor(posX, posY + radius, posZ - radius, 0.408F - 0.175F, 0.686F - 0.175F, 0.686F - 0.175F, 1);
+			NTMRenderHelperWrapper.addVertexColor(posX, posY + radius, posZ + radius, 0.408F - 0.175F, 0.686F - 0.175F, 0.686F - 0.175F, 1);
 
-			NTMRenderHelper.addVertexColor(posX + length, posY - radius, posZ - radius, 0.408F - 0.175F, 0.686F - 0.175F, 0.686F - 0.175F, 0f);
-			NTMRenderHelper.addVertexColor(posX + length, posY + radius, posZ - radius, 0.408F - 0.175F, 0.686F - 0.175F, 0.686F - 0.175F, 0f);
-			NTMRenderHelper.addVertexColor(posX, posY + radius, posZ - radius, 0.408F - 0.175F, 0.686F - 0.175F, 0.686F - 0.175F, 1);
-			NTMRenderHelper.addVertexColor(posX, posY - radius, posZ - radius, 0.408F - 0.175F, 0.686F - 0.175F, 0.686F - 0.175F, 1);
+			NTMRenderHelperWrapper.addVertexColor(posX + length, posY - radius, posZ - radius, 0.408F - 0.175F, 0.686F - 0.175F, 0.686F - 0.175F, 0f);
+			NTMRenderHelperWrapper.addVertexColor(posX + length, posY + radius, posZ - radius, 0.408F - 0.175F, 0.686F - 0.175F, 0.686F - 0.175F, 0f);
+			NTMRenderHelperWrapper.addVertexColor(posX, posY + radius, posZ - radius, 0.408F - 0.175F, 0.686F - 0.175F, 0.686F - 0.175F, 1);
+			NTMRenderHelperWrapper.addVertexColor(posX, posY - radius, posZ - radius, 0.408F - 0.175F, 0.686F - 0.175F, 0.686F - 0.175F, 1);
 
-			NTMRenderHelper.addVertexColor(posX + length, posY - radius, posZ + radius, 0.408F - 0.175F, 0.686F - 0.175F, 0.686F - 0.175F, 0f);
-			NTMRenderHelper.addVertexColor(posX + length, posY + radius, posZ + radius, 0.408F - 0.175F, 0.686F - 0.175F, 0.686F - 0.175F, 0f);
-			NTMRenderHelper.addVertexColor(posX, posY + radius, posZ + radius, 0.408F - 0.175F, 0.686F - 0.175F, 0.686F - 0.175F, 1);
-			NTMRenderHelper.addVertexColor(posX, posY - radius, posZ + radius, 0.408F - 0.175F, 0.686F - 0.175F, 0.686F - 0.175F, 1);
+			NTMRenderHelperWrapper.addVertexColor(posX + length, posY - radius, posZ + radius, 0.408F - 0.175F, 0.686F - 0.175F, 0.686F - 0.175F, 0f);
+			NTMRenderHelperWrapper.addVertexColor(posX + length, posY + radius, posZ + radius, 0.408F - 0.175F, 0.686F - 0.175F, 0.686F - 0.175F, 0f);
+			NTMRenderHelperWrapper.addVertexColor(posX, posY + radius, posZ + radius, 0.408F - 0.175F, 0.686F - 0.175F, 0.686F - 0.175F, 1);
+			NTMRenderHelperWrapper.addVertexColor(posX, posY - radius, posZ + radius, 0.408F - 0.175F, 0.686F - 0.175F, 0.686F - 0.175F, 1);
 
 			if(limiter.efficiency > 0) {
 
@@ -193,25 +194,25 @@ public class AMSStabilizerRender extends TileEntitySpecialRenderer<AMSStabilizer
 				GlStateManager.disableCull();
 				GlStateManager.depthMask(false);
 
-				NTMRenderHelper.addVertexColor(posX + length, posY - radius, posZ - radius, 0.408F - 0.175F, 0.686F - 0.175F, 0.686F - 0.175F, 0f);
-				NTMRenderHelper.addVertexColor(posX + length, posY - radius, posZ + radius, 0.408F - 0.175F, 0.686F - 0.175F, 0.686F - 0.175F, 0f);
-				NTMRenderHelper.addVertexColor(posX, posY - radius, posZ + radius, 0.408F - 0.175F, 0.686F - 0.175F, 0.686F - 0.175F, 1);
-				NTMRenderHelper.addVertexColor(posX, posY - radius, posZ - radius, 0.408F - 0.175F, 0.686F - 0.175F, 0.686F - 0.175F, 1);
+				NTMRenderHelperWrapper.addVertexColor(posX + length, posY - radius, posZ - radius, 0.408F - 0.175F, 0.686F - 0.175F, 0.686F - 0.175F, 0f);
+				NTMRenderHelperWrapper.addVertexColor(posX + length, posY - radius, posZ + radius, 0.408F - 0.175F, 0.686F - 0.175F, 0.686F - 0.175F, 0f);
+				NTMRenderHelperWrapper.addVertexColor(posX, posY - radius, posZ + radius, 0.408F - 0.175F, 0.686F - 0.175F, 0.686F - 0.175F, 1);
+				NTMRenderHelperWrapper.addVertexColor(posX, posY - radius, posZ - radius, 0.408F - 0.175F, 0.686F - 0.175F, 0.686F - 0.175F, 1);
 
-				NTMRenderHelper.addVertexColor(posX + length, posY + radius, posZ + radius, 0.408F - 0.175F, 0.686F - 0.175F, 0.686F - 0.175F, 0f);
-				NTMRenderHelper.addVertexColor(posX + length, posY + radius, posZ - radius, 0.408F - 0.175F, 0.686F - 0.175F, 0.686F - 0.175F, 0f);
-				NTMRenderHelper.addVertexColor(posX, posY + radius, posZ - radius, 0.408F - 0.175F, 0.686F - 0.175F, 0.686F - 0.175F, 1);
-				NTMRenderHelper.addVertexColor(posX, posY + radius, posZ + radius, 0.408F - 0.175F, 0.686F - 0.175F, 0.686F - 0.175F, 1);
+				NTMRenderHelperWrapper.addVertexColor(posX + length, posY + radius, posZ + radius, 0.408F - 0.175F, 0.686F - 0.175F, 0.686F - 0.175F, 0f);
+				NTMRenderHelperWrapper.addVertexColor(posX + length, posY + radius, posZ - radius, 0.408F - 0.175F, 0.686F - 0.175F, 0.686F - 0.175F, 0f);
+				NTMRenderHelperWrapper.addVertexColor(posX, posY + radius, posZ - radius, 0.408F - 0.175F, 0.686F - 0.175F, 0.686F - 0.175F, 1);
+				NTMRenderHelperWrapper.addVertexColor(posX, posY + radius, posZ + radius, 0.408F - 0.175F, 0.686F - 0.175F, 0.686F - 0.175F, 1);
 
-				NTMRenderHelper.addVertexColor(posX + length, posY - radius, posZ - radius, 0.408F - 0.175F, 0.686F - 0.175F, 0.686F - 0.175F, 0f);
-				NTMRenderHelper.addVertexColor(posX + length, posY + radius, posZ - radius, 0.408F - 0.175F, 0.686F - 0.175F, 0.686F - 0.175F, 0f);
-				NTMRenderHelper.addVertexColor(posX, posY + radius, posZ - radius, 0.408F - 0.175F, 0.686F - 0.175F, 0.686F - 0.175F, 1);
-				NTMRenderHelper.addVertexColor(posX, posY - radius, posZ - radius, 0.408F - 0.175F, 0.686F - 0.175F, 0.686F - 0.175F, 1);
+				NTMRenderHelperWrapper.addVertexColor(posX + length, posY - radius, posZ - radius, 0.408F - 0.175F, 0.686F - 0.175F, 0.686F - 0.175F, 0f);
+				NTMRenderHelperWrapper.addVertexColor(posX + length, posY + radius, posZ - radius, 0.408F - 0.175F, 0.686F - 0.175F, 0.686F - 0.175F, 0f);
+				NTMRenderHelperWrapper.addVertexColor(posX, posY + radius, posZ - radius, 0.408F - 0.175F, 0.686F - 0.175F, 0.686F - 0.175F, 1);
+				NTMRenderHelperWrapper.addVertexColor(posX, posY - radius, posZ - radius, 0.408F - 0.175F, 0.686F - 0.175F, 0.686F - 0.175F, 1);
 
-				NTMRenderHelper.addVertexColor(posX + length, posY - radius, posZ + radius, 0.408F - 0.175F, 0.686F - 0.175F, 0.686F - 0.175F, 0f);
-				NTMRenderHelper.addVertexColor(posX + length, posY + radius, posZ + radius, 0.408F - 0.175F, 0.686F - 0.175F, 0.686F - 0.175F, 0f);
-				NTMRenderHelper.addVertexColor(posX, posY + radius, posZ + radius, 0.408F - 0.175F, 0.686F - 0.175F, 0.686F - 0.175F, 1);
-				NTMRenderHelper.addVertexColor(posX, posY - radius, posZ + radius, 0.408F - 0.175F, 0.686F - 0.175F, 0.686F - 0.175F, 1);
+				NTMRenderHelperWrapper.addVertexColor(posX + length, posY - radius, posZ + radius, 0.408F - 0.175F, 0.686F - 0.175F, 0.686F - 0.175F, 0f);
+				NTMRenderHelperWrapper.addVertexColor(posX + length, posY + radius, posZ + radius, 0.408F - 0.175F, 0.686F - 0.175F, 0.686F - 0.175F, 0f);
+				NTMRenderHelperWrapper.addVertexColor(posX, posY + radius, posZ + radius, 0.408F - 0.175F, 0.686F - 0.175F, 0.686F - 0.175F, 1);
+				NTMRenderHelperWrapper.addVertexColor(posX, posY - radius, posZ + radius, 0.408F - 0.175F, 0.686F - 0.175F, 0.686F - 0.175F, 1);
 			}
 
 			NTMRenderHelper.draw();

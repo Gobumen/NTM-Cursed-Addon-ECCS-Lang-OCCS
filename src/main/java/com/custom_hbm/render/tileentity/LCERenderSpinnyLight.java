@@ -5,6 +5,7 @@ import com.hbm.main.ResourceManager;
 import com.hbm.render.LightRenderer;
 import com.hbm.render.amlfrom1710.Vec3;
 import com.hbm.render.item.ItemRenderBase;
+import com.hbm.render.model.BakedModelTransforms;
 import com.hbm.render.tileentity.IItemRendererProvider;
 import com.hbm.render.tileentity.RenderSpinnyLight;
 import com.hbm.tileentity.deco.TileEntitySpinnyLight;
@@ -14,6 +15,7 @@ import net.minecraft.client.renderer.GlStateManager.DestFactor;
 import net.minecraft.client.renderer.GlStateManager.SourceFactor;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.item.EnumDyeColor;
@@ -157,21 +159,29 @@ public class LCERenderSpinnyLight extends TileEntitySpecialRenderer<TileEntitySp
 		return Item.getItemFromBlock(ModBlocks.spinny_light);
 	}
 
+	@Override
 	public ItemRenderBase getRenderer(Item item) {
 		return new ItemRenderBase() {
-			public void renderInventory() {
-				GlStateManager.scale(10.0F, 10.0F, 10.0F);
-				GlStateManager.rotate(22.5F, 1.0F, 0.0F, 0.0F);
-				GlStateManager.translate(25.0F, -4.0F, 0.0F);
+			@Override
+			protected ItemCameraTransforms getBindingTransforms(Item item) {
+				return BakedModelTransforms.standardBlock();
 			}
 
+			@Override
+			public void renderInventory() {
+				GlStateManager.scale(10.0 , 10.0, 10.0);
+				GlStateManager.translate(12.0, -1.9, 0.0);
+				GlStateManager.rotate(21.0F, 1.0F, 0.0F, 0.0F);
+			}
+
+			@Override
 			public void renderCommon() {
 				bindTexture(ResourceManager.spinny_light_tex);
-				GlStateManager.translate((double)1.25F, (double)-1.25F, (double)-1.25F);
-				GlStateManager.scale(5.0F, 5.0F, 5.0F);
-				GlStateManager.shadeModel(7425);
+				GlStateManager.translate(1.25, -1.25, -1.25);
+				GlStateManager.scale(5, 5, 5);
+				GlStateManager.shadeModel(GL11.GL_SMOOTH);
 				ResourceManager.spinny_light.renderAll();
-				GlStateManager.shadeModel(7424);
+				GlStateManager.shadeModel(GL11.GL_FLAT);
 			}
 		};
 	}

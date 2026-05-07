@@ -26,6 +26,9 @@ public class AddonNodesRegister {
 		NTMControlPanelRegistry.addMenuControl.putIfAbsent("Boolean",new ArrayList<>());
 		NTMControlPanelRegistry.addMenuControl.get("Boolean").add(new NCLeafiaBoolean());
 
+		NTMControlPanelRegistry.addMenuControl.putIfAbsent("Pack",new ArrayList<>());
+		NTMControlPanelRegistry.addMenuControl.get("Pack").add(new NCLeafiaPack());
+
 		NTMControlPanelRegistry.addMenuControl.putIfAbsent("Text",new ArrayList<>());
 		NTMControlPanelRegistry.addMenuControl.get("Text").add(new NCLeafiaText());
 

@@ -25,5 +25,9 @@ public class MixinControlEvent {
 		register(new ControlEvent("set_pump_pressure").setVar("pu",0));
 		register(new ControlEvent("set_pump_priority").setVar("priority",2));
 		register(new ControlEvent("zirnox_ctrl_set_level").setVar("level", 0));
+		register(new ControlEvent("setGlobalVar").setVar("name","").setVar("value",""));
+		register(new ControlEvent("setIOMode").setVar("mode",0));
+		register(new ControlEvent("heater_set").setVar("heatPerTick",0));
+		register(new ControlEvent("burner_set").setVar("isOn",0));
 	}
 }

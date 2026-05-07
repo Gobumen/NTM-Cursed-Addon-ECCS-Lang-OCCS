@@ -18,15 +18,15 @@ import net.minecraft.world.World;
 import javax.annotation.Nullable;
 
 public interface IDFCBase extends LeafiaPacketReceiver {
-    default void writeTargetPos(NBTTagCompound compound) {
-        BlockPos targetPos = getTargetPosition();
+    default void leafia$writeTargetPos(NBTTagCompound compound) {
+        BlockPos targetPos = leafia$getTargetPosition();
         compound.setInteger("x1",targetPos.getX());
         compound.setInteger("y1",targetPos.getY());
         compound.setInteger("z1",targetPos.getZ());
     }
 
-    default void readTargetPos(NBTTagCompound compound) {
-        targetPosition(new BlockPos(compound.getInteger("x1"), compound.getInteger("y1"), compound.getInteger("z1")));
+    default void leafia$readTargetPos(NBTTagCompound compound) {
+        leafia$targetPosition(new BlockPos(compound.getInteger("x1"), compound.getInteger("y1"), compound.getInteger("z1")));
         TileEntity thisTE = (TileEntity) this;
         World world = thisTE.getWorld();
         if (world != null && world.isRemote)
@@ -36,7 +36,7 @@ public interface IDFCBase extends LeafiaPacketReceiver {
 
     @Override
     default void onReceivePacketLocal(byte key,Object value) {
-        if (key == 31) targetPosition((BlockPos)value);
+        if (key == 31) leafia$targetPosition((BlockPos)value);
     }
 
     @Override
@@ -50,31 +50,31 @@ public interface IDFCBase extends LeafiaPacketReceiver {
 
     default LeafiaPacket syncClients(LeafiaPacket packet) {
 //        LeafiaDebug.debugLog(world,"syncClients");
-        packet.__write(31, getTargetPosition());
+        packet.__write(31, leafia$getTargetPosition());
         return packet;
     }
 
     @Override
     default void onPlayerValidate(EntityPlayer plr) {
-        LeafiaPacket._start((TileEntity) this).__write(31,getTargetPosition()).__sendToClient(plr);
+        LeafiaPacket._start((TileEntity) this).__write(31,leafia$getTargetPosition()).__sendToClient(plr);
     }
 
-    default void setTargetPosition(BlockPos pos) {
+    default void leafia$setTargetPosition(BlockPos pos) {
         TileEntity thisTE = (TileEntity) this;
-        targetPosition(pos);
+        leafia$targetPosition(pos);
         if (!thisTE.getWorld().isRemote)
             LeafiaPacket._start(thisTE).__write(31,pos).__sendToAffectedClients();
     }
 
 
-    default Vec3d getDirection() {
+    default Vec3d leafia$getDirection() {
         TileEntity thisTE = (TileEntity) this;
-        return new Vec3d(getTargetPosition().subtract(thisTE.getPos())).normalize();
+        return new Vec3d(leafia$getTargetPosition().subtract(thisTE.getPos())).normalize();
     }
 
-    default EnumFacing getFront() {
+    default EnumFacing leafia$getFront() {
         TileEntity thisTE = (TileEntity) this;
-        Vec3i relative = getTargetPosition().subtract(thisTE.getPos());
+        Vec3i relative = leafia$getTargetPosition().subtract(thisTE.getPos());
         int max = Math.max(Math.abs(relative.getX()),Math.max(Math.abs(relative.getY()),Math.abs(relative.getZ())));
         if (max == relative.getX()) return EnumFacing.EAST;
         else if (max == -relative.getX()) return EnumFacing.WEST;
@@ -85,11 +85,11 @@ public interface IDFCBase extends LeafiaPacketReceiver {
     }
 
     @Nullable
-    default TileEntityCore getCore(int range) {
+    default TileEntityCore leafia$getCore(int range) {
         TileEntity thisTE = (TileEntity) this;
         World world = thisTE.getWorld();
         BlockPos pos = thisTE.getPos();
-        lastGetCore(LeafiaLib.leafiaRayTraceBlocksCustom(world,new Vec3d(pos).add(0.5,0.5,0.5),new Vec3d(pos).add(0.5,0.5,0.5).add(getDirection().scale(range)),(process, config, current) -> {
+        leafia$lastGetCore(LeafiaLib.leafiaRayTraceBlocksCustom(world,new Vec3d(pos).add(0.5,0.5,0.5),new Vec3d(pos).add(0.5,0.5,0.5).add(leafia$getDirection().scale(range)),(process,config,current) -> {
             if (current.posSnapped.equals(pos)) return process.CONTINUE();
             if (!current.block.canCollideCheck(current.state,true))
                 return process.CONTINUE();
@@ -103,20 +103,20 @@ public interface IDFCBase extends LeafiaPacketReceiver {
             }
             return process.BREAK();
         }));
-        return lastGetCore();
+        return leafia$lastGetCore();
     }
 
     /// ---------------------------- BOILERPLATE ZONE ---------------------------- ///
 
-    TileEntityCore lastGetCore();
+    TileEntityCore leafia$lastGetCore();
 
-    void lastGetCore(TileEntityCore core);
+    void leafia$lastGetCore(TileEntityCore core);
 
-    BlockPos getTargetPosition();
+    BlockPos leafia$getTargetPosition();
 
     /**
      * @deprecated internal setter
      */
     @Deprecated
-    void targetPosition(BlockPos pos);
+    void leafia$targetPosition(BlockPos pos);
 }

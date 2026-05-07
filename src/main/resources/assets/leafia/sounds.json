@@ -9,7 +9,16 @@
   "external.furnacestressed05": {"category": "block", "sounds": [{"name": "leafia:external/furnacestressed05", "stream": false}]},
   "external.furnacestressed06": {"category": "block", "sounds": [{"name": "leafia:external/furnacestressed06", "stream": false}]},
 
-  "external.arc_welder": {"subtitle": "subtitles.block.arc_welder", "category": "block", "sounds": [{"name": "leafia:external/stationeers_welder_dualmix", "stream": false}]},
+  "external.pipestressed": {"category": "block", "sounds": [
+    {"name": "leafia:external/pipestress02", "stream": false},
+    {"name": "leafia:external/pipestress05", "stream": false},
+    {"name": "leafia:external/pipestress08", "stream": false},
+    {"name": "leafia:external/pipestress12", "stream": false},
+    {"name": "leafia:external/pipestress16", "stream": false},
+    {"name": "leafia:external/pipestress17", "stream": false}
+  ]},
+
+  "external.arc_welder": {"subtitle": "subtitles.block.arc_welder", "category": "block", "sounds": [{"name": "leafia:external/stationeers_welder_dualmix_2", "stream": false}]},
   "external.arc_welder_start": {"subtitle": "subtitles.block.arc_welder_start", "category": "block", "sounds": [{"name": "leafia:external/stationeers_welder_arc_start", "stream": false}]},
   "external.arc_welder_stop": {"subtitle": "subtitles.block.arc_welder_stop", "category": "block", "sounds": [{"name": "leafia:external/stationeers_welder_arc_stop", "stream": false}]},
 
@@ -18,6 +27,8 @@
   "external.pwrcontrolstop": {"category": "block", "sounds": [{"name": "leafia:external/stormworks_hingepivot4_end", "stream": false}]},
 
   "external.pwrelement": {"category": "block", "sounds": [{"name": "leafia:external/stormworks_nuclear_hum", "stream": false}]},
+
+  "external.modular_turbine": {"category": "block", "sounds": [{"name": "leafia:external/stormworks_turbine_slowed", "stream": false}]},
 
   "external.machineDestroyed": {"category": "block", "sounds": [{"name": "leafia:external/apeboss_death", "stream": false}]},
   "external.machineExplode": {"category": "block", "sounds": [{"name": "leafia:external/mech_explosion", "stream": false}]},
@@ -37,7 +48,7 @@
   "block.kfc.vs": {"category": "block", "sounds": [{"subtitle": "subtitles.block.kfc.vs", "name": "leafia:external/forcefield_loop", "stream": false}]},
   "block.kfc.tw": {"category": "block", "sounds": [{"subtitle": "subtitles.block.kfc.tw", "name": "leafia:external/charge_full_hold1", "stream": false}]},
   "block.kfc.eoh": {"category": "block", "sounds": [{"subtitle": "subtitles.block.kfc.eoh", "name": "leafia:external/avactron_loop", "stream": false}]},
-  "block.kfc.meltdown": {"category": "block", "sounds": [{"subtitle": "subtitles.block.kfc.meltdown", "name": "leafia:leafia/dfcstress", "stream": false}]},
+  "block.kfc.meltdown": {"category": "block", "sounds": [{"subtitle": "subtitles.block.kfc.meltdown", "name": "leafia:leafia/dfcstress", "stream": true}]},
   "block.kfc.explode": {"category": "block", "sounds": [{"subtitle": "subtitles.block.kfc.explode", "name": "leafia:leafia/dfcexplode", "stream": false}]},
 
   "music.422fgame": {"category": "music", "sounds": [{"name": "leafia:music/422fgame", "stream": false}]},
@@ -82,5 +93,14 @@
 
   "external.reactor_door_handle": { "subtitle": "subtitles.block.reactor_door_handle", "category": "block", "sounds": ["leafia:external/reactordoor_handle"]},
   "external.reactor_door_open": { "subtitle": "subtitles.block.reactor_door_open", "category": "block", "sounds": ["leafia:external/reactordoor_open"]},
-  "external.reactor_door_close": { "subtitle": "subtitles.block.reactor_door_close", "category": "block", "sounds": ["leafia:external/reactordoor_close"]}
+  "external.reactor_door_close": { "subtitle": "subtitles.block.reactor_door_close", "category": "block", "sounds": ["leafia:external/reactordoor_close"]},
+
+  "external.sbesrottenrain": { "subtitle": "subtitles.weather.rain", "category": "weather", "sounds": ["leafia:external/rottenrain1","leafia:external/rottenrain2","leafia:external/rottenrain3"] },
+  "external.sbesrottenrain.above": { "subtitle": "subtitles.weather.rain", "category": "weather", "sounds": ["leafia:external/rottenrain_filtered1","leafia:external/rottenrain_filtered2","leafia:external/rottenrain_filtered3"] },
+
+  "external.sbmoon_surface": { "category": "ambient", "sounds": [{ "name": "leafia:external/moon_surface", "stream": true }] },
+
+  "external.eversionsong7cut": { "category": "block", "sounds": ["leafia:external/song7_cut"]},
+
+  "music.wtf": { "category": "record", "sounds": [{ "name": "leafia:leafia/untitled", "stream": true }] }
 }

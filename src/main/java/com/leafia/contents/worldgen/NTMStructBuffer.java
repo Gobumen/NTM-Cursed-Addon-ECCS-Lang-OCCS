@@ -48,7 +48,7 @@ public class NTMStructBuffer {
         try {
             Method reflected = BlockDummyable.class.getDeclaredMethod("fillSpace",World.class,int.class,int.class,int.class,ForgeDirection.class,int.class);
             reflected.setAccessible(true);
-            fillSpaceHandle= MethodHandles.lookup().unreflect(reflected);
+            fillSpaceHandle = MethodHandles.lookup().unreflect(reflected);
         } catch (NoSuchMethodException | IllegalAccessException e) {
             throw new LeafiaDevFlaw(e);
         }

@@ -1,5 +1,6 @@
 package com.leafia.contents.bomb.missile.customnuke.container;
 
+import com.hbm.inventory.TransferStrategy;
 import com.hbm.tileentity.bomb.TileEntityNukeCustom;
 import com.hbm.util.InventoryUtil;
 import com.leafia.contents.bomb.missile.customnuke.CustomNukeMissileItem.CustomNukeMissileInventory;
@@ -73,11 +74,14 @@ public class CustomNukeMissileContainer extends Container {
 		}
 		return super.slotClick(slotId, dragType, clickTypeIn, player);
 	}
-	
+
+	private static final TransferStrategy TRANSFER_STRATEGY = TransferStrategy.builder(27)
+			.genericMachineRange(0)
+			.build();
 	@Override
     public ItemStack transferStackInSlot(EntityPlayer player, int index)
     {
-		return InventoryUtil.transferStack(this.inventorySlots, index, 27);
+		return InventoryUtil.transferStack(this.inventorySlots,index,TRANSFER_STRATEGY,player);
     }
 
 	@Override

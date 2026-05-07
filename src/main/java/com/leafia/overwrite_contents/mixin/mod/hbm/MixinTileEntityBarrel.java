@@ -2,6 +2,13 @@ package com.leafia.overwrite_contents.mixin.mod.hbm;
 
 import com.hbm.api.fluidmk2.FluidNode;
 import com.hbm.api.fluidmk2.IFluidStandardTransceiverMK2;
+import com.hbm.blocks.ModBlocks;
+import com.hbm.blocks.machine.BlockFluidBarrel;
+import com.hbm.inventory.control_panel.ControlEvent;
+import com.hbm.inventory.control_panel.ControlEventSystem;
+import com.hbm.inventory.control_panel.IControllable;
+import com.hbm.inventory.control_panel.types.DataValue;
+import com.hbm.inventory.control_panel.types.DataValueFloat;
 import com.hbm.inventory.fluid.FluidType;
 import com.hbm.inventory.fluid.tank.FluidTankNTM;
 import com.hbm.lib.DirPos;
@@ -15,6 +22,8 @@ import com.leafia.contents.network.pipe_amat.uninos.AmatNode;
 import com.leafia.settings.AddonConfig;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import org.spongepowered.asm.mixin.Mixin;
@@ -27,12 +36,49 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import javax.annotation.Nullable;
-import java.util.HashSet;
+import java.util.*;
 
 @Mixin(value = TileEntityBarrel.class)
-public abstract class MixinTileEntityBarrel extends TileEntityMachineBase implements IFluidStandardTransceiverMK2 {
+public abstract class MixinTileEntityBarrel extends TileEntityMachineBase implements IFluidStandardTransceiverMK2, IControllable {
+	@Override
+	public List<String> getInEvents() {
+		return Collections.singletonList("setIOMode");
+	}
+	@Override
+	public void receiveEvent(BlockPos from,ControlEvent e) {
+		if (e.name.equals("setIOMode"))
+			mode = (short)MathHelper.clamp(e.vars.get("mode").getNumber(),0,3);
+	}
+
 	@Shadow(remap=false) public FluidTankNTM tankNew;
 	@Shadow(remap=false) public short mode = 0;
+
+	@Override
+	public Map<String,DataValue> getQueryData() {
+		Map<String,DataValue> map = new HashMap<>();
+		map.put("fill",new DataValueFloat(tankNew.getFill()));
+		map.put("maxFill",new DataValueFloat(tankNew.getMaxFill()));
+		map.put("ioMode",new DataValueFloat(mode));
+		return map;
+	}
+	@Override
+	public BlockPos getControlPos() {
+		return getPos();
+	}
+	@Override
+	public World getControlWorld() {
+		return getWorld();
+	}
+	@Override
+	public void validate() {
+		super.validate();
+		ControlEventSystem.get(world).addControllable(this);
+	}
+	@Override
+	public void invalidate() {
+		ControlEventSystem.get(world).removeControllable(this);
+		super.invalidate();
+	}
 
 	public MixinTileEntityBarrel(int scount) {
 		super(scount);
@@ -44,7 +90,7 @@ public abstract class MixinTileEntityBarrel extends TileEntityMachineBase implem
 	@Overwrite(remap = false)
 	public boolean hasCapability(Capability<?> capability,@Nullable EnumFacing facing) {
 		if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
-			if (facing != null && !AddonConfig.enableBarrelSidePorts) {
+			if (facing != null && !AddonConfig.enableBarrelSidePorts && getBlockType() instanceof BlockFluidBarrel) {
 				if (!facing.equals(EnumFacing.UP) && !facing.equals(EnumFacing.DOWN))
 					return false;
 			}
@@ -58,8 +104,8 @@ public abstract class MixinTileEntityBarrel extends TileEntityMachineBase implem
 	 * @reason only accept top and bottom
 	 */
 	@Overwrite(remap = false)
-	protected DirPos[] getConPos() {
-		if (AddonConfig.enableBarrelSidePorts) {
+	public DirPos[] getConPos() {
+		if (AddonConfig.enableBarrelSidePorts && getBlockType() instanceof BlockFluidBarrel) {
 			return new DirPos[]{
 					new DirPos(pos.getX() + 1, pos.getY(), pos.getZ(), Library.POS_X),
 					new DirPos(pos.getX() - 1, pos.getY(), pos.getZ(), Library.NEG_X),
@@ -81,8 +127,10 @@ public abstract class MixinTileEntityBarrel extends TileEntityMachineBase implem
 
 	@Override
 	public boolean canConnect(FluidType type,ForgeDirection dir) {
-		if (dir != ForgeDirection.UP && dir != ForgeDirection.DOWN)
-			return false;
+		if (AddonConfig.enableBarrelSidePorts) {
+			if (dir != ForgeDirection.UP && dir != ForgeDirection.DOWN)
+				return false;
+		}
 		return IFluidStandardTransceiverMK2.super.canConnect(type,dir);
 	}
 

@@ -3,8 +3,7 @@ package com.leafia.contents.miscellanous.regex_filter.pneumatic.container;
 import com.hbm.util.I18nUtil;
 import com.leafia.contents.miscellanous.regex_filter.pneumatic.RegexFilterTE;
 import com.leafia.contents.miscellanous.regex_filter.pneumatic.RegexFilterTE.RegexFilter;
-import com.leafia.contents.miscellanous.slop.SlopTE;
-import com.leafia.dev.container_utility.LeafiaPacket;
+import com.leafia.dev.LeafiaUtil.ScrollUtil;
 import com.leafia.dev.gui.FiaUIRect;
 import com.leafia.dev.gui.LCEGuiInfoContainer;
 import com.leafia.transformer.LeafiaGls;
@@ -174,8 +173,10 @@ public class RegexFilterGUI extends LCEGuiInfoContainer implements IRegexFilterG
 		int scrollBarPos = 0;
 		if (maxScroll > 0) {
 			if (scrollin)
-				scroll = MathHelper.clamp((int)((mouseY-17-7-guiTop)*maxScroll/37f+0.5f),0,maxScroll);
-			scrollBarPos = scroll*37/maxScroll;
+				scroll = ScrollUtil._getScrollOffset(15,52,mouseY-17-guiTop,maxScroll);
+			//scroll = MathHelper.clamp((int)((mouseY-17-7-guiTop)*maxScroll/37f+0.5f),0,maxScroll);
+			scrollBarPos = ScrollUtil.getScrollBarPos(15,52,ScrollUtil._getScrollRatio(scroll,maxScroll));
+			//scrollBarPos = scroll*37/maxScroll;
 		}
 		drawTexturedModalRect(guiLeft+156,guiTop+17+scrollBarPos,(maxScroll > 0) ? 176 : 188,0,12,15);
 		int pos = 0;

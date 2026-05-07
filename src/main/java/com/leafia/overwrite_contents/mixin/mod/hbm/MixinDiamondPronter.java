@@ -4,6 +4,7 @@ import com.hbm.render.NTMRenderHelper;
 import com.hbm.render.misc.DiamondPronter;
 import com.hbm.render.misc.EnumSymbol;
 import com.leafia.transformer.LeafiaGls;
+import com.leafia.unsorted.NTMRenderHelperWrapper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
@@ -34,10 +35,10 @@ public class MixinDiamondPronter {
 			int y = 0;
 			float localOffset = -startOffset+i*width*2;
 			NTMRenderHelper.startDrawingTexturedQuads();
-			NTMRenderHelper.addVertexWithUV(0.002,height+oY,-width+oX+localOffset,(x+4)*p,y*p);
-			NTMRenderHelper.addVertexWithUV(0.002,height+oY,width+oX+localOffset,x*p,y*p);
-			NTMRenderHelper.addVertexWithUV(0.002,-height+oY,width+oX+localOffset,x*p,(y+5)*p);
-			NTMRenderHelper.addVertexWithUV(0.002,-height+oY,-width+oX+localOffset,(x+4)*p,(y+5)*p);
+			NTMRenderHelperWrapper.addVertexWithUV(0.002,height+oY,-width+oX+localOffset,(x+4)*p,y*p);
+			NTMRenderHelperWrapper.addVertexWithUV(0.002,height+oY,width+oX+localOffset,x*p,y*p);
+			NTMRenderHelperWrapper.addVertexWithUV(0.002,-height+oY,width+oX+localOffset,x*p,(y+5)*p);
+			NTMRenderHelperWrapper.addVertexWithUV(0.002,-height+oY,-width+oX+localOffset,(x+4)*p,(y+5)*p);
 			NTMRenderHelper.draw();
 		}
 
@@ -62,10 +63,10 @@ public class MixinDiamondPronter {
 		GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
 
 		NTMRenderHelper.startDrawingTexturedQuads();
-		NTMRenderHelper.addVertexWithUV(0.0, 0.5, -0.5, p * 144, p * 45);
-		NTMRenderHelper.addVertexWithUV(0.0, 0.5, 0.5, p * 5, p * 45);
-		NTMRenderHelper.addVertexWithUV(0.0, -0.5, 0.5, p * 5, p * 184);
-		NTMRenderHelper.addVertexWithUV(0.0, -0.5, -0.5, p * 144, p * 184);
+		NTMRenderHelperWrapper.addVertexWithUV(0.0, 0.5, -0.5, p * 144, p * 45);
+		NTMRenderHelperWrapper.addVertexWithUV(0.0, 0.5, 0.5, p * 5, p * 45);
+		NTMRenderHelperWrapper.addVertexWithUV(0.0, -0.5, 0.5, p * 5, p * 184);
+		NTMRenderHelperWrapper.addVertexWithUV(0.0, -0.5, -0.5, p * 144, p * 184);
 		NTMRenderHelper.draw();
 
 		float width = 10F * s;
@@ -143,10 +144,10 @@ public class MixinDiamondPronter {
 			int y = symbol.y;
 
 			NTMRenderHelper.startDrawingTexturedQuads();
-			NTMRenderHelper.addVertexWithUV(0.002, symSize + oY, -symSize + oZ, (x + 59) * p, y * p);
-			NTMRenderHelper.addVertexWithUV(0.002, symSize + oY, symSize + oZ, x * p, y * p);
-			NTMRenderHelper.addVertexWithUV(0.002, -symSize + oY, symSize + oZ, x * p, (y + 59) * p);
-			NTMRenderHelper.addVertexWithUV(0.002, -symSize + oY, -symSize + oZ, (x + 59) * p, (y + 59) * p);
+			NTMRenderHelperWrapper.addVertexWithUV(0.002, symSize + oY, -symSize + oZ, (x + 59) * p, y * p);
+			NTMRenderHelperWrapper.addVertexWithUV(0.002, symSize + oY, symSize + oZ, x * p, y * p);
+			NTMRenderHelperWrapper.addVertexWithUV(0.002, -symSize + oY, symSize + oZ, x * p, (y + 59) * p);
+			NTMRenderHelperWrapper.addVertexWithUV(0.002, -symSize + oY, -symSize + oZ, (x + 59) * p, (y + 59) * p);
 			NTMRenderHelper.draw();
 		}
 

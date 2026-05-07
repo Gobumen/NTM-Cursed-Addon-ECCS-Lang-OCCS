@@ -22,11 +22,15 @@ public class LeafiaBrush {
 	}
 	public enum BrushMode {
 		QUADS(GL11.GL_QUADS),
-		TRIANGLE_FAN(GL11.GL_TRIANGLE_FAN);
+		TRIANGLE_FAN(GL11.GL_TRIANGLE_FAN),
+		LINES(GL11.GL_LINES);
 		final int value;
 		BrushMode(int value) {
 			this.value = value;
 		}
+	}
+	public void addVertex(double x,double y,double z) {
+		buf.pos(x,y,z).endVertex();
 	}
 	public void addVertexWithUV(double x,double y,double z,double u,double v) {
 		buf.pos(x,y,z).tex(u,v).endVertex();

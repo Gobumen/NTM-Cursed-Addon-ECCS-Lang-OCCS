@@ -31,12 +31,12 @@ public class AddonChemplantRecipes {
 		);*/
 		INSTANCE.register(new GenericRecipe("chem.leafia.battery_desh").setup(100, 15_000)
 				.inputItems(
-						new OreDictStack(DESH.ingot(),48),
-						new OreDictStack(BAKELITE.dust(),24),
-						new OreDictStack(P_RED.dust(),24)
+						new OreDictStack(DESH.ingot(),48/2),
+						new OreDictStack(BAKELITE.dust(),24/2),
+						new OreDictStack(P_RED.dust(),24/2)
 				)
 				.inputFluids(
-						new FluidStack(Fluids.COALGAS,3000)
+						new FluidStack(Fluids.COALGAS,3000/2)
 				)
 				.outputItems(new ItemStack(ModItems.battery_pack,1,AddonEnumBatteryPack.BATTERY_DESH.ordinal()))
 		);
@@ -89,6 +89,19 @@ public class AddonChemplantRecipes {
 				.outputItems(new ItemStack(ModItems.battery_pack,1,AddonEnumBatteryPack.BATTERY_ELECTRO.ordinal()))
 				.outputFluids(
 						new FluidStack(Fluids.PERFLUOROMETHYL_HOT,16_000)
+				)
+		);
+		INSTANCE.register(new GenericRecipe("chem.leafia.cryointer").setup(90,500)
+				.inputItems(
+						new ComparableStack(ModItems.pellet_charged,1)
+				)
+				.inputFluids(
+						new FluidStack(Fluids.COOLANT,2000),
+						new FluidStack(Fluids.PERFLUOROMETHYL_COLD,1800)
+				)
+				.outputFluids(
+						new FluidStack(AddonFluids.CRYOINTER,2000),
+						new FluidStack(Fluids.PERFLUOROMETHYL,1800)
 				)
 		);
 	}

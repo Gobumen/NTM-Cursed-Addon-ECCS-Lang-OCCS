@@ -1,6 +1,7 @@
 package com.leafia.contents.machines.controlpanel.instruments.types.starbound;
 
 import com.hbm.inventory.control_panel.*;
+import com.hbm.inventory.control_panel.types.*;
 import com.hbm.inventory.control_panel.controls.ControlType;
 import com.hbm.inventory.control_panel.nodes.NodeGetVar;
 import com.hbm.inventory.control_panel.nodes.NodeMath;
@@ -70,13 +71,14 @@ public class LargeSwitch extends Control {
 		LeafiaGls.popMatrix();
 		LeafiaGls.shadeModel(GL11.GL_FLAT);
 	}
-	static final float increment = 100/7f;
+	static final float increment = 200/7f;
 	@Override
 	public void receiveEvent(ControlEvent evt) {
 		if (evt.name.equals("ctrl_press"))
 			panel.parent.getControlWorld().playSound(null,panel.parent.getControlPos(),LeafiaSoundEvents.sbWallSwitch,SoundCategory.BLOCKS,0.5f,1);
 		else if (evt.name.equals("tick")) {
-			float tgtLevel = MathHelper.clamp(vars.get("position").getNumber(),0,100);
+			vars.put("position",new DataValueFloat(Math.max(Math.min(vars.get("position").getNumber(),100),0)));
+			float tgtLevel = vars.get("position").getNumber();
 			float delta = tgtLevel-curLevel;
 			float difference = Math.abs(delta);
 			if (difference > 0) {
@@ -115,7 +117,7 @@ public class LargeSwitch extends Control {
 		@Override
 		public @Nullable Consumer<MessageContext> decode(LeafiaBuf buf) {
 			boolean success = load(buf);
-			level = buf.readFloat();
+			float level = buf.readFloat();
 			return (ctx)->{
 				if (!success) return;
 				if (instrument instanceof LargeSwitch sw)

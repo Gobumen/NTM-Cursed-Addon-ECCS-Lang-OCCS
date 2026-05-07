@@ -400,6 +400,30 @@ if (coreModClass) {
     }
 }
 
+if (usesMixins.toBoolean()) {
+    for (runTask in ['runObfClient', 'runObfServer']) {
+        tasks.named(runTask, RunMinecraftTask).configure {
+            classpath += project.files(project.provider(() -> {
+                def mixinCfg = project.configurations.detachedConfiguration(project.dependencies.create(project.mixinProviderSpec))
+                mixinCfg.canBeConsumed = false
+                mixinCfg.canBeResolved = true
+                mixinCfg.transitive = false
+                return mixinCfg.singleFile
+            }))
+        }
+    }
+}
+
+tasks.named('prepareObfModsFolder', Copy).configure {
+    from('libs/CTM-MC1.12.2-1.0.2.31.jar')
+    outputs.upToDateWhen { false }
+    doFirst {
+        delete(project.fileTree(destinationDir) {
+            include '*.jar'
+        })
+    }
+}
+
 if (generateGradleTokenClass) {
     tasks.injectTags.outputClassName.set(generateGradleTokenClass)
 }
@@ -1461,15 +1485,7 @@ boolean performBuildScriptUpdate() {
 }
 
 boolean isNewBuildScriptVersionAvailable() {
-    Map parameters = ["connectTimeout": 10000, "readTimeout": 10000]
-
-    String currentBuildScript = getFile("build.gradle").getText()
-    String currentBuildScriptHash = getVersionHash(currentBuildScript)
-    String availableBuildScript = availableBuildScriptUrl().newInputStream(parameters).getText()
-    String availableBuildScriptHash = getVersionHash(availableBuildScript)
-
-    boolean isUpToDate = currentBuildScriptHash.empty || availableBuildScriptHash.empty || currentBuildScriptHash == availableBuildScriptHash
-    return !isUpToDate
+    return false
 }
 
 static String getVersionHash(String buildScriptContent) {

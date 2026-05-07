@@ -1,5 +1,6 @@
 package com.leafia.overwrite_contents.mixin.mod.hbm;
 
+import com.hbm.entity.effect.EntityFalloutRain;
 import com.hbm.entity.logic.EntityExplosionChunkloading;
 import com.hbm.entity.logic.EntityNukeExplosionMK5;
 import com.leafia.overwrite_contents.interfaces.IMixinEntityFalloutRain;
@@ -34,8 +35,11 @@ public abstract class MixinEntityNukeExplosionMK5 extends EntityExplosionChunklo
 	}
 	@Redirect(method = "onUpdate",at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;spawnEntity(Lnet/minecraft/entity/Entity;)Z"),require = 1)
 	public boolean onUpdate(World world,Entity entity) {
-		if (entity instanceof IMixinEntityFalloutRain rain && digammaFallout)
+		if (entity instanceof IMixinEntityFalloutRain rain && digammaFallout) {
 			rain.setDigammaFallout();
+			EntityFalloutRain fallout = (EntityFalloutRain)rain;
+			fallout.setScale(fallout.getScale()*5);
+		}
 		return world.spawnEntity(entity);
 	}
 }

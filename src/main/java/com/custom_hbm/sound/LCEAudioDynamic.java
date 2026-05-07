@@ -14,14 +14,13 @@ import java.util.function.BiFunction;
 @SideOnly(Side.CLIENT)
 public class LCEAudioDynamic extends MovingSound {
 
-	public float intendedVolume;
+	public float intendedVolume = 10.0F;
 	public BiFunction<Float,Double,Double> attenuationFunction = null;
 
 	protected LCEAudioDynamic(SoundEvent loc,SoundCategory cat) {
 		super(loc, cat);
 		this.repeat = true;
 		this.attenuationType = AttenuationType.NONE;
-		this.intendedVolume = 10;
 	}
 	
 	public void setPosition(float x, float y, float z) {
@@ -32,7 +31,6 @@ public class LCEAudioDynamic extends MovingSound {
 
 	public void setAttenuation(AttenuationType type){
 		this.attenuationType = type;
-		volume = intendedVolume;
 	}
 	public void setCustomAttenuation(BiFunction<Float,Double,Double> attenuationFunction) {
 		this.attenuationFunction = attenuationFunction;
@@ -45,27 +43,9 @@ public class LCEAudioDynamic extends MovingSound {
 	@Override
 	public void update() {
 		EntityPlayerSP player = Minecraft.getMinecraft().player;
-		float f = 0;
-		if(player != null) {
+		if(player != null && attenuationFunction != null) {
 			double distance = Math.sqrt(Math.pow(xPosF - player.posX, 2) + Math.pow(yPosF - player.posY, 2) + Math.pow(zPosF - player.posZ, 2));
-			if (attenuationFunction != null) {
-				double castLiteral = attenuationFunction.apply(intendedVolume,distance);
-				volume = (float)castLiteral; // java doesn't allow directly applying the value to here lol
-			} else if(attenuationType == AttenuationType.LINEAR){
-				/*float f3 = intendedVolume;
-                float f2 = 16.0F;
-
-                if (f3 > 1.0F)
-                {
-                    f2 *= f3;
-                }
-                f = (float)Math.sqrt(Math.pow(xPosF - player.posX, 2) + Math.pow(yPosF - player.posY, 2) + Math.pow(zPosF - player.posZ, 2));
-                volume = 1-f2/f;
-                System.out.println(volume);*/
-			} else {
-				f = (float)distance;
-				volume = func(f, intendedVolume);
-			}
+			volume = attenuationFunction.apply(intendedVolume, distance).floatValue();
 		} else {
 			volume = intendedVolume;
 		}
@@ -89,13 +69,10 @@ public class LCEAudioDynamic extends MovingSound {
 	
 	public void setVolume(float volume) {
 		this.intendedVolume = volume;
+		this.volume = volume;
 	}
 	
 	public void setPitch(float pitch) {
 		this.pitch = pitch;
-	}
-	
-	public float func(float f, float v) {
-		return (f / v) * -2 + 2;
 	}
 }

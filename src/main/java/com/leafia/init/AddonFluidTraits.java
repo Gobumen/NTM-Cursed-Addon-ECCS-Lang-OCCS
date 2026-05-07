@@ -10,6 +10,7 @@ import com.hbm.inventory.fluid.trait.FluidTrait;
 import com.leafia.contents.AddonFluids;
 import com.leafia.contents.fluids.AddonFluidType;
 import com.leafia.contents.fluids.traits.FT_DFCFuel;
+import com.leafia.contents.fluids.traits.FT_Description;
 import com.leafia.contents.fluids.traits.FT_LFTRCoolant;
 import com.leafia.contents.fluids.traits.FT_Magnetic;
 import com.leafia.contents.machines.misc.modular_turbine.core.MTCoreTE;
@@ -24,6 +25,7 @@ import static com.hbm.inventory.fluid.trait.FluidTrait.traitNameMap;
 public class AddonFluidTraits {
 	static {
 		registerTrait("dfceff",FT_DFCFuel.class);
+		registerTrait("desc",FT_Description.class);
 		registerTrait("lftrcoolant",FT_LFTRCoolant.class);
 		registerTrait("magnetic",FT_Magnetic.class);
 	}
@@ -53,6 +55,7 @@ public class AddonFluidTraits {
 		Fluids.BALEFIRE.addTraits(new FT_DFCFuel(2.4F));
 		Fluids.STELLAR_FLUX.addTraits(new FT_DFCFuel(2.65F),MAGNETIC);
 		AddonFluids.N2O.addTraits(new FT_DFCFuel(1.4F));
+		AddonFluids.PYROGEL.addTraits(new FT_DFCFuel(2.0F));
 
 		Fluids.COOLANT_HOT.addTraits(new FT_Heatable().setEff(HeatingType.BOILER, 1.0D).setEff(HeatingType.HEATEXCHANGER, 1.0D).addStep(700, 1, AddonFluids.COOLANT_MAL, 1));
 		AddonFluids.COOLANT_MAL.addTraits(new FT_Coolable(Fluids.COOLANT_HOT, 1, 1, 700).setEff(CoolingType.HEATEXCHANGER, 1.0D));
@@ -63,7 +66,11 @@ public class AddonFluidTraits {
 
 		double eff_steam_turbine = 1.0D;
 		double eff_steam_cool = 0.5D;
-		AddonFluids.DEATHSTEAM.addTraits(new FT_Coolable(Fluids.ULTRAHOTSTEAM, 1, 10, 960).setEff(CoolingType.TURBINE, eff_steam_turbine).setEff(CoolingType.HEATEXCHANGER, eff_steam_cool));
+		// sorry to break it to you but DEATHSTEAM isn't meant to be used in turbines,
+		// the modular turbine feature is a bonus feature and I don't want to
+		// encourage new players into thinking they're usable
+		// - ntmleafia
+		AddonFluids.DEATHSTEAM.addTraits(new FT_Coolable(Fluids.ULTRAHOTSTEAM, 1, 10, 960)/*.setEff(CoolingType.TURBINE, eff_steam_turbine)*/.setEff(CoolingType.HEATEXCHANGER, eff_steam_cool));
 
 		MTCoreTE.steamTypes.add(AddonFluids.DEATHSTEAM);
 		MTCoreTE.steamTypes.add(Fluids.ULTRAHOTSTEAM);
@@ -76,6 +83,10 @@ public class AddonFluidTraits {
 		ES    UDS    SDS     DS        S
 		1B -> 10B -> 100B -> 1,000B -> 10,000B
 		 */
+
+		AddonFluids.N2O.addTraits(new FT_Description("Will you stop begging me?",false));
+		AddonFluids.CRYOINTER.addTraits(new FT_Heatable().setEff(HeatingType.PA,2.5).setEff(HeatingType.BOILER,1).addStep(750,1,Fluids.COOLANT,1));
+		Fluids.CRYOGEL.addTraits(new FT_Description("Lord bob asked me to$change his horrendous snowball recipe",false));
 
 		for (Entry<AddonFluidType,FluidType> entry : copyTraits.entrySet()) {
 			if (entry.getKey().copyFunction != null)

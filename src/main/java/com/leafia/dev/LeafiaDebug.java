@@ -23,6 +23,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.ITextComponent;
@@ -79,6 +80,18 @@ public class LeafiaDebug {
 			highlight.label = message;
 			highlight.lifetime = duration;
 			highlight.setColor(color);
+			highlight.show();
+		}
+	}
+	public static void debugAABB(World world,AxisAlignedBB aabb,float duration,int color) {
+		if (world.isRemote) {
+			Highlight highlight = new Highlight();
+			highlight.setArea(
+					new Vec3d(aabb.minX,aabb.minY,aabb.minZ),
+					new Vec3d(aabb.maxX,aabb.maxY,aabb.maxZ)
+			);
+			highlight.setColor(color);
+			highlight.lifetime = duration;
 			highlight.show();
 		}
 	}

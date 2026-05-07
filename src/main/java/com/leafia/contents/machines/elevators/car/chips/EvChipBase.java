@@ -5,6 +5,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumHand;
 
+import javax.annotation.Nullable;
 import java.util.Map;
 
 public abstract class EvChipBase {
@@ -49,7 +50,7 @@ public abstract class EvChipBase {
 		return ratio;
 	}
 
-	public abstract void onButtonServer(String id,EntityPlayer player,EnumHand hand);
+	public abstract void onButtonServer(String id,@Nullable EntityPlayer player,@Nullable EnumHand hand);
 	public abstract void passiveTick();
 	public abstract void onUpdate();
 

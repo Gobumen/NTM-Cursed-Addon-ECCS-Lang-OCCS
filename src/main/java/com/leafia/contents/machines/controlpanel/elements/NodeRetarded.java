@@ -1,7 +1,7 @@
 package com.leafia.contents.machines.controlpanel.elements;
 
-import com.hbm.inventory.control_panel.DataValue;
-import com.hbm.inventory.control_panel.DataValue.DataType;
+import com.hbm.inventory.control_panel.types.DataValue;
+import com.hbm.inventory.control_panel.types.DataValue.DataType;
 import com.hbm.inventory.control_panel.NodeConnection;
 import com.hbm.inventory.control_panel.nodes.Node;
 import org.jetbrains.annotations.NotNull;

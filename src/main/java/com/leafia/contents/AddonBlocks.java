@@ -15,6 +15,7 @@ import com.leafia.contents.AddonFluids.AddonFF;
 import com.leafia.contents.bomb.balefire.AshBalefire;
 import com.leafia.contents.bomb.balefire.BaleoniteBlock;
 import com.leafia.contents.bomb.digamma.DigammititeBlock;
+import com.leafia.contents.building.catwalk.railing.types.CatwalkRailingCurved;
 import com.leafia.contents.building.storage.broof.BroofBlock;
 import com.leafia.contents.building.doors.AddonDoorDecl;
 import com.leafia.contents.building.doors.special.reactor_door.ReactorDoorBlock;
@@ -32,7 +33,11 @@ import com.leafia.contents.debug.ff_test.source.DebugSourceBlock;
 import com.leafia.contents.debug.ff_test.tank.DebugTankBlock;
 import com.leafia.contents.debug.fluid_voider.VoiderBlock;
 import com.leafia.contents.debug.rbmk_jet.DebugRBMKJetEmitter;
+import com.leafia.contents.debug.render_test.DebugRenderTestBlock;
+import com.leafia.contents.fluids.BaleCoriumFluid;
+import com.leafia.contents.fluids.BaleCoriumFluid.BaleCoriumFluidBlock;
 import com.leafia.contents.fluids.FluorideFluid.FluorideFluidBlock;
+import com.leafia.contents.fluids.OsmiridiumFluid.OsmiridiumFluidBlock;
 import com.leafia.contents.machines.elevators.EvBuffer;
 import com.leafia.contents.machines.elevators.EvPulley;
 import com.leafia.contents.machines.elevators.EvShaftNeo;
@@ -41,17 +46,19 @@ import com.leafia.contents.machines.elevators.floors.EvFloor;
 import com.leafia.contents.machines.heat.hpboiler.HPBoilerBlock;
 import com.leafia.contents.machines.heat.rtheater.HeaterRTGBlock;
 import com.leafia.contents.machines.misc.heatex.CoolantHeatexBlock;
+import com.leafia.contents.machines.misc.modular_turbine.MTShaftBlock;
+import com.leafia.contents.machines.misc.modular_turbine.ModularTurbineBlockBase;
 import com.leafia.contents.machines.misc.modular_turbine.blades.*;
 import com.leafia.contents.machines.misc.modular_turbine.core.MTCoreBlock;
-import com.leafia.contents.machines.misc.modular_turbine.flywheel.MTFlywheel3x3;
-import com.leafia.contents.machines.misc.modular_turbine.flywheel.MTFlywheel5x5;
-import com.leafia.contents.machines.misc.modular_turbine.flywheel.MTFlywheel7x7;
-import com.leafia.contents.machines.misc.modular_turbine.flywheel.MTFlywheel9x9;
+import com.leafia.contents.machines.misc.modular_turbine.flywheel.*;
+import com.leafia.contents.machines.misc.modular_turbine.generator.MTGenerator3x3;
 import com.leafia.contents.machines.misc.modular_turbine.ports.*;
+import com.leafia.contents.machines.misc.modular_turbine.power_port.MTPowerPortBlock;
 import com.leafia.contents.machines.misc.modular_turbine.separator.MTSeparator3x3;
 import com.leafia.contents.machines.misc.modular_turbine.separator.MTSeparator5x5;
 import com.leafia.contents.machines.misc.modular_turbine.separator.MTSeparator7x7;
 import com.leafia.contents.machines.misc.modular_turbine.separator.MTSeparator9x9;
+import com.leafia.contents.machines.misc.wind_turbines.medium.WindTurbineMediumBlock;
 import com.leafia.contents.machines.panel.controltorch.ControlTorchBlock;
 import com.leafia.contents.machines.powercores.ams.base.AMSBaseBlock;
 import com.leafia.contents.machines.powercores.ams.emitter.AMSEmitterBlock;
@@ -106,11 +113,13 @@ import com.leafia.dev.blocks.legacy.LegacyBlockHazardMeta;
 import com.leafia.dev.blocks.legacy.LegacyWasteEarth;
 import com.leafia.dev.blocks.legacy.LegacyWasteIce;
 import com.leafia.dev.blocks.legacy.LegacyWasteSand;
+import com.leafia.unsorted.ateupd.Reserved6Dummyable;
 import com.llib.exceptions.LeafiaDevFlaw;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.item.EnumDyeColor;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
@@ -307,6 +316,7 @@ public class AddonBlocks {
 		public static final Block rbmkjet = new DebugRBMKJetEmitter(Material.ANVIL,"test_rbmk_jet");
 		public static final Block blackhole = new DebugBHBlock(Material.ANVIL,"test_blackhole_render");
 		public static final Block voider = new VoiderBlock(Material.ANVIL,"test_fluid_voider");
+		public static final Block render = new DebugRenderTestBlock(Material.ANVIL,"test_render");
 	}
 
 	public static final Block salt_separator = new SaltSeparatorBlock(Material.IRON,"salt_separator").setHardness(5.0F).setResistance(20.0F).setCreativeTab(MainRegistry.machineTab);
@@ -363,7 +373,7 @@ public class AddonBlocks {
 
 	public static final Block lightUnlit = new LightBlock(Material.IRON,"light_unlit",false).setHardness(5.0F).setResistance(10.0F).setCreativeTab(MainRegistry.blockTab);
 	public static final Block lightLit = new LightBlock(Material.IRON,"light_lit",true).setHardness(5.0F).setResistance(10.0F).setCreativeTab(MainRegistry.blockTab);
-	public static final Block lightEmitter = new LightEmitter(Material.AIR,"light_emitter");
+	public static final Block lightEmitter = new LightEmitter("light_emitter");
 
 	public static final Block control_torch = new ControlTorchBlock("control_torch",true).setCreativeTab(null).setLightLevel(0.5F);
 	public static final Block control_torch_unlit = new ControlTorchBlock("control_torch_unlit",false);
@@ -398,6 +408,28 @@ public class AddonBlocks {
 		public static final Block waste_snow = new AddonBlockPowder(Material.SNOW, SoundType.SNOW, "waste_snow").setCreativeTab(MainRegistry.resourceTab).setHardness(0.1F).setLightOpacity(0);
 		public static final Block waste_snow_block = new LegacyBlockHazardMeta(Material.SNOW, SoundType.SNOW, "waste_snow_block", "contamination/snow/", BlockBakeFrame.BlockForm.ALL, (short) 7).setCreativeTab(MainRegistry.resourceTab).setHardness(0.2F);
 		public static final Block waste_ice = new LegacyWasteIce("waste_ice").setCreativeTab(MainRegistry.resourceTab).setHardness(0.2F);
+		public static final Block scorched_earth = new LegacyWasteEarth(Material.GROUND, SoundType.GROUND, true, "scorched_earth").setHardness(0.5F).setResistance(1.0F).setCreativeTab(MainRegistry.resourceTab);
+
+		public static final Block machine_assembler = new Reserved6Dummyable("hbm","machine_assembler") {
+			@Override
+			public ItemStack getItem() {
+				return new ItemStack(ModBlocks.machine_assembly_machine);
+			}
+			@Override
+			public int[] getDimensions() {
+				return new int[]{1, 0, 2, 1, 2, 1};
+			}
+		};
+		public static final Block machine_chemplant = new Reserved6Dummyable("hbm","machine_chemplant") {
+			@Override
+			public ItemStack getItem() {
+				return new ItemStack(ModBlocks.machine_chemical_plant);
+			}
+			@Override
+			public int[] getDimensions() {
+				return new int[] {2, 0, 2, 1, 2, 1};
+			}
+		};
 	}
 
 	public static final Block ams_base = new AMSBaseBlock(Material.IRON, "ams_base").setHardness(5.0F).setResistance(100.0F).setCreativeTab(MainRegistry.machineTab);
@@ -443,7 +475,7 @@ public class AddonBlocks {
 
 	public static final Block reactor_door = new ReactorDoorBlock(Material.IRON,AddonDoorDecl.REACTOR_DOOR,true,"reactor_door").setHardness(150.0F).setResistance(13500.0F).setCreativeTab(MainRegistry.machineTab);
 
-	public static final Block brick_concrete_dark = new ConcreteBricks(Material.ROCK,"brick_concrete_dark","brick_dark_concrete"); // :leafeon_facepalm:
+	public static final Block brick_concrete_dark = new ConcreteBricks(Material.ROCK,"brick_concrete_dark","brick_dark_concrete").setHardness(15.0F).setResistance(160.0F); // :leafeon_facepalm:
 
 	public static final Block sellacity_rack = new RackBlock(Material.IRON,"sellacity_rack").setHardness(5.0F).setResistance(10.0F).setCreativeTab(MainRegistry.blockTab);
 
@@ -451,15 +483,38 @@ public class AddonBlocks {
 	public static class ModularTurbines {
 		static boolean dummy = false;
 
+		public static List<ModularTurbineBlockBase> ALL_COMPONENTS_FOR_RENDER = new ArrayList<>();
+
 		public static final Block deco_turbine = new AddonBlockBase(Material.IRON,"deco_turbine").setCreativeTab(MainRegistry.blockTab).setHardness(5.0F).setResistance(10.0F);
+		public static final Block power_port = new MTPowerPortBlock(Material.IRON,"modular_turbine_port").setCreativeTab(MainRegistry.machineTab).setHardness(5.0F).setResistance(10.0F);
 
 		public static final Block core = new MTCoreBlock("modular_turbine_core");
 
-		public static final Block blades2x2 = new MTBlades2x2("modular_turbine_2x2_blades");
-		public static final Block blades3x3 = new MTBlades3x3("modular_turbine_3x3_blades");
-		public static final Block blades5x5 = new MTBlades5x5("modular_turbine_5x5_blades");
-		public static final Block blades7x7 = new MTBlades7x7("modular_turbine_7x7_blades");
-		public static final Block blades9x9 = new MTBlades9x9("modular_turbine_9x9_blades");
+		public static final Block shaft = new MTShaftBlock("modular_turbine_shaft");
+
+		public static final Block blades2x2 = new MTBlades2x2("modular_turbine_2x2_blades","default");
+		public static final Block blades3x3 = new MTBlades3x3("modular_turbine_3x3_blades","default");
+		public static final Block blades5x5 = new MTBlades5x5("modular_turbine_5x5_blades","default");
+		public static final Block blades7x7 = new MTBlades7x7("modular_turbine_7x7_blades","default");
+		public static final Block blades9x9 = new MTBlades9x9("modular_turbine_9x9_blades","default");
+
+		public static final Block blades2x2_glass = new MTBlades2x2("modular_turbine_2x2_blades_glass","glass");
+		public static final Block blades3x3_glass = new MTBlades3x3("modular_turbine_3x3_blades_glass","glass");
+		public static final Block blades5x5_glass = new MTBlades5x5("modular_turbine_5x5_blades_glass","glass");
+		public static final Block blades7x7_glass = new MTBlades7x7("modular_turbine_7x7_blades_glass","glass");
+		public static final Block blades9x9_glass = new MTBlades9x9("modular_turbine_9x9_blades_glass","glass");
+
+		public static final Block blades2x2_smooth = new MTBlades2x2("modular_turbine_2x2_blades_smooth","smooth");
+		public static final Block blades3x3_smooth = new MTBlades3x3("modular_turbine_3x3_blades_smooth","smooth");
+		public static final Block blades5x5_smooth = new MTBlades5x5("modular_turbine_5x5_blades_smooth","smooth");
+		public static final Block blades7x7_smooth = new MTBlades7x7("modular_turbine_7x7_blades_smooth","smooth");
+		public static final Block blades9x9_smooth = new MTBlades9x9("modular_turbine_9x9_blades_smooth","smooth");
+
+		public static final Block blades2x2_glass_smooth = new MTBlades2x2("modular_turbine_2x2_blades_glass_smooth","glass_smooth");
+		public static final Block blades3x3_glass_smooth = new MTBlades3x3("modular_turbine_3x3_blades_glass_smooth","glass_smooth");
+		public static final Block blades5x5_glass_smooth = new MTBlades5x5("modular_turbine_5x5_blades_glass_smooth","glass_smooth");
+		public static final Block blades7x7_glass_smooth = new MTBlades7x7("modular_turbine_7x7_blades_glass_smooth","glass_smooth");
+		public static final Block blades9x9_glass_smooth = new MTBlades9x9("modular_turbine_9x9_blades_glass_smooth","glass_smooth");
 
 		public static final Block separator3x3 = new MTSeparator3x3("modular_turbine_3x3_separator");
 		public static final Block separator5x5 = new MTSeparator5x5("modular_turbine_5x5_separator");
@@ -481,11 +536,23 @@ public class AddonBlocks {
 		public static final Block port7x7_inline = new MTPort7x7Inline("modular_turbine_7x7_port_inline");
 		public static final Block port9x9_inline = new MTPort9x9Inline("modular_turbine_9x9_port_inline");
 
+		public static final Block flywheel2x2 = new MTFlywheel2x2("modular_turbine_2x2_flywheel");
 		public static final Block flywheel3x3 = new MTFlywheel3x3("modular_turbine_3x3_flywheel");
 		public static final Block flywheel5x5 = new MTFlywheel5x5("modular_turbine_5x5_flywheel");
 		public static final Block flywheel7x7 = new MTFlywheel7x7("modular_turbine_7x7_flywheel");
 		public static final Block flywheel9x9 = new MTFlywheel9x9("modular_turbine_9x9_flywheel");
+
+		public static final Block generator3x3 = new MTGenerator3x3("modular_turbine_3x3_generator");
 	}
+
+	static boolean railings_dummy = Railings.dummy;
+	public static class Railings {
+		static boolean dummy = false;
+
+		public static final Block curved = new CatwalkRailingCurved("catwalk_railing_curved");
+	}
+
+	public static final Block wind_turbine_medium = new WindTurbineMediumBlock(Material.IRON,"wind_turbine_medium").setHardness(5.0F).setResistance(10.0F).setCreativeTab(MainRegistry.machineTab);
 
 	static {
 		if (Loader.isModLoaded("opencomputers")) {
@@ -499,7 +566,7 @@ public class AddonBlocks {
 	}
 
 	private static void modifyBlockParams() {
-		ModBlocks.dfc_core.setResistance(65000000);
+		ModBlocks.dfc_core.setResistance(108333334);
 		ModBlocks.dfc_emitter.setResistance(50);
 		ModBlocks.dfc_receiver.setResistance(50);
 		ModBlocks.dfc_injector.setResistance(50);
@@ -543,7 +610,11 @@ public class AddonBlocks {
 		registerFluidBlocks();
 	}
 	public static Block fluid_fluoride = new FluorideFluidBlock(AddonFF.fluoride, Material.LAVA, "fluoride_fluid");
+	public static Block fluid_balecorium = new BaleCoriumFluidBlock(AddonFF.balecorium, ModBlocks.fluidcorium, "balecorium_fluid");
+	public static Block fluid_osmiridium = new OsmiridiumFluidBlock(AddonFF.osmiridium, Material.LAVA, "osmiridium_fluid");
 	private static void registerFluidBlocks() {
 		AddonFF.fluoride.setBlock(fluid_fluoride);
+		AddonFF.balecorium.setBlock(fluid_balecorium);
+		AddonFF.osmiridium.setBlock(fluid_osmiridium);
 	}
 }

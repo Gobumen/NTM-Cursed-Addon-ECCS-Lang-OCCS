@@ -6,8 +6,8 @@ import com.hbm.blocks.ModBlocks;
 import com.hbm.handler.radiation.ChunkRadiationManager;
 import com.hbm.interfaces.IRadResistantBlock;
 import com.hbm.inventory.control_panel.ControlEventSystem;
-import com.hbm.inventory.control_panel.DataValue;
-import com.hbm.inventory.control_panel.DataValueFloat;
+import com.hbm.inventory.control_panel.types.DataValue;
+import com.hbm.inventory.control_panel.types.DataValueFloat;
 import com.hbm.inventory.control_panel.IControllable;
 import com.hbm.inventory.fluid.FluidType;
 import com.hbm.inventory.fluid.Fluids;
@@ -35,6 +35,7 @@ import com.llib.group.LeafiaSet;
 import com.llib.math.range.RangeDouble;
 import com.llib.math.range.RangeInt;
 import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
@@ -742,6 +743,9 @@ public class PWRElementTE extends TileEntityInventoryBase implements PWRComponen
 	}
 	public float channelScale = 0;
 	public float exchangerScale = 1;
+	public static Block getCorium(LeafiaRodItem rod) {
+		return rod.corium;
+	}
 	@Override
 	public void update() {
 		if (this.data != null)
@@ -816,7 +820,7 @@ public class PWRElementTE extends TileEntityInventoryBase implements PWRComponen
 							} else */
 							if (gathered != null && gathered.tankTypes[1].hasTrait(FT_Gaseous.class)) {
 								for (int i = 0; i < height; i++)
-									world.setBlockState(pos.down(height),ModBlocks.corium_block.getDefaultState());
+									world.setBlockState(pos.down(height),rod.corium.getDefaultState());
 								gathered.explode(world,stack,null,0);
 							} else {
 								//inventory.setStackInSlot(0,ItemStack.EMPTY);
@@ -825,14 +829,18 @@ public class PWRElementTE extends TileEntityInventoryBase implements PWRComponen
 								int tries = height;
 								while (tries >= 0) {
 									tries--;
-									if (world.getBlockState(pos).getBlock() == ModBlocks.block_corium) {
+									if (world.getBlockState(pos).getBlock() == ModBlocks.block_corium || world.getBlockState(pos).getBlock() == ModBlocks.block_corium_cobble) {
 										pos = pos.up();
 										continue;
-									} else if (world.getBlockState(pos).getBlock() == ModBlocks.corium_block)
+									} else if (world.getBlockState(pos).getBlock() == rod.corium) {
+										// prevent the coriums being stuck
+										if (world.getBlockState(pos.down()).getMaterial().isSolid())
+											world.setBlockToAir(pos.down());
 										break;
+									}
 									else {
 										world.playEvent(2001,pos,Block.getStateId(world.getBlockState(pos)));
-										world.setBlockState(pos,ModBlocks.corium_block.getDefaultState());
+										world.setBlockState(pos,rod.corium.getDefaultState());
 										//BlockPos nextPos = pos.down();
 										/*while (world.isValid(nextPos)) {
 											if (world.getBlockState(nextPos).getBlock() instanceof MachinePWRElement)
@@ -841,7 +849,7 @@ public class PWRElementTE extends TileEntityInventoryBase implements PWRComponen
 												break;
 											nextPos = nextPos.down();
 										}*/
-										world.setBlockState(pos,ModBlocks.corium_block.getDefaultState());
+										world.setBlockState(pos,rod.corium.getDefaultState());
 									}
 								}
 							}
@@ -950,11 +958,17 @@ public class PWRElementTE extends TileEntityInventoryBase implements PWRComponen
 	public Map<String,DataValue> getQueryData() {
 		Map<String,DataValue> map = new HashMap<>();
 		map.put("temperature",new DataValueFloat(20));
+		map.put("meltingPoint",new DataValueFloat(0));
+		map.put("depletion",new DataValueFloat(100));
 		ItemStack stack = inventory.getStackInSlot(0);
-		if (stack.getItem() instanceof LeafiaRodItem) {
+		if (stack.getItem() instanceof LeafiaRodItem rod) {
 			NBTTagCompound tag = stack.getTagCompound();
-			if (tag != null)
+			if (tag != null) {
 				map.put("temperature",new DataValueFloat((float)tag.getDouble("heat")));
+				map.put("meltingPoint",new DataValueFloat((float)rod.meltingPoint));
+				if (rod.life > 0)
+					map.put("depletion",new DataValueFloat((float)(tag.getDouble("depletion")*100/rod.life)));
+			}
 		}
 		return map;
 	}

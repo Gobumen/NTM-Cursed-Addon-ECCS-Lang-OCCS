@@ -34,7 +34,6 @@ import pl.asie.computronics.audio.AudioUtils;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static pl.asie.computronics.reference.Capabilities.AUDIO_RECEIVER_CAPABILITY;
@@ -75,7 +74,7 @@ public abstract class MixinTileEntityMachineSiren extends TileEntity implements 
 								type.getSoundLocation(),SoundCategory.BLOCKS,
 								pos.getX()+0.5f,pos.getY()+0.5f,pos.getZ()+0.5f,
 								type.getVolume(),1
-						).setCustomAttentuation((intended,dist)->{
+						).setCustomAttenuation((intended,dist)->{
 							double minDist = 6;
 							double maxDist = minDist+vol*1.5;
 							double maxVolume = Math.min(vol,1);

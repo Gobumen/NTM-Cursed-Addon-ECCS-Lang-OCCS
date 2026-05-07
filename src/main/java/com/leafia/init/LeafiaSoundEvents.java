@@ -12,6 +12,8 @@ public class LeafiaSoundEvents {
 	// sniffs weed OOOOOOOOOOOOOOOOO
 	public static List<SoundEvent> ALL_SOUNDS = new ArrayList<SoundEvent>();
 
+	public static SoundEvent literally_nothing;
+
 	public static SoundEvent[] stressSounds;
 
 	public static SoundEvent nuke;
@@ -87,7 +89,20 @@ public class LeafiaSoundEvents {
 
 	public static SoundEvent az5;
 
+	public static SoundEvent modular_turbine;
+	public static SoundEvent pipestressed;
+
+	public static SoundEvent sbesrottenrain;
+	public static SoundEvent sbesrottenrain_above;
+
+	public static SoundEvent sbmoon_surface;
+	public static SoundEvent eversionsong7_cut;
+	public static SoundEvent digamma_record;
+
 	public static void init() {
+		// this is so retarded
+		literally_nothing = register("sdkgjalkdsjgldhsaiuhgui8asd8gy87dast67gt7wy9gty47yaw79g8734");
+
 		mukeExplosion = register("weapon.mukeExplosion");
 
 		nuke = register("weapon.nuke");
@@ -174,9 +189,9 @@ public class LeafiaSoundEvents {
 				HBMSoundHandler.geiger4,
 				HBMSoundHandler.geiger5,
 				HBMSoundHandler.geiger6,
-				geiger7, // unused, sounds like shit
-				geiger8, // unused, sounds like shit
-				geiger9  // unused, sounds like shit
+				geiger7,
+				geiger8,
+				geiger9
 		};
 
 		reactor_door_handle = register("external.reactor_door_handle");
@@ -187,6 +202,16 @@ public class LeafiaSoundEvents {
 		sbWallButton = register("external.sbwallbutton");
 
 		az5 = register("block.az5");
+
+		modular_turbine = register("external.modular_turbine");
+		pipestressed = register("external.pipestressed");
+
+		sbesrottenrain = register("external.sbesrottenrain");
+		sbesrottenrain_above = register("external.sbesrottenrain.above");
+
+		sbmoon_surface = register("external.sbmoon_surface");
+		eversionsong7_cut = register("external.eversionsong7cut");
+		digamma_record = register("music.wtf");
 	}
 
 	public static SoundEvent register(String name) {

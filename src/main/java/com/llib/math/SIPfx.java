@@ -59,7 +59,7 @@ public class SIPfx { // Now its both uppercase!
 				if (suffix.equals(siPrefix[z]))
 					return Double.parseDouble(s.substring(0,s.length()-1).trim())*Math.pow(1000,z+1);
 			}
-			throw new RuntimeException(e);
+			throw e;
 		}
 	}
 }

@@ -1155,8 +1155,10 @@ public class ElevatorEntity extends Entity implements IEntityMultiPart, IEntityC
 					dataManager.set(FLOOR_DISPLAY,specialDisplayFloors.get(floor));
 				else
 					dataManager.set(FLOOR_DISPLAY,Integer.toString(floor));
-				if (pulley.counterweight == null)
-					dataManager.set(FLOOR_DISPLAY,"Er");
+				if (pulley != null) {
+					if (pulley.counterweight == null)
+						dataManager.set(FLOOR_DISPLAY,"Er");
+				}
 				Vec3d prevMotion = new Vec3d(motionY,motionY,motionZ);
 				move(MoverType.SELF,motionX,motionY,motionZ);
 				//this.pushOutOfBlocks(this.posX, (this.getEntityBoundingBox().minY + this.getEntityBoundingBox().maxY) / (double)2.0F, this.posZ);
@@ -1190,7 +1192,7 @@ public class ElevatorEntity extends Entity implements IEntityMultiPart, IEntityC
 			updateDoorCollisions();
 		} catch (ConcurrentModificationException ignored) {}
 	}
-	public void onButtonServer(String id,EntityPlayer player,EnumHand hand) {
+	public void onButtonServer(String id,@Nullable EntityPlayer player,@Nullable EnumHand hand) {
 		if (id.equals("fire")) {
 			buttons.clear();
 			//dataManager.set(STYLE_BACK,"s6wall");

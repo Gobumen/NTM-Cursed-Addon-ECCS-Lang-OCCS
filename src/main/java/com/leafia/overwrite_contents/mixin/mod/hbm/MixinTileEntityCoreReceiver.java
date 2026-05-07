@@ -2,35 +2,32 @@ package com.leafia.overwrite_contents.mixin.mod.hbm;
 
 import com.hbm.api.energymk2.IEnergyProviderMK2;
 import com.hbm.api.fluid.IFluidStandardReceiver;
+import com.hbm.api.fluidmk2.IFluidStandardSenderMK2;
 import com.hbm.blocks.ModBlocks;
 import com.hbm.explosion.ExplosionLarge;
 import com.hbm.interfaces.ILaserable;
 import com.hbm.inventory.control_panel.*;
+import com.hbm.inventory.control_panel.types.*;
 import com.hbm.inventory.fluid.Fluids;
 import com.hbm.inventory.fluid.tank.FluidTankNTM;
 import com.hbm.lib.ForgeDirection;
 import com.hbm.tileentity.IGUIProvider;
 import com.hbm.tileentity.TileEntityMachineBase;
 import com.hbm.tileentity.machine.TileEntityCore;
-import com.hbm.tileentity.machine.TileEntityCoreInjector;
 import com.hbm.tileentity.machine.TileEntityCoreReceiver;
 import com.hbm.util.Tuple.Pair;
+import com.leafia.contents.AddonBlocks;
+import com.leafia.contents.AddonFluids;
 import com.leafia.contents.machines.powercores.dfc.components.absorber.CoreReceiverContainer;
 import com.leafia.contents.machines.powercores.dfc.components.absorber.CoreReceiverGUI;
-import com.leafia.contents.machines.powercores.dfc.components.injector.CoreInjectorContainer;
-import com.leafia.contents.machines.powercores.dfc.components.injector.CoreInjectorGUI;
 import com.leafia.contents.machines.powercores.dfc.debris.AbsorberShrapnelEntity;
 import com.leafia.contents.machines.powercores.dfc.debris.AbsorberShrapnelEntity.DebrisType;
-import com.leafia.contents.network.spk_cable.uninos.ISPKReceiver;
 import com.leafia.dev.LeafiaDebug;
-import com.leafia.dev.NTMFNBT;
 import com.leafia.dev.container_utility.LeafiaPacket;
 import com.leafia.dev.math.FiaMatrix;
 import com.leafia.init.LeafiaSoundEvents;
 import com.leafia.overwrite_contents.interfaces.IMixinTileEntityCore;
 import com.leafia.overwrite_contents.interfaces.IMixinTileEntityCoreReceiver;
-import com.leafia.overwrite_contents.interfaces.IMixinTileEntityInjector;
-import com.leafia.passive.LeafiaPassiveServer;
 import com.leafia.settings.AddonConfig;
 import com.llib.LeafiaLib.NumScale;
 import li.cil.oc.api.machine.Arguments;
@@ -53,6 +50,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.jetbrains.annotations.NotNull;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
@@ -66,31 +64,32 @@ import java.util.*;
 
 @Optional.InterfaceList({@Optional.Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "opencomputers")})
 @Mixin(value = TileEntityCoreReceiver.class)
-public abstract class MixinTileEntityCoreReceiver extends TileEntityMachineBase implements ITickable, IMixinTileEntityCoreReceiver, IEnergyProviderMK2, ILaserable, IFluidStandardReceiver, IGUIProvider, IControllable, SimpleComponent {
+public abstract class MixinTileEntityCoreReceiver extends TileEntityMachineBase implements ITickable, IMixinTileEntityCoreReceiver, IEnergyProviderMK2, ILaserable, IFluidStandardReceiver, IGUIProvider, IControllable, SimpleComponent, IFluidStandardSenderMK2 {
 	@Shadow(remap = false) public long joules;
 
 	@Shadow(remap = false) public long prevJoules;
 
 	@Shadow(remap = false) public long power;
 	@Shadow(remap = false) public FluidTankNTM tank;
-	@Unique public TileEntityCore core = null;
+	@Unique public FluidTankNTM leafia$output = new FluidTankNTM(AddonFluids.PYROGEL,64000);
+	@Unique public TileEntityCore leafia$core = null;
 
-	@Unique public double level = 1;
+	@Unique public double leafia$level = 1;
 
 	public MixinTileEntityCoreReceiver(int scount) {
 		super(scount);
 	}
 	@Override
-	public double getLevel() {
-		return level;
+	public double leafia$getLevel() {
+		return leafia$level;
 	}
 	@Override
-	public void setLevel(double value) {
-		level = value;
+	public void leafia$setLevel(double value) {
+		leafia$level = value;
 	}
 	@Override
-	public TileEntityCore getCore() {
-		return core;
+	public TileEntityCore leafia$getCore() {
+		return leafia$core;
 	}
 
 	void spawnShrapnel(DebrisType type) {
@@ -131,7 +130,8 @@ public abstract class MixinTileEntityCoreReceiver extends TileEntityMachineBase 
 		world.spawnEntity(entity);
 	}
 	@Override
-	public void explode() {
+	public void leafia$explode() {
+		if (world.isRemote) return;
 		world.setBlockToAir(pos);
 		for (int i = 0; i < 3; i++) spawnShrapnel(DebrisType.BEAM);
 		for (int i = 0; i < 2; i++) spawnShrapnel(DebrisType.CORNER);
@@ -151,8 +151,8 @@ public abstract class MixinTileEntityCoreReceiver extends TileEntityMachineBase 
 	@Override
 	@Overwrite
 	public void update() {
-		core = null;
-		EnumFacing facing = getFront();
+		leafia$core = null;
+		EnumFacing facing = leafia$getFront();
 		long remaining = power / 5000L;
 		long totalTransfer = 0;
 		if (remaining > 0) {
@@ -192,16 +192,16 @@ public abstract class MixinTileEntityCoreReceiver extends TileEntityMachineBase 
 			}
 			if (!world.getBlockState(offs).getMaterial().isReplaceable()) break;
 		}*/
-		core = getCore(AddonConfig.dfcComponentRange);
-		IMixinTileEntityCore mcore = (IMixinTileEntityCore)core;
-		if (core != null)
+		leafia$core = leafia$getCore(AddonConfig.dfcComponentRange);
+		IMixinTileEntityCore mcore = (IMixinTileEntityCore) leafia$core;
+		if (leafia$core != null)
 			mcore.getDFCAbsorbers().add((TileEntityCoreReceiver) (Object) this);
 		if (!world.isRemote) {
 			LeafiaPacket._start(this).__write(31,targetPosition).__sendToAffectedClients();
 			if (joules >= NumScale.GIGA*100L && world.getBlockState(pos).getBlock() == ModBlocks.dfc_receiver) {
 				destructionLevel = Math.min(destructionLevel+2,400);
 				if (destructionLevel > 300 && world.rand.nextInt(100) == 0) {
-					this.explode();
+					this.leafia$explode();
 					return;
 				}
 			} else {
@@ -223,18 +223,28 @@ public abstract class MixinTileEntityCoreReceiver extends TileEntityMachineBase 
 
 			if (joules > 0) {
 
-				if (tank.getFluidAmount() >= 20) {
-					tank.drain(20, true);
+				if (tank.getTankType() == Fluids.CRYOGEL && tank.getFill() >= 20) {
+					tank.setFill(tank.getFill()-20);
+					leafia$output.setFill(Math.min(leafia$output.getMaxFill(),leafia$output.getFill()+20));
+				} else if (tank.getTankType() == Fluids.PERFLUOROMETHYL_COLD && tank.getFill() >= 2000) {
+					tank.setFill(tank.getFill()-2000);
+					leafia$output.setFill(Math.min(leafia$output.getMaxFill(),leafia$output.getFill()+2000));
 				} else {
-					world.setBlockState(pos, Blocks.FLOWING_LAVA.getDefaultState());
+					world.setBlockState(pos, AddonBlocks.fluid_osmiridium.getDefaultState());
 					return;
 				}
 			}
 
+			for (EnumFacing face : EnumFacing.values())
+				tryProvide(leafia$output,world,pos.offset(face),ForgeDirection.getOrientation(face));
+
 			syncJoules = joules;
 
 			joules = 0;
-			LeafiaPacket._start(this).__write(2,level)/*.__write(3,power)*/.__write(4,/*totalTransfer+*/cableTransfer).__sendToAffectedClients(); // fuick fuck fuck fuck fuck
+			NBTTagCompound compound = new NBTTagCompound();
+			tank.writeToNBT(compound,"t");
+			leafia$output.writeToNBT(compound,"o");
+			LeafiaPacket._start(this).__write(2,leafia$level)/*.__write(3,power)*/.__write(4,/*totalTransfer+*/cableTransfer).__write(5,compound).__sendToAffectedClients(); // fuick fuck fuck fuck fuck
 			cableTransfer = 0;
 		} else {
 			tickJoules[needle] = joules;
@@ -246,32 +256,49 @@ public abstract class MixinTileEntityCoreReceiver extends TileEntityMachineBase 
 		}
 	}
 
+	/**
+	 * @author ntmleafia
+	 * @reason fuck you
+	 */
+	@Overwrite(remap = false)
+	public @NotNull FluidTankNTM[] getAllTanks() {
+		return new FluidTankNTM[]{ tank,leafia$output };
+	}
+
+	@Override
+	public @NotNull FluidTankNTM[] getSendingTanks() {
+		return new FluidTankNTM[]{ leafia$output };
+	}
+
 	@Inject(method = "readFromNBT",at = @At("HEAD"),require = 1)
 	public void onReadFromNBT(NBTTagCompound compound,CallbackInfo ci) {
-		readTargetPos(compound);
-		level = compound.getDouble("level");
+		leafia$readTargetPos(compound);
+		leafia$level = compound.getDouble("level");
 		// big bruh
 		this.power = compound.getLong("power");
 		this.joules = compound.getLong("joules");
 		this.tank.readFromNBT(compound, "tank");
+		if (compound.hasKey("output"))
+			this.leafia$output.readFromNBT(compound,"output");
 	}
 
 	@Inject(method = "writeToNBT",at = @At("HEAD"),require = 1)
 	public void onWriteToNBT(NBTTagCompound compound,CallbackInfoReturnable<NBTTagCompound> cir) {
-		writeTargetPos(compound);
-		compound.setDouble("level",level);
+		leafia$writeTargetPos(compound);
+		compound.setDouble("level",leafia$level);
 		// big bruh
 		compound.setLong("power", this.power);
 		compound.setLong("joules", this.joules);
 		this.tank.writeToNBT(compound, "tank");
+		this.leafia$output.writeToNBT(compound, "output");
 	}
 
 	// cleitn sht
 	@Unique public int fanAngle = 0;
 	@Unique public double joulesPerSec = 0;
 
-	@Override public int fanAngle() { return fanAngle; }
-	@Override public double joulesPerSec() { return joulesPerSec; }
+	@Override public int leafia$fanAngle() { return fanAngle; }
+	@Override public double leafia$joulesPerSec() { return joulesPerSec; }
 
 	@Unique long[] tickJoules = new long[20];
 	@Unique int needle = 0;
@@ -280,20 +307,19 @@ public abstract class MixinTileEntityCoreReceiver extends TileEntityMachineBase 
 	@Unique public long syncSpk = 0;
 
 	@Override
-	public long syncJoules() {
+	public long leafia$syncJoules() {
 		return syncJoules;
 	}
 
 	@Override
-	public long syncSpk() { return syncSpk; }
+	public long leafia$syncSpk() { return syncSpk; }
 
 	@Override
-	public void sendToPlayer(EntityPlayer player) {
+	public void leafia$sendToPlayer(EntityPlayer player) {
 		LeafiaPacket._start(this)
 				.__write(0,syncJoules)
 				.__write(1,power)
-				.__write(2,level)
-				.__write(5,tank.getFill())
+				.__write(2,leafia$level)
 				.__sendToClient(player);
 	}
 
@@ -303,9 +329,12 @@ public abstract class MixinTileEntityCoreReceiver extends TileEntityMachineBase 
 		switch(key) {
 			case 0: joules = (long)value; break;
 			case 1: power = (long)value; break;
-			case 2: level = (double)value; break;
-			case 5: tank.setFill((int)value); tank.setTankType(Fluids.CRYOGEL);
-			break;
+			case 2: leafia$level = (double)value; break;
+			case 5:
+				NBTTagCompound tag = (NBTTagCompound)value;
+				tank.readFromNBT(tag,"t");
+				leafia$output.readFromNBT(tag,"o");
+				break;
 			case 4: syncSpk = (long)value; break;
 		}
 	}
@@ -314,7 +343,7 @@ public abstract class MixinTileEntityCoreReceiver extends TileEntityMachineBase 
 	public void onReceivePacketServer(byte key,Object value,EntityPlayer plr) {
 		IMixinTileEntityCoreReceiver.super.onReceivePacketServer(key, value, plr);
 		if (key == 0)
-			level = (double)value;
+			leafia$level = (double)value;
 	}
 
     public void updateSPKConnections() {
@@ -325,7 +354,7 @@ public abstract class MixinTileEntityCoreReceiver extends TileEntityMachineBase 
     @Override
     public boolean isInputPreferrable(ForgeDirection direction) {
         EnumFacing dir = direction.toEnumFacing();
-        Vec3d unit = getDirection();
+        Vec3d unit = leafia$getDirection();
         double component;
         if (dir.getAxis() == EnumFacing.Axis.X) component = unit.x;
         else if (dir.getAxis() == EnumFacing.Axis.Y) component = unit.y;
@@ -368,22 +397,27 @@ public abstract class MixinTileEntityCoreReceiver extends TileEntityMachineBase 
 
 
 	@Override
-	public TileEntityCore lastGetCore() {
+	public TileEntityCore leafia$lastGetCore() {
 		return lastGetCore;
 	}
 
 	@Override
-	public void lastGetCore(TileEntityCore core) {
+	public void leafia$lastGetCore(TileEntityCore core) {
 		lastGetCore = core;
 	}
 
 	@Override
-	public BlockPos getTargetPosition() {
+	public BlockPos leafia$getTargetPosition() {
 		return targetPosition;
 	}
 	@Override
-	public void targetPosition(BlockPos pos) {
+	public void leafia$targetPosition(BlockPos pos) {
 		targetPosition = pos;
+	}
+
+	@Override
+	public FluidTankNTM leafia$getOutputTank() {
+		return leafia$output;
 	}
 
 	@Override
@@ -426,13 +460,13 @@ public abstract class MixinTileEntityCoreReceiver extends TileEntityMachineBase 
 	@Override
 	public void receiveEvent(BlockPos from,ControlEvent e) {
 		if (e.name.equals("set_absorber_level")) {
-			level = e.vars.get("level").getNumber()/100d;
+			leafia$level = e.vars.get("level").getNumber()/100d;
 		}
 	}
 	@Override
 	public Map<String,DataValue> getQueryData() {
 		Map<String,DataValue> map = new HashMap<>();
-		map.put("level",new DataValueFloat((float)(level*100)));
+		map.put("level",new DataValueFloat((float)(leafia$level*100)));
 		map.put("stress",new DataValueFloat(destructionLevel*100/300f));
 		map.put("received",new DataValueFloat(syncJoules));
 		map.put("power",new DataValueFloat(power));
@@ -494,13 +528,13 @@ public abstract class MixinTileEntityCoreReceiver extends TileEntityMachineBase 
 		double level = args.checkDouble(0);
 		level = MathHelper.clamp(level,0,100);
 		double prevLevel = level*100;
-		this.level = level/100d;
+		this.leafia$level = level/100d;
 		return new Object[]{prevLevel*100};
 	}
 
 	@Optional.Method(modid = "opencomputers")
 	@Callback(doc = "getLevel()->(level: number [0-100])")
 	public Object[] getLevel(Context context, Arguments args) {
-		return new Object[]{level};
+		return new Object[]{leafia$level};
 	}
 }

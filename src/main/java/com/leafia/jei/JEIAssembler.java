@@ -8,6 +8,7 @@ import com.hbm.inventory.recipes.AssemblyMachineRecipes;
 import com.hbm.inventory.recipes.loader.GenericRecipe;
 import com.hbm.inventory.recipes.loader.GenericRecipes.IOutput;
 import com.hbm.items.machine.ItemBlueprints;
+import com.hbm.items.machine.ItemFluidIcon;
 import com.hbm.util.I18nUtil;
 import com.leafia.dev.LeafiaClientUtil;
 import com.leafia.jei.JEIAssembler.Recipe;
@@ -73,7 +74,19 @@ public class JEIAssembler implements IRecipeCategory<Recipe> {
 			if (stacks != null) {
 				outputs.add(stacks[0]);
 			}
-
+			// for searching
+			if (!inputFluid.isEmpty()) {
+				ItemStack icon = ItemFluidIcon.make(inputFluid.get(0));
+				inputs.add(Collections.singletonList(icon));
+			} else {
+				inputs.add(Collections.singletonList(new ItemStack(Items.AIR)));
+			}
+			if (!outputFluid.isEmpty()) {
+				ItemStack icon = ItemFluidIcon.make(outputFluid.get(0));
+				outputs.add(icon);
+			} else {
+				outputs.add(new ItemStack(Items.AIR));
+			}
 		}
 
 		@Override
@@ -106,11 +119,11 @@ public class JEIAssembler implements IRecipeCategory<Recipe> {
 				LeafiaClientUtil.jeiFluidRenderInfo(outputFluid.get(0),list,mouseX,mouseY,100,55,52,4);
 			return list;
 		}
-		@Override
+		/*@Override
 		public boolean handleClick(Minecraft minecraft,int mouseX,int mouseY,int mouseButton) {
 			return (!inputFluid.isEmpty() && _JEIFluidHelper.handleClick(inputFluid.get(0),mouseX,mouseY,28,55,52,4,mouseButton)) ||
 					(!outputFluid.isEmpty() && _JEIFluidHelper.handleClick(outputFluid.get(0),mouseX,mouseY,100,55,52,4,mouseButton));
-		}
+		}*/
 	}
 
 	protected final IDrawable background;

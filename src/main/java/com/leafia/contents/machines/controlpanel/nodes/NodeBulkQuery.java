@@ -1,11 +1,14 @@
 package com.leafia.contents.machines.controlpanel.nodes;
 
 import com.hbm.inventory.control_panel.*;
+import com.hbm.inventory.control_panel.types.*;
+import com.hbm.inventory.control_panel.types.*;
 import com.hbm.inventory.control_panel.modular.StockNodesRegister;
 import com.hbm.inventory.control_panel.nodes.Node;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 
 import java.util.HashSet;
 import java.util.Map;
@@ -14,7 +17,7 @@ import java.util.Set;
 public class NodeBulkQuery extends Node {
 	public Control ctrl;
 
-	public enum CombineMethod { ADD,MULTIPLY,AVERAGE }
+	public enum CombineMethod { ADD,MULTIPLY,AVERAGE,HIGHEST,LOWEST }
 	public CombineMethod combineMethod = CombineMethod.ADD;
 	public String dataName = "";
 	public NodeDropdown dataSelector;
@@ -49,9 +52,11 @@ public class NodeBulkQuery extends Node {
 
 	private void setDataSelector() {
 		dataSelector.list.itemNames.clear();
+		World world = ctrl.panel.parent.getControlWorld();
 		Set<String> alreadyAdded = new HashSet<>();
-		for (BlockPos pos : ctrl.connectedSet) {
-			TileEntity tile = ctrl.panel.parent.getControlWorld().getTileEntity(pos);
+		for (BlockPos pos : ctrl.taggedLinks.values()) {
+			if (!world.isBlockLoaded(pos)) continue;
+			TileEntity tile = world.getTileEntity(pos);
 			if (tile instanceof IControllable) {
 				IControllable te = (IControllable) tile;
 				for (Map.Entry<String, DataValue> var : te.getQueryData().entrySet()) {
@@ -91,23 +96,28 @@ public class NodeBulkQuery extends Node {
 			if (combineMethod == CombineMethod.MULTIPLY)
 				value = 1;
 			int total = 0;
-			for (BlockPos pos : ctrl.connectedSet) {
-				TileEntity tile = ctrl.panel.parent.getControlWorld().getTileEntity(pos);
-
-				if (tile instanceof IControllable) {
-					IControllable te = (IControllable) tile;
-					if (te.getQueryData().containsKey(dataName)) {
-						DataValue data = te.getQueryData().get(dataName);
-						if (data instanceof DataValueFloat) {
-							float curValue = data.getNumber();
-							switch(combineMethod) {
-								case ADD -> value += curValue;
-								case MULTIPLY -> value *= curValue;
-								case AVERAGE -> {
-									value += curValue;
-									total++;
-								}
-							}
+			boolean firstTime = true;
+			World world = ctrl.panel.parent.getControlWorld();
+			for (BlockPos pos : ctrl.taggedLinks.values()) {
+				if (!world.isBlockLoaded(pos)) continue;
+				if (!(world.getTileEntity(pos) instanceof IControllable te)) continue;
+				DataValue data = te.getQueryData().get(dataName);
+				if (data instanceof DataValueFloat) {
+					float curValue = data.getNumber();
+					switch(combineMethod) {
+						case ADD -> value += curValue;
+						case MULTIPLY -> value *= curValue;
+						case AVERAGE -> {
+							value += curValue;
+							total++;
+						} case HIGHEST -> {
+							if (firstTime) value = curValue;
+							else value = Math.max(curValue,value);
+							firstTime = false;
+						} case LOWEST -> {
+							if (firstTime) value = curValue;
+							else value = Math.min(curValue,value);
+							firstTime = false;
 						}
 					}
 				}

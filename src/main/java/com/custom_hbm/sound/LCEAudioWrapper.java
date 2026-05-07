@@ -18,7 +18,7 @@ public class LCEAudioWrapper {
 	
 	public LCEAudioWrapper stopSound() { return this; }
 
-	public LCEAudioWrapper setCustomAttentuation(BiFunction<Float,Double,Double> attentuationFunction) { return this; }
+	public LCEAudioWrapper setCustomAttenuation(BiFunction<Float,Double,Double> attentuationFunction) { return this; }
 
 	public LCEAudioWrapper setLooped(boolean looped) { return this; }
 }

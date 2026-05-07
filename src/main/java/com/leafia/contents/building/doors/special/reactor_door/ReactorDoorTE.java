@@ -8,7 +8,7 @@ import com.hbm.handler.radiation.RadiationSystemNT;
 import com.hbm.handler.threading.PacketThreading;
 import com.hbm.inventory.control_panel.ControlEvent;
 import com.hbm.inventory.control_panel.ControlEventSystem;
-import com.hbm.inventory.control_panel.DataValueFloat;
+import com.hbm.inventory.control_panel.types.DataValueFloat;
 import com.hbm.lib.ForgeDirection;
 import com.hbm.tileentity.TileEntityDoorGeneric;
 import com.leafia.CommandLeaf;

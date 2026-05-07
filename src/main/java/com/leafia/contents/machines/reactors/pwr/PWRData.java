@@ -48,6 +48,7 @@ import com.llib.exceptions.LeafiaDevFlaw;
 import com.llib.exceptions.messages.TextWarningLeafia;
 import com.llib.group.LeafiaMap;
 import com.llib.group.LeafiaSet;
+import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -745,8 +746,14 @@ public class PWRData implements ITickable, LeafiaPacketReceiver {
 				if (block instanceof CoriumFinite) continue;
 				if (block instanceof PWRElementBlock) {
 					//world.newExplosion(null,member.getX()+0.5,member.getY()+0.5,member.getZ()+0.5,11,true,true);
-					//world.setBlockState(member,ModBlocks.corium_block.getDefaultState());
-					world.setBlockState(member,ModBlocks.gas_meltdown.getDefaultState());
+					//if (tankTypes[1].hasTrait(FT_Gaseous.class))
+					Block corium = coriumTypes.get(member.toLong());
+					if (corium != null)
+						world.setBlockState(member,corium.getDefaultState());
+					else
+						world.setBlockToAir(member);
+					//else
+					//	world.setBlockState(member,ModBlocks.gas_meltdown.getDefaultState());
 					continue;
 				}
 				//Block fuckyou = Blocks.BLACK_GLAZED_TERRACOTTA;
@@ -802,6 +809,15 @@ public class PWRData implements ITickable, LeafiaPacketReceiver {
 			LeafiaMap<BlockPos, IBlockState> placeMap = new LeafiaMap<>();
 			LeafiaSet<BlockPos> antiPlaceSet = new LeafiaSet<>();
 			List<PWRDebrisEntity> entitiesToSpawn = new ArrayList<>();
+			int debrisPerBlock = 5;
+			if (reactorSize > 30)
+				debrisPerBlock = 4;
+			if (reactorSize > 40)
+				debrisPerBlock = 3;
+			if (reactorSize > 50)
+				debrisPerBlock = 2;
+			if (reactorSize > 70)
+				debrisPerBlock = 1;
 			for (BlockPos pos : vaporized) {
 				if (placeWrecks.contains(pos)) continue; // Somehow
 				boolean converted = false;
@@ -820,12 +836,14 @@ public class PWRData implements ITickable, LeafiaPacketReceiver {
 					Block block = world.getBlockState(pos).getBlock();
 					if (!(block instanceof IFluidBlock) && LeafiaUtil.isSolidVisibleCube(world.getBlockState(pos))) {
 						if (world.getBlockState(pos).getBlockHardness(world, pos) >= 1) {
-							Vec3d ray = new Vec3d(pos).add(0.5, 0.5, 0.5).subtract(centerPoint);
-							PWRDebrisEntity debris = new PWRDebrisEntity(world, pos.getX() + 0.5D, pos.getY() + 0.5, pos.getZ() + 0.5D, world.getBlockState(pos));
-							debris.motionX = signedPow(ray.x, 1) / reactorSize * (1 + world.rand.nextDouble() * 4) + signedPow(pressure.x, 0.8) / 2;
-							debris.motionY = signedPow(ray.y, 1) / reactorSize * (1 + world.rand.nextDouble() * 4) + signedPow(pressure.y, 0.8) / 2;
-							debris.motionZ = signedPow(ray.z, 1) / reactorSize * (1 + world.rand.nextDouble() * 4) + signedPow(pressure.z, 0.8) / 2;
-							entitiesToSpawn.add(debris);
+							for (int i = 0; i < debrisPerBlock; i++) {
+								Vec3d ray = new Vec3d(pos).add(0.5, 0.5, 0.5).subtract(centerPoint);
+								PWRDebrisEntity debris = new PWRDebrisEntity(world, pos.getX() + 0.5D, pos.getY() + 0.5, pos.getZ() + 0.5D, world.getBlockState(pos));
+								debris.motionX = signedPow(ray.x, 1) / reactorSize * (1 + world.rand.nextDouble() * 4) + signedPow(pressure.x, 0.8) / 2;
+								debris.motionY = signedPow(ray.y, 1) / reactorSize * (1 + world.rand.nextDouble() * 4) + signedPow(pressure.y, 0.8) / 2;
+								debris.motionZ = signedPow(ray.z, 1) / reactorSize * (1 + world.rand.nextDouble() * 4) + signedPow(pressure.z, 0.8) / 2;
+								entitiesToSpawn.add(debris);
+							}
 						}
 					}
 					world.setBlockState(pos,ModBlocks.gas_radon_dense.getDefaultState());
@@ -1042,6 +1060,8 @@ public class PWRData implements ITickable, LeafiaPacketReceiver {
 		}
 	}
 
+	Long2ObjectOpenHashMap<Block> coriumTypes = new Long2ObjectOpenHashMap<>();
+
 	public void explode(World world, @Nullable ItemStack prevStack,@Nullable LeafiaRodItem doNuke,int forceLevel) {
 		if (exploded) return;
 		exploded = true;
@@ -1071,6 +1091,14 @@ public class PWRData implements ITickable, LeafiaPacketReceiver {
 							if (entity instanceof PWRElementTE) {
 								PWRElementTE element = (PWRElementTE) entity;
 								if (element.inventory != null) {
+									ItemStack stack = element.inventory.getStackInSlot(0);
+									if (!stack.isEmpty()) {
+										if (stack.getItem() instanceof LeafiaRodItem rod) {
+											int height = element.getHeight();
+											for (int i = 0; i < height; i++)
+												coriumTypes.put(member.down(i).toLong(),rod.corium);
+										}
+									}
 									prevStack = LeafiaRodItem.comparePriority(element.inventory.getStackInSlot(0), prevStack);
 									element.inventory.setStackInSlot(0,ItemStack.EMPTY);
 								}

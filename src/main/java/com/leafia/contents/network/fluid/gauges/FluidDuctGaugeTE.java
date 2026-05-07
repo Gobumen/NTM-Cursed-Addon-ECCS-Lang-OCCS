@@ -1,8 +1,8 @@
 package com.leafia.contents.network.fluid.gauges;
 
 import com.hbm.inventory.control_panel.ControlEventSystem;
-import com.hbm.inventory.control_panel.DataValue;
-import com.hbm.inventory.control_panel.DataValueFloat;
+import com.hbm.inventory.control_panel.types.DataValue;
+import com.hbm.inventory.control_panel.types.DataValueFloat;
 import com.hbm.inventory.control_panel.IControllable;
 import com.hbm.inventory.fluid.Fluids;
 import com.leafia.contents.network.fluid.FluidDuctEquipmentTE;

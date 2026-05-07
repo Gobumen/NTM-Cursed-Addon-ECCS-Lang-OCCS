@@ -8,8 +8,14 @@ import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
 public class MTBlades3x3 extends ModularTurbineBlockBase {
-	public MTBlades3x3(String s) {
+	public MTBlades3x3(String s,String variant) {
 		super(s);
+		this.variant = variant;
+	}
+	String variant;
+	@Override
+	public String variant() {
+		return variant;
 	}
 	@Override
 	public int shaftHeight() {

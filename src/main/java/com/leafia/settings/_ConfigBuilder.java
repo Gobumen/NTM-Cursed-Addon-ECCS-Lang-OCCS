@@ -53,7 +53,8 @@ public class _ConfigBuilder {
 		}
 	}
 	public boolean _autoLineBreak = true;
-	public void _lineBreak() {
+	public boolean skipLineBreak = false;
+	public void _pushLine() {
 		lines.add("");
 	}
 	private static final String separator = "----------------------------------------------------------";
@@ -67,12 +68,17 @@ public class _ConfigBuilder {
 		lines.add(" # "+comment);
 	}
 	private int readingLine = -1;
+	public void _popLine() {
+		lines.remove(lines.size()-1);
+	}
 	public String _string(String key,String def) {
 		String value = values.getOrDefault(key,def);
 		readingLine = lineIndices.getOrDefault(key,-1);
+		if (values.containsKey(key))
+			key = "!"+key;
 		lines.add(" "+key+": "+value);
-		if (_autoLineBreak)
-			_lineBreak();
+		if (_autoLineBreak || skipLineBreak)
+			_pushLine();
 		return value;
 	}
 	public boolean _boolean(String key,boolean def) {
@@ -122,6 +128,8 @@ public class _ConfigBuilder {
 			int line = 1;
 			for (String s : list) {
 				if (s.trim().startsWith("# ")) continue;
+				if (!s.trim().startsWith("!")) continue;
+				s = s.substring(s.indexOf('!')+1);
 				if (s.trim().isEmpty()) continue;
 				if (s.equals(separator)) continue;
 				if (s.contains(":")) {

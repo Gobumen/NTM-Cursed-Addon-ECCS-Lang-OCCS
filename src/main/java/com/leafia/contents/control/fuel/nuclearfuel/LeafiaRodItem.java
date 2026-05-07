@@ -1,6 +1,7 @@
 package com.leafia.contents.control.fuel.nuclearfuel;
 
 import com.custom_hbm.contents.torex.LCETorex;
+import com.hbm.blocks.ModBlocks;
 import com.hbm.capability.HbmLivingProps;
 import com.hbm.config.BombConfig;
 import com.hbm.config.GeneralConfig;
@@ -24,6 +25,7 @@ import com.leafia.dev.items.itembase.AddonItemHazardBase;
 import com.leafia.init.hazards.types.radiation.Neutrons;
 import com.leafia.overwrite_contents.interfaces.IMixinEntityNukeExploisonMK5;
 import com.llib.LeafiaLib;
+import net.minecraft.block.Block;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
@@ -323,6 +325,8 @@ public class LeafiaRodItem extends AddonItemHazardBase implements IHasCustomMode
 		String n = "0";
 		double tempx = heat-20;
 		double y = 0; // x = 20+~~
+		// Most are Rational
+		// Balefire is Polynomial n=3
 		switch(functionId) {
 			// DEPLETED
 			case "depleteduranium": case "depletedmox":
@@ -879,6 +883,7 @@ public class LeafiaRodItem extends AddonItemHazardBase implements IHasCustomMode
 		return this;
 	}
 	String decayProductBuffer = null;
+	public Block corium = ModBlocks.corium_block;
 	public LeafiaRodItem setBaseItem(Item baseItem) { this.baseItem = baseItem; return this; }
 	public LeafiaRodItem setEmission(double emission) { this.emission = emission; return this; }
 	public LeafiaRodItem setReactivity(double reactivity) { this.reactivity = reactivity; return this; }
@@ -887,6 +892,7 @@ public class LeafiaRodItem extends AddonItemHazardBase implements IHasCustomMode
 	public LeafiaRodItem setDecayProduct(String funcName) { decayProductBuffer = funcName; return this; }
 	public LeafiaRodItem preferFast() { this.splitWithFast = true; return this; }
 	public LeafiaRodItem preferAny() { this.splitWithAny = true; return this; }
+	public LeafiaRodItem setCorium(Block block) { this.corium = block; return this; }
 
 	@Override
 	public AddonItemHazardBase addRad(MultiRadContainer container) {

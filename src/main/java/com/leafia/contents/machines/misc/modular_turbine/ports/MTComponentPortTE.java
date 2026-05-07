@@ -18,7 +18,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class MTComponentPortTE extends ModularTurbineComponentTE implements ITickable, IFluidStandardSenderMK2, IFluidStandardReceiverMK2, LeafiaPacketReceiver {
 	public FluidType identifier;
-	public boolean decompress = false;
+	public boolean decompress = true;
 	boolean loaded = true;
 	@Override
 	public void onChunkUnload() {
@@ -95,13 +95,13 @@ public class MTComponentPortTE extends ModularTurbineComponentTE implements ITic
 		super.readFromNBT(compound);
 		if (compound.hasKey("identifier"))
 			identifier = Fluids.fromName(compound.getString("identifier"));
-		decompress = compound.getBoolean("decompress");
+		//decompress = compound.getBoolean("decompress");
 	}
 	@Override
 	public NBTTagCompound writeToNBT(NBTTagCompound compound) {
 		if (identifier != null)
 			compound.setString("identifier",identifier.getName());
-		compound.setBoolean("decompress",decompress);
+		//compound.setBoolean("decompress",decompress);
 		return super.writeToNBT(compound);
 	}
 	void onFill() {

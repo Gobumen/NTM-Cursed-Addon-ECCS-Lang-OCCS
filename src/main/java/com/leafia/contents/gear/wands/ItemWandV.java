@@ -153,6 +153,7 @@ public class ItemWandV extends AddonItemBaked {
 									//TextFormatting.GREEN+"BLK: !isTranslucent: "+pfx(!state.isTranslucent()),
 									"STAT: renderType: "+state.getRenderType().name(),
 									TextFormatting.YELLOW+"-----------",
+									"MAT: Class: "+mat.getClass().getSimpleName(),
 									"MAT: isOpaque: "+pfx(mat.isOpaque()),
 									"MAT: isSolid: "+pfx(mat.isSolid()),
 									TextFormatting.YELLOW+"-----------",

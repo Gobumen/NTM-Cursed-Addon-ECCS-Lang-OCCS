@@ -14,6 +14,7 @@ import com.leafia.dev.LeafiaDebug;
 import com.leafia.dev.blocks.blockbase.AddonBlockDummyable;
 import com.leafia.dev.math.FiaBB;
 import com.leafia.dev.math.FiaMatrix;
+import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyDirection;
@@ -153,6 +154,32 @@ public class EvFloor extends AddonBlockDummyable implements IDynamicModels {
 			}
 		}
 		return false;
+	}
+
+	@Override
+	public boolean canConnectRedstone(IBlockState state,IBlockAccess world,BlockPos pos,@org.jetbrains.annotations.Nullable EnumFacing side) {
+		return true;
+	}
+
+	public void checc(World world,BlockPos pos) {
+		int[] core = this.findCore(world,pos.getX(),pos.getY(),pos.getZ());
+		if (core == null) return;
+		if (world.isBlockPowered(pos)) {
+			TileEntity te = world.getTileEntity(new BlockPos(core[0],core[1],core[2]));
+			if (te instanceof EvFloorTE floor) {
+				IBlockState coreState = world.getBlockState(new BlockPos(core[0], core[1], core[2]));
+				BlockPos centerPos = new BlockPos(core[0], core[1], core[2]).offset(EnumFacing.byIndex(coreState.getValue(META) - 10).getOpposite());
+				EvPulleyTE pulley = getPulley(world, centerPos);
+				if (pulley != null && pulley.elevator != null)
+					pulley.elevator.onButtonServer("floor"+floor.floor,null,null);
+			}
+		}
+	}
+
+	@Override
+	public void neighborChanged(@NotNull IBlockState state,World world,@NotNull BlockPos pos,@NotNull Block blockIn,@NotNull BlockPos fromPos) {
+		super.neighborChanged(state,world,pos,blockIn,fromPos);
+		checc(world,pos);
 	}
 
 	@Override

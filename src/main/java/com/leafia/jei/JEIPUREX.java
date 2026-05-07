@@ -8,6 +8,7 @@ import com.hbm.inventory.recipes.PUREXRecipes;
 import com.hbm.inventory.recipes.loader.GenericRecipe;
 import com.hbm.inventory.recipes.loader.GenericRecipes.IOutput;
 import com.hbm.items.machine.ItemBlueprints;
+import com.hbm.items.machine.ItemFluidIcon;
 import com.hbm.util.I18nUtil;
 import com.leafia.dev.LeafiaClientUtil;
 import com.leafia.jei.JEIPUREX.Recipe;
@@ -80,6 +81,20 @@ public class JEIPUREX implements IRecipeCategory<Recipe> {
 				}
 				outputs.add(new ItemStack(Items.AIR));
 			}
+			// for searching
+			for (int i = 0; i < 3; i++) {
+				if (inputFluid.size() > i) {
+					ItemStack icon = ItemFluidIcon.make(inputFluid.get(i));
+					inputs.add(Collections.singletonList(icon));
+				} else
+					inputs.add(Collections.singletonList(new ItemStack(Items.AIR)));
+			}
+			if (!outputFluid.isEmpty()) {
+				ItemStack icon = ItemFluidIcon.make(outputFluid.get(0));
+				outputs.add(icon);
+			} else {
+				outputs.add(new ItemStack(Items.AIR));
+			}
 		}
 
 		@Override
@@ -118,14 +133,14 @@ public class JEIPUREX implements IRecipeCategory<Recipe> {
 				LeafiaClientUtil.jeiFluidRenderInfo(outputFluid.get(0),list,mouseX,mouseY,145,1,16,52);
 			return list;
 		}
-		@Override
+		/*@Override
 		public boolean handleClick(Minecraft minecraft,int mouseX,int mouseY,int mouseButton) {
 			for (int i = 0; i < inputFluid.size(); i++) {
 				if (_JEIFluidHelper.handleClick(inputFluid.get(i),mouseX,mouseY,37+i*18,1,16,26,mouseButton))
 					return true;
 			}
 			return !outputFluid.isEmpty() && _JEIFluidHelper.handleClick(outputFluid.get(0),mouseX,mouseY,145,1,16,52,mouseButton);
-		}
+		}*/
 	}
 
 	protected final IDrawable background;

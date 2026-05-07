@@ -185,26 +185,28 @@ public class RackTE extends TileEntity implements IGUIProvider, LeafiaPacketRece
 		return super.writeToNBT(compound);
 	}
 	@Override
+	protected void setWorldCreate(World worldIn) {
+		world = worldIn;
+	}
+	@Override
 	public void readFromNBT(NBTTagCompound compound) {
 		super.readFromNBT(compound);
-		LeafiaPassiveServer.queueFunction(()->{
-			if (!isInvalid()) {
-				for (int i = 0; i < 4; i++) {
-					if (compound.hasKey("crate"+i)) {
-						NBTTagCompound tag = compound.getCompoundTag("crate"+i);
-						Block block = Block.getBlockFromName(tag.getString("rsc"));
-						if (block != null) {
-							storeCrate(new ItemStack(block,1,tag.getInteger("meta")),i,false);
-							if (tes[i] != null && tag.hasKey("inventory"))
-								tes[i].inventory.deserializeNBT(tag.getCompoundTag("inventory"));
-						}
+		if (!isInvalid()) {
+			for (int i = 0; i < 4; i++) {
+				if (compound.hasKey("crate"+i)) {
+					NBTTagCompound tag = compound.getCompoundTag("crate"+i);
+					Block block = Block.getBlockFromName(tag.getString("rsc"));
+					if (block != null) {
+						storeCrate(new ItemStack(block,1,tag.getInteger("meta")),i,false);
+						if (tes[i] != null && tag.hasKey("inventory"))
+							tes[i].inventory.deserializeNBT(tag.getCompoundTag("inventory"));
 					}
 				}
-				LeafiaPacket packet = LeafiaPacket._start(this);
-				for (int i = 0; i < 4; i++)
-					packet.__write(i,generateSyncCrateSignal(i));
-				packet.__sendToAffectedClients();
 			}
-		});
+			LeafiaPacket packet = LeafiaPacket._start(this);
+			for (int i = 0; i < 4; i++)
+				packet.__write(i,generateSyncCrateSignal(i));
+			packet.__sendToAffectedClients();
+		}
 	}
 }

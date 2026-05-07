@@ -3,10 +3,14 @@ package com.leafia.init.recipes;
 import com.hbm.blocks.ModBlocks;
 import com.hbm.inventory.OreDictManager;
 import com.hbm.inventory.OreDictManager.DictFrame;
+import com.hbm.inventory.fluid.Fluids;
 import com.hbm.inventory.material.Mats;
 import com.hbm.items.ItemEnums.EnumCircuitType;
 import com.hbm.items.ModItems;
 import com.hbm.items.machine.ItemBatteryPack.EnumBatteryPack;
+import com.hbm.items.special.ItemCell;
+import com.hbm.items.weapon.grenade.ItemGrenadeFilling.EnumGrenadeFilling;
+import com.hbm.main.CraftingManager;
 import com.leafia.contents.AddonBlocks;
 import com.leafia.contents.AddonBlocks.Elevators;
 import com.leafia.contents.AddonBlocks.LetterSigns;
@@ -39,8 +43,9 @@ public class AddonCraftingRecipes {
 
 		addRecipeAuto(new ItemStack(AddonBlocks.spk_cable, 16), " W ", "RRR", " W ", 'W', ModItems.plate_dineutronium, 'R',OreDictManager.MAGTUNG.wireFine());
 		addShapelessAuto(new ItemStack(ModBlocks.dfc_receiver, 1), AddonItems.dfcsh_beam, AddonItems.dfcsh_cable, AddonItems.dfcsh_corner, AddonItems.dfcsh_core, OreDictManager.STEEL.heavyBarrel(), AddonItems.dfcsh_front, AddonItems.dfcsh_corner, AddonItems.dfcsh_beam, AddonItems.dfcsh_beam);
-		addRecipeAuto(new ItemStack(AddonBlocks.dfc_reinforced, 1), "SDS", "TXL", "SDS", 'S', XN.plateWelded(), 'D', ModItems.plate_dineutronium, 'T', AddonItems.supercooler, 'L', ModBlocks.dfc_receiver, 'X', ModBlocks.block_dineutronium);
-		addRecipeAuto(new ItemStack(AddonBlocks.dfc_exchanger, 1), "SCS", "HMP", "SCS", 'S', OSMIRIDIUM.plateWelded(), 'C', ModItems.plate_combine_steel, 'H', ModBlocks.heater_heatex, 'M', ModItems.motor, 'P', ModItems.pipes_steel);
+		// welp its gone
+		//addRecipeAuto(new ItemStack(AddonBlocks.dfc_reinforced, 1), "SDS", "TXL", "SDS", 'S', XN.plateWelded(), 'D', ModItems.plate_dineutronium, 'T', AddonItems.supercooler, 'L', ModBlocks.dfc_receiver, 'X', ModBlocks.block_dineutronium);
+		//addRecipeAuto(new ItemStack(AddonBlocks.dfc_exchanger, 1), "SCS", "HMP", "SCS", 'S', OSMIRIDIUM.plateWelded(), 'C', ModItems.plate_combine_steel, 'H', ModBlocks.heater_heatex, 'M', ModItems.motor, 'P', ModItems.pipes_steel);
 
 		addRecipeAuto(new ItemStack(AddonItems.fuzzy_identifier, 1), "=  ", "@CS", "@MP", '@', OreDictManager.GOLD.wireFine(), 'P', ANY_PLASTIC.ingot(), '=', DictFrame.fromOne(ModItems.circuit, EnumCircuitType.BASIC), 'M', ModItems.motor_desh, 'C', ModItems.coil_gold, 'S', ModItems.screwdriver_desh);
 
@@ -56,8 +61,8 @@ public class AddonCraftingRecipes {
 		// If they're strings, they things its part of the shape and probably shits your bed off.
 
 		// CraftingManager can suck my ass god fucking dammit
-		addRecipeAuto(new ItemStack(AddonBlocks.amat_duct,3),"CCC","DDD","CCC",'C',ALLOY.wireFine(),'D',new ItemStack(ModBlocks.fluid_duct_neo,1,0));
-		addRecipeAuto(new ItemStack(AddonBlocks.amat_charger)," D ","DED"," D ",'D',AddonBlocks.amat_duct,'E',new ItemStack(ModItems.battery_pack,1,EnumBatteryPack.CAPACITOR_NIOBIUM.ordinal()));
+		addRecipeAuto(new ItemStack(AddonBlocks.amat_duct,3),"CCC","DDD","CCC",'C',BSCCO.wireFine(),'D',new ItemStack(ModBlocks.fluid_duct_neo,1,0));
+		addRecipeAuto(new ItemStack(AddonBlocks.amat_charger),"DWD","WEW","DWD",'W',BSCCO.wireDense(),'D',AddonBlocks.amat_duct,'E',new ItemStack(ModItems.battery_pack,1,EnumBatteryPack.CAPACITOR_NIOBIUM.ordinal()));
 
 		for (int meta = 0; meta < 3; meta++) {
 			addRecipeAuto(new ItemStack(AddonBlocks.ff_duct,3,meta),"DDD",'D',new ItemStack(ModBlocks.fluid_duct_neo,1,meta));
@@ -131,6 +136,12 @@ public class AddonCraftingRecipes {
 		addRecipeAuto(new ItemStack(Elevators.shaft),"IBI","IBI","IBI",'B',STEEL.block(),'I',new ItemStack(ModBlocks.steel_beam));
 
 		addShapelessAuto(new ItemStack(AddonBlocks.regex_filter),new ItemStack(ModBlocks.pneumatic_tube),new ItemStack(ModItems.circuit,1,EnumCircuitType.BASIC.ordinal()));
+
+		addRecipeAuto(new ItemStack(ModItems.grenade_filling, 4, EnumGrenadeFilling.valueOf("NULL").ordinal()),"A", "G", "A", 'A', ModItems.undefined, 'G', BIGMT.ingot() );
+		addRecipeAuto(new ItemStack(ModItems.grenade_filling, 1, EnumGrenadeFilling.valueOf("SOL").ordinal()),"CUB", "USU", "BUT", 'B', CMB.ingot(), 'C', DictFrame.fromOne(ModItems.circuit, EnumCircuitType.CONTROLLER), 'T', ModItems.solinium_igniter, 'U', ModItems.solinium_propellant, 'S', ModItems.solinium_core );
+
+		removeRecipesForItem(reg,ModItems.powder_ice);
+		addRecipeAuto(new ItemStack(AddonItems.door_fuckoff, 3), "WW", "WW", "WW", 'W', ModBlocks.pink_planks);
 
 		hack.getRegistry().register(new PWRDebrisCrafting().setRegistryName(new ResourceLocation("leafia", "lwr_debris_crafting_handler")));
 	}

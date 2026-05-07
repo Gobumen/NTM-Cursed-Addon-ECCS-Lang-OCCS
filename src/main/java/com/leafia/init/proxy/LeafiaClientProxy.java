@@ -30,6 +30,8 @@ import com.leafia.contents.control.fuel.nuclearfuel.LeafiaRodItem;
 import com.leafia.contents.control.fuel.nuclearfuel.LeafiaRodRender;
 import com.leafia.contents.debug.blackhole_test.DebugBHRender;
 import com.leafia.contents.debug.blackhole_test.DebugBHTE;
+import com.leafia.contents.debug.render_test.DebugRenderTestRender;
+import com.leafia.contents.debug.render_test.DebugRenderTestTE;
 import com.leafia.contents.effects.folkvangr.visual.LCERenderCloudFleija;
 import com.leafia.contents.effects.folkvangr.visual.LCERenderCloudRainbow;
 import com.leafia.contents.machines.elevators.*;
@@ -49,6 +51,8 @@ import com.leafia.contents.machines.misc.modular_turbine.ModularTurbineComponent
 import com.leafia.contents.machines.misc.modular_turbine.ModularTurbineComponentTE;
 import com.leafia.contents.machines.misc.modular_turbine.core.MTCoreRender;
 import com.leafia.contents.machines.misc.modular_turbine.core.MTCoreTE;
+import com.leafia.contents.machines.misc.wind_turbines.medium.WindTurbineMediumRender;
+import com.leafia.contents.machines.misc.wind_turbines.medium.WindTurbineMediumTE;
 import com.leafia.contents.machines.powercores.ams.base.AMSBaseRender;
 import com.leafia.contents.machines.powercores.ams.base.AMSBaseTE;
 import com.leafia.contents.machines.powercores.ams.emitter.AMSEmitterRender;
@@ -86,8 +90,13 @@ import com.leafia.contents.network.spk_cable.SPKCableTE;
 import com.leafia.contents.nonmachines.storage.fluid.fftank.FFTankRender;
 import com.leafia.contents.nonmachines.storage.fluid.fftank.FFTankTE;
 import com.leafia.contents.nonmachines.storage.items.CrateLabelRender;
+import com.leafia.contents.worldgen.biomes.artificial.DigammaCrater.NullEntity;
+import com.leafia.contents.worldgen.biomes.artificial.DigammaCrater.NullRender;
 import com.leafia.eventbuses.LeafiaClientListener;
+import com.leafia.eventbuses.LeafiaClientListener.HandlerClient;
 import com.leafia.init.ItemRendererInit;
+import com.leafia.unsorted.ateupd.Reserved6Render;
+import com.leafia.unsorted.ateupd.Reserved6TE;
 import com.llib.exceptions.LeafiaDevFlaw;
 import net.minecraft.block.BlockDoor;
 import net.minecraft.client.Minecraft;
@@ -123,6 +132,8 @@ public class LeafiaClientProxy extends LeafiaServerProxy {
 		{
 			ModelLoader.setCustomStateMapper(AddonBlocks.door_fuckoff,new StateMap.Builder().ignore(BlockDoor.POWERED).build());
 			ModelLoader.setCustomStateMapper(AddonBlocks.fluid_fluoride,new StateMap.Builder().ignore(BlockFluidClassic.LEVEL).build());
+			ModelLoader.setCustomStateMapper(AddonBlocks.fluid_balecorium,new StateMap.Builder().ignore(BlockFluidClassic.LEVEL).build());
+			ModelLoader.setCustomStateMapper(AddonBlocks.fluid_osmiridium,new StateMap.Builder().ignore(BlockFluidClassic.LEVEL).build());
 			ModelLoader.setCustomStateMapper(PWR.element,new StateMap.Builder().ignore(PWRElementBlock.stacked).build());
 			ModelLoader.setCustomStateMapper(PWR.element_old,new StateMap.Builder().ignore(PWRElementBlock.stacked).build());
 			ModelLoader.setCustomStateMapper(PWR.element_old_blank,new StateMap.Builder().ignore(PWRElementBlock.stacked).build());
@@ -138,6 +149,8 @@ public class LeafiaClientProxy extends LeafiaServerProxy {
 
 			RenderingRegistry.registerEntityRenderingHandler(ElevatorEntity.class,ElevatorRender.FACTORY);
 			RenderingRegistry.registerEntityRenderingHandler(EvWeightEntity.class,EvWeightRender.FACTORY);
+
+			RenderingRegistry.registerEntityRenderingHandler(NullEntity.class,NullRender.FACTORY);
 		}
 		{
 			LCERenderSpinnyLight spinnyLightRender = new LCERenderSpinnyLight();
@@ -201,6 +214,11 @@ public class LeafiaClientProxy extends LeafiaServerProxy {
 			ClientRegistry.bindTileEntitySpecialRenderer(RackTE.class,new RackRender());
 			ClientRegistry.bindTileEntitySpecialRenderer(ModularTurbineComponentTE.class,new ModularTurbineComponentRender());
 			ClientRegistry.bindTileEntitySpecialRenderer(MTCoreTE.class,new MTCoreRender());
+
+			ClientRegistry.bindTileEntitySpecialRenderer(Reserved6TE.class,new Reserved6Render());
+
+			ClientRegistry.bindTileEntitySpecialRenderer(DebugRenderTestTE.class,new DebugRenderTestRender());
+			ClientRegistry.bindTileEntitySpecialRenderer(WindTurbineMediumTE.class,new WindTurbineMediumRender());
 		}
 		AddonJars.initJars();
 	}
@@ -213,6 +231,8 @@ public class LeafiaClientProxy extends LeafiaServerProxy {
 	public LCEAudioWrapper getLoopedSound(SoundEvent sound,SoundCategory cat,float x,float y,float z,float volume,float pitch) {
 		LCEAudioWrapperClient audio = new LCEAudioWrapperClient(sound, cat);
 		audio.updatePosition(x, y, z);
+		audio.updateVolume(volume);
+		audio.updatePitch(pitch);
 		return audio;
 	}
 
@@ -220,14 +240,14 @@ public class LeafiaClientProxy extends LeafiaServerProxy {
 	public LCEAudioWrapper getLoopedSoundStartStop(World world,SoundEvent sound,SoundEvent start,SoundEvent stop,SoundCategory cat,float x,float y,float z,float volume,float pitch) {
 		LCEAudioWrapperClientStartStop audio = new LCEAudioWrapperClientStartStop(world, sound, start, stop, volume, cat);
 		audio.updatePosition(x, y, z);
-		if (pitch != 1)
-			audio.updatePitch(pitch);
+		audio.updatePitch(pitch);
 		return audio;
 	}
 
 	@Override
 	public void onLoadComplete(FMLLoadCompleteEvent event){
-		if (!Loader.isModLoaded("backups")) LeafiaClientListener.HandlerClient.backupsWarning = true;
+		if (!Loader.isModLoaded("backups")) HandlerClient.backupsWarning = true;
+		if (Loader.isModLoaded("essential")) HandlerClient.assentialWarning = true;
 	}
 
 	@Override
