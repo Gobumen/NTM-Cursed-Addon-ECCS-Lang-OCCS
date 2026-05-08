@@ -133,6 +133,7 @@
     "hbm.MixinTileEntityMachineTurbine",
     "hbm.MixinTileEntityMachineTurbofan",
     "hbm.MixinTileEntityPipeGauge",
+    "hbm.MixinTileEntityRadiobox",
     "hbm.MixinTileEntityRBMKBase",
     "hbm.MixinTileEntityRBMKConsole",
     "hbm.MixinTileEntityRBMKControlAuto",
