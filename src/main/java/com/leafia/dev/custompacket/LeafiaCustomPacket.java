@@ -17,6 +17,9 @@ import com.leafia.contents.machines.controlpanel.instruments.types.meters.vertic
 import com.leafia.contents.machines.controlpanel.instruments.types.starbound.LargeSwitch.CCPLargeSwitchSyncPacket;
 import com.leafia.contents.machines.controlpanel.instruments.types.textindicator.TextIndicator.CCPTextIndicatorSyncPacket;
 import com.leafia.contents.machines.elevators.car.ElevatorEntity.*;
+import com.leafia.contents.machines.elevators.items.radio.EvRadioItem;
+import com.leafia.contents.machines.elevators.items.radio.EvRadioItem.EvRadioSyncRequestPacket;
+import com.leafia.contents.machines.elevators.items.radio.EvRadioItem.EvRadioUIPacket;
 import com.leafia.contents.machines.misc.modular_turbine.core.MTCoreBlock.TurbineErrorHighlight;
 import com.leafia.contents.worldgen.biomes.artificial.DigammaCrater;
 import com.leafia.contents.worldgen.biomes.artificial.DigammaCrater.DigammaBackstabPacket;
@@ -77,6 +80,8 @@ public class LeafiaCustomPacket extends RecordablePacket {
 		WIND_SYNC(new WindSyncPacket()),
 		FALLOUT_SYNC(new FalloutSyncPacket()),
 		DRX_BACKSTAB(new DigammaBackstabPacket()),
+		EV_RADIO_UI(new EvRadioUIPacket()),
+		EV_RADIO_REQUEST(new EvRadioSyncRequestPacket()),
 		;
 		final LeafiaCustomPacketEncoder encoder;
 		CustomPacketType() { encoder = null; }

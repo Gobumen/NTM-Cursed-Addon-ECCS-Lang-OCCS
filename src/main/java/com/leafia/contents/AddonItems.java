@@ -23,6 +23,7 @@ import com.leafia.contents.machines.elevators.car.styles.EvStyleItem;
 import com.leafia.contents.machines.elevators.car.styles.EvStyleItem.StyleType;
 import com.leafia.contents.machines.elevators.items.EvSpawnItem;
 import com.leafia.contents.machines.elevators.items.WeightSpawnItem;
+import com.leafia.contents.machines.elevators.items.radio.EvRadioItem;
 import com.leafia.contents.machines.powercores.dfc.CrucifixItem;
 import com.leafia.contents.machines.powercores.dfc.LCEItemLens;
 import com.leafia.contents.machines.reactors.pwr.debris.PWRDebrisEntity.DebrisType;
@@ -580,6 +581,7 @@ public class AddonItems {
 
 	public static final Item ev_spawn = new EvSpawnItem("ev_spawn");
 	public static final Item weight_spawn = new WeightSpawnItem("weight_spawn");
+	public static final Item ev_radio = new EvRadioItem("ev_radio");
 
 	public static class DepletedFuels {
 		public static final Item waste_u238 = new AddonDepletedFuelItem("waste_u238","hbm","waste_uranium");

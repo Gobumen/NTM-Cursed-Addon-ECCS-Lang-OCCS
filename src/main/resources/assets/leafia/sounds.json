@@ -51,8 +51,12 @@
   "block.kfc.meltdown": {"category": "block", "sounds": [{"subtitle": "subtitles.block.kfc.meltdown", "name": "leafia:leafia/dfcstress", "stream": true}]},
   "block.kfc.explode": {"category": "block", "sounds": [{"subtitle": "subtitles.block.kfc.explode", "name": "leafia:leafia/dfcexplode", "stream": false}]},
 
-  "music.422fgame": {"category": "music", "sounds": [{"name": "leafia:music/422fgame", "stream": false}]},
-  "music.422fmenu": {"category": "music", "sounds": [{"name": "leafia:music/422fmenu", "stream": false}]},
+  "music.422fgame": {"category": "music", "sounds": [{"name": "leafia:music/422fgame", "stream": true}]},
+  "music.422fmenu": {"category": "music", "sounds": [{"name": "leafia:music/422fmenu", "stream": true}]},
+
+  "music.lsplash.elevator_jam.loop": {"category": "music", "sounds": [{"name": "leafia:elevators/radio/elevator_jam_loop", "stream": true}]},
+  "music.lsplash.elevator_jam.end": {"category": "music", "sounds": [{"name": "leafia:elevators/radio/elevator_jam_end", "stream": true}]},
+  "music.incompetech.local_forecast": {"category": "music", "sounds": [{"name": "leafia:elevators/radio/local_forecast", "stream": true}]},
 
   "item.pointed": {"subtitle": "subtitles.item.pointed", "category": "neutral", "sounds": ["leafia:entity/slicer3","leafia:weapon/hit_metal0"]},
   "elevators.s6beep": { "category": "block", "sounds": ["leafia:elevators/s6_beep"]},

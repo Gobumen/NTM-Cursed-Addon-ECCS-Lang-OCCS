@@ -235,6 +235,7 @@ item.ev_chip_s6.desc=Standard elevator chip$for cozy rides
 item.ev_chip_s6.name=Series 6 Chip
 item.ev_chip_skylift.desc=Lightning speed for insane skyscrapers$May crash and explode
 item.ev_chip_skylift.name=Skylift Chip
+item.ev_radio.name=Elevator Radio
 item.ev_s6ceiling.name=Series 6 Ceiling
 item.ev_s6door.name=Series 6 Door
 item.ev_s6floor.name=Series 6 Floor

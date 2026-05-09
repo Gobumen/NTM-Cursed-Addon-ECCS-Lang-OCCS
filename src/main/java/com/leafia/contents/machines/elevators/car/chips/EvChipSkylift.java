@@ -110,8 +110,8 @@ public class EvChipSkylift extends EvChipBase {
 		double ratio = getSpeedRatio();
 		if (entity.pulley != null)
 			entity.setMotion(0,entity.doorOpen ? 0 : ratio,0);
-		LeafiaDebug.debugLog(entity.getWorld(),ratio);
-		LeafiaDebug.debugLog(entity.getWorld(),"park: "+entity.parkFloor);
+		//LeafiaDebug.debugLog(entity.getWorld(),ratio);
+		//LeafiaDebug.debugLog(entity.getWorld(),"park: "+entity.parkFloor);
 		if (!entity.doorOpen && !entity.targetFloors.isEmpty()) {
 			if (entity.timeSinceStart == 0) {
 				entity.getDataManager().set(ElevatorEntity.ARROW,entity.down ? -1 : 1);
@@ -119,6 +119,10 @@ public class EvChipSkylift extends EvChipBase {
 			}
 			entity.timeSinceStart++;
 		}
+		if (nextFloor != null && floor != null && !shouldOpen)
+			entity.getDataManager().set(ElevatorEntity.MUSIC,nextFloor > floor ? entity.getMusic().getA() : entity.getMusic().getB());
+		else if (nextFloor == null)
+			entity.getDataManager().set(ElevatorEntity.MUSIC,entity.getMusic().getC());
 		if (entity.doorOpen && !closing) {
 			if (closeTimer < closeTime)
 				closeTimer++;
@@ -130,9 +134,9 @@ public class EvChipSkylift extends EvChipBase {
 
 		// DOOR CONTROL
 		if (floor != null) {
-			LeafiaDebug.debugLog(entity.getWorld(),"CONDITION 1: "+floor.equals(entity.parkFloor));
-			LeafiaDebug.debugLog(entity.getWorld(),"CONDITION 2: "+(ratio == 0));
-			LeafiaDebug.debugLog(entity.getWorld(),"CONDITION 3: "+!closing);
+			//LeafiaDebug.debugLog(entity.getWorld(),"CONDITION 1: "+floor.equals(entity.parkFloor));
+			//LeafiaDebug.debugLog(entity.getWorld(),"CONDITION 2: "+(ratio == 0));
+			//LeafiaDebug.debugLog(entity.getWorld(),"CONDITION 3: "+!closing);
 			if (floor.equals(entity.parkFloor) && ratio == 0 && !closing && shouldOpen)
 				openingDoor();
 		}

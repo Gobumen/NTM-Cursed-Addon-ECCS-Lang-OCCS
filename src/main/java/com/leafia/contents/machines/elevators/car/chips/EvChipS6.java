@@ -139,8 +139,11 @@ public class EvChipS6 extends EvChipBase {
 
 		// MAIN CONTROL
 		if (nextFloor != null && !entity.doorOpen) {
-			if (moveCooldown > 0) moveCooldown--;
-			else
+			if (moveCooldown > 0) {
+				moveCooldown--;
+				if (moveCooldown <= 0 && floor != null)
+					entity.getDataManager().set(ElevatorEntity.MUSIC,nextFloor > floor ? entity.getMusic().getA() : entity.getMusic().getB());
+			} else
 				entity.timeSinceStart++;
 		}
 		if (nextFloor != null && entity.doorOpen && !closing && cooldown <= 0) {
@@ -154,9 +157,12 @@ public class EvChipS6 extends EvChipBase {
 
 		// DOOR CONTROL
 		if (floor != null) {
-			if (floor.equals(entity.parkFloor) && ratio == 0 && !closing) {
-				openingDoor();
-				entity.timeSinceStart = 0;
+			if (floor.equals(entity.parkFloor) && !closing) {
+				entity.getDataManager().set(ElevatorEntity.MUSIC,entity.getMusic().getC());
+				if (ratio == 0) {
+					openingDoor();
+					entity.timeSinceStart = 0;
+				}
 			}
 		}
 		if (entity.doorOpen && closing)

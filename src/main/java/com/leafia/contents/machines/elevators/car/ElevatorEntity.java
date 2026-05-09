@@ -1,15 +1,16 @@
 package com.leafia.contents.machines.elevators.car;
 
+import com.custom_hbm.sound.LCEAudioWrapper;
+import com.custom_hbm.util.LCETuple.Triplet;
 import com.hbm.api.block.IToolable.ToolType;
 import com.hbm.blocks.BlockDummyable;
 import com.hbm.items.tool.ItemTooling;
-import com.hbm.main.MainRegistry;
+import com.hbm.util.EnumUtil;
 import com.leafia.AddonBase;
 import com.leafia.contents.AddonBlocks.Elevators;
 import com.leafia.contents.AddonItems;
 import com.leafia.contents.machines.elevators.EvBuffer;
 import com.leafia.contents.machines.elevators.EvPulleyTE;
-import com.leafia.contents.machines.elevators.EvShaft;
 import com.leafia.contents.machines.elevators.EvShaftNeo;
 import com.leafia.contents.machines.elevators.car.chips.EvChipBase;
 import com.leafia.contents.machines.elevators.car.chips.EvChipItem;
@@ -22,13 +23,14 @@ import com.leafia.contents.machines.elevators.car.styles.panels.S6Door;
 import com.leafia.contents.machines.elevators.floors.EvFloor;
 import com.leafia.contents.machines.elevators.floors.EvFloorTE;
 import com.leafia.contents.machines.elevators.gui.EvCabinContainer;
+import com.leafia.contents.machines.elevators.items.radio.EvRadioItem;
+import com.leafia.contents.machines.elevators.items.radio.EvRadioItem.ElevatorMusic;
 import com.leafia.dev.LeafiaDebug;
 import com.leafia.dev.custompacket.LeafiaCustomPacket;
 import com.leafia.dev.custompacket.LeafiaCustomPacketEncoder;
 import com.leafia.dev.math.FiaMatrix;
 import com.leafia.dev.optimization.bitbyte.LeafiaBuf;
 import com.leafia.unsorted.IEntityCustomCollision;
-import com.llib.group.LeafiaSet;
 import com.llib.technical.FifthString;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
@@ -52,6 +54,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -188,6 +191,31 @@ public class ElevatorEntity extends Entity implements IEntityMultiPart, IEntityC
 	public static final DataParameter<Integer> PULLEY_X = EntityDataManager.createKey(ElevatorEntity.class,DataSerializers.VARINT);
 	public static final DataParameter<Integer> PULLEY_Y = EntityDataManager.createKey(ElevatorEntity.class,DataSerializers.VARINT);
 	public static final DataParameter<Integer> PULLEY_Z = EntityDataManager.createKey(ElevatorEntity.class,DataSerializers.VARINT);
+	public static final DataParameter<Integer> MUSIC = EntityDataManager.createKey(ElevatorEntity.class,DataSerializers.VARINT);
+	public Triplet<Integer,Integer,Integer> getMusic() {
+		int upMusic = -1;
+		int downMusic = -1;
+		int idleMusic = -1;
+		ItemStack stack = inventory.getStackInSlot(7);
+		if (stack.getItem() instanceof EvRadioItem) {
+			if (stack.hasTagCompound()) {
+				NBTTagCompound tag = stack.getTagCompound();
+				try {
+					if (tag != null && tag.hasKey("up"))
+						upMusic = ElevatorMusic.valueOf(tag.getString("up")).ordinal();
+				} catch (IllegalArgumentException ignored) {}
+				try {
+					if (tag != null && tag.hasKey("down"))
+						downMusic = ElevatorMusic.valueOf(tag.getString("down")).ordinal();
+				} catch (IllegalArgumentException ignored) {}
+				try {
+					if (tag != null && tag.hasKey("idle"))
+						idleMusic = ElevatorMusic.valueOf(tag.getString("idle")).ordinal();
+				} catch (IllegalArgumentException ignored) {}
+			}
+		}
+		return new Triplet<>(upMusic,downMusic,idleMusic);
+	}
 	@Nullable public EvPulleyTE getPulley() {
 		BlockPos pos = new BlockPos(getDataInteger(PULLEY_X),getDataInteger(PULLEY_Y),getDataInteger(PULLEY_Z));
 		TileEntity te = world.getTileEntity(pos);
@@ -809,6 +837,7 @@ public class ElevatorEntity extends Entity implements IEntityMultiPart, IEntityC
 		this.dataManager.register(PULLEY_X,1);
 		this.dataManager.register(PULLEY_Y,1);
 		this.dataManager.register(PULLEY_Z,1);
+		this.dataManager.register(MUSIC,-1);
 		width = 30/16f;
 		height = world.isRemote ? 0.1f : 2.5f;
 	}
@@ -1014,6 +1043,8 @@ public class ElevatorEntity extends Entity implements IEntityMultiPart, IEntityC
 		return Minecraft.getMinecraft().player;
 	}
 	Boolean lightState = null;
+	LCEAudioWrapper music;
+	int lastMusic = -1;
 	@Override
 	public void onUpdate() {
 		BlockPos newLight = new BlockPos(posX,posY+1.5,posZ);
@@ -1066,6 +1097,23 @@ public class ElevatorEntity extends Entity implements IEntityMultiPart, IEntityC
 				}
 				if (updateSurfaces)
 					updateHitSurfaces();
+				int curMusic = getDataInteger(MUSIC);
+				if (lastMusic != curMusic) {
+					lastMusic = curMusic;
+					if (music != null) {
+						music.stopSound();
+						music = null;
+					}
+				}
+				if (curMusic != -1 && music == null) {
+					ElevatorMusic data = EnumUtil.grabEnumSafely(ElevatorMusic.values(),curMusic);
+					music = AddonBase.proxy.getLoopedSoundStartStop(world,data.loop,null,data.end,SoundCategory.RECORDS,(float)posX,(float)posY,(float)posZ,1,1);
+					music.setLooped(true);
+					music.startSound();
+				}
+				if (music != null)
+					music.updatePosition((float)posX,(float)posY,(float)posZ);
+				LeafiaDebug.debugLog(world,curMusic);
 			} else {
 				if (shouldUpdateItems) {
 					updateController();
@@ -1148,8 +1196,11 @@ public class ElevatorEntity extends Entity implements IEntityMultiPart, IEntityC
 				if (pulley != null && pulley.elevator != null && pulley.counterweight != null && pulley.getPower() >= EvPulleyTE.consumption) {
 					if (controller != null)
 						controller.onUpdate();
-				} else if (pulley != null)
-					motionY = 0;
+				} else {
+					dataManager.set(MUSIC,-1);
+					if (pulley != null)
+						motionY = 0;
+				}
 				int floor = getDataInteger(FLOOR);
 				if (specialDisplayFloors.containsKey(floor))
 					dataManager.set(FLOOR_DISPLAY,specialDisplayFloors.get(floor));
@@ -1191,6 +1242,15 @@ public class ElevatorEntity extends Entity implements IEntityMultiPart, IEntityC
 				pulley.elevator = this;
 			updateDoorCollisions();
 		} catch (ConcurrentModificationException ignored) {}
+	}
+	@Override
+	public void setDead() {
+		super.setDead();
+		if (music != null) {
+			music.stopSound();
+			music = null;
+			lastMusic = -1;
+		}
 	}
 	public void onButtonServer(String id,@Nullable EntityPlayer player,@Nullable EnumHand hand) {
 		if (id.equals("fire")) {

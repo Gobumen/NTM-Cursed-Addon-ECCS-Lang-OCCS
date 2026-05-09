@@ -133,7 +133,7 @@ public class AddonCraftingRecipes {
 
 		addRecipeAuto(new ItemStack(Elevators.shaft),"I I",'I',new ItemStack(ModBlocks.steel_beam));
 		addRecipeAuto(new ItemStack(AddonItems.ev_spawn),"GGG","ICI","GGG",'C',ANY_SMOKELESS.dust(),'G',new ItemStack(ModBlocks.steel_grate),'I',new ItemStack(ModBlocks.steel_beam));
-		addRecipeAuto(new ItemStack(Elevators.shaft),"IBI","IBI","IBI",'B',STEEL.block(),'I',new ItemStack(ModBlocks.steel_beam));
+		addRecipeAuto(new ItemStack(AddonItems.weight_spawn),"BIB","BIB","BIB",'B',STEEL.block(),'I',new ItemStack(ModBlocks.steel_beam));
 
 		addShapelessAuto(new ItemStack(AddonBlocks.regex_filter),new ItemStack(ModBlocks.pneumatic_tube),new ItemStack(ModItems.circuit,1,EnumCircuitType.BASIC.ordinal()));
 

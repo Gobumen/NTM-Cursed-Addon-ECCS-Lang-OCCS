@@ -99,6 +99,10 @@ public class LeafiaSoundEvents {
 	public static SoundEvent eversionsong7_cut;
 	public static SoundEvent digamma_record;
 
+	public static SoundEvent elevator_jam_loop;
+	public static SoundEvent elevator_jam_end;
+	public static SoundEvent local_forecast;
+
 	public static void init() {
 		// this is so retarded
 		literally_nothing = register("sdkgjalkdsjgldhsaiuhgui8asd8gy87dast67gt7wy9gty47yaw79g8734");
@@ -212,6 +216,10 @@ public class LeafiaSoundEvents {
 		sbmoon_surface = register("external.sbmoon_surface");
 		eversionsong7_cut = register("external.eversionsong7cut");
 		digamma_record = register("music.wtf");
+
+		elevator_jam_loop = register("music.lsplash.elevator_jam.loop");
+		elevator_jam_end = register("music.lsplash.elevator_jam.end");
+		local_forecast = register("music.incompetech.local_forecast");
 	}
 
 	public static SoundEvent register(String name) {
