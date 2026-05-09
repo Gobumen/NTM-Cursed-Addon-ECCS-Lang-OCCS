@@ -20,7 +20,7 @@ public class AbsorberShrapnelEntity extends EntityDebrisBase implements IMixinDe
 	}
 
 	@Override
-	public boolean destroysBlocks() {
+	public boolean leafia$destroysBlocks() {
 		return false;
 	}
 

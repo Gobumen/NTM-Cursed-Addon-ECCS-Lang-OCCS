@@ -1,6 +1,6 @@
 package com.leafia.overwrite_contents.mixin.mod.hbm;
 
-import com.hbm.entity.projectile.EntityDebrisBase;
+import com.hbm.entity.projectile.EntityRBMKDebris;
 import com.leafia.contents.machines.reactors.rbmk.debris.RBMKDebrisSmoke;
 import com.leafia.dev.LeafiaUtil;
 import com.leafia.overwrite_contents.interfaces.IMixinDebrisBase;
@@ -19,9 +19,9 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
-@Mixin(EntityDebrisBase.class)
-public abstract class MixinEntityDebrisBase extends Entity implements IMixinDebrisBase {
-	public MixinEntityDebrisBase(World worldIn) {
+@Mixin(EntityRBMKDebris.class)
+public abstract class MixinEntityRBMKDebris extends Entity implements IMixinDebrisBase {
+	public MixinEntityRBMKDebris(World worldIn) {
 		super(worldIn);
 	}
 	@Redirect(method = "onUpdate",at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;rayTraceBlocks(Lnet/minecraft/util/math/Vec3d;Lnet/minecraft/util/math/Vec3d;ZZZ)Lnet/minecraft/util/math/RayTraceResult;"),require = 1)

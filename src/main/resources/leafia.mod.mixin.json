@@ -57,6 +57,7 @@
     "hbm.MixinEntityNukeExplosionMK3",
     "hbm.MixinEntityNukeExplosionMK5",
     "hbm.MixinEntityNukeTorex",
+    "hbm.MixinEntityRBMKDebris",
     "hbm.MixinEntityThrowableNT",
     "hbm.MixinEnumBatteryPack",
     "hbm.MixinEnumGrenadeFilling",

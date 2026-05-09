@@ -1,16 +1,21 @@
 package com.leafia.overwrite_contents.mixin.mod.hbm;
 
+import com.hbm.blocks.fluid.CoriumFinite;
 import com.hbm.blocks.machine.rbmk.RBMKBase;
+import com.hbm.blocks.machine.rbmk.RBMKDebris;
 import com.hbm.lib.HBMSoundHandler;
 import com.hbm.tileentity.TileEntityLoadedBase;
 import com.hbm.tileentity.machine.rbmk.RBMKDials;
 import com.hbm.tileentity.machine.rbmk.RBMKDials.RBMKKeys;
 import com.hbm.tileentity.machine.rbmk.TileEntityRBMKBase;
+import com.leafia.contents.AddonBlocks;
 import com.leafia.contents.machines.reactors.rbmk.RBMKConstants;
+import com.leafia.contents.machines.reactors.rbmk.debris.RBMKDebrisSmokeTE;
 import com.leafia.dev.LeafiaUtil;
 import com.leafia.dev.optimization.LeafiaParticlePacket.JumpingRBMKParticle;
 import com.leafia.dev.optimization.LeafiaParticlePacket.RBMKJetParticle;
 import com.leafia.overwrite_contents.interfaces.IMixinTileEntityRBMKBase;
+import com.llamalad7.mixinextras.sugar.Local;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
@@ -148,6 +153,19 @@ public abstract class MixinTileEntityRBMKBase extends TileEntityLoadedBase imple
 				this.leafia$downwardSpeed = 0;
 				this.leafia$falling = false;
 				world.playSound(null, pos.getX(),  pos.getY() + 4,  pos.getZ(), HBMSoundHandler.rbmkLid, SoundCategory.BLOCKS, 2.0F, 1.0F);
+			}
+		}
+	}
+	@Inject(method = "meltdown",at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;playSound(Lnet/minecraft/entity/player/EntityPlayer;DDDLnet/minecraft/util/SoundEvent;Lnet/minecraft/util/SoundCategory;FF)V",remap = true),require = 1,remap = false)
+	void leafia$onMeltdown(CallbackInfo ci,@Local(name = "avgX") int avgX,@Local(name = "avgZ") int avgZ,@Local(name = "minX") int minX,@Local(name = "maxX") int maxX,@Local(name = "minZ") int minZ,@Local(name = "maxZ") int maxZ) {
+		float scale = ((maxX-minX)+(maxZ-minZ))/2f/2f;
+		for (int y = pos.getY()+RBMKDials.getColumnHeight(world)+1; y >= 0; y--) {
+			BlockPos bp = new BlockPos(avgX,y,avgZ);
+			if (world.getBlockState(bp).getBlock() instanceof RBMKDebris || world.getBlockState(bp).getBlock() instanceof CoriumFinite) {
+				world.setBlockState(bp,AddonBlocks.pribris_smoke.getDefaultState());
+				if (world.getTileEntity(bp) instanceof RBMKDebrisSmokeTE te)
+					te.setScale(scale);
+				break;
 			}
 		}
 	}

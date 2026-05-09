@@ -536,6 +536,7 @@ tile.slop_reactor_glass.name=Average "Nuclear Reactor" in Modern Mods Glasstrait
 tile.spk_cable.name=DFCリルートケーブル
 tile.wind_turbine.obstructed=! ! ! 塞がれています ! ! !
 tile.wind_turbine_medium.name=中型風力タービン
+tile.wind_turbine_medium.desc=少なくとも2チャンクの間隔をあける必要があります$効率的な発電には潤滑油が必要です
 trait._hazardfluid.dfcFuel.desc=§dパワー出力 §5%s%%
 trait._hazardfluid.dfcFuel=DFC燃料
 trait._hazarditem.hydro=アルカリ性

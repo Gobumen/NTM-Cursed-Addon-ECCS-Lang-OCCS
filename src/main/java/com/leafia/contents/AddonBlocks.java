@@ -89,6 +89,7 @@ import com.leafia.contents.machines.reactors.pwr.blocks.wreckage.PWRMeshedWreck;
 import com.leafia.contents.machines.reactors.pwr.blocks.wreckage.PWRWreckMetal;
 import com.leafia.contents.machines.reactors.pwr.blocks.wreckage.PWRWreckStone;
 import com.leafia.contents.machines.reactors.rbmk.columns.realersim.RBMKRealerSimBlock;
+import com.leafia.contents.machines.reactors.rbmk.debris.RBMKDebrisSmoke;
 import com.leafia.contents.miscellanous.diverter.DiverterBlock;
 import com.leafia.contents.miscellanous.regex_filter.pneumatic.RegexFilterBlock;
 import com.leafia.contents.miscellanous.slop.SlopBlock;
@@ -468,6 +469,8 @@ public class AddonBlocks {
 
 	public static final Block rbmk_rod_realersim = new RBMKRealerSimBlock(false, "rbmk_rod_realersim", "rbmk_element_realersim").setHardness(15.0F).setResistance(100.0F).setCreativeTab(MainRegistry.machineTab);
 	public static final Block rbmk_rod_realersim_mod = new RBMKRealerSimBlock(true, "rbmk_rod_realersim_mod", "rbmk_element_realersim_mod").setHardness(5.0F).setResistance(100.0F).setCreativeTab(MainRegistry.machineTab);
+
+	public static final Block pribris_smoke = new RBMKDebrisSmoke("pribris_smoke").setCreativeTab(MainRegistry.machineTab).setHardness(50.0F).setResistance(60000000000F); // dont let the corium destroy it
 
 	public static final Block hp_boiler = new HPBoilerBlock(Material.IRON,"hp_boiler").setHardness(5.0F).setResistance(10.0F).setCreativeTab(MainRegistry.machineTab);
 

@@ -48,6 +48,7 @@ import com.leafia.contents.machines.reactors.pwr.blocks.components.port.PWRPortT
 import com.leafia.contents.machines.reactors.pwr.blocks.components.terminal.PWRTerminalTE;
 import com.leafia.contents.machines.reactors.pwr.blocks.wreckage.PWRMeshedWreckEntity;
 import com.leafia.contents.machines.reactors.rbmk.columns.realersim.RBMKRealerSimTE;
+import com.leafia.contents.machines.reactors.rbmk.debris.RBMKDebrisSmokeTE;
 import com.leafia.contents.miscellanous.diverter.DiverterTE;
 import com.leafia.contents.miscellanous.regex_filter.pneumatic.RegexFilterTE;
 import com.leafia.contents.miscellanous.slop.SlopTE;
@@ -136,6 +137,7 @@ public class TEInit {
 		register(Reserved6TE.class,"reserved6_te");
 		register(DebugRenderTestTE.class,"debug_render_te");
 		register(WindTurbineMediumTE.class,"wind_turbine_medium_te");
+		register(RBMKDebrisSmokeTE.class,"pribris_smoke_te");
 	}
 	private static void register(Class<? extends TileEntity> clazz,String res) {
 		GameRegistry.registerTileEntity(clazz,new ResourceLocation(AddonBase.MODID,res));

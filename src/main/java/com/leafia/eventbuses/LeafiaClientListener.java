@@ -768,7 +768,7 @@ public class LeafiaClientListener {
 					if (Minecraft.getMinecraft().world != null) {
 						List<TileEntity> entities = Minecraft.getMinecraft().world.loadedTileEntityList;
 						BlockPos pos = Minecraft.getMinecraft().player.getPosition();
-						if (validatedTEs.size() > 0) {
+						if (!validatedTEs.isEmpty()) {
 							Set<TileEntity> removalQueue = new HashSet<>();
 							for (TileEntity entity : validatedTEs) {
 								if (!entities.contains(entity) || !(entity instanceof LeafiaPacketReceiver))
@@ -784,7 +784,8 @@ public class LeafiaClientListener {
 								validatedTEs.remove(entity);
 							}
 						}
-						for (TileEntity entity : entities) {
+						for (int i = 0; i < entities.size(); i++) {
+							TileEntity entity = entities.get(i);
 							if (!entity.isInvalid() && entity instanceof LeafiaPacketReceiver && !validatedTEs.contains(entity)) {
 								LeafiaPacketReceiver receiver = (LeafiaPacketReceiver)entity;
 								if (entity.getPos().getDistance(pos.getX(),pos.getY(),pos.getZ()) <= receiver.affectionRange()) {
