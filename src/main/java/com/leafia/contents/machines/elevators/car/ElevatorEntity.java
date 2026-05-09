@@ -1113,7 +1113,7 @@ public class ElevatorEntity extends Entity implements IEntityMultiPart, IEntityC
 				}
 				if (music != null)
 					music.updatePosition((float)posX,(float)posY,(float)posZ);
-				LeafiaDebug.debugLog(world,curMusic);
+				//LeafiaDebug.debugLog(world,curMusic);
 			} else {
 				if (shouldUpdateItems) {
 					updateController();
