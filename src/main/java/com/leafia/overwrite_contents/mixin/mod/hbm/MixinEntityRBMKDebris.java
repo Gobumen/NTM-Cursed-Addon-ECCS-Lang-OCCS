@@ -31,7 +31,7 @@ public abstract class MixinEntityRBMKDebris extends Entity implements IMixinDebr
 		return null;
 	}
 	@Unique
-	private static void leafia$fallBlock(World world,BlockPos pos,int count) {
+	private static void leafia$fallBlock(World world,BlockPos pos,Vec3d velocity,int count) {
 		if (world.isRemote) return;
 		if (!world.getBlockState(pos.down()).getMaterial().isSolid()) {
 			boolean fallNextBlock = false;
@@ -39,8 +39,13 @@ public abstract class MixinEntityRBMKDebris extends Entity implements IMixinDebr
 			if (LeafiaUtil.isSolidVisibleCube(state) && count < 5) {
 				EntityFallingBlock fallingBlock = new EntityFallingBlock(world,pos.getX()+0.5,pos.getY(),pos.getZ()+0.5,state);
 				fallingBlock.fallTime = 1;
+				if (velocity != null) {
+					fallingBlock.motionX = velocity.x;
+					fallingBlock.motionY = velocity.y;
+					fallingBlock.motionZ = velocity.z;
+				}
 				world.setBlockToAir(pos);
-				world.spawnEntity(fallingBlock);
+				LeafiaPassiveServer.queueFunction(()->world.spawnEntity(fallingBlock));
 				fallNextBlock = true;
 			} else {
 				if (state.getMaterial() != Material.AIR && !(state.getBlock() instanceof BlockAir)) {
@@ -50,7 +55,7 @@ public abstract class MixinEntityRBMKDebris extends Entity implements IMixinDebr
 			}
 			BlockPos up = pos.up(); // just in case shit uses MutableBlockPos.. (i dont think it does though)
 			if (fallNextBlock)
-				LeafiaPassiveServer.queueFunction(()->leafia$fallBlock(world,up,count+1));
+				LeafiaPassiveServer.queueFunction(()->leafia$fallBlock(world,up,null,count+1));
 		}
 	}
 	// prevent debris breaking smoke block
@@ -59,7 +64,11 @@ public abstract class MixinEntityRBMKDebris extends Entity implements IMixinDebr
 		if (instance.getBlockState(pos).getBlock() instanceof RBMKDebrisSmoke)
 			return false;
 		BlockPos up = pos.up(); // just in case shit uses MutableBlockPos.. (i dont think it does though)
-		LeafiaPassiveServer.queueFunction(()->leafia$fallBlock(instance,up,0));
+		Vec3d vel = new Vec3d(motionX,motionY,motionZ);
+		if (world.rand.nextInt(5) == 0)
+			leafia$fallBlock(instance,up,vel,0);
+		else
+			LeafiaPassiveServer.queueFunction(()->leafia$fallBlock(instance,up,vel,0));
 		return instance.setBlockToAir(pos);
 	}
 	@Override

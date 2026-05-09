@@ -15,6 +15,7 @@ import com.hbm.items.machine.ItemFluidIcon;
 import com.hbm.render.util.GaugeUtil;
 import com.hbm.util.I18nUtil;
 import com.leafia.dev.LeafiaClientUtil;
+import com.leafia.dev.LeafiaUtil;
 import com.leafia.jei.JEIPlasmaForge.Recipe;
 import com.llib.math.SIPfx;
 import mezz.jei.api.IGuiHelper;
@@ -111,8 +112,12 @@ public class JEIPlasmaForge implements IRecipeCategory<Recipe> {
 			List<String> list = new ArrayList<>();
 			if (!inputFluid.isEmpty())
 				LeafiaClientUtil.jeiFluidRenderInfo(inputFluid.get(0),list,mouseX,mouseY,109,1,16,52);
-			if (mouseX >= 19 && mouseY >= 19 && mouseX <= 19+18 && mouseY <= 19+18)
-				list.add(SIPfx.auto(ignition)+"TU");
+			if (mouseX >= 19 && mouseY >= 19 && mouseX <= 19+18 && mouseY <= 19+18) {
+				list.add(SIPfx.formatNoSpace("%,"+LeafiaUtil.getFormatDecimal(
+						ignition,
+						0,3
+				),ignition,false)+"TU");
+			}
 			return list;
 		}
 		/*@Override
@@ -153,13 +158,14 @@ public class JEIPlasmaForge implements IRecipeCategory<Recipe> {
 	@Override
 	public void setRecipe(IRecipeLayout recipeLayout,Recipe recipeWrapper,IIngredients ingredients) {
 		IGuiItemStackGroup stacks = recipeLayout.getItemStacks();
-		stacks.init(13,true,128,2);
+		stacks.init(14,true,1,36);
 		for (int x = 0; x < 4; x++) {
 			for (int y = 0; y < 3; y++)
-				stacks.init(x+y*4,true,28+x*18,1+y*18);
+				stacks.init(x+y*4,true,37+x*18,1+y*18);
 		}
-		stacks.init(12,true,19,1);
+		stacks.init(12,true,127,1);
+		stacks.init(13,false,145,19);
 		stacks.set(ingredients);
-		stacks.set(13,JeiRecipes.getBatteries());
+		stacks.set(14,JeiRecipes.getBatteries());
 	}
 }
