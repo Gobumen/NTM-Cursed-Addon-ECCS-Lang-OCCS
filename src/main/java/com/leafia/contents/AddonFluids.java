@@ -6,10 +6,7 @@ import com.hbm.inventory.fluid.FluidType;
 import com.hbm.inventory.fluid.Fluids;
 import com.hbm.inventory.fluid.trait.*;
 import com.hbm.render.misc.EnumSymbol;
-import com.leafia.contents.fluids.AddonFluidType;
-import com.leafia.contents.fluids.BaleCoriumFluid;
-import com.leafia.contents.fluids.FluorideFluid;
-import com.leafia.contents.fluids.OsmiridiumFluid;
+import com.leafia.contents.fluids.*;
 import com.leafia.contents.fluids.traits.FT_LFTRCoolant;
 import com.llib.exceptions.LeafiaDevFlaw;
 import net.minecraftforge.fluids.Fluid;
@@ -39,10 +36,12 @@ public class AddonFluids {
 		public static Fluid fluoride = new FluorideFluid("fluoride").setDensity(1000).setTemperature(500+273);
 		public static Fluid balecorium = new BaleCoriumFluid("balecorium").setDensity(31200).setViscosity(500).setTemperature(5000+273);
 		public static Fluid osmiridium = new OsmiridiumFluid("corecomponent").setDensity(31200).setViscosity(2000).setTemperature(3200+273);
+		public static Fluid concrete = new ConcreteFluid("leafia_concrete").setDensity(31200).setViscosity(2000);
 		public static void init() {
 			registerFluid(fluoride);
 			registerFluid(balecorium);
 			registerFluid(osmiridium);
+			registerFluid(concrete);
 		}
 		private static void registerFluid(Fluid fluid) {
 			FluidRegistry.registerFluid(fluid);
@@ -52,6 +51,7 @@ public class AddonFluids {
 			fluoride = FluidRegistry.getFluid("fluoride");
 			balecorium = FluidRegistry.getFluid("balecorium");
 			osmiridium = FluidRegistry.getFluid("corecomponent");
+			concrete = FluidRegistry.getFluid("leafia_concrete");
 		}
 	}
 	public static void addCompatFluid(FluidType fluid) {
@@ -99,5 +99,6 @@ public class AddonFluids {
 			FLUORINE = new AddonFluidType("FLUORINE",0xc5b055,4,0,4,EnumSymbol.NOWATER).addTraits(GASEOUS);
 		PYROGEL = new AddonFluidType("PYROGEL",0xffa53b,5,0,0,EnumSymbol.NOWATER).setTemp(2250).addTraits(LIQUID,VISCOUS);
 		CRYOINTER = new AddonFluidType("CRYOINTER",0x92cabe,2,0,0,EnumSymbol.CROYGENIC).setTemp(-90).addTraits(LIQUID);
+		CONCRETE.setFFNameOverride("leafia_concrete");
 	}
 }

@@ -36,6 +36,8 @@ import com.leafia.contents.debug.rbmk_jet.DebugRBMKJetEmitter;
 import com.leafia.contents.debug.render_test.DebugRenderTestBlock;
 import com.leafia.contents.fluids.BaleCoriumFluid;
 import com.leafia.contents.fluids.BaleCoriumFluid.BaleCoriumFluidBlock;
+import com.leafia.contents.fluids.ConcreteFluid;
+import com.leafia.contents.fluids.ConcreteFluid.ConcreteFluidBlock;
 import com.leafia.contents.fluids.FluorideFluid.FluorideFluidBlock;
 import com.leafia.contents.fluids.OsmiridiumFluid.OsmiridiumFluidBlock;
 import com.leafia.contents.machines.elevators.EvBuffer;
@@ -118,7 +120,9 @@ import com.leafia.unsorted.ateupd.Reserved6Dummyable;
 import com.llib.exceptions.LeafiaDevFlaw;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
+import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.material.MaterialLiquid;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.BlockRenderLayer;
@@ -615,9 +619,22 @@ public class AddonBlocks {
 	public static Block fluid_fluoride = new FluorideFluidBlock(AddonFF.fluoride, Material.LAVA, "fluoride_fluid");
 	public static Block fluid_balecorium = new BaleCoriumFluidBlock(AddonFF.balecorium, ModBlocks.fluidcorium, "balecorium_fluid");
 	public static Block fluid_osmiridium = new OsmiridiumFluidBlock(AddonFF.osmiridium, Material.LAVA, "osmiridium_fluid");
+	public static final Material material_concrete = (new MaterialLiquid(MapColor.GRAY) {
+		@Override
+		public boolean blocksMovement() {
+			return true;
+		}
+		@Override
+		public Material setImmovableMobility() {
+			return super.setImmovableMobility();
+		}
+
+	}.setImmovableMobility());
+	public static Block fluid_concrete = new ConcreteFluidBlock(AddonFF.concrete, material_concrete, "leafia_concrete_fluid");
 	private static void registerFluidBlocks() {
 		AddonFF.fluoride.setBlock(fluid_fluoride);
 		AddonFF.balecorium.setBlock(fluid_balecorium);
 		AddonFF.osmiridium.setBlock(fluid_osmiridium);
+		AddonFF.concrete.setBlock(fluid_concrete);
 	}
 }

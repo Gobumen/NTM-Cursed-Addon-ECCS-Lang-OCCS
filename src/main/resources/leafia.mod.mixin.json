@@ -47,6 +47,7 @@
     "hbm.MixinCoreCore",
     "hbm.MixinDiamondPronter",
     "hbm.MixinDictFrame",
+    "hbm.MixinEntityChemical",
     "hbm.MixinEntityCloudFleija",
     "hbm.MixinEntityCloudFleijaRainbow",
     "hbm.MixinEntityDebrisBase",

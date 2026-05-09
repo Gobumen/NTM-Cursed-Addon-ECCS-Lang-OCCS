@@ -165,7 +165,7 @@ public class PWRDebrisEntity extends EntityDebrisBase {
 					if(player.inventory.addItemStackToInventory(new ItemStack(ModItems.plate_steel)))
 						this.setDead();
 				case CHANNEL_3X:
-					if(player.inventory.addItemStackToInventory(new ItemStack(ModItems.part_barrel_light,2,Mats.MAT_STEEL.id)))
+					if(player.inventory.addItemStackToInventory(new ItemStack(ModItems.pipe,2,Mats.MAT_STEEL.id)))
 						this.setDead();
 				default:
 					Block block = ForgeRegistries.BLOCKS.getValue(new ResourceLocation(this.getDataManager().get(BLOCK_RSC)));

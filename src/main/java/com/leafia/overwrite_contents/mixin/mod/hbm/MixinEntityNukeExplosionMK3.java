@@ -4,16 +4,15 @@ import com.hbm.config.CompatibilityConfig;
 import com.hbm.entity.logic.EntityNukeExplosionMK3;
 import com.hbm.entity.logic.EntityNukeExplosionMK3.ATEntry;
 import com.hbm.entity.logic.IChunkLoader;
-import com.hbm.items.ModItems;
+import com.hbm.entity.projectile.EntityRBMKDebris;
+import com.hbm.entity.projectile.EntityZirnoxDebris;
 import com.leafia.contents.effects.folkvangr.EntityNukeFolkvangr;
 import com.leafia.database.FolkvangrJammers;
 import com.llamalad7.mixinextras.sugar.Local;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.Style;
-import net.minecraft.util.text.TextComponentString;
-import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -21,6 +20,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+
+import java.util.List;
 
 @Mixin(value = EntityNukeExplosionMK3.class)
 public abstract class MixinEntityNukeExplosionMK3 extends Entity implements IChunkLoader {
@@ -31,6 +32,9 @@ public abstract class MixinEntityNukeExplosionMK3 extends Entity implements IChu
 	@Shadow public abstract void setDead();
 
 	@Shadow public abstract void onUpdate();
+
+	@Shadow(remap = false)
+	public int age;
 
 	public MixinEntityNukeExplosionMK3(World worldIn) {
 		super(worldIn);
@@ -48,6 +52,28 @@ public abstract class MixinEntityNukeExplosionMK3 extends Entity implements IChu
 							world.spawnEntity(folkvangr);
 							this.setDead();
 							ci.cancel();
+						}
+					}
+				}
+				if (extType == 1) {
+					double radius = age;
+					List<Entity> entities = world.getEntitiesWithinAABB(Entity.class,new AxisAlignedBB(posX-radius,posY-radius,posZ-radius,posX+radius,posY+radius,posZ+radius));
+
+					for (Entity entity : entities) {
+
+						Vec3d vec = new Vec3d(posX-entity.posX,posY-entity.posY,posZ-entity.posZ);
+
+						double dist = vec.length();
+
+						if (dist > radius)
+							continue;
+
+						if (entity instanceof EntityRBMKDebris rbmk) {
+							if (rbmk.getType() == EntityRBMKDebris.DebrisType.FUEL)
+								entity.setDead();
+						} else if (entity instanceof EntityZirnoxDebris zirnox) {
+							if (zirnox.getType() == EntityZirnoxDebris.DebrisType.ELEMENT)
+								entity.setDead();
 						}
 					}
 				}

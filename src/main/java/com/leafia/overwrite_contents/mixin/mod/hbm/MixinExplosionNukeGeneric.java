@@ -1,7 +1,16 @@
 package com.leafia.overwrite_contents.mixin.mod.hbm;
 
+import com.hbm.blocks.ModBlocks;
+import com.hbm.blocks.fluid.CoriumFinite;
+import com.hbm.blocks.gas.BlockGasMeltdown;
+import com.hbm.blocks.gas.BlockGasRadon;
+import com.hbm.blocks.gas.BlockGasRadonDense;
+import com.hbm.blocks.gas.BlockGasRadonTomb;
+import com.hbm.blocks.machine.rbmk.RBMKDebris;
 import com.hbm.explosion.ExplosionNukeGeneric;
 import com.leafia.contents.AddonBlocks.LegacyBlocks;
+import com.leafia.contents.machines.reactors.pwr.blocks.wreckage.PWRMeshedWreck;
+import com.leafia.contents.machines.reactors.pwr.blocks.wreckage.PWRMeshedWreckEntity;
 import com.llamalad7.mixinextras.sugar.Local;
 import net.minecraft.block.BlockSand;
 import net.minecraft.block.BlockSand.EnumType;
@@ -76,6 +85,32 @@ public class MixinExplosionNukeGeneric {
 			world.setBlockState(pos,Blocks.HARDENED_CLAY.getDefaultState());
 			ci.cancel();
 			return;
+		}
+		if (state.getBlock() instanceof CoriumFinite) {
+			world.setBlockState(pos,ModBlocks.sellafield_slaked.getDefaultState());
+			ci.cancel();
+			return;
+		}
+		if (state.getBlock() == ModBlocks.block_corium || state.getBlock() == ModBlocks.block_corium_cobble || state.getBlock() == ModBlocks.sellafield) {
+			world.setBlockState(pos,ModBlocks.sellafield_slaked.getDefaultState());
+			ci.cancel();
+			return;
+		}
+		if (state.getBlock() instanceof BlockGasRadon || state.getBlock() instanceof BlockGasRadonDense || state.getBlock() instanceof BlockGasRadonTomb || state.getBlock() instanceof BlockGasMeltdown) {
+			world.setBlockToAir(pos);
+			ci.cancel();
+			return;
+		}
+		if (state.getBlock() != ModBlocks.pribris && state.getBlock() != ModBlocks.pribris_digamma && state.getBlock() instanceof RBMKDebris) {
+			world.setBlockState(pos,ModBlocks.pribris.getDefaultState());
+			ci.cancel();
+			return;
+		}
+		if (state.getBlock() instanceof PWRMeshedWreck) {
+			if (world.getTileEntity(pos) instanceof PWRMeshedWreckEntity te) {
+				te.scorch = 0;
+				te.markDirty();
+			}
 		}
 	}
 }
