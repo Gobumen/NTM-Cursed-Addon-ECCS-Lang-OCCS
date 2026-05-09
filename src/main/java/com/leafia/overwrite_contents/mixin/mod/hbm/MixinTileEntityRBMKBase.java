@@ -114,7 +114,7 @@ public abstract class MixinTileEntityRBMKBase extends TileEntityLoadedBase imple
 
 		if(!leafia$falling){ // linear rise
 			if(leafia$damage > 0){
-				int rand = world.rand.nextInt((IMixinTileEntityRBMKBase.maxDamage-leafia$damage)/3+5);
+				int rand = world.rand.nextInt(Math.max(1,(IMixinTileEntityRBMKBase.maxDamage-leafia$damage)/3+5));
 				if(this.leafia$jumpHeight > 0 || /*world.rand.nextInt((int)(25D*maxHeat()/(this.heat-MachineConfig.rbmkJumpTemp+200D))+1)*/rand == 0){
 					if (this.leafia$jumpHeight == 0) {
 						RBMKJetParticle particle = new RBMKJetParticle(20+world.rand.nextInt(10));
